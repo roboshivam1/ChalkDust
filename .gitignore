@@ -1,3 +1,9 @@
 .venv/
 __pycache__/
 media/
+# chalkdust
+.cache/
+media/
+out/
+work/
+scratch_*.py

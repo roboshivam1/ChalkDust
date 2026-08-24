@@ -8,6 +8,7 @@ be swapped by config, and it is why `theme` is a cache-key input (D-004).
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from functools import lru_cache
 
 from manim import MathTex, Mobject, Tex, Text, VMobject
 
@@ -203,3 +204,19 @@ def resolve_fonts(theme: Theme, warn: bool = True) -> Theme:
         fade_time=theme.fade_time,
         write_time=theme.write_time,
     )
+
+
+# --- font metrics -----------------------------------------------------------
+# Manim bounding boxes include descenders, so they vary with the letters in a
+# string. Anything aligned to them drifts row to row. Cap height is a property
+# of the font at a given size, so it is a stable layout unit.
+
+
+@lru_cache(maxsize=64)
+def _cap_height(font: str, size: float) -> float:
+    """Height of a capital H -- i.e. cap height -- in Manim units."""
+    return float(Text("H", font=font, font_size=size).height)
+
+
+def body_cap_height(theme: Theme) -> float:
+    return _cap_height(theme.type.body_font, theme.type.body)

@@ -104,9 +104,14 @@ class Cache:
 
     def slot(self, namespace: str, key: str, ext: str) -> CacheSlot:
         """Reserve a cache location. Does not create anything on disk."""
-        final = self._dir(namespace) / f"{key}{ext}"
-        return CacheSlot(path=final, tmp=final.with_suffix(final.suffix + ".tmp"),
-                         exists=final.exists())
+        d = self._dir(namespace)
+        final = d / f"{key}{ext}"
+        # The temp file KEEPS the real extension and is disambiguated by a
+        # prefix. Appending ".tmp" instead would break every tool that infers
+        # format from the extension -- ffmpeg refuses to choose a muxer for a
+        # path ending in ".tmp".
+        tmp = d / f".tmp-{key}{ext}"
+        return CacheSlot(path=final, tmp=tmp, exists=final.exists())
 
     def get(self, namespace: str, key: str, ext: str) -> Path | None:
         p = self._dir(namespace) / f"{key}{ext}"

@@ -65,8 +65,10 @@ class Quality(str, Enum):
 class VoiceConfig(BaseModel, frozen=True):
     """Frozen because it feeds the TTS cache key."""
 
-    backend: str = "kokoro"
-    voice_id: str = "am_michael"
+    # macos_say is the development default: no install, real durations.
+    # Swap to a model backend once one is wired in (see speech/backends/).
+    backend: str = "macos_say"
+    voice_id: str = "Daniel"
     rate: float = 1.0
 
 

@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chalkdust"
+version = "0.1.0"
+description = "Educational video generator: Manim animations with synced AI voiceover"
+requires-python = ">=3.11"
+dependencies = [
+    # Pinned hard. Manim breaks across versions and an upgrade must not
+    # silently reuse renders produced by the old one (see core/version.py).
+    "manim==0.21.0",
+    "pydantic>=2.6",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+chalkdust = "chalkdust.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["chalkdust*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Quieter output; Manim logs heavily during probe runs.
+addopts = "-q --tb=short"

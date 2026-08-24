@@ -1,0 +1,2 @@
+[console_scripts]
+chalkdust = chalkdust.cli:main

@@ -65,7 +65,9 @@ class ChalkdustScene(Scene):
         # strict=False downgrades assertion failures to recorded warnings,
         # used when rendering a degraded beat we already know is imperfect.
         self.strict = strict
-        self.layout_warnings: list[str] = []
+        # (kind, message) pairs, populated when strict=False. The probe
+        # validator reads these; the repair loop dispatches on kind.
+        self.layout_warnings: list[tuple[str, str]] = []
 
     def setup(self) -> None:
         self.camera.background_color = self.theme.palette.bg
@@ -110,7 +112,7 @@ class ChalkdustScene(Scene):
             except LayoutError as exc:
                 if self.strict:
                     raise
-                self.layout_warnings.append(str(exc))
+                self.layout_warnings.append((exc.kind, str(exc)))
 
         self._check_pairwise_overlap(label)
 
@@ -127,8 +129,8 @@ class ChalkdustScene(Scene):
                 if bbox(a).intersects(bbox(b)):
                     msg = f"{label}: {_name(a)} overlaps {_name(b)}"
                     if self.strict:
-                        raise LayoutError(msg)
-                    self.layout_warnings.append(msg)
+                        raise LayoutError(msg, kind="overlap")
+                    self.layout_warnings.append(("overlap", msg))
 
     # --- convenience --------------------------------------------------------
 

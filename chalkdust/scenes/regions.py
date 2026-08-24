@@ -41,10 +41,19 @@ DEFAULT_PADDING = 0.15
 class LayoutError(Exception):
     """Raised when content cannot be placed legibly.
 
-    This is a real failure, not a warning. It is caught by the repair loop
-    (SCENE_SPEC.md §9), which will try to fix it mechanically, then ask the
-    model to revise, then degrade the beat.
+    Carries a `kind` so the repair loop (SCENE_SPEC.md §9) can dispatch:
+    an overlap is fixed differently from illegible text.
+
+    kinds:
+      out_of_bounds -- content crosses the safe area
+      overlap       -- two mutually-exclusive mobjects intersect
+      illegible     -- text below the minimum font size
+      overflow      -- content cannot be scaled to fit at all
     """
+
+    def __init__(self, message: str, kind: str = "layout") -> None:
+        super().__init__(message)
+        self.kind = kind
 
 
 # --- geometry ---------------------------------------------------------------
@@ -262,7 +271,8 @@ def fit_to_region(
         raise LayoutError(
             f"Content does not fit legibly: smallest text would render at "
             f"font_size {effective:.1f} (floor is {min_font_size:.0f}) after "
-            f"scaling by {scale:.2f}. Split this beat or reduce its content."
+            f"scaling by {scale:.2f}. Split this beat or reduce its content.",
+            kind="overflow",
         )
 
     mob.move_to(inner.center)
@@ -296,13 +306,14 @@ def assert_in_safe_area(mob: Mobject, label: str = "mobject") -> None:
             f"{label} extends outside the safe area: "
             f"x[{box.left:.2f},{box.right:.2f}] y[{box.bottom:.2f},{box.top:.2f}] "
             f"vs safe x[{safe.left:.2f},{safe.right:.2f}] "
-            f"y[{safe.bottom:.2f},{safe.top:.2f}]"
+            f"y[{safe.bottom:.2f},{safe.top:.2f}]",
+            kind="out_of_bounds",
         )
 
 
 def assert_no_overlap(a: Mobject, b: Mobject, a_label: str, b_label: str) -> None:
     if bbox(a).intersects(bbox(b)):
-        raise LayoutError(f"{a_label} overlaps {b_label}")
+        raise LayoutError(f"{a_label} overlaps {b_label}", kind="overlap")
 
 
 def assert_legible(mob: Mobject, label: str = "mobject",
@@ -311,5 +322,6 @@ def assert_legible(mob: Mobject, label: str = "mobject",
     if effective is not None and effective < min_font_size:
         raise LayoutError(
             f"{label} contains text at font_size {effective:.1f}, "
-            f"below the {min_font_size:.0f} floor"
+            f"below the {min_font_size:.0f} floor",
+            kind="illegible",
         )

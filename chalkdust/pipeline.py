@@ -18,6 +18,7 @@ speech failure. The CLI maps each type to its own exit code.
 
 from __future__ import annotations
 
+import re
 import shutil
 from collections.abc import Iterator
 from contextlib import contextmanager
@@ -198,6 +199,33 @@ def ensure_dir(path: Path, option: str) -> Path:
     return path
 
 
+# video_id names files and directories (out/<id>-<quality>.mp4, the assembly
+# scratch dir the pipeline later deletes), so it must be a plain slug: no
+# separator, no '..', no drive colon, nothing Windows forbids in a file name.
+# The SCENE_SPEC example is `cs-hashmap-collisions`.
+VIDEO_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,99}")
+
+# C0 control characters and DEL, except tab, newline and carriage return.
+# Pango refuses a NUL in Text with a misleading colour error -- and Manim's
+# text cache then turns that refusal into a silent blank on the next run.
+# None of them is ever meant to be drawn or spoken.
+CONTROL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
+
+
+def _control_characters(value: object, where: str) -> list[str]:
+    """Where in `value` (a JSON-like tree) a control character sits."""
+    if isinstance(value, str):
+        hit = CONTROL.search(value)
+        return [f"  {where}: control character U+{ord(hit.group()):04X} at "
+                f"offset {hit.start()}; text must be printable"] if hit else []
+    if isinstance(value, dict):
+        return [p for k, v in value.items() for p in _control_characters(v, f"{where}.{k}")]
+    if isinstance(value, (list, tuple)):
+        return [p for i, v in enumerate(value)
+                for p in _control_characters(v, f"{where}[{i}]")]
+    return []
+
+
 def load_spec(path: Path) -> VideoSpec:
     """Rung 1 (schema), including each beat's component params.
 
@@ -224,11 +252,18 @@ def load_spec(path: Path) -> VideoSpec:
                           "  beats: a video needs at least one beat")
 
     problems = []
+    if not VIDEO_ID.fullmatch(spec.video_id):
+        problems.append(
+            f"  video_id: {spec.video_id!r} is not a slug; use letters, digits, "
+            "'-' and '_' (at most 100), starting with a letter or digit -- it "
+            "names the output file")
     try:
         get_theme(spec.theme)
     except KeyError as exc:
         problems.append(f"  theme: {exc.args[0]}")
     for beat in spec.beats:
+        problems += _control_characters(beat.narration, f"{beat.id}.narration")
+        problems += _control_characters(beat.params, f"{beat.id}.params")
         try:
             get_component(beat.component).Params.model_validate(beat.params)
         except KeyError as exc:
@@ -499,6 +534,11 @@ def render(
     print(summary)
 
     assembly_dir = work_dir / "assemble" / f"{spec.video_id}-{quality.value}"
+    # load_spec only lets a slug through; this is the backstop for the
+    # rmtree below, which must never reach outside the work dir.
+    if not long_path(assembly_dir).is_relative_to(work_dir / "assemble"):
+        raise AssemblyFailed(f"assembly dir {assembly_dir} is outside "
+                             f"{work_dir / 'assemble'}; refusing to use it")
     try:
         assemble(video, out, assembly_dir, verbose=verbose)
     except Exception as exc:

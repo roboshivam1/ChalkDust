@@ -210,6 +210,20 @@ class TestLatex:
         assert f"{side}.math" in report.findings[0].message
 
 
+class TestGlyphless:
+    @pytest.mark.parametrize("which,field",
+                             [(7, "left.title"), (8, "left.body"), (9, "verdict")],
+                             ids=["zero_width_title", "zero_width_body",
+                                  "zero_width_verdict"])
+    def test_text_that_draws_nothing_refuses_as_illegible(self, which, field):
+        # A zero-width title once made the side's box 0x0 and the shared
+        # scale divided by it (raw ZeroDivisionError, a build_error). Any
+        # glyphless part must refuse cleanly, naming the field to rewrite.
+        report = validate_beat(_spec(STRESS[which]))
+        assert report.kinds() == {"illegible"}, f"\n{report}"
+        assert field in report.findings[0].message
+
+
 class TestContinuity:
     """SplitCompare as producer and consumer of carried artifacts (§6)."""
 

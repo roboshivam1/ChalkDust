@@ -195,6 +195,14 @@ class SplitCompare(Component):
             # ...and LaTeX that compiles but draws nothing.
             {"left": {"title": "Empty maths", "math": r"\quad"},
              "right": {"title": "Fine"}},
+            # Text that survives whitespace stripping but draws no glyph
+            # (U+200B zero-width space) refuses as "illegible", naming the
+            # field -- never a blank card, never a zero-size division.
+            {"left": {"title": "\u200b"}, "right": {"title": "R"}},
+            # ...the same for a body (U+2060 word joiner)...
+            {"left": {"title": "L", "body": "\u2060"}, "right": {"title": "R"}},
+            # ...and for the verdict (U+FEFF byte-order mark).
+            {"left": {"title": "L"}, "right": {"title": "R"}, "verdict": "\ufeff"},
         ]
 
 
@@ -215,7 +223,8 @@ def _layout(p: SplitCompareParams, theme: Theme) -> tuple[list[Mobject], Mobject
     in the lower third. Pure: same params and theme, same mobjects.
 
     Raises LayoutError: "overflow" when the sides cannot fit legibly,
-    "invalid_latex" (via theme.math) when a side's maths cannot be drawn.
+    "invalid_latex" (via theme.math) when a side's maths cannot be drawn,
+    "illegible" when a title, body or the verdict draws no glyphs at all.
     """
     halves = (("left", p.left, Region.STAGE_LEFT),
               ("right", p.right, Region.STAGE_RIGHT))
@@ -230,7 +239,13 @@ def _layout(p: SplitCompareParams, theme: Theme) -> tuple[list[Mobject], Mobject
     for content, (_, _, region) in zip(contents, halves):
         inner = region_rect(region).inset(DEFAULT_PADDING + CARD_PAD)
         box = bbox(content)
-        scale = min(scale, inner.width / box.width, inner.height / box.height)
+        # _side_content refuses a side that draws nothing, but a part can
+        # still be flat in one axis; only a real extent constrains the scale
+        # (as in fit_to_region).
+        if box.width > 0:
+            scale = min(scale, inner.width / box.width)
+        if box.height > 0:
+            scale = min(scale, inner.height / box.height)
     if scale < 1.0:
         for content in contents:
             scale_with_tags(content, scale)
@@ -272,7 +287,8 @@ def _layout(p: SplitCompareParams, theme: Theme) -> tuple[list[Mobject], Mobject
     verdict = None
     if p.verdict is not None:
         colour = theme.palette.accent if p.emphasis == "verdict" else None
-        verdict = label(heading_text(_wrap_balanced(p.verdict, VERDICT_WRAP), theme, colour),
+        verdict = label(_drawn(heading_text(_wrap_balanced(p.verdict, VERDICT_WRAP),
+                                            theme, colour), p.verdict, "verdict"),
                         "verdict")
         fit_to_region(verdict, Region.LOWER_THIRD)
     return sides, verdict
@@ -281,16 +297,36 @@ def _layout(p: SplitCompareParams, theme: Theme) -> tuple[list[Mobject], Mobject
 def _side_content(key: str, side: Side, theme: Theme, emphasized: bool) -> VGroup:
     """Title, then body, then maths, stacked and centred."""
     parts: list[Mobject] = [
-        heading_text(_wrap_balanced(side.title, TITLE_WRAP), theme,
-                     theme.palette.accent if emphasized else None)
+        _drawn(heading_text(_wrap_balanced(side.title, TITLE_WRAP), theme,
+                            theme.palette.accent if emphasized else None),
+               side.title, f"{key}.title")
     ]
     if side.body:
-        parts.append(body_text(_wrap_balanced(side.body, BODY_WRAP), theme))
+        parts.append(_drawn(body_text(_wrap_balanced(side.body, BODY_WRAP), theme),
+                            side.body, f"{key}.body"))
     if side.math:
         # theme.math refuses LaTeX that does not compile, or draws nothing, as
         # LayoutError kind "invalid_latex" naming the side.
         parts.append(math(side.math, theme, what=f"{key}.math"))
     return VGroup(*parts).arrange(DOWN, buff=STACK_BUFF)
+
+
+def _drawn(text: Mobject, source: str, what: str) -> Mobject:
+    """`text`, unless it draws nothing. The schema strips whitespace, but
+    Pango also draws no glyph for zero-width characters (U+200B, U+2060,
+    U+FEFF) and for characters the resolved font lacks. Such a part would
+    leave a blank where the viewer expects words -- a title-less card, or a
+    side with zero size that cannot be scaled at all -- so it refuses as
+    "illegible", naming the field, the way theme.math refuses maths that
+    renders nothing."""
+    if not text.family_members_with_points() or (text.width == 0 and text.height == 0):
+        raise LayoutError(
+            f"SplitCompare {what} renders nothing on screen: {source!r}. Its "
+            f"characters draw no glyphs in this font (zero-width or "
+            f"unsupported). Rewrite it in plain, visible text.",
+            kind="illegible",
+        )
+    return text
 
 
 def _wrap_balanced(s: str, width: int) -> str:

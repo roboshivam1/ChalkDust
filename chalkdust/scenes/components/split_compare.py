@@ -37,7 +37,7 @@ from chalkdust.scenes.theme import Theme, body_text, heading_text, math
 # Wrap widths in characters, sized so a typical side fits a stage half at
 # natural size. fit_to_region still covers fonts that run wider than expected.
 TITLE_WRAP = 18
-BODY_WRAP = 24
+BODY_WRAP = 26
 VERDICT_WRAP = 40
 
 CARD_PAD = 0.3      # space between a card's edge and its content

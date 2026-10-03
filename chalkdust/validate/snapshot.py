@@ -1,9 +1,7 @@
 """Component snapshots (SCENE_SPEC.md §11 rule 6): fail loudly when Manim shifts.
 
-A snapshot records what a component builds for each of its examples() -- and,
-for a component that acts on a carried artifact, each carried_examples() case,
-built with its artifacts on screen as the render builds it -- probed exactly as
-the geometric validator probes -- animations snapped to their end
+A snapshot records what a component builds for each of its examples(), probed
+exactly as the geometric validator probes -- animations snapped to their end
 state, no frame encoded. It has two halves:
 
   structure  Font-independent, compared on every machine. The timeline (each
@@ -45,13 +43,11 @@ from manim import MarkupText, Mobject, SingleStringMathTex, Text, VMobject, conf
 from manim.mobject.mobject import _AnimationBuilder
 from manim.mobject.svg.svg_mobject import VMobjectFromSVGPath
 
-from chalkdust.continuity import ArtifactRecipe, CarryIn
 from chalkdust.core.models import Region
 from chalkdust.core.version import MANIM_VERSION
 from chalkdust.scenes.components import Component, get_component, registered_names
 from chalkdust.scenes.regions import bbox, region_rect
 from chalkdust.scenes.theme import get_theme, resolve_fonts
-from chalkdust.validate.fixtures import FixtureCase, fixture_cases, lent_builders
 from chalkdust.validate.geometric import LayoutProbe
 
 DEFAULT_DIR = Path("tests") / "snapshots"
@@ -164,35 +160,12 @@ def _paint(mob: Mobject) -> dict[str, Any]:
     return {}
 
 
-def capture(name: str, params: dict[str, Any],
-            carry_in: tuple[ArtifactRecipe, ...] = ()) -> tuple[dict, list]:
-    """(structure, geometry) for one component instance, built with the
-    artifacts it carries in (if any) on screen first, as the render does."""
-    component = get_component(name)(params)
-    probe = SnapshotProbe(CarryIn(component, carry_in) if carry_in else component,
-                          theme=THEME, duration=DURATION, strict=False)
-    with lent_builders(name):
-        probe.construct()
+def capture(name: str, params: dict[str, Any]) -> tuple[dict, list]:
+    """(structure, geometry) for one component instance."""
+    probe = SnapshotProbe(get_component(name)(params), theme=THEME,
+                          duration=DURATION, strict=False)
+    probe.construct()
     return {"timeline": probe.timeline}, probe.geometry
-
-
-def snapshot_cases(name: str) -> list[FixtureCase]:
-    """The cases a snapshot records: examples(), then carried_examples()."""
-    return fixture_cases(name, "examples")
-
-
-def case_key(case: FixtureCase) -> dict[str, Any]:
-    """What identifies a recorded case. `carry_in` is recorded only for a
-    carried case, so snapshots of plain components are unchanged by it."""
-    key: dict[str, Any] = {"params": case.params}
-    if case.carry_in:
-        key["carry_in"] = case.carry_in_json()
-    return key
-
-
-def recorded_key(case: dict[str, Any]) -> dict[str, Any]:
-    """case_key() of a case as stored in a snapshot file."""
-    return {k: case[k] for k in ("params", "carry_in") if k in case}
 
 
 # --- compare ----------------------------------------------------------------
@@ -259,17 +232,16 @@ def regenerate(name: str, reason: str, directory: Path = DEFAULT_DIR) -> list[st
     old_cases = old["cases"]
     fp = fingerprint()
     notes, cases = [], []
-    for i, case in enumerate(snapshot_cases(name)):
-        structure, geometry = capture(name, case.params, case.carry_in)
-        key = case_key(case)
+    for i, params in enumerate(get_component(name).examples()):
+        structure, geometry = capture(name, params)
         prior = old_cases[i] if i < len(old_cases) else None
         kept: dict[str, Any] = {}
-        if prior and recorded_key(prior) == key and prior["structure"] == structure:
+        if prior and prior["params"] == params and prior["structure"] == structure:
             kept = {k: v for k, v in prior["geometry"].items() if k != fp}
         elif prior and set(prior["geometry"]) - {fp}:
             notes.append(f"{name} case {i}: structure changed; dropped geometry for "
                          f"{sorted(set(prior['geometry']) - {fp})}")
-        cases.append({**key, "structure": structure,
+        cases.append({"params": params, "structure": structure,
                       "geometry": {**kept, fp: geometry}})
 
     data = {

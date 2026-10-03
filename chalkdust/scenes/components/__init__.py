@@ -23,6 +23,7 @@ from chalkdust.scenes.components import raw_scene  # noqa: F401,E402
 from chalkdust.scenes.components import solution_step  # noqa: F401,E402
 from chalkdust.scenes.components import step_trace  # noqa: F401,E402
 from chalkdust.scenes.components import title_card  # noqa: F401,E402
+from chalkdust.scenes.components import vector_field  # noqa: F401,E402
 
 __all__ = [
     "Component",

@@ -23,7 +23,11 @@ from chalkdust.scenes.regions import LayoutError
 from chalkdust.validate.geometric import LayoutProbe, validate_beat
 
 BINARY_SEARCH = StepTrace.examples()[0]
-AT_CAPS = StepTrace.stress()[0]   # both caps, short values -- fits
+# Five frames, seven plays. Not the at-caps stress case: that one fits only
+# ~2 pt above the legibility floor under taller-capped mono fonts (Cascadia
+# Mono measured 23.6), so on a machine with the theme's real font it could
+# refuse with overflow -- correct behaviour, but not what a timing test is for.
+ACCUMULATOR = StepTrace.examples()[1]
 OVERLOADED = StepTrace.stress()[1]  # both caps, long values -- must refuse
 FPS = 15  # draft (D-006); the coarsest frame grid we render at
 
@@ -48,8 +52,8 @@ def _elapsed(params: dict, budget: float, tmp_path) -> float:
 class TestTiming:
     """Animation consumes exactly the beat's audio budget (D-002)."""
 
-    @pytest.mark.parametrize("params", [BINARY_SEARCH, AT_CAPS],
-                             ids=["example", "at-caps"])
+    @pytest.mark.parametrize("params", [BINARY_SEARCH, ACCUMULATOR],
+                             ids=["binary-search", "accumulator"])
     @pytest.mark.parametrize("factor", [0.5, 3.0], ids=["short", "long"])
     def test_consumes_budget_exactly(self, params, factor, tmp_path):
         budget = factor * StepTrace(params).min_seconds()

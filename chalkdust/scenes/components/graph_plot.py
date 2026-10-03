@@ -17,6 +17,10 @@ run at schema validation, so "undefined everywhere on x_range" or "marker sits
 on an asymptote" fails as a param error -- rung 1, the cheapest place to catch
 it (SCENE_SPEC.md §8) -- before anything builds.
 
+The finished graph can be carried into later beats (SCENE_SPEC.md §6): the
+module registers an artifact builder that rebuilds exactly the frame this beat
+settles on, so a ZoomHighlight or Callout can target it.
+
 Params beyond the §5 key params: `y_range` (optional). The automatic window
 handles asymptotes by trimming heavy tails, but only the author knows that a
 beat about tan(x) wants to show -5..5; without it the component would have to
@@ -45,12 +49,14 @@ from manim import (
     Dot,
     FadeIn,
     Line,
+    Mobject,
     MoveAlongPath,
     VGroup,
     VMobject,
 )
 from pydantic import Field, field_validator, model_validator
 
+from chalkdust.continuity import artifact_builder
 from chalkdust.core.models import Region
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import (
@@ -180,6 +186,10 @@ def _eval(node: ast.expr, x: np.ndarray) -> np.ndarray:
 # Values beyond this are treated as off-scale rather than plotted. Keeps every
 # span finite: two samples near +-1e308 would otherwise overflow a subtraction.
 _OFF_SCALE = 1e100
+# The other end of the same guard: no axis may span less than this. Data ->
+# scene scale is plot size / span, and a span near the subnormal floor
+# (~1e-308) makes that scale inf, so every point would come out inf or nan.
+MIN_SPAN = 1.0 / _OFF_SCALE
 
 
 def evaluate(expr: str, x: np.ndarray) -> np.ndarray:
@@ -382,9 +392,10 @@ def _auto_window(values: np.ndarray) -> tuple[float, float]:
         lo, hi = float(q05), float(q95)
 
     magnitude = max(abs(lo), abs(hi))
-    if hi - lo <= MIN_RELATIVE_SPAN * magnitude or hi - lo == 0:
+    if hi - lo <= MIN_RELATIVE_SPAN * magnitude or hi - lo < MIN_SPAN:
         # Flat at this scale. Draw a level line mid-window rather than
-        # magnifying float noise into a shape.
+        # magnifying float noise into a shape -- or, below MIN_SPAN, a
+        # variation too small to scale at all (1e-310*x on [-1, 1]).
         mid = 0.5 * (lo + hi)
         half = max(0.5 * abs(mid), 1.0)
         return mid - half, mid + half
@@ -470,7 +481,10 @@ def tick_label(v: float, step: float, magnitude: float) -> tuple[str, bool]:
     text would need a superscript minus, which fallback fonts lack (it renders
     as a missing-glyph box)."""
     sci = magnitude >= 1e5 or magnitude < 1e-3
-    if abs(v) < step * 1e-6:
+    # Exact: a tick value is k * step, which is zero only for k == 0. A
+    # relative test (|v| < step * 1e-6) underflows to "< 0" for a subnormal
+    # step and lets 0 through to log10.
+    if v == 0:
         return "0", sci
     if sci:
         v = round(v / step) * step
@@ -509,6 +523,10 @@ def _check_range(v: tuple[float, float] | None, what: str) -> tuple[float, float
         raise ValueError(
             f"{what} {list(v)} is too narrow for its magnitude to label distinct "
             f"ticks; shift the variable instead (plot f(x + c) near 0)")
+    if hi - lo < MIN_SPAN:
+        raise ValueError(
+            f"{what} {list(v)} spans less than {MIN_SPAN:g}; rescale the units "
+            f"so the range is at least that wide")
     return v
 
 
@@ -584,6 +602,7 @@ MARKER_BUFF = 0.12
 INK_CLEARANCE = 0.05       # clear space a label wants from any drawn line
 INK_STEP = 0.02            # max spacing of the points that stand in for curve ink
 MIN_PLOT_SIZE = 1.5         # smaller than this is not a graph, it is a doodle
+MIN_AXIS_LABELS = 2         # fewer and the axis has no readable scale
 AXIS_STROKE = 2.0
 CURVE_STROKE = 4.0
 DOT_RADIUS = 0.08
@@ -621,6 +640,62 @@ def _curve_colours(theme: Theme) -> tuple[str, str, str]:
     return p.accent, p.accent_alt, p.success
 
 
+def _crowds(box: Rect, other: Rect, sep: float) -> bool:
+    """True if `box` comes within `sep` of `other`."""
+    return Rect(box.x, box.y, box.width + 2 * sep, box.height + 2 * sep).intersects(other)
+
+
+def _pick_labels(ticks: list[tuple[int, np.ndarray, Mobject]], stride: int,
+                 sides: tuple[np.ndarray, ...],
+                 ok: Callable[[Rect], bool]) -> list[tuple[int, np.ndarray, Mobject]]:
+    """Choose which tick labels one axis shows, and on which side of it.
+
+    Every `stride`-th tick is tried on each of `sides` in turn; a label
+    blocked on all of them (by a curve, the other axis, a marker) is dropped.
+    If that leaves fewer than MIN_AXIS_LABELS, the ticks between are tried
+    too, each kept only LABEL_SEP clear of every label already shown -- one
+    number on an axis gives the viewer no scale to read. Returns the kept
+    (k, anchor, label) in tick order.
+    """
+    def place(text: Mobject, at: np.ndarray, spaced: bool) -> bool:
+        for d in sides:
+            text.next_to(at, d, buff=TICK_LEN / 2 + LABEL_GAP)
+            box = bbox(text)
+            if ok(box) and not (spaced and any(_crowds(box, bbox(t), LABEL_SEP)
+                                               for *_, t in kept)):
+                return True
+        return False
+
+    kept: list[tuple[int, np.ndarray, Mobject]] = []
+    for k, at, text in ticks:
+        if k % stride == 0 and place(text, at, spaced=False):
+            kept.append((k, at, text))
+    for k, at, text in ticks:
+        if len(kept) >= MIN_AXIS_LABELS:
+            break
+        if k % stride and place(text, at, spaced=True):
+            kept.append((k, at, text))
+    return sorted(kept, key=lambda t: t[0])
+
+
+@dataclass
+class _Layout:
+    """The settled frame, every mobject in its final place. build() animates
+    it in; the artifact builder hands it to a later beat whole."""
+
+    legend: VGroup
+    entries: list[Mobject]
+    axes: VGroup
+    curves: list[VMobject]
+    # (dot at its final point, label or None, trace path or None)
+    markers: list[tuple[Dot, Mobject | None, VMobject | None]]
+
+    def settled(self) -> VGroup:
+        return VGroup(self.axes, *self.curves, self.legend,
+                      *(m for dot, text, _ in self.markers
+                        for m in (dot, text) if m is not None))
+
+
 @register
 class GraphPlot(Component):
     name = "GraphPlot"
@@ -633,6 +708,8 @@ class GraphPlot(Component):
     # --- semantic-rung hooks (SCENE_SPEC.md §8 rung 2) ---------------------
 
     def latex_strings(self) -> list[str]:
+        # Every tick that could carry a label, including ones layout later
+        # drops: a superset compiles just as well and needs no fonts or layout.
         plan = plan_for(self.params)
         ticks = (axis_ticks(plan.x0, plan.x1, X_TICK_TARGET)[1]
                  + axis_ticks(plan.y0, plan.y1, Y_TICK_TARGET)[1])
@@ -647,8 +724,41 @@ class GraphPlot(Component):
     # --- build -------------------------------------------------------------
 
     def build(self, scene: ChalkdustScene) -> None:
+        lay = self.layout(scene.theme)
+
+        # Axes, each curve with its legend entry, each marker traced in turn,
+        # then hold. Weights become whole-frame run times via budget(), so the
+        # beat lasts exactly as long as its narration (D-002).
+        weights = [W_AXES] + [W_CURVE] * len(lay.curves)
+        for _, mlabel, _ in lay.markers:
+            weights += [W_TRACE] + ([W_LABEL] if mlabel is not None else [])
+        times = iter(scene.budget(*weights, W_HOLD))
+
+        lay.legend.set_opacity(0)
+        scene.add(lay.legend)
+        scene.exclusive(lay.legend, lay.axes)
+
+        scene.play(FadeIn(lay.axes), run_time=next(times))
+        for curve, entry in zip(lay.curves, lay.entries):
+            scene.play(Create(curve), entry.animate.set_opacity(1), run_time=next(times))
+        scene.settle("curves drawn")
+
+        for dot, mlabel, path in lay.markers:
+            if path is None:
+                scene.play(FadeIn(dot), run_time=next(times))
+            else:
+                dot.move_to(path.get_start())
+                scene.add(dot)
+                scene.play(MoveAlongPath(dot, path), run_time=next(times))
+            if mlabel is not None:
+                scene.play(FadeIn(mlabel), run_time=next(times))
+        scene.settle("graph traced")
+        scene.wait(next(times))
+
+    def layout(self, theme: Theme) -> _Layout:
+        """Every mobject of the finished graph, placed. Pure in params and
+        theme, so the render and a carry-in rebuild draw the same picture."""
         p: GraphPlotParams = self.params
-        theme = scene.theme
         plan = plan_for(p)
         colours = _curve_colours(theme)
         stage = region_rect(Region.STAGE).inset(DEFAULT_PADDING)
@@ -658,7 +768,8 @@ class GraphPlot(Component):
         for i, tex in enumerate(legend_tex(f.expr, f.name) for f in p.functions):
             swatch = Line(LEFT * SWATCH_LEN / 2, RIGHT * SWATCH_LEN / 2,
                           color=colours[i], stroke_width=CURVE_STROKE)
-            entries.append(label(VGroup(swatch, math(tex, theme, size=theme.type.body))
+            entries.append(label(VGroup(swatch, math(tex, theme, size=theme.type.body,
+                                                     what=f"GraphPlot legend[{i}]"))
                                  .arrange(RIGHT, buff=0.2), f"legend[{i}]"))
         legend = label(VGroup(*entries).arrange(DOWN, aligned_edge=LEFT, buff=0.3), "legend")
         col_w = min(legend.width, LEGEND_MAX_FRACTION * stage.width)
@@ -686,34 +797,7 @@ class GraphPlot(Component):
             np.linspace(line.get_start(), line.get_end(), 200) for line in (x_axis, y_axis)])
         markers = self._markers(plan, theme, plot, to_point, ink, obstacles=[
             bbox(m) for m in axes.submobjects if getattr(m, "_chalk_font_size", None)])
-
-        # --- animate: axes, each curve with its legend entry, each marker
-        # traced in turn, then hold. Weights become seconds via budget(), so the
-        # beat lasts exactly as long as its narration (D-002).
-        weights = [W_AXES] + [W_CURVE] * len(curves)
-        for _, mlabel, _ in markers:
-            weights += [W_TRACE] + ([W_LABEL] if mlabel is not None else [])
-        times = iter(scene.budget(*weights, W_HOLD))
-
-        legend.set_opacity(0)
-        scene.add(legend)
-        scene.exclusive(legend, axes)
-
-        scene.play(FadeIn(axes), run_time=next(times))
-        for curve, entry in zip(curves, entries):
-            scene.play(Create(curve), entry.animate.set_opacity(1), run_time=next(times))
-        scene.settle("curves drawn")
-
-        for dot, mlabel, path in markers:
-            scene.add(dot)
-            if path is None:
-                scene.play(FadeIn(dot), run_time=next(times))
-            else:
-                scene.play(MoveAlongPath(dot, path), run_time=next(times))
-            if mlabel is not None:
-                scene.play(FadeIn(mlabel), run_time=next(times))
-        scene.settle("graph traced")
-        scene.wait(next(times))
+        return _Layout(legend, entries, axes, curves, markers)
 
     def _axes(self, plan: _Plan, theme: Theme, stage: Rect, right: float):
         """Axes, ticks and tick labels sized to the space left of the legend.
@@ -723,26 +807,30 @@ class GraphPlot(Component):
         they cannot survive any real downscale.
 
         The plot rect depends only on label *sizes*, so the curves' ink is
-        known before any label is kept, and a label a curve runs through is
-        dropped exactly like one the other axis runs through: muted caption
-        text under a curve stroke reads wrong ("-2" with its minus hidden is
-        "2"). Also returns that ink, for marker-label placement.
+        known before any label is placed. A label a curve runs through moves
+        to the other side of its axis, or is dropped, like one the other axis
+        runs through: muted caption text under a curve stroke reads wrong
+        ("-2" with its minus hidden is "2"). Also returns that ink, for
+        marker-label placement.
         """
         def tick_mob(s: str, tex: bool):
             if tex:
-                return math(s, theme, size=theme.type.caption, color=theme.palette.muted)
+                return math(s, theme, size=theme.type.caption, color=theme.palette.muted,
+                            what="GraphPlot tick label")
             return caption_text(s, theme)
 
         xstep, xt = axis_ticks(plan.x0, plan.x1, X_TICK_TARGET)
         ystep, yt = axis_ticks(plan.y0, plan.y1, Y_TICK_TARGET)
-        xticks = [(k, v, tick_mob(s, tex)) for k, v, s, tex in xt]
-        yticks = [(k, v, tick_mob(s, tex)) for k, v, s, tex in yt]
+        xticks = [(k, v, label(tick_mob(s, tex), f"xtick[{k}]")) for k, v, s, tex in xt]
+        yticks = [(k, v, label(tick_mob(s, tex), f"ytick[{k}]")) for k, v, s, tex in yt]
 
         max_xw = max((t.width for *_, t in xticks), default=0.0)
         max_xh = max((t.height for *_, t in xticks), default=0.0)
         max_yw = max((t.width for *_, t in yticks), default=0.0)
         max_yh = max((t.height for *_, t in yticks), default=0.0)
 
+        # Where any tick label may sit: the stage, left of the legend's gap.
+        room = Rect((stage.left + right) / 2, stage.y, right - stage.left, stage.height)
         # Reserve margins on every side a label could poke past the plot rect.
         left = stage.left + max(max_yw + TICK_LEN / 2 + LABEL_GAP, max_xw / 2)
         right = right - max_xw / 2
@@ -769,47 +857,81 @@ class GraphPlot(Component):
         ax_y = min(max(0.0, plan.y0), plan.y1)
         ax_x = min(max(0.0, plan.x0), plan.x1)
         stroke = dict(color=theme.palette.muted, stroke_width=AXIS_STROKE)
-        # Curve ink in scene units: a tick label it runs through is dropped.
+        # Curve ink and marker dots in scene units: tick labels keep off both.
         ink = _ink([to_point(r[:, 0], r[:, 1]) for runs in plan.runs for r in runs])
+        dots = (to_point(np.array([m.x for m in self.params.markers]),
+                         np.array(plan.marker_ys))
+                if plan.marker_ys else np.empty((0, 3)))
 
         x_axis = Line(to_point(plan.x0, ax_y)[0], to_point(plan.x1, ax_y)[0], **stroke)
         y_axis = Line(to_point(ax_x, plan.y0)[0], to_point(ax_x, plan.y1)[0], **stroke)
         parts = [x_axis, y_axis]
 
+        def clear(box: Rect, other_axis: Line) -> bool:
+            # A label the other axis runs through is unreadable, so the origin
+            # gets none; nor may one sit under a curve or a marker dot.
+            return (room.contains(box) and not box.intersects(bbox(other_axis))
+                    and not _inked(ink, box)
+                    and not _inked(dots, box, pad=DOT_RADIUS + INK_CLEARANCE))
+
         # Thin the labels until neighbours have clear space between them.
         def stride(pitch: float, need: float) -> int:
             return next((s for s in (1, 2, 5, 10, 20, 50) if s * pitch >= need), 100)
 
-        xs = stride(xstep * sx, max_xw + LABEL_SEP)
-        ys = stride(ystep * sy, max_yh + LABEL_SEP)
+        origin = to_point(ax_x, ax_y)[0]  # where the axes cross
 
-        kept_y = []
-        for k, v, text in yticks:
-            at = to_point(ax_x, v)[0]
-            parts.append(Line(at + LEFT * TICK_LEN / 2, at + RIGHT * TICK_LEN / 2, **stroke))
-            text.next_to(at, LEFT, buff=TICK_LEN / 2 + LABEL_GAP)
-            # A label the x-axis runs through is unreadable; the origin gets none.
-            box = bbox(text)
-            if k % ys == 0 and not box.intersects(bbox(x_axis)) and not _inked(ink, box):
-                kept_y.append(text)
-        kept_x = []
-        for k, v, text in xticks:
-            at = to_point(v, ax_y)[0]
-            parts.append(Line(at + DOWN * TICK_LEN / 2, at + UP * TICK_LEN / 2, **stroke))
-            text.next_to(at, DOWN, buff=TICK_LEN / 2 + LABEL_GAP)
-            box = bbox(text)
-            if (k % xs == 0 and not box.intersects(bbox(y_axis)) and not _inked(ink, box)
-                    and not any(box.intersects(bbox(t)) for t in kept_y)):
-                kept_x.append(text)
+        def tick(at: np.ndarray, across: np.ndarray) -> Line:
+            return Line(at - across * TICK_LEN / 2, at + across * TICK_LEN / 2, **stroke)
+
+        def labelled(ticks, at_axis, at_edge, sides, across, need, ok, interior, beside):
+            """Label one axis where it is drawn; failing that, at the plot's
+            edge. Curves are clipped to the plot rect, so the edge margin
+            (reserved above) is free of ink: when curves crowd an interior
+            axis -- tan(x) on a long range runs every branch up past it --
+            the labels move there, each with a tick of its own to read
+            against, instead of leaving the axis with no readable scale.
+            An edge label level with the other axis's end (`beside`) is
+            skipped: it reads as that axis's label."""
+            parts.extend(tick(at_axis(v), across) for _, v, _ in ticks)
+            n = stride(*need)
+            kept = _pick_labels([(k, at_axis(v), t) for k, v, t in ticks], n, sides, ok)
+            if len(kept) < MIN_AXIS_LABELS and interior:
+                kept = _pick_labels([(k, at_edge(v), t) for k, v, t in ticks], n,
+                                    sides[:1], lambda box: ok(box) and not beside(box))
+                parts.extend(tick(at, across) for _, at, _ in kept)
+            return [t for *_, t in kept]
+
+        kept_y = labelled(yticks, lambda v: to_point(ax_x, v)[0],
+                          lambda v: to_point(plan.x0, v)[0], (LEFT, RIGHT), RIGHT,
+                          (ystep * sy, max_yh + LABEL_SEP),
+                          lambda box: clear(box, x_axis), interior=ax_x != plan.x0,
+                          beside=lambda box: box.bottom <= origin[1] <= box.top)
+        kept_y_boxes = [bbox(t) for t in kept_y]
+        kept_x = labelled(xticks, lambda v: to_point(v, ax_y)[0],
+                          lambda v: to_point(v, plan.y0)[0], (DOWN, UP), UP,
+                          (xstep * sx, max_xw + LABEL_SEP),
+                          lambda box: clear(box, y_axis)
+                          and not any(box.intersects(b) for b in kept_y_boxes),
+                          interior=ax_y != plan.y0,
+                          beside=lambda box: box.left <= origin[0] <= box.right)
+
+        for axis, kept in (("x", kept_x), ("y", kept_y)):
+            if len(kept) < MIN_AXIS_LABELS:
+                raise LayoutError(
+                    f"GraphPlot: the curves leave room to label only {len(kept)} "
+                    f"tick(s) on the {axis}-axis, so its scale cannot be read. Plot "
+                    "fewer functions or a wider range, or split the beat.",
+                    kind="illegible")
         return VGroup(*parts, *kept_y, *kept_x), plot, to_point, ink
 
     def _markers(self, plan: _Plan, theme: Theme, plot: Rect, to_point, ink: np.ndarray,
                  obstacles: list[Rect]):
         """Dots, labels and trace paths. Labels go on the side of the dot the
         curve is not on (below a minimum, above a maximum, off the outside of a
-        slope), and must stay inside the plot clear of everything placed."""
+        slope), and must stay inside the plot clear of everything placed.
+        Each dot is left on its marker; build() moves it to its path's start."""
         p: GraphPlotParams = self.params
-        placed: list[tuple[Dot, object, VMobject | None]] = []
+        placed: list[tuple[Dot, Mobject | None, VMobject | None]] = []
         # Every dot is reserved up front, so an early label cannot cover a
         # later marker.
         points = [to_point(m.x, my)[0] for m, my in zip(p.markers, plan.marker_ys)]
@@ -833,7 +955,6 @@ class GraphPlot(Component):
                 pts = np.vstack([pts, [[m.x, my]]])
                 if len(pts) >= 2:
                     path = VMobject().set_points_as_corners(to_point(pts[:, 0], pts[:, 1]))
-                    dot.move_to(path.get_start())
                 last_x[(m.function, ri)] = m.x
 
             text = None
@@ -923,4 +1044,16 @@ class GraphPlot(Component):
             {"functions": [{"expr": "x^3"}], "x_range": [-1e6, 1e6]},
             {"functions": [{"expr": "exp(x)"}], "x_range": [0, 700]},
             {"functions": [{"expr": "x^2"}], "x_range": [0, 1e-6]},
+            # Variation below MIN_SPAN: no finite scale can magnify it, so it
+            # is drawn flat at this scale rather than as inf/nan points.
+            {"functions": [{"expr": "1e-310*x"}], "x_range": [-1, 1]},
         ]
+
+
+@artifact_builder("GraphPlot")
+def _artifact(params: GraphPlotParams, theme: Theme) -> Mobject:
+    """The finished graph -- axes, curves, legend, marker dots and labels --
+    for a later beat to carry in (SCENE_SPEC.md §6), e.g. as the target of a
+    ZoomHighlight or a Callout. Exactly the frame this beat settles on: the
+    same layout() the render uses, never added to a scene here."""
+    return GraphPlot(params).layout(theme).settled()

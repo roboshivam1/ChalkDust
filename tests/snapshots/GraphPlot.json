@@ -1,0 +1,5089 @@
+{
+ "component": "GraphPlot",
+ "manim_version": "0.21.0",
+ "reasons": [
+  "GraphPlot merged"
+ ],
+ "cases": [
+  {
+   "params": {
+    "functions": [
+     {
+      "expr": "x^2 - 2*x - 3",
+      "name": "f"
+     }
+    ],
+    "x_range": [
+     -2,
+     4
+    ],
+    "markers": [
+     {
+      "x": 1,
+      "label": "vertex"
+     },
+     {
+      "x": 3,
+      "label": "root"
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.0
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "animate"
+      ],
+      "run_time": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "curves drawn",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "f(x) = x^{2} - 2 x - 3",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-2]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-1]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[1]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[2]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-2]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[1]",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[2]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[4]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "MoveAlongPath"
+      ],
+      "run_time": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.75
+     },
+     {
+      "op": "play",
+      "animations": [
+       "MoveAlongPath"
+      ],
+      "run_time": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.75
+     },
+     {
+      "op": "settle",
+      "label": "graph traced",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "f(x) = x^{2} - 2 x - 3",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-2]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-1]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[1]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[2]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-2]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[1]",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[2]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[4]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Dot",
+        "label": "marker[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "marker[0].label",
+        "text": "vertex",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Dot",
+        "label": "marker[1]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "marker[1].label",
+        "text": "root",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.0
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "f(x) = x^{2} - 2 x - 3",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-2]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-1]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[1]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[2]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-2]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[1]",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[2]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[4]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Dot",
+        "label": "marker[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "marker[0].label",
+        "text": "vertex",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Dot",
+        "label": "marker[1]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "marker[1].label",
+        "text": "root",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        4.498,
+        2.025,
+        3.926,
+        0.449
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.498,
+        2.025,
+        3.926,
+        0.449
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.76,
+        2.025,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.823,
+        2.025,
+        3.276,
+        0.449
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.066,
+        0.041,
+        8.124,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.021,
+        -0.159,
+        7.869,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        0.041,
+        0.0,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        -1.758,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        -0.959,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        -0.159,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        0.641,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        1.44,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.956,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.644,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.021,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.71,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.602,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.913,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.665,
+        -1.758,
+        0.345,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.001,
+        -0.959,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.571,
+        0.641,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.575,
+        1.44,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -5.956,
+        -0.439,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.021,
+        -0.439,
+        0.088,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.71,
+        -0.439,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.913,
+        -0.438,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.021,
+        0.041,
+        7.869,
+        3.598
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        4.498,
+        2.025,
+        3.926,
+        0.449
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.498,
+        2.025,
+        3.926,
+        0.449
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.76,
+        2.025,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.823,
+        2.025,
+        3.276,
+        0.449
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.066,
+        0.041,
+        8.124,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.021,
+        -0.159,
+        7.869,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        0.041,
+        0.0,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        -1.758,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        -0.959,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        -0.159,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        0.641,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        1.44,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.956,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.644,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.021,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.71,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.602,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.913,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.665,
+        -1.758,
+        0.345,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.001,
+        -0.959,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.571,
+        0.641,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.575,
+        1.44,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -5.956,
+        -0.439,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.021,
+        -0.439,
+        0.088,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.71,
+        -0.439,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.913,
+        -0.438,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.021,
+        0.041,
+        7.869,
+        3.598
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.021,
+        -1.758,
+        0.16,
+        0.16
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.021,
+        -1.52,
+        0.901,
+        0.237
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.602,
+        -0.159,
+        0.16,
+        0.16
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.207,
+        0.08,
+        0.55,
+        0.237
+       ],
+       "font_size": 24.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        4.498,
+        2.025,
+        3.926,
+        0.449
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.498,
+        2.025,
+        3.926,
+        0.449
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.76,
+        2.025,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.823,
+        2.025,
+        3.276,
+        0.449
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.066,
+        0.041,
+        8.124,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.021,
+        -0.159,
+        7.869,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        0.041,
+        0.0,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        -1.758,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        -0.959,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        -0.159,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        0.641,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        1.44,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.956,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.644,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.333,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.021,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.71,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.602,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.913,
+        -0.159,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.665,
+        -1.758,
+        0.345,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.001,
+        -0.959,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.571,
+        0.641,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.575,
+        1.44,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -5.956,
+        -0.439,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.021,
+        -0.439,
+        0.088,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.71,
+        -0.439,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.913,
+        -0.438,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.021,
+        0.041,
+        7.869,
+        3.598
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.021,
+        -1.758,
+        0.16,
+        0.16
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.021,
+        -1.52,
+        0.901,
+        0.237
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.602,
+        -0.159,
+        0.16,
+        0.16
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.207,
+        0.08,
+        0.55,
+        0.237
+       ],
+       "font_size": 24.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "functions": [
+     {
+      "expr": "sin(x)"
+     },
+     {
+      "expr": "cos(x)"
+     }
+    ],
+    "x_range": [
+     -6.5,
+     6.5
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.25
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "animate"
+      ],
+      "run_time": 3.133
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "animate"
+      ],
+      "run_time": 3.117
+     },
+     {
+      "op": "settle",
+      "label": "curves drawn",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "y = \\sin(x)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "legend[1]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#F0883E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "y = \\cos(x)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-2]",
+          "text": "−1.0",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-1]",
+          "text": "−0.5",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[1]",
+          "text": "0.5",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-3]",
+          "text": "−6",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-2]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-1]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[1]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[2]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[3]",
+          "text": "6",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[1]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "settle",
+      "label": "graph traced",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "y = \\sin(x)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "legend[1]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#F0883E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "y = \\cos(x)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-2]",
+          "text": "−1.0",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-1]",
+          "text": "−0.5",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[1]",
+          "text": "0.5",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-3]",
+          "text": "−6",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-2]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-1]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[1]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[2]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[3]",
+          "text": "6",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[1]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "y = \\sin(x)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "legend[1]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#F0883E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "y = \\cos(x)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-2]",
+          "text": "−1.0",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-1]",
+          "text": "−0.5",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[1]",
+          "text": "0.5",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-3]",
+          "text": "−6",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-2]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-1]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[1]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[2]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[3]",
+          "text": "6",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[1]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        5.256,
+        1.701,
+        2.411,
+        1.097
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.234,
+        2.051,
+        2.367,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.275,
+        2.051,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.559,
+        2.051,
+        1.717,
+        0.399
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        5.256,
+        1.352,
+        2.411,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.275,
+        1.352,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.581,
+        1.352,
+        1.761,
+        0.399
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        9.102,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        9.102,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        0.0,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        -1.758,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        -0.859,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.941,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        1.84,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.325,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.925,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.524,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.276,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.677,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.077,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.652,
+        -1.758,
+        0.623,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.651,
+        -0.859,
+        0.626,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.502,
+        0.941,
+        0.436,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -5.325,
+        -0.241,
+        0.346,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.925,
+        -0.238,
+        0.345,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.524,
+        0.321,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.276,
+        0.321,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.677,
+        -0.238,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        3.077,
+        0.323,
+        0.158,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        9.102,
+        3.599
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        9.102,
+        3.599
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        5.256,
+        1.701,
+        2.411,
+        1.097
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.234,
+        2.051,
+        2.367,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.275,
+        2.051,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.559,
+        2.051,
+        1.717,
+        0.399
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        5.256,
+        1.352,
+        2.411,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.275,
+        1.352,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.581,
+        1.352,
+        1.761,
+        0.399
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        9.102,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        9.102,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        0.0,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        -1.758,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        -0.859,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.941,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        1.84,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.325,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.925,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.524,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.276,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.677,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.077,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.652,
+        -1.758,
+        0.623,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.651,
+        -0.859,
+        0.626,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.502,
+        0.941,
+        0.436,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -5.325,
+        -0.241,
+        0.346,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.925,
+        -0.238,
+        0.345,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.524,
+        0.321,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.276,
+        0.321,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.677,
+        -0.238,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        3.077,
+        0.323,
+        0.158,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        9.102,
+        3.599
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        9.102,
+        3.599
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        5.256,
+        1.701,
+        2.411,
+        1.097
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.234,
+        2.051,
+        2.367,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.275,
+        2.051,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.559,
+        2.051,
+        1.717,
+        0.399
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        5.256,
+        1.352,
+        2.411,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.275,
+        1.352,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.581,
+        1.352,
+        1.761,
+        0.399
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        9.102,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        9.102,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        0.0,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        -1.758,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        -0.859,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.941,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        1.84,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.325,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.925,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.524,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.276,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.677,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.077,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.652,
+        -1.758,
+        0.623,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.651,
+        -0.859,
+        0.626,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.502,
+        0.941,
+        0.436,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -5.325,
+        -0.241,
+        0.346,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.925,
+        -0.238,
+        0.345,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.524,
+        0.321,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.276,
+        0.321,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.677,
+        -0.238,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        3.077,
+        0.323,
+        0.158,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        9.102,
+        3.599
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.124,
+        0.041,
+        9.102,
+        3.599
+       ],
+       "font_size": null
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "functions": [
+     {
+      "expr": "tan(x)"
+     }
+    ],
+    "x_range": [
+     -4.5,
+     4.5
+    ],
+    "y_range": [
+     -5,
+     5
+    ],
+    "markers": [
+     {
+      "x": 0.785398,
+      "label": "tan = 1"
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.283
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "animate"
+      ],
+      "run_time": 3.233
+     },
+     {
+      "op": "settle",
+      "label": "curves drawn",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "y = \\tan(x)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-2]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-1]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[1]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[2]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-4]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-3]",
+          "text": "−3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-2]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-1]",
+          "text": "−1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[1]",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[2]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[3]",
+          "text": "3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[4]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "MoveAlongPath"
+      ],
+      "run_time": 1.933
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.967
+     },
+     {
+      "op": "settle",
+      "label": "graph traced",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "y = \\tan(x)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-2]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-1]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[1]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[2]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-4]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-3]",
+          "text": "−3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-2]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-1]",
+          "text": "−1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[1]",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[2]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[3]",
+          "text": "3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[4]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Dot",
+        "label": "marker[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "marker[0].label",
+        "text": "tan = 1",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.583
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "y = \\tan(x)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-2]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-1]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[1]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[2]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-4]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-3]",
+          "text": "−3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-2]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-1]",
+          "text": "−1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[1]",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[2]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[3]",
+          "text": "3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[4]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Dot",
+        "label": "marker[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "marker[0].label",
+        "text": "tan = 1",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        5.235,
+        2.051,
+        2.453,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.235,
+        2.051,
+        2.453,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.233,
+        2.051,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.56,
+        2.051,
+        1.803,
+        0.399
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.041,
+        9.341,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.041,
+        9.341,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.041,
+        0.0,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        -1.629,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        -0.794,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.041,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.876,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        1.711,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.437,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.399,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.361,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.323,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.248,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.79,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.828,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.866,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.618,
+        -1.629,
+        0.345,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.617,
+        -0.794,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.524,
+        0.876,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.528,
+        1.711,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -5.437,
+        0.32,
+        0.345,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -4.399,
+        -0.241,
+        0.346,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.361,
+        -0.239,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.323,
+        0.321,
+        0.3,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.248,
+        -0.239,
+        0.088,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.79,
+        -0.239,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.828,
+        0.323,
+        0.156,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        2.866,
+        -0.238,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.041,
+        9.341,
+        4.174
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        5.235,
+        2.051,
+        2.453,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.235,
+        2.051,
+        2.453,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.233,
+        2.051,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.56,
+        2.051,
+        1.803,
+        0.399
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.041,
+        9.341,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.041,
+        9.341,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.041,
+        0.0,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        -1.629,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        -0.794,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.041,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.876,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        1.711,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.437,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.399,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.361,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.323,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.248,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.79,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.828,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.866,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.618,
+        -1.629,
+        0.345,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.617,
+        -0.794,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.524,
+        0.876,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.528,
+        1.711,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -5.437,
+        0.32,
+        0.345,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -4.399,
+        -0.241,
+        0.346,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.361,
+        -0.239,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.323,
+        0.321,
+        0.3,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.248,
+        -0.239,
+        0.088,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.79,
+        -0.239,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.828,
+        0.323,
+        0.156,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        2.866,
+        -0.238,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.041,
+        9.341,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.47,
+        0.458,
+        0.16,
+        0.16
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.13,
+        0.217,
+        0.961,
+        0.244
+       ],
+       "font_size": 24.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        5.235,
+        2.051,
+        2.453,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.235,
+        2.051,
+        2.453,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.233,
+        2.051,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.56,
+        2.051,
+        1.803,
+        0.399
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.041,
+        9.341,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.041,
+        9.341,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.041,
+        0.0,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        -1.629,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        -0.794,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.041,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.876,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        1.711,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.437,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.399,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.361,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.323,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.248,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.79,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.828,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.866,
+        0.041,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.618,
+        -1.629,
+        0.345,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.617,
+        -0.794,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.524,
+        0.876,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.528,
+        1.711,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -5.437,
+        0.32,
+        0.345,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -4.399,
+        -0.241,
+        0.346,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.361,
+        -0.239,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.323,
+        0.321,
+        0.3,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.248,
+        -0.239,
+        0.088,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.79,
+        -0.239,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.828,
+        0.323,
+        0.156,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        2.866,
+        -0.238,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.285,
+        0.041,
+        9.341,
+        4.174
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.47,
+        0.458,
+        0.16,
+        0.16
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.13,
+        0.217,
+        0.961,
+        0.244
+       ],
+       "font_size": 24.0
+      }
+     ]
+    ]
+   }
+  }
+ ]
+}

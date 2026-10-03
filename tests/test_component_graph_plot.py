@@ -1,37 +1,59 @@
 """GraphPlot pins: the expression allowlist, discontinuity handling, tick
-labels, the semantic-rung hooks, timing against the audio budget, and every
-param rejection that keeps a broken graph from reaching build().
+labels, the semantic-rung hooks, frame-exact timing against the audio budget,
+carry-in, and every param rejection that keeps a broken graph from reaching
+build().
 
-Layout of examples/stress is covered generically by test_layout.py.
+Layout of examples/stress is covered generically by test_layout.py. These
+tests compile LaTeX, so `latex` and `dvisvgm` must be on PATH.
+
+There is no invalid-LaTeX case in stress(): GraphPlot takes no LaTeX. Its
+maths input is an expression, refused at schema (TestExpressionAllowlist);
+every LaTeX string it compiles is printed from the parsed tree or a tick
+value (TestSemanticHooks compiles all of them).
 """
 
 from __future__ import annotations
 
+import json
 import math
+import subprocess
+from dataclasses import asdict
 
 import numpy as np
 import pytest
-from manim import MathTex, tempconfig
+from manim import DOWN, LEFT, ORIGIN, RIGHT, UP, MathTex, Restore, Square, tempconfig
 from pydantic import ValidationError
 
+from chalkdust import continuity
+from chalkdust.continuity import build_artifact, carried, resolve_carry_in
+from chalkdust.core.models import BeatSpec, Quality, Region, VideoSpec
+from chalkdust.render.worker import TIERS
 from chalkdust.scenes.base import ChalkdustScene
+from chalkdust.scenes.components import Component, ComponentParams
+from chalkdust.scenes.components import base as components_base
 from chalkdust.scenes.components.graph_plot import (
     INK_CLEARANCE,
     MIN_AXES,
+    MIN_AXIS_LABELS,
     MIN_CURVE,
     MIN_HOLD,
     MIN_LABEL,
+    MIN_SPAN,
     MIN_TRACE,
     GraphPlot,
     _ink,
     _inked,
+    _pick_labels,
     evaluate,
     legend_tex,
     plan_for,
     tick_label,
 )
-from chalkdust.scenes.regions import Rect, bbox
-from chalkdust.validate.geometric import LayoutProbe
+from chalkdust.scenes.regions import DEFAULT_PADDING, Rect, bbox, region_rect
+from chalkdust.scenes.theme import DEFAULT
+from chalkdust.validate.geometric import LayoutProbe, validate_beat
+
+DRAFT = TIERS[Quality.DRAFT]
 
 
 def _params(**overrides) -> dict:
@@ -42,6 +64,22 @@ def _params(**overrides) -> dict:
 
 def _fn(expr: str) -> dict:
     return _params(functions=[{"expr": expr}])
+
+
+EXAMPLES = GraphPlot.examples()
+EXAMPLE_IDS = [f"ex{i}" for i in range(len(EXAMPLES))]
+
+
+def _probe(params: dict, tmp_path) -> LayoutProbe:
+    """The settled scene, built without rendering."""
+    with tempconfig({"media_dir": str(tmp_path), "verbosity": "WARNING"}):
+        scene = LayoutProbe(GraphPlot(params), duration=8.0)
+        scene.construct()
+    return scene
+
+
+def _axes(scene):
+    return next(m for m in scene.mobjects if getattr(m, "_chalk_label", "") == "axes")
 
 
 class TestExpressionAllowlist:
@@ -160,6 +198,11 @@ class TestTicks:
         assert tick_label(2e-7, 1e-7, 1e-6) == (r"2 \times 10^{-7}", True)
         assert tick_label(0.0, 1e-7, 1e-6) == ("0", True)
 
+    def test_zero_tick_survives_a_subnormal_step(self):
+        # A relative zero test (|v| < step * 1e-6) underflows to "< 0" for a
+        # subnormal step and sent 0 on to log10(0): a raw ValueError.
+        assert tick_label(0.0, 5e-321, 1e-320) == ("0", True)
+
     def test_ink_catches_a_steep_segment_between_samples(self):
         # Near an asymptote two neighbouring samples can straddle a label with
         # neither endpoint inside it; the densified ink still hits.
@@ -187,6 +230,42 @@ class TestTicks:
         assert labels
         assert not [m for m in labels if _inked(ink, bbox(m), INK_CLEARANCE)]
 
+    @pytest.mark.parametrize("params", GraphPlot.examples() + GraphPlot.stress()[2:])
+    def test_every_axis_keeps_at_least_two_labels(self, params, tmp_path):
+        # One number on an axis gives no scale. sin + cos on [-6.5, 6.5] once
+        # ended with a single y label after curve-covered labels were dropped.
+        axes = _axes(_probe(params, tmp_path))
+        names = [getattr(m, "_chalk_label", "") for m in axes.submobjects]
+        assert sum(n.startswith("xtick") for n in names) >= MIN_AXIS_LABELS
+        assert sum(n.startswith("ytick") for n in names) >= MIN_AXIS_LABELS
+
+    def test_blocked_label_tries_the_other_side_before_dropping(self):
+        # Only the right of the tick is clear: the label goes there, not away.
+        text = Square(side_length=0.2)
+        kept = _pick_labels([(1, ORIGIN, text)], 1, (LEFT, RIGHT), lambda box: box.x > 0)
+        assert [t for *_, t in kept] == [text] and bbox(text).x > 0
+
+    def test_too_few_labels_falls_back_to_ticks_between(self):
+        # Stride 2 picks ticks 0 and 2; tick 2 is blocked, so tick 1 (well
+        # clear of tick 0) is labelled rather than leaving a single label.
+        ticks = [(k, np.array([2.0 * k, 0.0, 0.0]), Square(side_length=0.2)) for k in range(3)]
+        kept = _pick_labels(ticks, 2, (DOWN, UP), lambda box: box.x < 3)
+        assert [k for k, *_ in kept] == [0, 1]
+
+    def test_crowded_interior_axis_is_labelled_at_the_plot_edge(self, tmp_path):
+        # tan(x) on [-20, 20]: branches run up past the y-axis beside every
+        # label spot, so its labels move to the plot's left edge -- a margin
+        # no curve enters -- rather than leaving the axis unlabelled.
+        axes = _axes(_probe({"functions": [{"expr": "tan(x)"}], "x_range": [-20, 20]},
+                            tmp_path))
+        x_axis, y_axis = axes.submobjects[:2]
+        plot_left = x_axis.get_left()[0]
+        assert y_axis.get_center()[0] > plot_left + 1  # the axis is interior
+        ylabels = [m for m in axes.submobjects
+                   if getattr(m, "_chalk_label", "").startswith("ytick")]
+        assert len(ylabels) >= MIN_AXIS_LABELS
+        assert all(bbox(t).right < plot_left for t in ylabels)
+
     def test_latex_strings_include_scientific_ticks(self):
         tex = GraphPlot(_params(functions=[{"expr": "x^3"}], x_range=[-1e6, 1e6])).latex_strings()
         assert tex[0] == "y = x^{3}"
@@ -208,26 +287,118 @@ class TestSemanticHooks:
 
 
 class TestTiming:
-    """Animation must consume exactly the beat's audio budget (D-002)."""
+    """The beat lasts exactly ceil(audio * fps) frames (D-002): every play and
+    wait takes its run time from scene.budget(), which hands out whole frames
+    summing to beat_frames."""
 
     @staticmethod
-    def _elapsed(params: dict, budget: float, tmp_path) -> float:
-        with tempconfig({"media_dir": str(tmp_path), "verbosity": "WARNING"}):
-            scene = ChalkdustScene(GraphPlot(params), duration=budget, skip_animations=True)
+    def _frames(params: dict, duration: float, tmp_path) -> tuple[int, int]:
+        """(frames Manim's own frame loop drew, beat_frames), at draft fps.
+        Nothing is encoded; renderer.time advances 1/fps per frame drawn."""
+        with tempconfig({**asdict(DRAFT), "media_dir": str(tmp_path),
+                         "write_to_movie": False, "save_last_frame": False,
+                         "disable_caching": True, "progress_bar": "none",
+                         "verbosity": "WARNING"}):
+            scene = ChalkdustScene(GraphPlot(params), duration=duration)
             scene.setup()
             scene.construct()
-            return scene.renderer.time
+            return round(scene.renderer.time * DRAFT.frame_rate), scene.beat_frames
 
-    @pytest.mark.parametrize("params", GraphPlot.examples())
-    def test_short_budget(self, params, tmp_path):
-        # Narration far shorter than the animation wants: half its minimum.
-        budget = 0.5 * GraphPlot(params).min_seconds()
-        assert self._elapsed(params, budget, tmp_path) == pytest.approx(budget, abs=1 / 60)
+    @pytest.mark.parametrize("factor", [0.5, 3.0], ids=["short", "long"])
+    @pytest.mark.parametrize("params", EXAMPLES, ids=EXAMPLE_IDS)
+    def test_frames_equal_beat_frames(self, params, factor, tmp_path):
+        # Narration far shorter (half the minimum) and far longer (3x) than
+        # the animation wants: either way, exactly the audio's frames.
+        duration = factor * GraphPlot(params).min_seconds()
+        drawn, beat = self._frames(params, duration, tmp_path)
+        assert beat == math.ceil(round(duration * DRAFT.frame_rate, 6))
+        assert drawn == beat
 
-    @pytest.mark.parametrize("params", GraphPlot.examples())
-    def test_long_budget(self, params, tmp_path):
-        budget = 30.0  # ~3x a typical beat
-        assert self._elapsed(params, budget, tmp_path) == pytest.approx(budget, abs=1 / 60)
+    def test_draft_render_is_exactly_the_beat(self, tmp_path):
+        # A real encoded clip, frames counted by ffprobe: 3.879 s of audio is
+        # ceil(3.879 * 15) = 59 frames.
+        with tempconfig({**asdict(DRAFT), "media_dir": str(tmp_path),
+                         "disable_caching": True, "progress_bar": "none",
+                         "verbosity": "WARNING", "output_file": "graph_frames"}):
+            scene = ChalkdustScene(GraphPlot(EXAMPLES[0]), duration=3.879)
+            scene.render()
+            movie = scene.renderer.file_writer.movie_file_path
+        out = subprocess.run(
+            ["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
+             "-show_entries", "stream=nb_read_frames", "-of", "json", str(movie)],
+            capture_output=True, text=True, check=True).stdout
+        assert int(json.loads(out)["streams"][0]["nb_read_frames"]) == 59
+
+
+class _TargetParams(ComponentParams):
+    target_id: str
+
+
+class _Target(Component):
+    """Acts on a carried artifact the way ZoomHighlight will: build() raises
+    CarryInError unless the artifact was carried in. Registered per test."""
+
+    name = "_GraphTarget"
+    Params = _TargetParams
+
+    def regions(self) -> set[Region]:
+        return {Region.STAGE}
+
+    def build(self, scene) -> None:
+        scene.play(Restore(carried(scene, self.params.target_id)),
+                   run_time=scene.budget(1)[0])
+
+
+class TestCarryIn:
+    """A finished graph can be carried into a later beat (SCENE_SPEC.md §6),
+    e.g. as a ZoomHighlight or Callout target."""
+
+    @staticmethod
+    def _video(params: dict) -> VideoSpec:
+        return VideoSpec(video_id="v", beats=(
+            BeatSpec(id="b01", narration="placeholder narration", component="GraphPlot",
+                     params=params, registers="plot"),
+            BeatSpec(id="b02", narration="placeholder narration", component=_Target.name,
+                     params={"target_id": "plot"}, carry_in=["plot"]),
+        ))
+
+    def test_graph_plot_registers_a_builder(self):
+        assert "GraphPlot" in continuity._BUILDERS
+        recipes = resolve_carry_in(self._video(EXAMPLES[0]))["b02"]
+        assert [(r.name, r.producer) for r in recipes] == [("plot", "GraphPlot")]
+
+    def test_rebuild_is_deterministic(self):
+        recipe = resolve_carry_in(self._video(EXAMPLES[0]))["b02"][0]
+        a, b = build_artifact(recipe, DEFAULT), build_artifact(recipe, DEFAULT)
+        pa = [m.points for m in a.family_members_with_points()]
+        pb = [m.points for m in b.family_members_with_points()]
+        assert len(pa) == len(pb) and all(np.array_equal(x, y) for x, y in zip(pa, pb))
+
+    @pytest.mark.parametrize("params", EXAMPLES, ids=EXAMPLE_IDS)
+    def test_artifact_is_the_settled_frame(self, params, tmp_path):
+        # Built by the same layout() as the render: the carried graph is the
+        # picture the producing beat ended on, mobject for mobject.
+        scene = _probe(params, tmp_path)
+        with tempconfig({"media_dir": str(tmp_path), "verbosity": "WARNING"}):
+            art = GraphPlot(params).layout(scene.theme).settled()
+        drawn = [m for m in scene.mobjects if getattr(m, "_chalk_label", None)]
+        got = sorted((m._chalk_label, *np.round(m.get_center(), 6)) for m in art.submobjects)
+        want = sorted((m._chalk_label, *np.round(m.get_center(), 6)) for m in drawn)
+        assert got == want
+
+    def test_artifact_fits_stage_unscaled(self):
+        # CarryIn fits the artifact to STAGE; at full size already, nothing is
+        # shrunk, so caption-size tick labels stay above the legibility floor.
+        art = GraphPlot(EXAMPLES[1]).layout(DEFAULT).settled()
+        assert region_rect(Region.STAGE).inset(DEFAULT_PADDING).contains(bbox(art))
+
+    @pytest.mark.parametrize("params", EXAMPLES, ids=EXAMPLE_IDS)
+    def test_carried_graph_validates_clean(self, params, monkeypatch, tmp_path):
+        monkeypatch.setitem(components_base._REGISTRY, _Target.name, _Target)
+        video = self._video(params)
+        report = validate_beat(video.beats[1], recipes=resolve_carry_in(video)["b02"],
+                               media_dir=tmp_path)
+        assert report.ok, f"\n{report}"
 
 
 class TestRejections:
@@ -254,10 +425,27 @@ class TestRejections:
         {"y_range": [-1, 0.5], "markers": [{"x": 1.5}]},             # marker outside y_range
         {"functions": [{"expr": "sqrt(x)"}], "x_range": [-2, -1]},   # undefined everywhere
         {"y_range": [5, 6]},                                         # never enters window
+        {"y_range": [0, 1e-200]},                                    # below MIN_SPAN
     ])
     def test_rejected_at_schema(self, overrides):
         with pytest.raises(ValidationError):
             GraphPlot(_params(**overrides))
+
+    def test_subnormal_x_range_is_a_param_error(self):
+        # Once a raw ValueError from log10(0) in latex_strings() and build():
+        # a span this small has no finite data -> scene scale.
+        with pytest.raises(ValidationError, match="spans less than"):
+            GraphPlot({"functions": [{"expr": "x"}], "x_range": [0, 1e-320]})
+
+    def test_subnormal_auto_y_span_is_drawn_flat(self, tmp_path):
+        # 1e-310*x on [-1, 1] varies by 2e-310: scaling that to the plot gave
+        # inf, and every curve point came out inf/nan. Now flat at this scale.
+        params = {"functions": [{"expr": "1e-310*x"}], "x_range": [-1, 1]}
+        plan = plan_for(GraphPlot(params).params)
+        assert plan.y1 - plan.y0 >= MIN_SPAN
+        curve = next(m for m in _probe(params, tmp_path).mobjects
+                     if getattr(m, "_chalk_label", "") == "curve[0]")
+        assert len(curve.points) and np.isfinite(curve.points).all()
 
     def test_minimal_input_is_accepted(self):
         GraphPlot({"functions": [{"expr": "x"}], "x_range": [0, 1]})

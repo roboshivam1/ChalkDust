@@ -1,14 +1,12 @@
 """ZoomHighlight: the behaviours the registry-wide layout tests cannot pin.
 
-ZoomHighlight acts on a carried artifact (SCENE_SPEC.md §6). Its fixtures are
-carried_examples() / carried_stress(), which tests/test_layout.py and the
-snapshot harness also walk (validate/fixtures.py); here they are built the way
-the compiler builds them, through continuity.beat_component, and the pipeline
-renders one end to end.
-
-No shipped producer registers an artifact builder yet, so BulletReveal is lent
-ZoomHighlight's fixture builder for each test (monkeypatched, never left in
-the registry): its rows, one part per bullet. No LaTeX is involved.
+ZoomHighlight acts on a carried artifact (SCENE_SPEC.md §6). Its examples()
+and stress() name a carried BulletReveal list; fixture_carry_in() gives the
+registry walks (test_layout, test_snapshots, the semantic TestLibrary) that
+list's recipe. Here the cases are built the way the compiler builds them --
+b01 registers the list, b02 carries it in, continuity.beat_component wraps
+the zoom -- with BulletReveal's own artifact builder, and the pipeline
+renders one end to end. No LaTeX is involved.
 """
 
 from __future__ import annotations
@@ -19,8 +17,9 @@ import subprocess
 from dataclasses import asdict
 from pathlib import Path
 
+import numpy as np
 import pytest
-from manim import tempconfig
+from manim import Group, tempconfig
 from manim.animation.animation import prepare_animation
 from pydantic import ValidationError
 
@@ -30,47 +29,46 @@ from chalkdust.core.models import BeatSpec, CarryInError, Quality, Region, Video
 from chalkdust.render.worker import TIERS
 from chalkdust.scenes.base import ChalkdustScene, frames_covering
 from chalkdust.scenes.components import get_component, make_component
-from chalkdust.scenes.components.zoom_highlight import MAX_ZOOM, ZoomHighlight
+from chalkdust.scenes.components.zoom_highlight import (
+    MAX_ZOOM,
+    MIN_ZOOM,
+    ZoomHighlight,
+    _zoom_factor,
+)
 from chalkdust.scenes.regions import LayoutError, bbox, region_rect, smallest_font_size
 from chalkdust.speech import tts
 from chalkdust.speech.base import run
-from chalkdust.validate.fixtures import FixtureCase, fixture_cases
 from chalkdust.validate.geometric import LayoutProbe
 from chalkdust.validate.semantic import validate_semantic
 
 NAME = "ZoomHighlight"
-EXAMPLES = fixture_cases(NAME, "examples")
-STRESS = fixture_cases(NAME, "stress")
+EXAMPLES = ZoomHighlight.examples()
+STRESS = ZoomHighlight.stress()
 CLEAN_REFUSALS = {"overflow", "illegible", "invalid_latex"}  # as in tests/test_layout.py
 DRAFT = TIERS[Quality.DRAFT]
 DRAFT_FPS = DRAFT.frame_rate
-ARTIFACT = "chain_causes"
+ARTIFACT = "chain_causes"  # EXAMPLES[0]'s and EXAMPLES[2]'s target
 
 
-@pytest.fixture(autouse=True)
-def bullets_builder(monkeypatch):
-    monkeypatch.setitem(continuity._BUILDERS, "BulletReveal",
-                        ZoomHighlight.fixture_builders()["BulletReveal"])
-
-
-def _video(case: FixtureCase, carry_in: tuple[str, ...] = (ARTIFACT,),
+def _video(case: dict, carry_in: tuple[str, ...] | None = None,
            **zoom_params) -> VideoSpec:
     """b01 registers the case's carried target; b02 zooms into it."""
-    (recipe,) = case.carry_in
+    (recipe,) = ZoomHighlight.fixture_carry_in(case)
     return VideoSpec(video_id="v", beats=[
         BeatSpec(id="b01", narration="placeholder narration", component=recipe.producer,
                  params=recipe.params, registers=recipe.name),
         BeatSpec(id="b02", narration="placeholder narration", component=NAME,
-                 params={**case.params, **zoom_params}, carry_in=list(carry_in)),
+                 params={**case, **zoom_params},
+                 carry_in=list((recipe.name,) if carry_in is None else carry_in)),
     ])
 
 
-def _component(case: FixtureCase, **zoom_params):
+def _component(case: dict, **zoom_params):
     video = _video(case, **zoom_params)
     return beat_component(video.beats[1], resolve_carry_in(video)["b02"])
 
 
-def _probe(case: FixtureCase, duration: float = 8.0, **zoom_params) -> LayoutProbe:
+def _probe(case: dict, duration: float = 8.0, **zoom_params) -> LayoutProbe:
     probe = LayoutProbe(_component(case, **zoom_params), duration=duration, strict=False)
     probe.construct()
     return probe
@@ -84,16 +82,46 @@ def _ids(cases, prefix):
     return [f"{prefix}{i}" for i in range(len(cases))]
 
 
+# --- fixtures -----------------------------------------------------------------
+
+
+@pytest.mark.parametrize("case", EXAMPLES + STRESS,
+                         ids=_ids(EXAMPLES, "ex") + _ids(STRESS, "stress"))
+def test_every_fixture_carries_its_target_in(case):
+    # The registry walks build each case with exactly this recipe carried in;
+    # it must be the target the case zooms into, rebuilt by BulletReveal's own
+    # registered builder (nothing lent), and resolvable as a real 2-beat spec.
+    (recipe,) = ZoomHighlight.fixture_carry_in(case)
+    assert (recipe.name, recipe.producer) == (case["target_id"], "BulletReveal")
+    assert continuity._BUILDERS["BulletReveal"].__module__ ==         "chalkdust.scenes.components.bullet_reveal"
+    assert resolve_carry_in(_video(case))["b02"] == (recipe,)
+
+
+def test_target_sits_where_the_producing_beat_left_it():
+    # No jump at the b01 -> b02 cut: every row of the carried list (at full
+    # strength) is where b01's BulletReveal settled it, so the focus comes up
+    # in place and the lens grows out of the row the viewer was reading.
+    video = _video(EXAMPLES[0])
+    produced = LayoutProbe(make_component("BulletReveal", video.beats[0].params),
+                           duration=8.0, strict=False)
+    produced.construct()
+    shown = _by_label(produced)["bullets"]
+    target = _by_label(_probe(EXAMPLES[0]))[f"carried[{ARTIFACT}]"]
+    assert len(target.submobjects) == len(shown.submobjects)
+    for row, before in zip(target.saved_state.submobjects, shown.submobjects):
+        np.testing.assert_allclose(row.get_center(), before.get_center(), atol=1e-6)
+
+
 # --- layout -------------------------------------------------------------------
 
 
 @pytest.mark.parametrize("case", EXAMPLES, ids=_ids(EXAMPLES, "ex"))
-def test_carried_examples_validate_clean(case):
+def test_examples_validate_clean(case):
     assert _probe(case).layout_warnings == []
 
 
 @pytest.mark.parametrize("case", STRESS, ids=_ids(STRESS, "stress"))
-def test_carried_stress_fits_or_refuses_cleanly(case):
+def test_stress_fits_or_refuses_cleanly(case):
     try:
         probe = _probe(case)
     except LayoutError as exc:
@@ -112,7 +140,7 @@ def test_lens_magnifies_focus_and_recedes_the_rest():
     # EXAMPLES[1]: two short rows of three, magnified on a lens.
     probe = _probe(EXAMPLES[1])
     mobs = _by_label(probe)
-    target, lens, callout = mobs[f"carried[{ARTIFACT}]"], mobs["zoom lens"], mobs["callout"]
+    target, lens, callout = mobs["carried[hash_steps]"], mobs["zoom lens"], mobs["callout"]
 
     def peak(m):
         return max(x.get_fill_opacity() for x in m.family_members_with_points())
@@ -120,9 +148,13 @@ def test_lens_magnifies_focus_and_recedes_the_rest():
     assert peak(target[1]) == pytest.approx(1.0)
     assert peak(target[2]) == pytest.approx(1.0)
     assert peak(target[0]) < 1 - continuity.DIM_DARKNESS
-    # Magnified text is tracked at its magnified size, so legibility is
-    # judged on what the viewer sees.
-    assert smallest_font_size(lens) == pytest.approx(smallest_font_size(target) * MAX_ZOOM)
+    # As far as the lens may magnify the two rows (BulletReveal's pitch makes
+    # their height, not MAX_ZOOM, the limit), and magnified text is tracked at
+    # its magnified size, so legibility is judged on what the viewer sees.
+    zoom = _zoom_factor(bbox(Group(target[1], target[2])), region_rect(Region.STAGE))
+    assert MIN_ZOOM <= zoom <= MAX_ZOOM
+    assert lens[1].height == pytest.approx(bbox(Group(target[1], target[2])).height * zoom)
+    assert smallest_font_size(lens) == pytest.approx(smallest_font_size(target) * zoom)
     assert region_rect(Region.STAGE).contains(bbox(lens))
     assert region_rect(Region.LOWER_THIRD).contains(bbox(callout))
 
@@ -142,10 +174,10 @@ def test_whole_target_is_restored_and_framed():
 
 
 def test_semantic_hooks():
-    comp = make_component(NAME, EXAMPLES[0].params)
+    comp = make_component(NAME, EXAMPLES[0])
     assert comp.min_seconds() == pytest.approx(3.5)  # 7 weight units x 0.5 s
     assert comp.latex_strings() == []                # the callout is plain Text
-    assert comp.carried_names() == [ARTIFACT]
+    assert comp.carried_targets() == [ARTIFACT]
 
 
 # --- timing (D-002) -----------------------------------------------------------
@@ -178,7 +210,7 @@ def test_clocked_frames_equal_beat_frames(case, factor, tmp_path):
     and wait is a whole number of draft frames, and together they are exactly
     the beat's ceil(audio * fps) frames. The carried target appears at t=0
     without animation, so it costs nothing."""
-    budget = make_component(NAME, case.params).min_seconds() * factor
+    budget = make_component(NAME, case).min_seconds() * factor
     with tempconfig({"frame_rate": DRAFT_FPS, "media_dir": str(tmp_path)}):
         clock = _Clock(_component(case), duration=budget, strict=False)
     clock.construct()
@@ -201,7 +233,7 @@ def test_draft_render_frames_equal_audio_rounded_up(tmp_path, factor):
     """A real 480p15 render of the lens case (the reveal is a Transform from
     a scaled copy), frames counted by ffprobe."""
     case = EXAMPLES[1]
-    budget = make_component(NAME, case.params).min_seconds() * factor
+    budget = make_component(NAME, case).min_seconds() * factor
     with tempconfig({**asdict(DRAFT), "media_dir": str(tmp_path),
                      "disable_caching": True, "progress_bar": "none",
                      "verbosity": "WARNING", "output_file": "zoom"}):

@@ -19,11 +19,7 @@ from typing import Annotated, Any
 
 import numpy as np
 from manim import (
-    DOWN,
-    LEFT,
-    RIGHT,
     Create,
-    Dot,
     FadeIn,
     Group,
     Mobject,
@@ -31,11 +27,10 @@ from manim import (
     RoundedRectangle,
     SurroundingRectangle,
     Transform,
-    VGroup,
 )
 from pydantic import Field, field_validator
 
-from chalkdust.continuity import carried
+from chalkdust.continuity import ArtifactRecipe, carried
 from chalkdust.core.models import CarryInError, Region
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import (
@@ -46,8 +41,6 @@ from chalkdust.scenes.components.base import (
     register,
     wrap,
 )
-from chalkdust.scenes.components.bullet_reveal import WRAP_WIDTH as BULLET_WRAP
-from chalkdust.scenes.components.bullet_reveal import BulletRevealParams
 from chalkdust.scenes.regions import (
     DEFAULT_PADDING,
     Rect,
@@ -56,7 +49,7 @@ from chalkdust.scenes.regions import (
     region_rect,
     scale_with_tags,
 )
-from chalkdust.scenes.theme import Theme, body_text
+from chalkdust.scenes.theme import body_text
 
 # Relative weights of the beat's steps, in units of MIN_STEP_SECONDS: bring
 # the focus up, zoom (or frame) it, show the callout, hold while it is read.
@@ -136,7 +129,7 @@ class ZoomHighlight(Component):
         # producer, so this beat compiles no LaTeX of its own.
         return []
 
-    def carried_names(self) -> list[str]:
+    def carried_targets(self) -> list[str]:
         # The semantic rung refuses a target the beat does not carry in.
         return [self.params.target_id]
 
@@ -228,42 +221,37 @@ class ZoomHighlight(Component):
         return Group(*(artifact.submobjects[i] for i in parts))
 
     # --- fixtures -------------------------------------------------------------
-    # examples() and stress() stay empty: every ZoomHighlight case needs a
-    # carried target, so its fixtures carry the target's recipe with them
-    # ({"carry_in": [recipe], "params": {...}}, Component.carried_examples)
-    # and the registry walks build them with that artifact on screen
-    # (validate/fixtures.py). The producer is BulletReveal, which ships no
-    # artifact builder yet; fixture_builders() lends it one for the duration
-    # of a fixture build -- never over a real builder, never into a render.
+    # Every case acts on a carried list. fixture_carry_in() hands the registry
+    # walks (test_layout, test_snapshots, the semantic TestLibrary) the recipe
+    # for the case's target, so each case is built exactly as the pipeline
+    # builds a carry-in beat: BulletReveal's own artifact on screen, dimmed,
+    # before build() runs. Parts are BulletReveal's rows, in item order.
 
     @classmethod
-    def fixture_builders(cls) -> dict[str, Any]:
-        return {"BulletReveal": _bullet_rows}
+    def fixture_carry_in(cls, params: dict[str, Any]) -> list[ArtifactRecipe]:
+        items = _FIXTURE_LISTS.get(params.get("target_id"))
+        if items is None:
+            return []
+        return [ArtifactRecipe(name=params["target_id"], producer="BulletReveal",
+                               params={"items": items})]
 
     @classmethod
-    def carried_examples(cls) -> list[dict[str, Any]]:
+    def examples(cls) -> list[dict[str, Any]]:
         """Realistic cases that MUST validate clean."""
-        causes = _recipe({"heading": "Three causes",
-                          "items": ["A weak hash function",
-                                    "A load factor left too high",
-                                    "Adversarial keys chosen to collide"]})
         return [
             # One mid-length row: magnified on a lens.
-            {"carry_in": [causes],
-             "params": {"target_id": "chain_causes", "parts": [1],
-                        "callout": "Past 0.75 full, chains grow faster than the table"}},
+            {"target_id": "chain_causes", "parts": [1],
+             "callout": "Past 0.75 full, chains grow faster than the table"},
             # Short rows: two of them, magnified together at full zoom.
-            {"carry_in": [_recipe({"items": ["hash(key)", "mod 8", "bucket 4"]})],
-             "params": {"target_id": "chain_causes", "parts": [1, 2],
-                        "callout": "The modulo is where two keys collide"}},
+            {"target_id": "hash_steps", "parts": [1, 2],
+             "callout": "The modulo is where two keys collide"},
             # The whole target: too large to magnify, so it is framed.
-            {"carry_in": [causes],
-             "params": {"target_id": "chain_causes",
-                        "callout": "All three end the same way: one long chain"}},
+            {"target_id": "chain_causes",
+             "callout": "All three end the same way: one long chain"},
         ]
 
     @classmethod
-    def carried_stress(cls) -> list[dict[str, Any]]:
+    def stress(cls) -> list[dict[str, Any]]:
         """Hostile cases: each must render correctly or raise LayoutError.
 
         No invalid-LaTeX case: ZoomHighlight compiles no LaTeX (its callout is
@@ -271,48 +259,36 @@ class ZoomHighlight(Component):
         registered, a part out of range, empty input -- are spec errors, not
         LayoutErrors, and are pinned in tests/test_component_zoom_highlight.py.
         """
-        # As many rows as BulletReveal allows, each near its wrap width.
-        long_rows = [f"Row {i} carries more text than a bullet should" for i in range(6)]
-        short = _recipe({"items": ["hash(key)", "mod 8", "bucket 4"]})
         return [
             # (a) callout at 3x realistic volume: refuses with overflow.
-            {"carry_in": [short],
-             "params": {"target_id": "chain_causes", "parts": [0],
-                        "callout": "Past 0.75 full, chains grow faster than the table, so "
-                                   "every lookup walks further, every insert walks further, "
-                                   "and resizing late costs a full rehash of everything"}},
+            {"target_id": "hash_steps", "parts": [0],
+             "callout": "Past 0.75 full, chains grow faster than the table, so "
+                        "every lookup walks further, every insert walks further, "
+                        "and resizing late costs a full rehash of everything"},
             # (a) target at 3x volume, every part focused at once.
-            {"carry_in": [_recipe({"items": long_rows})],
-             "params": {"target_id": "chain_causes", "parts": [0, 1, 2, 3, 4, 5],
-                        "callout": "Every row says the same thing"}},
+            {"target_id": "long_rows", "parts": [0, 1, 2, 3, 4, 5],
+             "callout": "Every row says the same thing"},
             # (b) an unwrappable 60-character token in the callout.
-            {"carry_in": [_recipe({"items": ["hash(key)", "mod 8"]})],
-             "params": {"target_id": "chain_causes", "parts": [0],
-                        "callout": "x" * 20 + "_identifier_with_no_spaces_at_all" + "y" * 7}},
+            {"target_id": "hash_pair", "parts": [0],
+             "callout": "x" * 20 + "_identifier_with_no_spaces_at_all" + "y" * 7},
             # (b) an unwrappable token (a URL) as the focused part itself.
-            {"carry_in": [_recipe({"items": ["https://example.com/" + "a" * 40, "mod 8"]})],
-             "params": {"target_id": "chain_causes", "parts": [0],
-                        "callout": "The key is the whole URL"}},
+            {"target_id": "url_rows", "parts": [0], "callout": "The key is the whole URL"},
             # (c) minimal: one tiny part, one-character callout.
-            {"carry_in": [_recipe({"items": ["a"]})],
-             "params": {"target_id": "chain_causes", "parts": [0], "callout": "a"}},
+            {"target_id": "single", "parts": [0], "callout": "a"},
         ]
 
 
-def _recipe(bullet_params: dict[str, Any]) -> dict[str, Any]:
-    """A fixture's carried target: a BulletReveal registered as chain_causes."""
-    return {"name": "chain_causes", "producer": "BulletReveal", "params": bullet_params}
-
-
-def _bullet_rows(params: BulletRevealParams, theme: Theme) -> Mobject:
-    """Fixture-only artifact for BulletReveal: its rows as BulletReveal draws
-    them (accent dot, body text wrapped at its width), one top-level part per
-    item, the heading left out. Lent by fixture_builders() until BulletReveal
-    registers its own @artifact_builder."""
-    rows = [VGroup(Dot(radius=0.07, color=theme.palette.accent),
-                   body_text(wrap(item, BULLET_WRAP), theme)).arrange(RIGHT, buff=0.28)
-            for item in params.items]
-    return VGroup(*rows).arrange(DOWN, buff=0.35, aligned_edge=LEFT)
+# The lists the fixtures zoom into, by carry-in name (BulletReveal items).
+_FIXTURE_LISTS: dict[str, list[str]] = {
+    "chain_causes": ["A weak hash function", "A load factor left too high",
+                     "Adversarial keys chosen to collide"],
+    "hash_steps": ["hash(key)", "mod 8", "bucket 4"],
+    # As many rows as BulletReveal allows, each near its wrap width.
+    "long_rows": [f"Row {i} carries more text than a bullet should" for i in range(6)],
+    "hash_pair": ["hash(key)", "mod 8"],
+    "url_rows": ["https://example.com/" + "a" * 40, "mod 8"],
+    "single": ["a"],
+}
 
 
 def _zoom_factor(box: Rect, stage: Rect) -> float:

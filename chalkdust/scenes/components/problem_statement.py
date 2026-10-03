@@ -338,8 +338,8 @@ class ProblemStatement(Component):
         cap = body_cap_height(theme)
         stage = region_rect(Region.STAGE).inset(DEFAULT_PADDING)
         measure = min(stage.width, MEASURE_CHARS * _char_width(theme))
-        # Two columns share the measure when there are givens.
-        column = (measure - COLUMN_GAP * cap) / 2 if p.given else measure
+        # GIVEN and FIND share the measure as two columns.
+        column = (measure - COLUMN_GAP * cap) / 2
 
         lines = _Flow(p.text, theme, measure).lines()
         [statement] = _stack([lines], cap)
@@ -347,34 +347,42 @@ class ProblemStatement(Component):
         for i, line in enumerate(lines):
             label(line, f"statement[{i}]")
 
-        def section(header: str, items: list[VGroup], x: float) -> tuple[VGroup, Mobject]:
-            """A captioned column: header over its items, its top a fixed
-            distance under the statement, its left edge at `x`. Both headers
-            are caps-only captions, so the GIVEN and FIND columns line up
-            without being aligned to each other."""
+        def section(header: str, items: list[VGroup], x: float,
+                    top: float) -> tuple[VGroup, Mobject]:
+            """A captioned column, header over its items, top-left at (x, top).
+            Both headers are caps-only captions, so side-by-side GIVEN and
+            FIND columns line up without being aligned to each other."""
             head = caption_text(header, theme)
             head.next_to(items[0], UP, buff=HEADER_GAP * cap, aligned_edge=LEFT)
             block = VGroup(head, *items)
-            block.shift(UP * (statement.get_bottom()[1] - SECTION_GAP * cap
-                              - block.get_top()[1])
+            block.shift(UP * (top - block.get_top()[1])
                         + RIGHT * (x - block.get_left()[0]))
             return block, head
 
         left = statement.get_left()[0]
+        top = statement.get_bottom()[1] - SECTION_GAP * cap
         blocks = [statement]
         given_items = _stack([_Flow(g, theme, column).lines() for g in p.given], cap)
         for i, item in enumerate(given_items):
             label(item, f"given[{i}]")
+
+        # FIND sits beside the givens, or under the statement when there are
+        # none. A given whose maths is too wide to break overruns its column;
+        # then FIND drops below the givens at the full measure, so the overrun
+        # can never reach it.
         given_head = None
+        find_x, find_top, find_width = left, top, measure
         if given_items:
-            given_block, given_head = section("GIVEN", given_items, left)
+            given_block, given_head = section("GIVEN", given_items, left, top)
             blocks.append(label(given_block, "given"))
-        [find_item] = _stack([_Flow(p.find, theme, column).lines()], cap)
+            if given_block.get_right()[0] <= left + column + 1e-6:
+                find_x, find_width = left + column + COLUMN_GAP * cap, column
+            else:
+                find_top = given_block.get_bottom()[1] - SECTION_GAP * cap
+        [find_item] = _stack([_Flow(p.find, theme, find_width).lines()], cap)
         label(find_item, "find value")
         emphasize(find_item, theme)
-        # FIND starts past the given column, or under the statement alone.
-        find_x = left + (column + COLUMN_GAP * cap if given_items else 0.0)
-        find_block, find_head = section("FIND", [find_item], find_x)
+        find_block, find_head = section("FIND", [find_item], find_x, find_top)
         blocks.append(label(find_block, "find"))
 
         fit_to_region(label(VGroup(*blocks), "ProblemStatement"), Region.STAGE)
@@ -436,6 +444,13 @@ class ProblemStatement(Component):
                      "https://example.org/" + "a" * 40 + " for this problem.",
              "given": [r"$\mathrm{" + "X" * 60 + "}$"],
              "find": "the_value_of_" + "q" * 47},
+            # Unbreakable givens wider than their column but not the stage:
+            # FIND must drop below them, not collide.
+            {"text": incline["text"],
+             "given": [r"$v = \sqrt{2gh} = \sqrt{2 \times 10 \times 5} = "
+                       r"10\,\mathrm{m\,s^{-1}}$",
+                       r"$g = 10\,\mathrm{m\,s^{-2}}$"],
+             "find": incline["find"]},
             # Minimal: one character each, no givens.
             {"text": "x", "find": "y"},
             {"text": "$x$", "given": ["$y$"], "find": "$z$"},

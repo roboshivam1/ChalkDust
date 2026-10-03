@@ -1,0 +1,4088 @@
+{
+ "component": "CodeWalk",
+ "manim_version": "0.21.0",
+ "reasons": [
+  "CodeWalk merged"
+ ],
+ "cases": [
+  {
+   "params": {
+    "language": "python",
+    "source": "def bucket_index(key, capacity):\n    h = hash(key)\n    return h % capacity\n\nindex = bucket_index(\"cat\", 8)",
+    "highlights": [
+     {
+      "start": 2
+     },
+     {
+      "start": 3
+     },
+     {
+      "start": 5
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.633
+     },
+     {
+      "op": "settle",
+      "label": "code revealed",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup"
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "run_time": 0.633
+     },
+     {
+      "op": "settle",
+      "label": "highlight 0",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup"
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.883
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Transform",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "run_time": 0.633
+     },
+     {
+      "op": "settle",
+      "label": "highlight 1",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup"
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.867
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Transform",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "run_time": 0.617
+     },
+     {
+      "op": "settle",
+      "label": "highlight 2",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup"
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.867
+     },
+     {
+      "op": "wait",
+      "duration": 1.867
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup"
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.364,
+        2.703
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.364,
+        2.703
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.803,
+        -0.052,
+        0.157,
+        1.997
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -3.798,
+        0.826,
+        0.146,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.801,
+        0.39,
+        0.154,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.803,
+        -0.051,
+        0.157,
+        0.25
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.797,
+        -0.488,
+        0.146,
+        0.238
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.803,
+        -0.929,
+        0.157,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.204,
+        -0.1,
+        7.356,
+        2.103
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.204,
+        0.775,
+        7.356,
+        0.353
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.096,
+        0.35,
+        2.905,
+        0.312
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.337,
+        -0.083,
+        4.391,
+        0.32
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.036,
+        -0.975,
+        6.852,
+        0.353
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.364,
+        2.703
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.364,
+        2.703
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.803,
+        -0.052,
+        0.157,
+        1.997
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -3.798,
+        0.826,
+        0.146,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.801,
+        0.39,
+        0.154,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.803,
+        -0.051,
+        0.157,
+        0.25
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.797,
+        -0.488,
+        0.146,
+        0.238
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.803,
+        -0.929,
+        0.157,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.204,
+        -0.1,
+        7.356,
+        2.103
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.204,
+        0.775,
+        7.356,
+        0.353
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.096,
+        0.35,
+        2.905,
+        0.312
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.337,
+        -0.083,
+        4.391,
+        0.32
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.036,
+        -0.975,
+        6.852,
+        0.353
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.39,
+        7.961,
+        0.439
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.364,
+        2.703
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.364,
+        2.703
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.803,
+        -0.052,
+        0.157,
+        1.997
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -3.798,
+        0.826,
+        0.146,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.801,
+        0.39,
+        0.154,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.803,
+        -0.051,
+        0.157,
+        0.25
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.797,
+        -0.488,
+        0.146,
+        0.238
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.803,
+        -0.929,
+        0.157,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.204,
+        -0.1,
+        7.356,
+        2.103
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.204,
+        0.775,
+        7.356,
+        0.353
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.096,
+        0.35,
+        2.905,
+        0.312
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.337,
+        -0.083,
+        4.391,
+        0.32
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.036,
+        -0.975,
+        6.852,
+        0.353
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.051,
+        7.961,
+        0.439
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.364,
+        2.703
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.364,
+        2.703
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.803,
+        -0.052,
+        0.157,
+        1.997
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -3.798,
+        0.826,
+        0.146,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.801,
+        0.39,
+        0.154,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.803,
+        -0.051,
+        0.157,
+        0.25
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.797,
+        -0.488,
+        0.146,
+        0.238
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.803,
+        -0.929,
+        0.157,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.204,
+        -0.1,
+        7.356,
+        2.103
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.204,
+        0.775,
+        7.356,
+        0.353
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.096,
+        0.35,
+        2.905,
+        0.312
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.337,
+        -0.083,
+        4.391,
+        0.32
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.036,
+        -0.975,
+        6.852,
+        0.353
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.929,
+        7.961,
+        0.439
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.364,
+        2.703
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.364,
+        2.703
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.803,
+        -0.052,
+        0.157,
+        1.997
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -3.798,
+        0.826,
+        0.146,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.801,
+        0.39,
+        0.154,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.803,
+        -0.051,
+        0.157,
+        0.25
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.797,
+        -0.488,
+        0.146,
+        0.238
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.803,
+        -0.929,
+        0.157,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.204,
+        -0.1,
+        7.356,
+        2.103
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.204,
+        0.775,
+        7.356,
+        0.353
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.096,
+        0.35,
+        2.905,
+        0.312
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.337,
+        -0.083,
+        4.391,
+        0.32
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.036,
+        -0.975,
+        6.852,
+        0.353
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.929,
+        7.961,
+        0.439
+       ],
+       "font_size": null
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "language": "javascript",
+    "source": "function binarySearch(arr, target) {\n  let lo = 0, hi = arr.length - 1;\n  while (lo <= hi) {\n    const mid = (lo + hi) >> 1;\n    if (arr[mid] === target) return mid;\n    if (arr[mid] < target) lo = mid + 1;\n    else hi = mid - 1;\n  }\n  return -1;\n}",
+    "highlights": [
+     {
+      "start": 2
+     },
+     {
+      "start": 3,
+      "end": 4
+     },
+     {
+      "start": 5,
+      "end": 7
+     },
+     {
+      "start": 9
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.5
+     },
+     {
+      "op": "settle",
+      "label": "code revealed",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "run_time": 0.5
+     },
+     {
+      "op": "settle",
+      "label": "highlight 0",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Transform",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "run_time": 0.5
+     },
+     {
+      "op": "settle",
+      "label": "highlight 1",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Transform",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "run_time": 0.5
+     },
+     {
+      "op": "settle",
+      "label": "highlight 2",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Transform",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "run_time": 0.5
+     },
+     {
+      "op": "settle",
+      "label": "highlight 3",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.5
+     },
+     {
+      "op": "wait",
+      "duration": 1.5
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        10.098,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        10.098,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.575,
+        -0.07,
+        0.368,
+        4.049
+       ],
+       "font_size": 27.09
+      },
+      {
+       "bbox": [
+        -4.462,
+        1.838,
+        0.142,
+        0.234
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.466,
+        1.416,
+        0.149,
+        0.236
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.467,
+        0.99,
+        0.152,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        0.567,
+        0.141,
+        0.231
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.467,
+        0.14,
+        0.152,
+        0.236
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.463,
+        -0.28,
+        0.143,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        -0.704,
+        0.142,
+        0.231
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        -1.127,
+        0.141,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        -1.55,
+        0.142,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.575,
+        -1.974,
+        0.368,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.305,
+        -0.088,
+        8.908,
+        4.096
+       ],
+       "font_size": 27.09
+      },
+      {
+       "bbox": [
+        -0.142,
+        1.805,
+        8.015,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.149,
+        1.382,
+        7.107,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.737,
+        0.97,
+        3.98,
+        0.286
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.264,
+        0.547,
+        5.981,
+        0.286
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.754,
+        0.112,
+        8.01,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.754,
+        -0.312,
+        8.01,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.284,
+        -0.719,
+        3.956,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.624,
+        -1.151,
+        0.077,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.635,
+        -1.568,
+        2.142,
+        0.273
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.076,
+        -1.997,
+        0.077,
+        0.278
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        10.098,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        10.098,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.575,
+        -0.07,
+        0.368,
+        4.049
+       ],
+       "font_size": 27.09
+      },
+      {
+       "bbox": [
+        -4.462,
+        1.838,
+        0.142,
+        0.234
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.466,
+        1.416,
+        0.149,
+        0.236
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.467,
+        0.99,
+        0.152,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        0.567,
+        0.141,
+        0.231
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.467,
+        0.14,
+        0.152,
+        0.236
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.463,
+        -0.28,
+        0.143,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        -0.704,
+        0.142,
+        0.231
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        -1.127,
+        0.141,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        -1.55,
+        0.142,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.575,
+        -1.974,
+        0.368,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.305,
+        -0.088,
+        8.908,
+        4.096
+       ],
+       "font_size": 27.09
+      },
+      {
+       "bbox": [
+        -0.142,
+        1.805,
+        8.015,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.149,
+        1.382,
+        7.107,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.737,
+        0.97,
+        3.98,
+        0.286
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.264,
+        0.547,
+        5.981,
+        0.286
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.754,
+        0.112,
+        8.01,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.754,
+        -0.312,
+        8.01,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.284,
+        -0.719,
+        3.956,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.624,
+        -1.151,
+        0.077,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.635,
+        -1.568,
+        2.142,
+        0.273
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.076,
+        -1.997,
+        0.077,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.416,
+        9.707,
+        0.424
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        10.098,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        10.098,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.575,
+        -0.07,
+        0.368,
+        4.049
+       ],
+       "font_size": 27.09
+      },
+      {
+       "bbox": [
+        -4.462,
+        1.838,
+        0.142,
+        0.234
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.466,
+        1.416,
+        0.149,
+        0.236
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.467,
+        0.99,
+        0.152,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        0.567,
+        0.141,
+        0.231
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.467,
+        0.14,
+        0.152,
+        0.236
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.463,
+        -0.28,
+        0.143,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        -0.704,
+        0.142,
+        0.231
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        -1.127,
+        0.141,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        -1.55,
+        0.142,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.575,
+        -1.974,
+        0.368,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.305,
+        -0.088,
+        8.908,
+        4.096
+       ],
+       "font_size": 27.09
+      },
+      {
+       "bbox": [
+        -0.142,
+        1.805,
+        8.015,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.149,
+        1.382,
+        7.107,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.737,
+        0.97,
+        3.98,
+        0.286
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.264,
+        0.547,
+        5.981,
+        0.286
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.754,
+        0.112,
+        8.01,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.754,
+        -0.312,
+        8.01,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.284,
+        -0.719,
+        3.956,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.624,
+        -1.151,
+        0.077,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.635,
+        -1.568,
+        2.142,
+        0.273
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.076,
+        -1.997,
+        0.077,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.778,
+        9.707,
+        0.847
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        10.098,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        10.098,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.575,
+        -0.07,
+        0.368,
+        4.049
+       ],
+       "font_size": 27.09
+      },
+      {
+       "bbox": [
+        -4.462,
+        1.838,
+        0.142,
+        0.234
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.466,
+        1.416,
+        0.149,
+        0.236
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.467,
+        0.99,
+        0.152,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        0.567,
+        0.141,
+        0.231
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.467,
+        0.14,
+        0.152,
+        0.236
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.463,
+        -0.28,
+        0.143,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        -0.704,
+        0.142,
+        0.231
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        -1.127,
+        0.141,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        -1.55,
+        0.142,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.575,
+        -1.974,
+        0.368,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.305,
+        -0.088,
+        8.908,
+        4.096
+       ],
+       "font_size": 27.09
+      },
+      {
+       "bbox": [
+        -0.142,
+        1.805,
+        8.015,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.149,
+        1.382,
+        7.107,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.737,
+        0.97,
+        3.98,
+        0.286
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.264,
+        0.547,
+        5.981,
+        0.286
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.754,
+        0.112,
+        8.01,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.754,
+        -0.312,
+        8.01,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.284,
+        -0.719,
+        3.956,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.624,
+        -1.151,
+        0.077,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.635,
+        -1.568,
+        2.142,
+        0.273
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.076,
+        -1.997,
+        0.077,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.282,
+        9.707,
+        1.268
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        10.098,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        10.098,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.575,
+        -0.07,
+        0.368,
+        4.049
+       ],
+       "font_size": 27.09
+      },
+      {
+       "bbox": [
+        -4.462,
+        1.838,
+        0.142,
+        0.234
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.466,
+        1.416,
+        0.149,
+        0.236
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.467,
+        0.99,
+        0.152,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        0.567,
+        0.141,
+        0.231
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.467,
+        0.14,
+        0.152,
+        0.236
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.463,
+        -0.28,
+        0.143,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        -0.704,
+        0.142,
+        0.231
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        -1.127,
+        0.141,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        -1.55,
+        0.142,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.575,
+        -1.974,
+        0.368,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.305,
+        -0.088,
+        8.908,
+        4.096
+       ],
+       "font_size": 27.09
+      },
+      {
+       "bbox": [
+        -0.142,
+        1.805,
+        8.015,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.149,
+        1.382,
+        7.107,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.737,
+        0.97,
+        3.98,
+        0.286
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.264,
+        0.547,
+        5.981,
+        0.286
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.754,
+        0.112,
+        8.01,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.754,
+        -0.312,
+        8.01,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.284,
+        -0.719,
+        3.956,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.624,
+        -1.151,
+        0.077,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.635,
+        -1.568,
+        2.142,
+        0.273
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.076,
+        -1.997,
+        0.077,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.55,
+        9.707,
+        0.424
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        10.098,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        10.098,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.575,
+        -0.07,
+        0.368,
+        4.049
+       ],
+       "font_size": 27.09
+      },
+      {
+       "bbox": [
+        -4.462,
+        1.838,
+        0.142,
+        0.234
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.466,
+        1.416,
+        0.149,
+        0.236
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.467,
+        0.99,
+        0.152,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        0.567,
+        0.141,
+        0.231
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.467,
+        0.14,
+        0.152,
+        0.236
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.463,
+        -0.28,
+        0.143,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        -0.704,
+        0.142,
+        0.231
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        -1.127,
+        0.141,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.462,
+        -1.55,
+        0.142,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.575,
+        -1.974,
+        0.368,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.305,
+        -0.088,
+        8.908,
+        4.096
+       ],
+       "font_size": 27.09
+      },
+      {
+       "bbox": [
+        -0.142,
+        1.805,
+        8.015,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.149,
+        1.382,
+        7.107,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.737,
+        0.97,
+        3.98,
+        0.286
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.264,
+        0.547,
+        5.981,
+        0.286
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.754,
+        0.112,
+        8.01,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.754,
+        -0.312,
+        8.01,
+        0.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.284,
+        -0.719,
+        3.956,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.624,
+        -1.151,
+        0.077,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.635,
+        -1.568,
+        2.142,
+        0.273
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.076,
+        -1.997,
+        0.077,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.55,
+        9.707,
+        0.424
+       ],
+       "font_size": null
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "language": "sql",
+    "source": "SELECT name, COUNT(*) AS orders\nFROM customers JOIN orders USING (customer_id)\nGROUP BY name\nHAVING COUNT(*) > 5;"
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "code revealed",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 7.5
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        11.609,
+        2.227
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        11.609,
+        2.227
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.426,
+        -0.063,
+        0.157,
+        1.554
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -5.42,
+        0.593,
+        0.146,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.424,
+        0.157,
+        0.154,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.426,
+        -0.284,
+        0.157,
+        0.25
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.42,
+        -0.721,
+        0.146,
+        0.238
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.204,
+        -0.09,
+        10.602,
+        1.6
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.503,
+        0.563,
+        7.159,
+        0.295
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.209,
+        0.104,
+        10.592,
+        0.353
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.604,
+        -0.292,
+        2.979,
+        0.234
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.818,
+        -0.746,
+        4.559,
+        0.288
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        11.609,
+        2.227
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        11.609,
+        2.227
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.426,
+        -0.063,
+        0.157,
+        1.554
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -5.42,
+        0.593,
+        0.146,
+        0.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.424,
+        0.157,
+        0.154,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.426,
+        -0.284,
+        0.157,
+        0.25
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.42,
+        -0.721,
+        0.146,
+        0.238
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.204,
+        -0.09,
+        10.602,
+        1.6
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.503,
+        0.563,
+        7.159,
+        0.295
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.209,
+        0.104,
+        10.592,
+        0.353
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.604,
+        -0.292,
+        2.979,
+        0.234
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.818,
+        -0.746,
+        4.559,
+        0.288
+       ],
+       "font_size": null
+      }
+     ]
+    ]
+   }
+  }
+ ]
+}

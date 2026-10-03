@@ -18,6 +18,7 @@ from chalkdust.scenes.components import bullet_reveal  # noqa: F401,E402
 from chalkdust.scenes.components import equation_derivation  # noqa: F401,E402
 from chalkdust.scenes.components import raw_scene  # noqa: F401,E402
 from chalkdust.scenes.components import title_card  # noqa: F401,E402
+from chalkdust.scenes.components import vector_field  # noqa: F401,E402
 
 __all__ = [
     "Component",

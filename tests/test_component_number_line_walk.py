@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import math
 import subprocess
+import sys
 from dataclasses import asdict
 
 import numpy as np
@@ -218,6 +219,39 @@ class TestLayout:
                                 for v in (-4, 1, -2, 6, 9, -6, 3)]
         report = _validate({"range": [-10, 10], "steps": steps})
         assert report.kinds() == {"overflow"}, f"\n{report}"
+
+    def test_glyphless_jump_label_refuses_instead_of_hanging(self):
+        # Pango draws a label that opens with a right-to-left letter, or is
+        # only zero-width/bidi controls, as no glyphs. Such a jump label never
+        # rose with its arc, so the stacking search looped forever. Run in a
+        # child process so a regression fails on the timeout instead of
+        # hanging the suite.
+        code = (
+            "from chalkdust.core.models import BeatSpec\n"
+            "from chalkdust.validate.geometric import validate_beat\n"
+            "for text in ['\\u05e9\\u05dc\\u05d5\\u05dd', '\\u200b',"
+            " '\\u200f\\u05e9\\u05dc\\u05d5\\u05dd']:\n"
+            "    r = validate_beat(BeatSpec(id='b01', narration='x',"
+            " component='NumberLineWalk', params={'range': [0, 10],"
+            " 'steps': [{'at': 1}, {'to': 7, 'label': text}]}))\n"
+            "    print('kinds', sorted(r.kinds()))\n"
+        )
+        out = subprocess.run([sys.executable, "-c", code], capture_output=True,
+                             text=True, timeout=180)
+        assert out.returncode == 0, out.stderr
+        kinds = [ln for ln in out.stdout.splitlines() if ln.startswith("kinds ")]
+        assert kinds == ["kinds ['illegible']"] * 3, out.stdout
+
+    @pytest.mark.parametrize("step", [
+        pytest.param({"at": 1, "label": "שלום"}, id="mark-rtl"),
+        pytest.param({"at": 1, "label": "​"}, id="mark-zero-width"),
+        pytest.param({"interval": [2, 5], "label": "‮"},
+                     id="interval-bidi-control"),
+    ])
+    def test_glyphless_mark_or_interval_label_refuses_typed(self, step):
+        # Used to be a raw IndexError from set_x on a mobject with no points.
+        report = _validate({"range": [0, 10], "steps": [step]})
+        assert report.kinds() == {"illegible"}, f"\n{report}"
 
 
 class TestJumpLabelsReadAsTheirOwnArc:

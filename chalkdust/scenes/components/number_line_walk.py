@@ -473,8 +473,7 @@ class NumberLineWalk(Component):
 
             if not step.label:
                 continue
-            mob = label(body_text(wrap(step.label, LABEL_WRAP), theme, colour),
-                        f"steps[{i}] label")
+            mob = _label_text(step.label, theme, colour, f"steps[{i}] label")
             mob.set_x(anchor[0])
             mob.align_to(np.array([0.0, below_top, 0.0]), UP)
             _clamp_x(mob, bounds)
@@ -566,12 +565,21 @@ class NumberLineWalk(Component):
                     kind="illegible",
                 )
             text = self.params.steps[i].label or _signed(end - start)
-            mob = label(body_text(wrap(text, LABEL_WRAP), theme, theme.palette.accent),
-                        f"steps[{i}] label")
+            mob = _label_text(text, theme, theme.palette.accent, f"steps[{i}] label")
             rise = min(MAX_ARC_RISE, max(MIN_ARC_RISE, ARC_RISE_RATIO * chord))
             if end < start:
                 rise *= BACK_RISE_FACTOR
+            # The arc's apex is `rise` above the line, so past this rise the
+            # arc alone is over the ceiling and no label can sit on it. The
+            # bound makes the search finite whatever the label measures.
+            max_rise = ceiling - line.get_center()[1]
             while True:
+                if rise > max_rise:
+                    raise LayoutError(
+                        f"steps[{i}] label cannot sit on its own arc clear of the "
+                        "other jumps; split this beat into fewer jumps.",
+                        kind="overflow",
+                    )
                 # Measured on the arc as drawn: add_tip pulls the arc's end
                 # back and re-fits it, which lifts it off the ideal circle.
                 arc, path = self._arc(line, start, end, rise, theme)
@@ -750,6 +758,24 @@ def _reads_as_own(box: Rect, own: np.ndarray, others) -> bool:
         if np.any(in_col & (y > own_floor - LABEL_BUFF) & (y < box.top + ASSOC_GAP)):
             return False
     return True
+
+
+def _label_text(text: str, theme: Theme, colour: str, what: str) -> VMobject:
+    """A step label as body text, refused when it draws nothing.
+
+    Pango lays out some non-blank strings as no glyphs at all: text that
+    starts with a right-to-left letter, or that is only zero-width and bidi
+    control characters. Such a label has no points, so it cannot be placed
+    (set_x on it raises) or measured (a jump label never rises with its arc),
+    and drawing it would silently drop words the narration refers to."""
+    mob = label(body_text(wrap(text, LABEL_WRAP), theme, colour), what)
+    if len(mob.get_all_points()) == 0:
+        raise LayoutError(
+            f"{what} {text!r} renders no visible glyphs (right-to-left or "
+            "zero-width text); write it in left-to-right script.",
+            kind="illegible",
+        )
+    return mob
 
 
 def _clamp_x(mob: VMobject, bounds: tuple[float, float]) -> None:

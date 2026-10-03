@@ -11,7 +11,7 @@ collide however short the unit above them is.
 
 from __future__ import annotations
 
-from manim import DOWN, RIGHT, UP, VGroup
+from manim import RIGHT, UP, Text, VGroup
 from pydantic import Field, field_validator
 
 from chalkdust.core.models import Region
@@ -30,7 +30,7 @@ LABEL_WRAP = 16
 
 # Spacing in body cap heights, so it scales with the theme.
 OPERATOR_PAD = 0.9  # each side of "=" / "\cdot", beyond the column edge
-LABEL_GAP = 1.2     # between the lowest unit glyph and the labels' common top
+LABEL_DROP = 2.2    # lowest unit glyph down to the labels' common baseline
 
 # Relative weights of each step's share of the beat (D-002). One unit of
 # weight must be at least this long for the step to stay legible, so the
@@ -39,6 +39,19 @@ SECONDS_PER_WEIGHT = 0.4
 QUANTITY_WEIGHT = 2
 FACTOR_WEIGHT = 2
 HOLD_WEIGHT = 3
+
+
+def _first_baseline(text: Text, first_line: str) -> float:
+    """y of the baseline of `text`'s first line.
+
+    Bounding-box tops vary with ascenders and bottoms with descenders, so
+    neither gives a stable line to hang text from. Text has one glyph
+    submobject per non-space character; the median bottom of the first line's
+    glyphs is its baseline, outvoting the odd descender (the "g" in "length").
+    """
+    n = len("".join(first_line.split()))
+    bottoms = sorted(g.get_bottom()[1] for g in text.submobjects[:n])
+    return float(bottoms[len(bottoms) // 2])
 
 
 class LatexError(LayoutError):
@@ -167,15 +180,17 @@ class UnitBreakdown(Component):
             term.shift(RIGHT * (x + width / 2 - term.get_center()[0]))
             x += width
 
-        # Labels hang from one common line, so a two-line label never pushes
-        # its neighbours down.
-        floor = min(term.get_bottom()[1] for term in terms) - LABEL_GAP * cap
+        # Labels share one baseline for their first line, so a two-line label
+        # hangs down rather than pushing its neighbours, and "mass" sits level
+        # with "length" despite having no ascenders.
+        baseline = min(term.get_bottom()[1] for term in terms) - LABEL_DROP * cap
         present = []
-        for term, lab in zip(terms, labels):
+        for term, lab, t in zip(terms, labels, terms_in):
             if lab is None:
                 continue
+            first_line = wrap(t.label, LABEL_WRAP).split("\n", 1)[0]
             lab.shift(RIGHT * (term.get_center()[0] - lab.get_center()[0])
-                      + UP * (floor - lab.get_top()[1]))
+                      + UP * (baseline - _first_baseline(lab, first_line)))
             present.append(lab)
 
         label(row, "units")

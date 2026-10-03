@@ -12,7 +12,13 @@ from pydantic import ValidationError
 
 from chalkdust.core.models import BeatSpec
 from chalkdust.scenes.base import ChalkdustScene
-from chalkdust.scenes.components.unit_breakdown import LatexError, UnitBreakdown
+from chalkdust.scenes.components.base import wrap
+from chalkdust.scenes.components.unit_breakdown import (
+    LABEL_WRAP,
+    LatexError,
+    UnitBreakdown,
+    _first_baseline,
+)
 from chalkdust.scenes.regions import bbox
 from chalkdust.validate.geometric import LayoutProbe, validate_beat
 
@@ -102,18 +108,31 @@ class TestLatex:
         assert exc.value.kind == "latex"
 
 
+def _built_labels(params: dict) -> tuple:
+    probe = LayoutProbe(UnitBreakdown(params), duration=5.0)
+    probe.construct()
+    [group] = probe.mobjects
+    family = group.get_family()
+    units = next(m for m in family if getattr(m, "_chalk_label", "") == "units")
+    labels = [m for m in family if getattr(m, "_chalk_label", "").startswith("label[")]
+    return units, labels
+
+
 class TestLayout:
+    def test_labels_share_a_baseline_whatever_their_letters(self):
+        # "mass" has no ascenders, "length" has both; the second-line wrap of
+        # "per second squared" must not move its first line either.
+        _, labels = _built_labels(NEWTON)
+        texts = [t["label"] for t in [NEWTON["quantity"], *NEWTON["decomposition"]]]
+        lines = [wrap(s, LABEL_WRAP).split("\n", 1)[0] for s in texts]
+        baselines = [_first_baseline(m, line) for m, line in zip(labels, lines)]
+        assert max(baselines) - min(baselines) < 0.02, baselines
+
     def test_wide_labels_under_narrow_units_never_collide(self):
         params = {"quantity": {"unit": "a", "label": "a fairly long label"},
                   "decomposition": [{"unit": "b", "label": "another long one"},
                                     {"unit": "c", "label": "and a third label"}]}
-        probe = LayoutProbe(UnitBreakdown(params), duration=5.0)
-        probe.construct()
-        [group] = probe.mobjects
-        family = group.get_family()
-        units = next(m for m in family if getattr(m, "_chalk_label", "") == "units")
-        labels = [m for m in family
-                  if getattr(m, "_chalk_label", "").startswith("label[")]
+        units, labels = _built_labels(params)
         assert len(labels) == 3
         boxes = [bbox(m) for m in labels]
         for i, a in enumerate(boxes):

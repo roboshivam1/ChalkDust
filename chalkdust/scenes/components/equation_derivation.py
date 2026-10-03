@@ -38,7 +38,11 @@ from chalkdust.scenes.theme import Theme, body_cap_height, body_text, math
 # nothing, and an empty annotation is a margin note that says nothing.
 NonBlank = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
 
-NOTE_WRAP = 24      # characters per annotation line; keeps the margin column narrow
+# Characters per annotation line. Narrow enough to keep the margin column from
+# crowding the equations, wide enough that a typical note ("factor the perfect
+# square") stays on one line -- a wrapped note makes its row taller and the
+# derivation's line spacing uneven.
+NOTE_WRAP = 28
 
 # Spacing, in body cap heights so it scales with the theme (see bullet_reveal).
 ROW_GAP = 1.6       # vertical space between one step's row and the next

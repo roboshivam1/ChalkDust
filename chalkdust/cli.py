@@ -2,7 +2,7 @@
 
 Phase 0 verbs work on a hand-written spec file:
 
-  chalkdust validate <spec>                      rungs 1 + 3, nothing rendered
+  chalkdust validate <spec>                      rungs 1-3, nothing rendered
   chalkdust render <spec> --quality draft|final  spec -> MP4
 
 These sit beside the verbs still to come, and keep their meanings: `make`
@@ -29,9 +29,13 @@ EXIT_LAYOUT_REFUSED = 4
 EXIT_SPEECH_FAILED = 5
 EXIT_RENDER_FAILED = 6
 EXIT_ASSEMBLY_FAILED = 7
+# Added after 3-7 were in use, so it keeps them stable rather than sitting
+# in ladder order between spec (rung 1) and layout (rung 3).
+EXIT_SEMANTIC_REFUSED = 8
 
 EXIT_CODES: dict[type[pipeline.PipelineError], tuple[int, str]] = {
     pipeline.SpecInvalid: (EXIT_SPEC_INVALID, "spec invalid"),
+    pipeline.SemanticRefused: (EXIT_SEMANTIC_REFUSED, "semantic refused"),
     pipeline.LayoutRefused: (EXIT_LAYOUT_REFUSED, "layout refused"),
     pipeline.SpeechFailed: (EXIT_SPEECH_FAILED, "speech failed"),
     pipeline.RenderFailed: (EXIT_RENDER_FAILED, "render failed"),
@@ -53,7 +57,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
     verbs = parser.add_subparsers(dest="verb", required=True)
     verbs.add_parser("validate", parents=[common],
-                     help="check schema and layout without speech or render")
+                     help="check schema, content and layout without speech or render")
 
     render = verbs.add_parser("render", parents=[common],
                               help="render a spec to a finished MP4")

@@ -137,6 +137,13 @@ class TestCapacity:
         findings = check_capacity(get_component("TitleCard")({"title": title}))
         assert [f.kind for f in findings] == ["capacity"]
 
+    def test_raw_scene_source_is_not_counted_as_text(self):
+        # RawScene params are Manim source, never drawn: ~4k glyphs of code
+        # is a typical generated scene, not an overloaded frame.
+        raw = get_component("RawScene")({"rationale": "a sweep the library lacks",
+                                         "code": "sq = Square()\n" * 400})
+        assert check_capacity(raw) == []
+
     def test_union_counts_nested_regions_once(self):
         assert region_capacity({Region.STAGE, Region.STAGE_LEFT}) == \
             region_capacity({Region.STAGE})

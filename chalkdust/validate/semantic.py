@@ -22,6 +22,7 @@ from manim import MathTex
 
 from chalkdust.core.models import BeatSpec, Region
 from chalkdust.scenes.components import Component, make_component
+from chalkdust.scenes.components.raw_scene import RawScene
 from chalkdust.scenes.regions import MIN_FONT_SIZE, region_rect
 from chalkdust.validate.geometric import Finding, Report
 
@@ -157,7 +158,16 @@ def region_capacity(regions: Iterable[Region]) -> int:
 
 
 def check_capacity(component: Component) -> list[Finding]:
-    """Text volume against what the component's regions can hold legibly."""
+    """Text volume against what the component's regions can hold legibly.
+
+    Not applied to RawScene: its params are a rationale and Manim source,
+    neither of which is drawn, so counting them measures code length, not
+    text on screen -- a typical generated scene (~3k glyphs) would exceed the
+    ~2.7k bound for the whole safe area. Its legibility is asserted after
+    every play() inside its own render (SCENE_SPEC.md §7).
+    """
+    if isinstance(component, RawScene):
+        return []
     volume = text_volume(component.params.model_dump(mode="json"))
     capacity = region_capacity(component.regions())
     if volume <= capacity:

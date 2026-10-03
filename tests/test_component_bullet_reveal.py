@@ -3,8 +3,8 @@
 tests/test_layout.py already proves examples() validate clean and stress()
 (3x volume, unwrappable tokens, minimal content) fits or refuses cleanly. This
 file pins what is specific to this component: timing against the beat's
-frames at short and long narration, min_seconds(), the schema's refusals, and
-that 3x volume refuses rather than shrinks.
+frames at short and long narration, min_seconds(), the schema's refusals, that
+3x volume refuses rather than shrinks, and that text with no glyphs refuses.
 """
 
 from __future__ import annotations
@@ -33,9 +33,13 @@ DRAFT_FPS = 15
 # Stress cases that refuse as overflow at build time, so have no timeline: six
 # ~150-character bullets, and six ~80-character bullets revealed all at once.
 REFUSING = [0, 5]
-TIMED = EXAMPLES + [p for i, p in enumerate(STRESS) if i not in REFUSING]
+# Stress cases whose text builds no glyphs, so refuse at build time and have no
+# timeline: an emoji-only bullet.
+GLYPHLESS = [6]
+UNTIMED = REFUSING + GLYPHLESS
+TIMED = EXAMPLES + [p for i, p in enumerate(STRESS) if i not in UNTIMED]
 TIMED_IDS = [f"ex{i}" for i in range(len(EXAMPLES))] + \
-    [f"stress{i}" for i in range(len(STRESS)) if i not in REFUSING]
+    [f"stress{i}" for i in range(len(STRESS)) if i not in UNTIMED]
 
 
 class _Clock(LayoutProbe):
@@ -133,11 +137,15 @@ def test_compiles_no_latex(params):
     {"items": ["a", "   "]},
     {"items": ["a"], "heading": ""},
     {"items": ["a"], "heading": "   "},
+    {"items": ["a"], "heading": "\u200b"},
+    {"items": ["\u200b"]},
 ], ids=["no-items", "seven-items", "empty-item", "blank-item",
-        "empty-heading", "blank-heading"])
+        "empty-heading", "blank-heading", "zero-width-heading",
+        "zero-width-item"])
 def test_schema_rejects(params):
     # A blank heading built an empty mobject at the origin that tripped the
-    # overlap check; a blank bullet is a dot with nothing beside it.
+    # overlap check; a blank bullet is a dot with nothing beside it. Zero-width
+    # characters are not whitespace, but draw nothing just the same.
     with pytest.raises(ValidationError):
         BulletReveal(params)
 
@@ -152,3 +160,13 @@ def test_three_x_volume_refuses_rather_than_shrinks(index):
     with pytest.raises(LayoutError) as exc:
         probe.construct()
     assert exc.value.kind == "overflow"
+
+
+@pytest.mark.parametrize("index", GLYPHLESS)
+def test_glyphless_text_refuses_as_illegible(index):
+    # Characters the font cannot draw build an empty Text. The bullet must
+    # refuse with a clean kind, not render as a bare dot.
+    probe = LayoutProbe(make_component(NAME, STRESS[index]), duration=8.0)
+    with pytest.raises(LayoutError) as exc:
+        probe.construct()
+    assert exc.value.kind == "illegible"

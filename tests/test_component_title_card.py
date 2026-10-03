@@ -4,7 +4,8 @@ tests/test_layout.py already proves examples() validate clean and stress()
 (3x volume, unwrappable tokens, minimal content) fits or refuses cleanly. This
 file pins what is specific to this component: timing against the beat's
 frames at short and long narration, min_seconds(), the schema's refusal of
-blank text, and that it compiles no LaTeX.
+blank or invisible text, the build's refusal of text with no glyphs, and that
+it compiles no LaTeX.
 """
 
 from __future__ import annotations
@@ -22,6 +23,7 @@ from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components import make_component
 from chalkdust.scenes.components.base import MIN_STEP_SECONDS
 from chalkdust.scenes.components.title_card import TitleCard
+from chalkdust.scenes.regions import LayoutError
 from chalkdust.validate.geometric import LayoutProbe
 
 NAME = "TitleCard"
@@ -32,6 +34,13 @@ DRAFT_FPS = 15
 CASES = EXAMPLES + STRESS
 CASE_IDS = [f"ex{i}" for i in range(len(EXAMPLES))] + \
     [f"stress{i}" for i in range(len(STRESS))]
+
+# Stress cases whose text builds no glyphs, so refuse at build time and have no
+# timeline: an emoji-only title.
+GLYPHLESS = [6]
+UNTIMED = {f"stress{i}" for i in GLYPHLESS}
+TIMED = [p for p, i in zip(CASES, CASE_IDS) if i not in UNTIMED]
+TIMED_IDS = [i for i in CASE_IDS if i not in UNTIMED]
 
 
 class _Clock(LayoutProbe):
@@ -65,7 +74,7 @@ def _clock(params: dict, duration: float) -> _Clock:
 
 
 @pytest.mark.parametrize("factor", [0.5, 3.0], ids=["short", "long"])
-@pytest.mark.parametrize("params", CASES, ids=CASE_IDS)
+@pytest.mark.parametrize("params", TIMED, ids=TIMED_IDS)
 def test_clocked_frames_equal_beat_frames(params, factor):
     # Narration far shorter and far longer than the card wants: every play()
     # and wait() is a whole number of frames, and together exactly the beat.
@@ -120,9 +129,26 @@ def test_compiles_no_latex(params):
     {"title": "\n\n"},
     {"title": "Binary Search", "subtitle": ""},
     {"title": "Binary Search", "kicker": "  "},
+    {"title": "\u200b"},
+    {"title": "\u200b\u200b", "subtitle": "\u2060"},
 ], ids=["no-title", "empty-title", "blank-title", "newlines-title",
-        "empty-subtitle", "blank-kicker"])
+        "empty-subtitle", "blank-kicker", "zero-width-title",
+        "word-joiner-subtitle"])
 def test_schema_rejects(params):
     # A blank part would build an empty card that passes every layout check.
+    # Zero-width and format characters are not whitespace but draw nothing.
     with pytest.raises(ValidationError):
         TitleCard(params)
+
+
+# --- typed refusals ---------------------------------------------------------------
+
+
+@pytest.mark.parametrize("index", GLYPHLESS)
+def test_glyphless_text_refuses_as_illegible(index):
+    # Characters the font cannot draw build an empty Text. The card must refuse
+    # with a clean kind, not render an empty frame that passes every check.
+    probe = LayoutProbe(make_component(NAME, STRESS[index]), duration=8.0)
+    with pytest.raises(LayoutError) as exc:
+        probe.construct()
+    assert exc.value.kind == "illegible"

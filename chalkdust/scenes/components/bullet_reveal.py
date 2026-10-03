@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+import unicodedata
 from typing import Annotated, Literal
 
-from manim import DOWN, LEFT, ORIGIN, UP, Dot, FadeIn, VGroup
-from pydantic import Field, StringConstraints
+from manim import DOWN, LEFT, ORIGIN, UP, Dot, FadeIn, Text, VGroup
+from pydantic import AfterValidator, Field, StringConstraints
 
 from chalkdust.core.models import Region
 from chalkdust.scenes.base import ChalkdustScene
@@ -17,7 +18,7 @@ from chalkdust.scenes.components.base import (
     register,
     wrap,
 )
-from chalkdust.scenes.regions import fit_to_region
+from chalkdust.scenes.regions import LayoutError, fit_to_region
 from chalkdust.scenes.theme import body_cap_height, body_text, heading_text
 
 WRAP_WIDTH = 46
@@ -27,10 +28,31 @@ LINE_HEIGHT = 1.7   # one line of text, anchor to anchor
 PARA_GAP = 0.9      # additional space between bullets
 DOT_GAP = 0.28      # horizontal space between dot and text (absolute units)
 
-# Blank text is refused at the schema rung. A blank bullet is a dot with
-# nothing beside it, and a blank heading builds an empty mobject at the origin
-# that "overlaps" the bullets. Leave the heading out instead of passing "".
-NonBlank = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+# Blank or invisible text is refused at the schema rung. A blank bullet is a
+# dot with nothing beside it, and a blank heading builds an empty mobject at
+# the origin that "overlaps" the bullets. Leave the heading out instead of passing "".
+def _visible(s: str) -> str:
+    # Whitespace is not the only text that draws nothing: zero-width and
+    # format characters (U+200B, U+2060) and controls are invisible too, and
+    # strip_whitespace keeps them. Require one character outside Z* and C*.
+    if not any(unicodedata.category(c)[0] not in "ZC" for c in s):
+        raise ValueError("text has no visible character")
+    return s
+
+
+NonBlank = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1),
+                     AfterValidator(_visible)]
+
+
+def _drawn(text: Text, part: str) -> Text:
+    """Refuse a text part that builds no glyphs. A visible character the font
+    cannot draw (an emoji-only string) passes the schema yet builds an empty
+    Text -- an empty card or a bare dot that passes every layout check."""
+    if not text.submobjects:
+        raise LayoutError(f"{part} draws no glyphs; the font has none for its "
+                          f"characters -- rewrite it in plain text",
+                          kind="illegible")
+    return text
 
 
 class BulletRevealParams(ComponentParams):
@@ -75,7 +97,8 @@ class BulletReveal(Component):
 
         heading = None
         if p.heading:
-            heading = label(heading_text(wrap(p.heading, 34), theme), "heading")
+            heading = label(_drawn(heading_text(wrap(p.heading, 34), theme),
+                                   "heading"), "heading")
             fit_to_region(heading, Region.TITLE_BAR)
 
         rows, dots, line_counts = [], [], []
@@ -83,7 +106,7 @@ class BulletReveal(Component):
             wrapped = wrap(item, WRAP_WIDTH)
             line_counts.append(wrapped.count("\n") + 1)
 
-            text = body_text(wrapped, theme)
+            text = _drawn(body_text(wrapped, theme), f"bullet {i}")
             dot = Dot(radius=0.07, color=theme.palette.accent)
             dot.next_to(text, LEFT, buff=DOT_GAP)
             # Sit the dot on the optical centre of the FIRST line, measured
@@ -164,4 +187,7 @@ class BulletReveal(Component):
              "items": ["Each of these bullets says far more than a viewer can "
                        "take in while it fades in"] * 6,
              "reveal": "all"},
+            # Visible characters the font has no glyph for: refused as
+            # illegible rather than built into a bare dot.
+            {"items": ["\U0001F600" * 80]},
         ]

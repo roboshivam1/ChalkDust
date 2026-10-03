@@ -2,7 +2,8 @@
  "component": "CodeWalk",
  "manim_version": "0.21.0",
  "reasons": [
-  "CodeWalk merged"
+  "CodeWalk merged",
+  "CodeWalk rb2 on integration 8156a15: glyph guard runs before Code is built; examples unchanged"
  ],
  "cases": [
   {

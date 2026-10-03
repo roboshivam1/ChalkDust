@@ -14,7 +14,7 @@ brings it back to full strength, and points at it.
 
 from __future__ import annotations
 
-from typing import Annotated, Literal
+from typing import Annotated, Any, Literal
 
 import numpy as np
 from manim import (
@@ -30,10 +30,11 @@ from manim import (
 )
 from pydantic import Field, StringConstraints
 
-from chalkdust.continuity import DIM_DARKNESS, carried
+from chalkdust.continuity import DIM_DARKNESS, ArtifactRecipe, carried
 from chalkdust.core.models import CarryInError, Region
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import (
+    MIN_STEP_SECONDS,
     Component,
     ComponentParams,
     label,
@@ -65,9 +66,7 @@ MAX_BAND = 0.42
 GAP = 0.8
 ARROW_BUFF = 0.1
 
-# Shortest a step can run and still register (mirrors f4's MIN_STEP_SECONDS,
-# which is not on this branch yet). Three steps: make room, point, read.
-_MIN_STEP_SECONDS = 0.5
+# Steps a viewer must register: make room, point, read.
 _STEPS = 3
 
 _SIDES = {"left": LEFT, "right": RIGHT, "above": UP, "below": DOWN}
@@ -98,10 +97,13 @@ class Callout(Component):
         return {Region.STAGE}
 
     def min_seconds(self) -> float:
-        return _MIN_STEP_SECONDS * _STEPS
+        return MIN_STEP_SECONDS * _STEPS
 
     def latex_strings(self) -> list[str]:
         return []  # plain text only; nothing to compile
+
+    def carried_targets(self) -> list[str]:
+        return [self.params.target_id]
 
     def build(self, scene: ChalkdustScene) -> None:
         p: CalloutParams = self.params
@@ -137,7 +139,7 @@ class Callout(Component):
 
         label_rect, target_rect = _split(stage, p.side, _extent(text, beside))
         fit_to_region(text, label_rect)  # raises overflow if it cannot stay legible
-        factor = fit_to_region(plan, target_rect)
+        fit_to_region(plan, target_rect)
 
         pointed = plan[p.part] if p.part is not None else plan
         _place_beside(text, plan, pointed, direction, stage.inset(DEFAULT_PADDING))
@@ -184,75 +186,70 @@ class Callout(Component):
 
         t_room, t_point, t_read = scene.budget(2, 2, 3)
         scene.play(MoveToTarget(target), run_time=t_room)
-        _scale_font_tags(target, factor)
+        # The move hands the target the plan's points, not its font-size
+        # tags; the plan's are the honest ones after fit_to_region shrank it.
+        for mob, planned in zip(target.get_family(), plan.get_family()):
+            if hasattr(planned, "_chalk_font_size"):
+                mob._chalk_font_size = planned._chalk_font_size  # type: ignore[attr-defined]
         scene.play(GrowArrow(arrow), FadeIn(text), run_time=t_point)
         scene.settle("callout shown")
         scene.wait(t_read)
 
     # --- fixtures -----------------------------------------------------------
-    # examples() and stress() stay empty ON PURPOSE. tests/test_layout.py
-    # walks them through validate_beat(), which builds a bare component with
-    # no carried artifacts (register N-4), so every Callout case would fail
-    # there with CarryInError. The real fixtures below carry their producer
-    # recipe alongside the params; tests/test_component_callout.py runs them
-    # through CarryIn with the same assertions test_layout makes. Once
-    # validate_beat accepts recipes, test_layout can walk these directly.
-    #
-    # Each case: {"carry_in": [recipe dict], "params": Callout params}. The
-    # producer must have an artifact builder; none is shipped yet, so the
-    # test file lends BulletReveal one.
+    # Every case acts on a carried list. fixture_carry_in() hands the registry
+    # walks (test_layout, test_snapshots, the semantic TestLibrary) the recipe
+    # for the case's target, so each case is built exactly as the pipeline
+    # builds a carry-in beat: BulletReveal's artifact on screen, dimmed, first.
 
     @classmethod
-    def carried_examples(cls):
-        causes = {"name": "causes", "producer": "BulletReveal",
-                  "params": {"items": ["A weak hash function",
-                                       "A load factor left too high",
-                                       "Adversarial keys chosen to collide"]}}
-        steps = {"name": "steps", "producer": "BulletReveal",
-                 "params": {"items": ["Hash the key", "Find the bucket",
-                                      "Walk the chain", "Compare keys"]}}
+    def fixture_carry_in(cls, params: dict[str, Any]) -> list[ArtifactRecipe]:
+        items = _FIXTURE_LISTS.get(params.get("target_id"))
+        if items is None:
+            return []
+        return [ArtifactRecipe(name=params["target_id"], producer="BulletReveal",
+                               params={"items": items})]
+
+    @classmethod
+    def examples(cls):
         return [
-            {"carry_in": [causes],
-             "params": {"target_id": "causes", "part": 2, "side": "right",
-                        "text": "The one an attacker controls"}},
-            {"carry_in": [steps],
-             "params": {"target_id": "steps", "side": "below",
-                        "text": "Every lookup pays for all four steps"}},
-            {"carry_in": [steps],
-             "params": {"target_id": "steps", "part": 0, "side": "left",
-                        "text": "Constant time"}},
+            {"target_id": "causes", "part": 2, "side": "right",
+             "text": "The one an attacker controls"},
+            {"target_id": "steps", "side": "below",
+             "text": "Every lookup pays for all four steps"},
+            {"target_id": "steps", "part": 0, "side": "left",
+             "text": "Constant time"},
         ]
 
     @classmethod
-    def carried_stress(cls):
-        # As crowded as a legible target gets: six full-width bullets.
-        crowded = {"name": "crowded", "producer": "BulletReveal",
-                   "params": {"items": ["Each of these bullets runs a full line"] * 6}}
-        single = {"name": "single", "producer": "BulletReveal",
-                  "params": {"items": ["a"]}}
+    def stress(cls):
         return [
-            # (a) 3x realistic volume, on a crowded target, beside it.
-            {"carry_in": [crowded],
-             "params": {"target_id": "crowded", "part": 5, "side": "right",
-                        "text": "This annotation runs to roughly three times the "
-                                "length any callout should, because the model "
-                                "decided to explain the whole idea in the label "
-                                "instead of in the narration where it belongs"}},
+            # (a) 3x realistic volume, beside the last of six full-width rows.
+            {"target_id": "crowded", "part": 5, "side": "right",
+             "text": "This annotation runs to roughly three times the length "
+                     "any callout should, because the model decided to explain "
+                     "the whole idea in the label instead of in the narration "
+                     "where it belongs"},
             # (a) far past capacity: must refuse as overflow, not shrink.
-            {"carry_in": [crowded],
-             "params": {"target_id": "crowded", "side": "above",
-                        "text": "An annotation that will not fit. " * 30}},
-            # (b) unwrappable tokens.
-            {"carry_in": [single],
-             "params": {"target_id": "single", "side": "below",
-                        "text": "https://example.com/" + "a" * 60}},
-            {"carry_in": [single],
-             "params": {"target_id": "single", "side": "left",
-                        "text": "x" * 60}},
+            {"target_id": "crowded", "side": "above",
+             "text": "An annotation that will not fit. " * 30},
+            # (b) unwrappable tokens: a URL and a 60-char identifier.
+            {"target_id": "single", "side": "below",
+             "text": "https://example.com/" + "a" * 60},
+            {"target_id": "single", "side": "left", "text": "x" * 60},
             # (c) minimal: one-character label on a one-character target.
-            {"carry_in": [single],
-             "params": {"target_id": "single", "part": 0, "text": "a"}},
+            {"target_id": "single", "part": 0, "text": "a"},
         ]
+
+
+# The lists the fixtures annotate, by carry-in name (BulletReveal items).
+_FIXTURE_LISTS: dict[str, list[str]] = {
+    "causes": ["A weak hash function", "A load factor left too high",
+               "Adversarial keys chosen to collide"],
+    "steps": ["Hash the key", "Find the bucket", "Walk the chain", "Compare keys"],
+    # As crowded as a legible target gets: six full-width bullets.
+    "crowded": ["Each of these bullets runs a full line"] * 6,
+    "single": ["a"],
+}
 
 
 # --- private helpers --------------------------------------------------------
@@ -322,14 +319,3 @@ def _segment_hits(start: np.ndarray, end: np.ndarray, rect: Rect,
             return True
     return False
 
-
-def _scale_font_tags(mob: Mobject, factor: float) -> None:
-    """Keep tracked font sizes honest after the target was shrunk by an
-    animation rather than by fit_to_region (which updates them itself).
-
-    Private copy of regions._apply_scale_to_tags; f4's scale_with_tags is the
-    shared home once merged."""
-    for m in mob.get_family():
-        size = getattr(m, "_chalk_font_size", None)
-        if size is not None:
-            m._chalk_font_size = size * factor  # type: ignore[attr-defined]

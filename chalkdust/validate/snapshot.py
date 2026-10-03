@@ -43,6 +43,7 @@ from manim import MarkupText, Mobject, SingleStringMathTex, Text, VMobject, conf
 from manim.mobject.mobject import _AnimationBuilder
 from manim.mobject.svg.svg_mobject import VMobjectFromSVGPath
 
+from chalkdust.continuity import CarryIn
 from chalkdust.core.models import Region
 from chalkdust.core.version import MANIM_VERSION
 from chalkdust.scenes.components import Component, get_component, registered_names
@@ -82,7 +83,7 @@ def fingerprint() -> str:
 class SnapshotProbe(LayoutProbe):
     """A LayoutProbe that records the timeline and every settle state."""
 
-    def __init__(self, component: Component, **kwargs) -> None:
+    def __init__(self, component: Component | CarryIn, **kwargs) -> None:
         super().__init__(component, **kwargs)
         self.timeline: list[dict[str, Any]] = []
         self.geometry: list[list[dict[str, Any]]] = []
@@ -161,9 +162,14 @@ def _paint(mob: Mobject) -> dict[str, Any]:
 
 
 def capture(name: str, params: dict[str, Any]) -> tuple[dict, list]:
-    """(structure, geometry) for one component instance."""
-    probe = SnapshotProbe(get_component(name)(params), theme=THEME,
-                          duration=DURATION, strict=False)
+    """(structure, geometry) for one component instance -- built with the
+    case's carried artifacts on screen (Component.fixture_carry_in), as the
+    pipeline builds a carry-in beat, so the snapshot is the frame it draws."""
+    cls = get_component(name)
+    recipes = cls.fixture_carry_in(params)
+    component = cls(params)
+    probe = SnapshotProbe(CarryIn(component, recipes) if recipes else component,
+                          theme=THEME, duration=DURATION, strict=False)
     probe.construct()
     return {"timeline": probe.timeline}, probe.geometry
 

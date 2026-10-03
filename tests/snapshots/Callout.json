@@ -1,0 +1,1605 @@
+{
+ "component": "Callout",
+ "manim_version": "0.21.0",
+ "reasons": [
+  "Callout merged"
+ ],
+ "cases": [
+  {
+   "params": {
+    "target_id": "causes",
+    "part": 2,
+    "side": "right",
+    "text": "The one an attacker controls"
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "MoveToTarget"
+      ],
+      "run_time": 2.867
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 2.85
+     },
+     {
+      "op": "settle",
+      "label": "callout shown",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[causes]",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "A weak hash function",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "A load factor left too high",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Adversarial keys chosen to collide",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "callout arrow",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "text": "The one an attacker\ncontrols",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 4.283
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[causes]",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "A weak hash function",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "A load factor left too high",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Adversarial keys chosen to collide",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "callout arrow",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "text": "The one an attacker\ncontrols",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        -2.374,
+        -0.1,
+        7.097,
+        2.066
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.628,
+        0.769,
+        4.59,
+        0.329
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.853,
+        0.774,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.418,
+        0.769,
+        4.17,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -3.281,
+        -0.103,
+        5.282,
+        0.417
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.853,
+        -0.053,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.071,
+        -0.103,
+        4.862,
+        0.417
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.374,
+        -0.927,
+        7.097,
+        0.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.853,
+        -0.88,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.164,
+        -0.927,
+        6.677,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.574,
+        -0.927,
+        0.6,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.349,
+        -0.927,
+        0.15,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.948,
+        -0.927,
+        3.949,
+        0.757
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -2.374,
+        -0.1,
+        7.097,
+        2.066
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.628,
+        0.769,
+        4.59,
+        0.329
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.853,
+        0.774,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.418,
+        0.769,
+        4.17,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -3.281,
+        -0.103,
+        5.282,
+        0.417
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.853,
+        -0.053,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.071,
+        -0.103,
+        4.862,
+        0.417
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.374,
+        -0.927,
+        7.097,
+        0.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.853,
+        -0.88,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.164,
+        -0.927,
+        6.677,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.574,
+        -0.927,
+        0.6,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.349,
+        -0.927,
+        0.15,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.948,
+        -0.927,
+        3.949,
+        0.757
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "target_id": "steps",
+    "side": "below",
+    "text": "Every lookup pays for all four steps"
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "MoveToTarget"
+      ],
+      "run_time": 2.867
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 2.85
+     },
+     {
+      "op": "settle",
+      "label": "callout shown",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[steps]",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Hash the key",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Find the bucket",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Walk the chain",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[3]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Compare keys",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "callout arrow",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "text": "Every lookup pays for all four steps",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 4.283
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[steps]",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Hash the key",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Find the bucket",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Walk the chain",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[3]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Compare keys",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "callout arrow",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "text": "Every lookup pays for all four steps",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        0.509,
+        3.419,
+        2.899
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.222,
+        1.752,
+        2.974,
+        0.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.64,
+        1.799,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.012,
+        1.752,
+        2.554,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        0.969,
+        3.419,
+        0.323
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.64,
+        0.972,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        0.969,
+        2.999,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.068,
+        0.142,
+        3.282,
+        0.323
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.64,
+        0.144,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.142,
+        0.142,
+        2.862,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.087,
+        -0.732,
+        3.246,
+        0.417
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.64,
+        -0.683,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.123,
+        -0.732,
+        2.826,
+        0.417
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.0,
+        -1.341,
+        0.15,
+        0.6
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        -1.116,
+        0.15,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.949,
+        6.864,
+        0.417
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        0.509,
+        3.419,
+        2.899
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.222,
+        1.752,
+        2.974,
+        0.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.64,
+        1.799,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.012,
+        1.752,
+        2.554,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        0.969,
+        3.419,
+        0.323
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.64,
+        0.972,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        0.969,
+        2.999,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.068,
+        0.142,
+        3.282,
+        0.323
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.64,
+        0.144,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.142,
+        0.142,
+        2.862,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.087,
+        -0.732,
+        3.246,
+        0.417
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.64,
+        -0.683,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.123,
+        -0.732,
+        2.826,
+        0.417
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.0,
+        -1.341,
+        0.15,
+        0.6
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        -1.116,
+        0.15,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.949,
+        6.864,
+        0.417
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "target_id": "steps",
+    "part": 0,
+    "side": "left",
+    "text": "Constant time"
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "MoveToTarget"
+      ],
+      "run_time": 2.867
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 2.85
+     },
+     {
+      "op": "settle",
+      "label": "callout shown",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[steps]",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Hash the key",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "Find the bucket",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "Walk the chain",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[3]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "Compare keys",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "callout arrow",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "text": "Constant time",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 4.283
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[steps]",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Hash the key",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "Find the bucket",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "Walk the chain",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[3]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "Compare keys",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "callout arrow",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "text": "Constant time",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        1.751,
+        -0.1,
+        3.419,
+        2.899
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.528,
+        1.144,
+        2.974,
+        0.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.111,
+        1.19,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.738,
+        1.144,
+        2.554,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.751,
+        0.36,
+        3.419,
+        0.323
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.111,
+        0.363,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.961,
+        0.36,
+        2.999,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.682,
+        -0.467,
+        3.282,
+        0.323
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.111,
+        -0.464,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.892,
+        -0.467,
+        2.862,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.664,
+        -1.341,
+        3.246,
+        0.417
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.111,
+        -1.291,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.874,
+        -1.341,
+        2.826,
+        0.417
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.359,
+        1.144,
+        0.6,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.134,
+        1.144,
+        0.15,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.11,
+        1.144,
+        2.701,
+        0.329
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        1.751,
+        -0.1,
+        3.419,
+        2.899
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.528,
+        1.144,
+        2.974,
+        0.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.111,
+        1.19,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.738,
+        1.144,
+        2.554,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.751,
+        0.36,
+        3.419,
+        0.323
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.111,
+        0.363,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.961,
+        0.36,
+        2.999,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.682,
+        -0.467,
+        3.282,
+        0.323
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.111,
+        -0.464,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.892,
+        -0.467,
+        2.862,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.664,
+        -1.341,
+        3.246,
+        0.417
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.111,
+        -1.291,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.874,
+        -1.341,
+        2.826,
+        0.417
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.359,
+        1.144,
+        0.6,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.134,
+        1.144,
+        0.15,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.11,
+        1.144,
+        2.701,
+        0.329
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ]
+   }
+  }
+ ]
+}

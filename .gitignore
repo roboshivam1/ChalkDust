@@ -1,6 +1,7 @@
 .venv/
 __pycache__/
-media/
+*.egg-info/
+.DS_Store
 # chalkdust
 .cache/
 media/

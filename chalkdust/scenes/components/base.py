@@ -20,6 +20,11 @@ from chalkdust.core.models import Region
 if TYPE_CHECKING:
     from chalkdust.scenes.base import ChalkdustScene
 
+# Shortest time one reveal step can take and still register with a viewer --
+# anything faster reads as a flash, not a reveal. Components overriding
+# min_seconds() typically return MIN_STEP_SECONDS * <number of steps>.
+MIN_STEP_SECONDS = 0.5
+
 
 class ComponentParams(BaseModel):
     """Base for every component's parameter model.
@@ -67,6 +72,32 @@ class Component(ABC):
     @abstractmethod
     def build(self, scene: "ChalkdustScene") -> None:
         """Construct and animate. Must consume exactly the scene's time budget."""
+
+    # --- semantic-rung hooks ------------------------------------------------
+    # Optional. Read by validate/semantic.py before anything is built
+    # (SCENE_SPEC.md §8, rung 2). The defaults are permissive on purpose: a
+    # component that does not override them is never refused on their account.
+
+    def min_seconds(self) -> float:
+        """Shortest narration, in seconds, these params can animate without
+        rushing.
+
+        The beat's audio duration is the component's whole time budget (D-002);
+        if the narration is shorter than this, every step gets squeezed below
+        what a viewer can follow. Typically MIN_STEP_SECONDS * steps, where a
+        step is one reveal the viewer must register.
+        """
+        return 0.0
+
+    def latex_strings(self) -> list[str]:
+        """Every LaTeX string build() will compile, exactly as passed to
+        MathTex (math mode).
+
+        The semantic rung compiles each one standalone, so a malformed
+        expression fails with its own source in the message -- not as a
+        build_error from deep inside build().
+        """
+        return []
 
     # --- test fixtures ------------------------------------------------------
     # Each component declares its own cases so the shared test suite covers

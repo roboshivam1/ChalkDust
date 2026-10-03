@@ -27,7 +27,20 @@ from chalkdust.scenes.components import make_component
 
 @dataclass(frozen=True)
 class Finding:
-    kind: str      # out_of_bounds | overlap | illegible | overflow | build_error
+    """One failure the repair loop can dispatch on (SCENE_SPEC.md §9).
+
+    kinds, geometric (rung 3, this module):
+      out_of_bounds | overlap | illegible | overflow | build_error
+    kinds, semantic (rung 2, semantic.py):
+      duration        -- narration too short for the component's steps, or
+                         longer than one beat may run
+      carry_in        -- references an artifact no earlier beat registered
+      region_conflict -- two simultaneously active claimants share space
+      capacity        -- more text than the claimed regions can hold legibly
+      latex           -- a LaTeX string does not compile standalone
+    """
+
+    kind: str
     message: str
 
 

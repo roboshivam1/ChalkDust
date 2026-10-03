@@ -154,6 +154,19 @@ def test_schema_rejects(params):
         StepTrace(params)
 
 
+@pytest.mark.parametrize("brk", [
+    "\r", "\x0b", "\x0c", "\x1c", "\x1d", "\x1e", "\x85", " ", " ",
+], ids=["CR", "VT", "FF", "FS", "GS", "RS", "NEL", "LS", "PS"])
+def test_schema_rejects_every_line_break(brk):
+    # Not just "\n": Pango breaks a line on any of these, and the second line
+    # lands on the next row (a cell) or across the header rule (a name).
+    with pytest.raises(ValidationError):
+        StepTrace({"variables": ["s", "n"],
+                   "frames": [[f"a{brk}b", 1], ["c", 2], ["d", 3]]})
+    with pytest.raises(ValidationError):
+        StepTrace({"variables": [f"a{brk}b"], "frames": [[1]]})
+
+
 def test_minimal_trace_validates_clean(tmp_path):
     spec = BeatSpec(id="b01", narration="x starts undefined.",
                     component="StepTrace",
@@ -168,6 +181,25 @@ def test_overloaded_trace_refuses_as_overflow(tmp_path):
     with pytest.raises(LayoutError) as exc:
         _probe(OVERLOADED, tmp_path)
     assert exc.value.kind == "overflow"
+
+
+@pytest.mark.parametrize("params", [
+    {"variables": ["v"], "frames": [["\U0001F600"]]},
+    {"variables": ["v"], "frames": [["​"]]},
+    {"variables": ["v"], "frames": [["­"]]},
+    {"variables": ["v"], "frames": [["﻿"]]},
+    {"variables": ["v", "w"], "frames": [[1, 2], [3, "⁠"]]},
+    {"variables": ["‍"], "frames": [[1]]},
+], ids=["emoji", "zwsp", "soft-hyphen", "bom", "word-joiner-late",
+        "zwj-name"])
+def test_inkless_text_refuses_as_illegible(params, tmp_path):
+    # Text that draws no glyph in the mono font passes the schema and rung 1
+    # but has nothing to read or to align on a baseline: a typed refusal,
+    # never a raw IndexError from positioning an empty Text.
+    spec = BeatSpec(id="b01", narration="placeholder narration",
+                    component="StepTrace", params=params)
+    report = validate_beat(spec, media_dir=tmp_path)
+    assert report.kinds() == {"illegible"}, f"\n{report}"
 
 
 # --- muting -----------------------------------------------------------------------

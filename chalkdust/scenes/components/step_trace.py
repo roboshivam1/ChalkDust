@@ -23,7 +23,7 @@ from chalkdust.scenes.components.base import (
     label,
     register,
 )
-from chalkdust.scenes.regions import fit_to_region
+from chalkdust.scenes.regions import LayoutError, fit_to_region
 from chalkdust.scenes.theme import Theme, mono_text
 
 # Density limits that fire at schema validation, like BulletReveal's item cap.
@@ -101,15 +101,21 @@ class StepTraceParams(ComponentParams):
 
 
 def _single_line(s: str, what: str) -> str:
-    """A table cell is one line by construction -- a newline would silently
-    break the constant row pitch -- and an empty one is unreadable."""
+    """A table cell is one line by construction -- a line break would
+    silently break the constant row pitch -- and an empty one is unreadable.
+
+    "Line break" means every line-breaking code point, not just a newline:
+    str.splitlines() splits on that whole set (CR, VT, FF, FS/GS/RS, NEL,
+    U+2028, U+2029), and Pango draws any of them as a second line over the
+    next row or across the header rule.
+    """
     s = s.strip()
     if not s:
         raise ValueError(
             f"{what} cannot be empty; use null for an undefined value, or "
             f"'\"\"' to show an empty string"
         )
-    if "\n" in s:
+    if len(s.splitlines()) > 1:
         raise ValueError(f"{what} {s!r} must be a single line")
     return s
 
@@ -145,6 +151,19 @@ def _cell(s: str, theme: Theme, color: str, x: float, baseline: float) -> Text:
     return text
 
 
+def _no_ink(field: str, s: str) -> LayoutError:
+    """A cell whose text draws nothing in the mono font: only zero-width or
+    format characters (U+200B, a soft hyphen, a BOM), or glyphs the font
+    lacks (an emoji). There is nothing to read and nothing to align on a
+    baseline, so refuse before anything is positioned. Typed illegible: the
+    fix is the spec -- spell the value with characters that draw."""
+    return LayoutError(
+        f"StepTrace {field} {s!r} draws no visible glyphs in the mono font; "
+        f"spell it with printable characters",
+        kind="illegible",
+    )
+
+
 @dataclass
 class _Trace:
     """The table's parts, laid out in the table's own frame, all visible."""
@@ -178,7 +197,13 @@ def _build_trace(p: StepTraceParams, theme: Theme) -> _Trace:
     widths = []
     for j, name in enumerate(p.variables):
         cells = [name] + [row[j] for row in shown]
-        widths.append(max(mono_text(c, theme).width for c in cells))
+        texts = [mono_text(c, theme) for c in cells]
+        for i, (c, t) in enumerate(zip(cells, texts)):
+            if not t.family_members_with_points():
+                field = (f"variables[{j}]" if i == 0
+                         else f"frames[{i - 1}][{j}]")
+                raise _no_ink(field, c)
+        widths.append(max(t.width for t in texts))
     centres, cursor = [], 0.0
     for w in widths:
         centres.append(cursor + w / 2)

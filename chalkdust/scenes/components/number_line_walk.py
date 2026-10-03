@@ -195,7 +195,7 @@ def tick_values(rng: tuple[float, ...]) -> list[float]:
 
 def _auto_step(lo: float, hi: float) -> float:
     span = hi - lo
-    if (lo.is_integer() and hi.is_integer()
+    if (float(lo).is_integer() and float(hi).is_integer()
             and UNIT_TICK_SPAN[0] <= span <= UNIT_TICK_SPAN[1]):
         return 1.0
     return _nice_step(span / TARGET_TICKS)
@@ -473,6 +473,11 @@ class NumberLineWalk(Component):
             {"range": [0, 10],
              "steps": [{"at": 1},
                        {"to": 9, "label": "https://example.com/" + "x" * 40}]},
+            # The walker re-placed mid-walk: a second mark slides it along
+            # the line instead of fading in a second walker.
+            {"range": [-5, 5],
+             "steps": [{"at": 2}, {"to": 5}, {"at": -3, "label": "reset"},
+                       {"to": 1}]},
             # (c) minimal: one mark, no label, the smallest sensible range.
             {"range": [0, 1], "steps": [{"at": 0}]},
             # A jump too small to draw at this range: must refuse, not smear.

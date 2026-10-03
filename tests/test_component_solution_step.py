@@ -2,20 +2,33 @@
 
 tests/test_layout.py already proves examples() validate clean and stress()
 fits or refuses cleanly. This file pins what is specific to this component:
-timing, the schema's refusals, the typed LaTeX failure, the maths/prose split
-behind latex_strings(), where each part lands, and that the cheap layout probe
-agrees with a real draft render.
+timing in whole frames, the schema's refusals, the typed LaTeX failure, the
+maths/prose split behind latex_strings(), where each part lands, the carry-in
+artifact, and that the cheap layout probe agrees with a real draft render.
 
 These tests compile LaTeX, so `latex` and `dvisvgm` must be on PATH.
 """
 
 from __future__ import annotations
 
+import json
+import math
+import subprocess
+
+import numpy as np
 import pytest
 from manim import tempconfig
+from manim.animation.animation import prepare_animation
 from pydantic import ValidationError
 
-from chalkdust.core.models import BeatSpec, Region
+from chalkdust.continuity import (
+    ArtifactRecipe,
+    beat_component,
+    build_artifact,
+    carried,
+    resolve_carry_in,
+)
+from chalkdust.core.models import BeatSpec, Region, VideoSpec
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components import make_component
 from chalkdust.scenes.components.solution_step import (
@@ -26,7 +39,15 @@ from chalkdust.scenes.components.solution_step import (
     READ_S,
     SolutionStep,
 )
-from chalkdust.scenes.regions import DEFAULT_PADDING, LayoutError, bbox, region_rect
+from chalkdust.scenes.regions import (
+    DEFAULT_PADDING,
+    MIN_FONT_SIZE,
+    LayoutError,
+    bbox,
+    region_rect,
+    smallest_font_size,
+)
+from chalkdust.scenes.theme import get_theme
 from chalkdust.validate.geometric import LayoutProbe, validate_beat
 
 NAME = "SolutionStep"
@@ -57,22 +78,35 @@ def _labelled(scene) -> list[tuple[str, object]]:
 
 
 class _Clock(LayoutProbe):
-    """A probe that also adds up the time every play() and wait() asks for --
-    the scene's elapsed time, without encoding a frame. A play() with no
+    """A probe that also records the run time every play() and wait() asks
+    for -- the scene's timeline, without encoding a frame. A play() with no
     explicit run_time counts at its animations' own default, so a forgotten
-    run_time shows up as a budget mismatch rather than passing silently."""
+    run_time shows up as a frame mismatch rather than passing silently."""
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.elapsed = 0.0
+        self.run_times: list[float] = []
 
     def play(self, *animations, **kwargs) -> None:  # type: ignore[override]
-        self.elapsed += kwargs.get("run_time", max(a.run_time for a in animations
-                                                   if hasattr(a, "run_time")))
+        run_time = kwargs.get("run_time")
+        if run_time is None:
+            # prepare_animation turns `.animate` builders into Animations.
+            run_time = max(prepare_animation(a).run_time for a in animations)
+        self.run_times.append(run_time)
         super().play(*animations, **kwargs)
 
     def wait(self, duration: float = 1.0, *args, **kwargs) -> None:  # type: ignore[override]
-        self.elapsed += duration
+        self.run_times.append(duration)
+
+
+def _movie_frames(scene: ChalkdustScene) -> int:
+    """Frames in a rendered scene's movie file, counted by ffprobe."""
+    out = subprocess.run(
+        ["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
+         "-show_entries", "stream=nb_read_frames", "-of", "json",
+         str(scene.renderer.file_writer.movie_file_path)],
+        capture_output=True, text=True, check=True).stdout
+    return int(json.loads(out)["streams"][0]["nb_read_frames"])
 
 
 # --- timing (D-002) -----------------------------------------------------------
@@ -80,13 +114,19 @@ class _Clock(LayoutProbe):
 
 @pytest.mark.parametrize("factor", [0.5, 3.0], ids=["short", "long"])
 @pytest.mark.parametrize("params", EXAMPLES, ids=[f"ex{i}" for i in range(len(EXAMPLES))])
-def test_timing_consumes_budget_exactly(params, factor):
+def test_timing_is_whole_frames_summing_to_the_beat(params, factor, tmp_path):
     # Narration far shorter and far longer than the animation wants: either
-    # way the beat must last exactly as long as its audio.
+    # way every play and wait is a whole number of draft frames, and together
+    # they are exactly the beat's frames -- ceil(audio * fps), no drift.
     budget = make_component(NAME, params).min_seconds() * factor
-    clock = _Clock(make_component(NAME, params), duration=budget)
-    clock.construct()
-    assert clock.elapsed == pytest.approx(budget, abs=1 / DRAFT_FPS)
+    with tempconfig({"frame_rate": DRAFT_FPS}):
+        clock = _Clock(make_component(NAME, params), duration=budget,
+                       media_dir=tmp_path)
+        clock.construct()
+    frames = [t * DRAFT_FPS for t in clock.run_times]
+    assert all(f == pytest.approx(round(f), abs=1e-9) and round(f) >= 1 for f in frames)
+    assert sum(round(f) for f in frames) == clock.beat_frames
+    assert clock.beat_frames == math.ceil(budget * DRAFT_FPS)
 
 
 def test_min_seconds_is_sum_of_segment_minimums():
@@ -155,10 +195,17 @@ def test_regions_follow_justification():
 # --- typed refusals ---------------------------------------------------------------
 
 
-@pytest.mark.parametrize("bad", [r"\notacommand{x} = 1", r"\quad"],
+def _latex_stress_cases() -> list[dict]:
+    return [c for c in SolutionStep.stress() if c.get("claim") == "Simplify"]
+
+
+@pytest.mark.parametrize("params", _latex_stress_cases(),
                          ids=["compile-error", "renders-nothing"])
-def test_invalid_latex_is_a_typed_finding(bad):
-    report = validate_beat(_spec({"n": 2, "claim": "c", "work": ["x = 1", bad]}))
+def test_invalid_latex_is_a_typed_finding_naming_the_line(params):
+    # The stress() cases with bad LaTeX in work[1]: test_layout only checks
+    # they refuse cleanly; this pins that they refuse with exactly
+    # invalid_latex, and that the refusal names the line to regenerate.
+    report = validate_beat(_spec(params))
     assert report.kinds() == {"invalid_latex"}, f"\n{report}"
     assert "work[1]" in report.findings[0].message
 
@@ -222,9 +269,40 @@ def test_probe_matches_real_draft_render(tmp_path):
         assert getattr(real, "_chalk_font_size", None) == pytest.approx(
             getattr(probed, "_chalk_font_size", None)), name
 
-    # Manim quantises every play()/wait() to whole frames, so a real render can
-    # differ from the budget by up to one frame per timed segment. Closing that
-    # gap is the mux stage's job; bound it here so it can never grow beyond
-    # quantisation.
-    segments = len(make_component(NAME, params)._segments())
-    assert scene.renderer.time == pytest.approx(duration, abs=segments / DRAFT_FPS)
+    # The rendered clip is exactly the beat: ceil(audio * fps) frames.
+    assert _movie_frames(scene) == scene.beat_frames == math.ceil(duration * DRAFT_FPS)
+
+
+# --- carry-in (SCENE_SPEC.md §6) --------------------------------------------------
+
+
+def test_artifact_rebuild_is_deterministic():
+    recipe = ArtifactRecipe(name="step", producer=NAME, params=EXAMPLES[0])
+    theme = get_theme("default")
+    a, b = build_artifact(recipe, theme), build_artifact(recipe, theme)
+    pa = [m.points for m in a.family_members_with_points()]
+    pb = [m.points for m in b.family_members_with_points()]
+    assert len(pa) == len(pb) > 0
+    assert all(np.array_equal(x, y) for x, y in zip(pa, pb))
+    # The work, line by line as build() stacks it -- not the header or the
+    # justification, which caption the work in their own regions.
+    assert [m._chalk_label for m in a.submobjects] == ["work[0]", "work[1]"]
+
+
+def test_carried_step_is_legible_in_a_later_beat(carry_in_video):
+    # carry_in_video registers the _Highlight consumer; the producer here is a
+    # SolutionStep beat, rebuilt by SolutionStep's own artifact builder.
+    video = VideoSpec(video_id="v", beats=(
+        BeatSpec(id="b01", narration="placeholder narration", component=NAME,
+                 params=EXAMPLES[0], registers="accel"),
+        BeatSpec(id="b02", narration="placeholder narration", component="_Highlight",
+                 params={"target_id": "accel"}, carry_in=["accel"]),
+    ))
+    recipes = resolve_carry_in(video)["b02"]
+    report = validate_beat(video.beats[1], duration=4.0, recipes=recipes)
+    assert report.ok, f"\n{report}"
+    probe = LayoutProbe(beat_component(video.beats[1], recipes), duration=4.0)
+    probe.construct()
+    target = carried(probe, "accel")
+    assert region_rect(Region.STAGE).contains(bbox(target))
+    assert smallest_font_size(target) >= MIN_FONT_SIZE

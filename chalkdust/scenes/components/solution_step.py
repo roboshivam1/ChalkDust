@@ -21,9 +21,10 @@ from __future__ import annotations
 
 from typing import Annotated, Literal
 
-from manim import DOWN, LEFT, RIGHT, UP, Circle, FadeIn, VGroup, Write
+from manim import DOWN, LEFT, RIGHT, UP, Circle, FadeIn, Mobject, VGroup, Write
 from pydantic import Field, StringConstraints
 
+from chalkdust.continuity import artifact_builder
 from chalkdust.core.models import Region
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import (
@@ -33,7 +34,7 @@ from chalkdust.scenes.components.base import (
     register,
     wrap,
 )
-from chalkdust.scenes.regions import LayoutError, fit_to_region
+from chalkdust.scenes.regions import fit_to_region
 from chalkdust.scenes.theme import (
     Theme,
     body_cap_height,
@@ -139,16 +140,8 @@ class SolutionStep(Component):
         # Pinned left, like a heading in a written solution.
         fit_to_region(header, Region.TITLE_BAR, align=LEFT)
 
-        # Work: one mobject per line, stacked at a constant gap. Maths lines
-        # share a centre line, like a derivation on a board; prose lines share
-        # a left edge, like a paragraph.
-        lines = [_work_line(i, s, p.work_format, theme) for i, s in enumerate(p.work)]
-        for prev, line in zip(lines, lines[1:]):
-            line.next_to(prev, DOWN, buff=cap * ROW_GAP)
-            if p.work_format == "math":
-                line.match_x(lines[0])
-            else:
-                line.align_to(lines[0], LEFT)
+        # Work: one mobject per line, stacked at a constant gap (_work_stack).
+        lines = _work_stack(p, theme)
         # One fit for every line so they scale together and keep their
         # alignment. Raises LayoutError (overflow) when the working is too long
         # or too wide to stay legible: the fix is splitting the step.
@@ -211,9 +204,6 @@ class SolutionStep(Component):
 
     @classmethod
     def stress(cls):
-        # Invalid LaTeX is pinned in tests/test_component_solution_step.py
-        # rather than here: it refuses with kind "invalid_latex", which the
-        # registry-wide stress test does not (yet) count as a clean refusal.
         long_line = (r"\frac{m_1 u_1 + m_2 u_2}{m_1 + m_2} + "
                      r"\frac{m_1 m_2 (u_1 - u_2)^2}{2 (m_1 + m_2)} = v")
         long_text = ("Because both blocks move together the string stays taut, "
@@ -240,29 +230,47 @@ class SolutionStep(Component):
              "work_format": "text"},
             # Minimal: one-character claim and one-character work.
             {"n": 1, "claim": "x", "work": ["x"]},
+            # Invalid LaTeX in the second line of work: refuses as
+            # "invalid_latex", naming work[1].
+            {"n": 2, "claim": "Simplify", "work": ["x = 1", r"\notacommand{x} = 1"]},
+            # LaTeX that compiles to nothing: also "invalid_latex".
+            {"n": 2, "claim": "Simplify", "work": ["x = 1", r"\quad"]},
         ]
 
 
 def _work_line(i: int, source: str, fmt: str, theme: Theme):
     """Build one line of work through the theme's constructors.
 
-    Manim reports a LaTeX failure as a bare ValueError from deep inside its
-    compile step. Converting it here gives the repair loop a typed refusal it
-    can dispatch on (regenerate the spec) instead of a crash, and the probe
-    reports it as a finding of that kind -- the same kind EquationDerivation
-    raises.
+    Maths goes through theme.math, the one LaTeX path: a line that does not
+    compile, or compiles to nothing, refuses there as LayoutError kind
+    "invalid_latex" naming work[i], so the repair loop regenerates the spec
+    instead of crashing.
     """
     if fmt == "text":
         return label(body_text(wrap(source, PROSE_WRAP), theme), f"work[{i}]")
-    try:
-        line = math(source, theme)
-    except ValueError as exc:
-        raise LayoutError(
-            f"work[{i}] is not valid LaTeX: {source!r} ({exc})",
-            kind="invalid_latex",
-        ) from exc
-    if line.width == 0 and line.height == 0:
-        # Compiles, draws nothing (e.g. only spacing commands). Placing it would
-        # leave a silent gap in the working.
-        raise LayoutError(f"work[{i}] renders nothing: {source!r}", kind="invalid_latex")
-    return label(line, f"work[{i}]")
+    return label(math(source, theme, what=f"work[{i}]"), f"work[{i}]")
+
+
+def _work_stack(p: SolutionStepParams, theme: Theme) -> list[Mobject]:
+    """The lines of work, stacked and aligned but not yet placed.
+
+    Maths lines share a centre line, like a derivation on a board; prose lines
+    share a left edge, like a paragraph. Shared by build() and the carry-in
+    artifact builder, so a carried step is the step the viewer saw."""
+    cap = body_cap_height(theme)
+    lines = [_work_line(i, s, p.work_format, theme) for i, s in enumerate(p.work)]
+    for prev, line in zip(lines, lines[1:]):
+        line.next_to(prev, DOWN, buff=cap * ROW_GAP)
+        if p.work_format == "math":
+            line.match_x(lines[0])
+        else:
+            line.align_to(lines[0], LEFT)
+    return lines
+
+
+@artifact_builder("SolutionStep")
+def _artifact(params: SolutionStepParams, theme: Theme) -> Mobject:
+    """A later beat (a Callout or ZoomHighlight on the key line, say) carries
+    the step's work: its settled on-stage visual, rebuilt from the params.
+    The claim and justification are captions to the work, not part of it."""
+    return label(VGroup(*_work_stack(params, theme)), "work")

@@ -179,6 +179,32 @@ def test_lens_magnifies_focus_and_recedes_the_rest():
     assert region_rect(Region.LOWER_THIRD).contains(bbox(callout))
 
 
+@pytest.mark.parametrize("case", [EXAMPLES[1], STRESS[2]], ids=["ex1", "stress2"])
+def test_lens_settles_beside_a_narrow_target_hiding_no_unfocused_part(case):
+    # EXAMPLES[1]: over its focus (rows 1-2 of three short rows) the lens card
+    # is taller than the list and hid "hash(key)" whole. STRESS[2]: over row 0
+    # of two it hid half of "mod 8". STAGE has room beside the narrow list, so
+    # the lens settles there, clear of the whole target (never half over the
+    # rows it magnifies), level with its focus, still magnifying.
+    mobs = _by_label(_probe(case))
+    target, lens = mobs[f"carried[{case['target_id']}]"], mobs["zoom lens"]
+    focus = Group(*(target[i] for i in case["parts"]))
+    assert not bbox(lens).intersects(bbox(target))
+    assert bbox(lens).left > bbox(target).right
+    assert bbox(lens).y == pytest.approx(bbox(focus).y)
+    assert lens[1].height >= bbox(focus).height * MIN_ZOOM
+    assert region_rect(Region.STAGE).contains(bbox(lens))
+
+
+def test_lens_stays_over_the_focus_when_that_hides_nothing():
+    # EXAMPLES[0]: a full-width middle row. Its lens clears both neighbours
+    # in place, and there is no room beside the list, so it magnifies in place.
+    mobs = _by_label(_probe(EXAMPLES[0]))
+    target, lens = mobs[f"carried[{ARTIFACT}]"], mobs["zoom lens"]
+    np.testing.assert_allclose(lens.get_center(), target[1].get_center(), atol=1e-6)
+    assert all(bbox(lens).overlap_area(bbox(target[i])) == 0.0 for i in (0, 2))
+
+
 def test_whole_target_is_restored_and_framed():
     # EXAMPLES[2]: no parts -- the target fills STAGE's width, so it is
     # framed rather than magnified, and comes back to full strength.

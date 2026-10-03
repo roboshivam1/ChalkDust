@@ -4,7 +4,8 @@
  "reasons": [
   "ZoomHighlight merged",
   "ZoomHighlight re-recorded: fixtures now carry BulletReveal's real artifact builder (fixed pitch, as BulletReveal draws it) instead of the lent arrange() approximation, via the shared fixture_carry_in mechanism",
-  "real BulletReveal builder; rows no longer jump at the cut"
+  "real BulletReveal builder; rows no longer jump at the cut",
+  "lens settles beside a narrow target when over the focus it would hide the unfocused parts (example 1 no longer hides hash(key))"
  ],
  "cases": [
   {
@@ -764,7 +765,8 @@
          }
         ],
         "regions": [
-         "stage"
+         "stage",
+         "stage_right"
         ]
        },
        {
@@ -909,7 +911,8 @@
          }
         ],
         "regions": [
-         "stage"
+         "stage",
+         "stage_right"
         ]
        },
        {
@@ -1022,7 +1025,7 @@
       },
       {
        "bbox": [
-        -0.138,
+        3.94,
         -0.514,
         4.953,
         3.0
@@ -1031,7 +1034,7 @@
       },
       {
        "bbox": [
-        -0.138,
+        3.94,
         -0.514,
         4.953,
         3.0
@@ -1040,7 +1043,7 @@
       },
       {
        "bbox": [
-        -0.138,
+        3.94,
         -0.514,
         4.453,
         2.5
@@ -1049,7 +1052,7 @@
       },
       {
        "bbox": [
-        -0.62,
+        3.458,
         0.383,
         3.49,
         0.706
@@ -1058,7 +1061,7 @@
       },
       {
        "bbox": [
-        -2.213,
+        1.865,
         0.391,
         0.304,
         0.304
@@ -1067,7 +1070,7 @@
       },
       {
        "bbox": [
-        -0.163,
+        3.914,
         0.383,
         2.578,
         0.706
@@ -1076,7 +1079,7 @@
       },
       {
        "bbox": [
-        -0.138,
+        3.94,
         -1.412,
         4.453,
         0.703
@@ -1085,7 +1088,7 @@
       },
       {
        "bbox": [
-        -2.213,
+        1.865,
         -1.407,
         0.304,
         0.304
@@ -1094,7 +1097,7 @@
       },
       {
        "bbox": [
-        0.318,
+        4.396,
         -1.412,
         3.541,
         0.703
@@ -1204,7 +1207,7 @@
       },
       {
        "bbox": [
-        -0.138,
+        3.94,
         -0.514,
         4.953,
         3.0
@@ -1213,7 +1216,7 @@
       },
       {
        "bbox": [
-        -0.138,
+        3.94,
         -0.514,
         4.953,
         3.0
@@ -1222,7 +1225,7 @@
       },
       {
        "bbox": [
-        -0.138,
+        3.94,
         -0.514,
         4.453,
         2.5
@@ -1231,7 +1234,7 @@
       },
       {
        "bbox": [
-        -0.62,
+        3.458,
         0.383,
         3.49,
         0.706
@@ -1240,7 +1243,7 @@
       },
       {
        "bbox": [
-        -2.213,
+        1.865,
         0.391,
         0.304,
         0.304
@@ -1249,7 +1252,7 @@
       },
       {
        "bbox": [
-        -0.163,
+        3.914,
         0.383,
         2.578,
         0.706
@@ -1258,7 +1261,7 @@
       },
       {
        "bbox": [
-        -0.138,
+        3.94,
         -1.412,
         4.453,
         0.703
@@ -1267,7 +1270,7 @@
       },
       {
        "bbox": [
-        -2.213,
+        1.865,
         -1.407,
         0.304,
         0.304
@@ -1276,7 +1279,7 @@
       },
       {
        "bbox": [
-        0.318,
+        4.396,
         -1.412,
         3.541,
         0.703

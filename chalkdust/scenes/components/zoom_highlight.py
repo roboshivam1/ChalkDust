@@ -7,10 +7,12 @@ that carry-in name.
 
 ChalkdustScene is a plain Scene, so there is no camera to zoom. The zoom is
 done with mobjects instead: the focused parts return to full strength, then a
-magnified copy grows out of them on an opaque lens card that covers their
-dimmed neighbours. Parts already too large to magnify meaningfully (the whole
-target, a full-width row) get an accent frame instead. The callout sits in
-LOWER_THIRD, where it can never cover what it is talking about.
+magnified copy grows out of them on an opaque lens card. The card settles over
+the focus, or beside the target when that hides less of the unfocused parts
+-- they are the context the zoom is about. Parts already too large to
+magnify meaningfully (the whole target, a full-width row) get an accent frame
+instead. The callout sits in LOWER_THIRD, where it can never cover what it is
+talking about.
 """
 
 from __future__ import annotations
@@ -19,6 +21,8 @@ from typing import Annotated, Any
 
 import numpy as np
 from manim import (
+    LEFT,
+    RIGHT,
     Create,
     FadeIn,
     Group,
@@ -49,7 +53,7 @@ from chalkdust.scenes.regions import (
     region_rect,
     scale_with_tags,
 )
-from chalkdust.scenes.theme import body_text
+from chalkdust.scenes.theme import Theme, body_text
 
 # Relative weights of the beat's steps, in units of MIN_STEP_SECONDS: bring
 # the focus up, zoom (or frame) it, show the callout, hold while it is read.
@@ -66,6 +70,7 @@ MAX_ZOOM = 2.5
 MIN_ZOOM = 1.25
 LENS_PAD = 0.25       # card edge to magnified content
 LENS_CORNER = 0.12
+LENS_GAP = 0.3        # target to a lens set beside it
 FRAME_BUFF = 0.12     # frame to focus, inside fit_to_region's default padding
 STROKE_WIDTH = 4
 # The unfocused parts recede further while the focus comes up (on top of
@@ -150,21 +155,15 @@ class ZoomHighlight(Component):
                         "callout")
         fit_to_region(callout, Region.LOWER_THIRD)
 
-        box = bbox(focus)
-        zoom = _zoom_factor(box, region_rect(Region.STAGE))
-        if zoom >= MIN_ZOOM:
-            mag = Group(*(m.copy() for m in focus_full))
-            scale_with_tags(mag, zoom)
-            card = RoundedRectangle(
-                corner_radius=LENS_CORNER,
-                width=mag.width + 2 * LENS_PAD,
-                height=mag.height + 2 * LENS_PAD,
-                fill_color=theme.palette.bg, fill_opacity=1.0,
-                stroke_color=theme.palette.accent, stroke_width=STROKE_WIDTH,
-            ).move_to(mag)
-            marker = label(Group(card, mag), "zoom lens")
-            marker.move_to(focus)
-            _clamp_into(marker, region_rect(Region.STAGE).inset(DEFAULT_PADDING))
+        # The target's parts the zoom is not about: receded, and kept clear
+        # of the lens where STAGE allows. With no parts, the whole target is
+        # the focus.
+        others = ([m for m in target.submobjects if not any(m is f for f in focus)]
+                  if p.parts is not None else [])
+        planned = _settled_lens(focus, focus_full, target, others, theme)
+        if planned is not None:
+            marker, zoom = planned
+            label(marker, "zoom lens")
             # Grows out of the focus: starts at the focus's own size and spot,
             # opaque throughout. A FadeIn would cross-fade the magnified copy
             # over the original for the whole step -- double-exposed text.
@@ -190,7 +189,6 @@ class ZoomHighlight(Component):
             # One animation per part, never one on a Group of them: Scene.play
             # adds an animated mobject that is not already on screen, and a new
             # Group would be -- drawing those parts a second time.
-            others = [m for m in target.submobjects if not any(m is f for f in focus)]
             scene.play(*(Transform(m, f.copy()) for m, f in zip(focus, focus_full)),
                        *(m.animate.fade(RECEDE) for m in others),
                        run_time=t_focus)
@@ -321,6 +319,72 @@ def _zoom_factor(box: Rect, stage: Rect) -> float:
         if extent > 0:
             limits.append((room * LENS_FILL - 2 * LENS_PAD) / extent)
     return min(limits)
+
+
+def _settled_lens(focus: Mobject, focus_full: Mobject, target: Mobject,
+                  others: list[Mobject], theme: Theme) -> tuple[Mobject, float] | None:
+    """The lens at its settled size and place, with its zoom; None when the
+    focus is too large to magnify by MIN_ZOOM anywhere (frame it instead).
+
+    Three places, each relative to the target and kept inside STAGE: over the
+    focus (the magnifying-glass reading), then beside the target on the right
+    and on the left, level with the focus. Over the focus, the zoom is what
+    LENS_FILL allows; beside, it is also capped by the room between the
+    target and STAGE's edge, and a lens that would still touch the target
+    there is not a candidate -- half-covering the very rows it magnifies is
+    worse than covering them whole. The lens settles where it hides the least
+    of the unfocused parts, over the focus on a tie. Why it matters: on a
+    short list the card over a middle row is taller than the row pitch, so it
+    hid every neighbour -- the context the callout is talking about -- while
+    STAGE had room beside the narrow list.
+    """
+    stage = region_rect(Region.STAGE).inset(DEFAULT_PADDING)
+    box, tbox = bbox(focus), bbox(target)
+    over = _zoom_factor(box, region_rect(Region.STAGE))
+    room = {"right": stage.right - tbox.right - LENS_GAP,
+            "left": tbox.left - LENS_GAP - stage.left}
+
+    def beside(room: float) -> float:
+        return min(over, (room - 2 * LENS_PAD) / box.width) if box.width > 0 else over
+
+    candidates = [
+        (over, lambda m: m.move_to(focus)),
+        (beside(room["right"]),
+         lambda m: m.next_to(target, RIGHT, buff=LENS_GAP).match_y(focus)),
+        (beside(room["left"]),
+         lambda m: m.next_to(target, LEFT, buff=LENS_GAP).match_y(focus)),
+    ]
+    boxes = [bbox(m) for m in others]
+    best: tuple[tuple[float, int], Mobject, float] | None = None
+    for rank, (zoom, place) in enumerate(candidates):
+        if zoom < MIN_ZOOM:
+            continue
+        lens = _lens(focus_full, zoom, theme)
+        place(lens)
+        _clamp_into(lens, stage)
+        if rank and bbox(lens).intersects(tbox):
+            continue
+        # Rounded so float noise between equal placements cannot break a tie.
+        key = (round(sum(bbox(lens).overlap_area(b) for b in boxes), 6), rank)
+        if best is None or key < best[0]:
+            best = (key, lens, zoom)
+    return None if best is None else (best[1], best[2])
+
+
+def _lens(focus_full: Mobject, zoom: float, theme: Theme) -> Group:
+    """Opaque card + the focus at full strength, magnified by `zoom`. Font
+    sizes are scaled with it (scale_with_tags), so legibility is judged on
+    the magnified text the viewer reads."""
+    mag = Group(*(m.copy() for m in focus_full))
+    scale_with_tags(mag, zoom)
+    card = RoundedRectangle(
+        corner_radius=LENS_CORNER,
+        width=mag.width + 2 * LENS_PAD,
+        height=mag.height + 2 * LENS_PAD,
+        fill_color=theme.palette.bg, fill_opacity=1.0,
+        stroke_color=theme.palette.accent, stroke_width=STROKE_WIDTH,
+    ).move_to(mag)
+    return Group(card, mag)
 
 
 def _clamp_into(mob: Mobject, rect: Rect) -> None:

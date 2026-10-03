@@ -22,12 +22,14 @@ from manim import (
     LaggedStart,
     Line,
     ManimColor,
+    Mobject,
     Rectangle,
     VGroup,
     interpolate_color,
 )
 from pydantic import Field, field_validator, model_validator
 
+from chalkdust.continuity import artifact_builder
 from chalkdust.core.models import Region
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import (
@@ -42,6 +44,7 @@ from chalkdust.scenes.regions import (
     fit_to_region,
     region_rect,
 )
+from chalkdust.scenes.theme import Theme
 
 # --- expression language ----------------------------------------------------
 # Deliberately tiny: the two coordinates, two constants, arithmetic, and a
@@ -277,68 +280,9 @@ class VectorField(Component):
         return []
 
     def build(self, scene: ChalkdustScene) -> None:
-        p: VectorFieldParams = self.params
-        theme = scene.theme
-        muted = ManimColor(theme.palette.muted)
-        accent = ManimColor(theme.palette.accent)
-
-        (x0, x1), (y0, y1) = p.x_range, p.y_range
-        inner = region_rect(Region.STAGE).inset(DEFAULT_PADDING)
-        # One scale for both axes, so a rotation field looks like a rotation
-        # and not an ellipse.
-        unit = min(inner.width / (x1 - x0), inner.height / (y1 - y0))
-        nx, ny = grid_shape(p)
-        cell = unit * min((x1 - x0) / nx, (y1 - y0) / ny)
-        if cell < MIN_CELL:
-            raise LayoutError(
-                f"VectorField grid is {nx}x{ny} on a {unit * (x1 - x0):.1f}x"
-                f"{unit * (y1 - y0):.1f} plane: cells of {cell:.2f} are below "
-                f"the {MIN_CELL} floor. Lower sample_density or widen the domain.",
-                kind="overflow",
-            )
-
-        def local(x: float, y: float) -> np.ndarray:
-            # Relative to the domain's centre; fit_to_region places the
-            # whole group afterwards (SCENE_SPEC.md §4: no absolute coords).
-            return np.array([(x - (x0 + x1) / 2) * unit, (y - (y0 + y1) / 2) * unit, 0.0])
-
-        # --- plane: border, light grid, stronger axes where 0 is in range --
-        border = Rectangle(width=unit * (x1 - x0), height=unit * (y1 - y0),
-                           stroke_color=muted, stroke_width=2, stroke_opacity=0.5)
-        lines = []
-        step = _nice_step(max(x1 - x0, y1 - y0))
-        for gx in _ticks(x0, x1, step):
-            lines.append(_grid_line(local(gx, y0), local(gx, y1), muted, gx == 0))
-        for gy in _ticks(y0, y1, step):
-            lines.append(_grid_line(local(x0, gy), local(x1, gy), muted, gy == 0))
-        plane = label(VGroup(border, *lines), "field plane")
-
-        # --- arrows --------------------------------------------------------
-        X, Y, U, V = sample(p)
-        ok = _drawable_mask(U, V)
-        with np.errstate(all="ignore"):
-            mag = np.hypot(U, V)
-        ref = float(np.percentile(mag[ok], REF_PERCENTILE))
-        full = ARROW_FILL * cell
-
-        arrows = []
-        for x, y, u, v, m in zip(X[ok], Y[ok], U[ok], V[ok], mag[ok]):
-            t = min(1.0, m / ref)
-            if t < MIN_VISIBLE:
-                continue
-            # Centred on the sample point and at most ARROW_FILL of a cell
-            # long, so the clamp is also what keeps arrows inside the plane.
-            half = np.array([u / m, v / m, 0.0]) * full * t / 2
-            centre = local(x, y)
-            arrows.append(label(
-                Arrow(centre - half, centre + half, buff=0, stroke_width=4,
-                      max_tip_length_to_length_ratio=0.35,
-                      color=interpolate_color(muted, accent, t)),
-                f"arrow({x:.2f}, {y:.2f})",
-            ))
-        field = label(VGroup(*arrows), "field arrows")
-
+        plane, field = field_mobjects(self.params, scene.theme)
         fit_to_region(VGroup(plane, field), Region.STAGE)
+        arrows = field.submobjects
 
         # Plane first so the viewer has the frame of reference, then the
         # arrows sweep in left to right, then the hold, which carries most of
@@ -396,6 +340,85 @@ class VectorField(Component):
         ]
 
 
+def field_mobjects(p: VectorFieldParams, theme: Theme) -> tuple[VGroup, VGroup]:
+    """The settled picture, unpositioned: (plane, arrows).
+
+    A pure function of the params and theme -- no scene, no randomness -- so
+    build() and the carry-in builder (SCENE_SPEC.md §6) draw the same field.
+    Raises LayoutError(kind="overflow") when the grid is too fine for the
+    plane it lands on.
+    """
+    muted = ManimColor(theme.palette.muted)
+    accent = ManimColor(theme.palette.accent)
+
+    (x0, x1), (y0, y1) = p.x_range, p.y_range
+    inner = region_rect(Region.STAGE).inset(DEFAULT_PADDING)
+    # One scale for both axes, so a rotation field looks like a rotation and
+    # not an ellipse.
+    unit = min(inner.width / (x1 - x0), inner.height / (y1 - y0))
+    nx, ny = grid_shape(p)
+    cell = unit * min((x1 - x0) / nx, (y1 - y0) / ny)
+    if cell < MIN_CELL:
+        raise LayoutError(
+            f"VectorField grid is {nx}x{ny} on a {unit * (x1 - x0):.1f}x"
+            f"{unit * (y1 - y0):.1f} plane: cells of {cell:.2f} are below "
+            f"the {MIN_CELL} floor. Lower sample_density or widen the domain.",
+            kind="overflow",
+        )
+
+    def local(x: float, y: float) -> np.ndarray:
+        # Relative to the domain's centre; the caller places the whole group
+        # (SCENE_SPEC.md §4: no absolute coords).
+        return np.array([(x - (x0 + x1) / 2) * unit, (y - (y0 + y1) / 2) * unit, 0.0])
+
+    # --- plane: border, light grid, stronger axes where 0 is in range ------
+    # color= rather than stroke_color= so the mobject's reported colour (its
+    # fill colour, unused at zero fill opacity) is the one drawn, not WHITE.
+    border = Rectangle(width=unit * (x1 - x0), height=unit * (y1 - y0),
+                       color=muted, stroke_width=2, stroke_opacity=0.5)
+    lines = []
+    step = _nice_step(max(x1 - x0, y1 - y0))
+    for gx in _ticks(x0, x1, step):
+        lines.append(_grid_line(local(gx, y0), local(gx, y1), muted, gx == 0))
+    for gy in _ticks(y0, y1, step):
+        lines.append(_grid_line(local(x0, gy), local(x1, gy), muted, gy == 0))
+    plane = label(VGroup(border, *lines), "field plane")
+
+    # --- arrows ------------------------------------------------------------
+    X, Y, U, V = sample(p)
+    ok = _drawable_mask(U, V)
+    with np.errstate(all="ignore"):
+        mag = np.hypot(U, V)
+    ref = float(np.percentile(mag[ok], REF_PERCENTILE))
+    full = ARROW_FILL * cell
+
+    arrows = []
+    for x, y, u, v, m in zip(X[ok], Y[ok], U[ok], V[ok], mag[ok]):
+        t = min(1.0, m / ref)
+        if t < MIN_VISIBLE:
+            continue
+        # Centred on the sample point and at most ARROW_FILL of a cell long,
+        # so the clamp is also what keeps arrows inside the plane.
+        half = np.array([u / m, v / m, 0.0]) * full * t / 2
+        centre = local(x, y)
+        arrows.append(label(
+            Arrow(centre - half, centre + half, buff=0, stroke_width=4,
+                  max_tip_length_to_length_ratio=0.35,
+                  color=interpolate_color(muted, accent, t)),
+            f"arrow({x:.2f}, {y:.2f})",
+        ))
+    field = label(VGroup(*arrows), "field arrows")
+    return plane, field
+
+
+@artifact_builder("VectorField")
+def _artifact(params: VectorFieldParams, theme: Theme) -> Mobject:
+    """The settled field for a later beat's carry_in (SCENE_SPEC.md §6):
+    plane and arrows exactly as build() leaves them, unpositioned."""
+    plane, field = field_mobjects(params, theme)
+    return VGroup(plane, field)
+
+
 def _nice_step(span: float) -> float:
     """A 1/2/5 x 10^k grid spacing giving about GRID_LINES lines over `span`."""
     raw = span / GRID_LINES
@@ -412,6 +435,6 @@ def _ticks(lo: float, hi: float, step: float) -> list[float]:
 
 def _grid_line(start: np.ndarray, end: np.ndarray, color: ManimColor,
                is_axis: bool) -> Line:
-    return Line(start, end, stroke_color=color,
+    return Line(start, end, color=color,
                 stroke_width=2 if is_axis else 1,
                 stroke_opacity=0.7 if is_axis else 0.25)

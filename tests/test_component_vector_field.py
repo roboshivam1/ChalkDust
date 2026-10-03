@@ -1,4 +1,5 @@
-"""VectorField: timing, expression safety, refusals, and the magnitude clamp.
+"""VectorField: timing, expression safety, refusals, the magnitude clamp, and
+the carry-in rebuild.
 
 Layout validity of examples() and stress() is covered by tests/test_layout.py,
 which walks the registry; this file pins what is specific to VectorField.
@@ -7,12 +8,18 @@ which walks the registry; this file pins what is specific to VectorField.
 from __future__ import annotations
 
 import builtins
+import json
+import math
+import subprocess
+from dataclasses import asdict
 
 import pytest
-from manim import tempconfig
+from manim import Wait, tempconfig
 from pydantic import ValidationError
 
-from chalkdust.core.models import BeatSpec, Region
+from chalkdust.continuity import build_artifact, resolve_carry_in
+from chalkdust.core.models import BeatSpec, Quality, Region, VideoSpec
+from chalkdust.render.worker import TIERS
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.vector_field import (
     ARROW_FILL,
@@ -22,10 +29,11 @@ from chalkdust.scenes.components.vector_field import (
     VectorField,
     grid_shape,
 )
-from chalkdust.scenes.regions import DEFAULT_PADDING, bbox, region_rect
+from chalkdust.scenes.regions import DEFAULT_PADDING, bbox, fit_to_region, region_rect
 from chalkdust.validate.geometric import LayoutProbe, validate_beat
 
 ROTATION = {"field_fn": {"x": "-y", "y": "x"}}
+DRAFT = TIERS[Quality.DRAFT]
 
 
 def _probe(params: dict, duration: float = 8.0) -> LayoutProbe:
@@ -45,18 +53,64 @@ def _field(**overrides) -> dict:
 # --- timing (D-002) ---------------------------------------------------------
 
 
-@pytest.mark.parametrize("budget", [1.0, 24.0], ids=["far-short", "far-long"])
+class _FrameClock(LayoutProbe):
+    """A probe that also counts the frames every play() and wait() would
+    render, using the base scene's own run-time rule (ChalkdustScene.
+    get_run_time snaps each one to whole frames), without encoding a frame.
+    A play() with no explicit run_time counts at its animations' default, so
+    a forgotten run_time shows up as a frame mismatch."""
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.frames = 0
+
+    def _count(self, animations) -> None:
+        self.frames += int(self.get_run_time(animations) * self.fps)
+
+    def play(self, *animations, **kwargs) -> None:  # type: ignore[override]
+        # compile_animations applies play()'s kwargs (run_time) to each
+        # animation, as Scene.play does before asking for the run time.
+        self._count(self.compile_animations(*animations, **kwargs))
+        super().play(*animations, **kwargs)
+
+    def wait(self, duration: float = 1.0, *args, **kwargs) -> None:  # type: ignore[override]
+        self._count([Wait(run_time=duration)])
+
+
+def _render_frames(params: dict, duration: float, out_dir) -> int:
+    """Render at the draft tier and count the clip's frames with ffprobe."""
+    with tempconfig({**asdict(DRAFT), "media_dir": str(out_dir),
+                     "disable_caching": True, "progress_bar": "none",
+                     "verbosity": "WARNING", "output_file": "frames"}):
+        scene = ChalkdustScene(VectorField(params), duration=duration)
+        scene.render()
+        movie = scene.renderer.file_writer.movie_file_path
+    out = subprocess.run(
+        ["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
+         "-show_entries", "stream=nb_read_frames", "-of", "json", str(movie)],
+        capture_output=True, text=True, check=True).stdout
+    return int(json.loads(out)["streams"][0]["nb_read_frames"])
+
+
+@pytest.mark.parametrize("factor", [0.5, 3.0], ids=["short", "long"])
 @pytest.mark.parametrize("example", range(len(VectorField.examples())))
-def test_consumes_budget_exactly(tmp_path, example, budget):
-    # Natural length is ~8s; 1s is below min_seconds() and 24s is 3x natural.
-    # skip_animations advances renderer.time by each play/wait's run time
-    # without encoding frames.
-    with tempconfig({"media_dir": str(tmp_path), "frame_rate": 15}):
-        scene = ChalkdustScene(VectorField(VectorField.examples()[example]),
-                               duration=budget, skip_animations=True)
-        scene.setup()
-        scene.construct()
-        assert scene.renderer.time == pytest.approx(budget, abs=1 / 15)
+def test_clocked_frames_equal_the_beat(example, factor):
+    # Narration far shorter (half of min_seconds) and far longer (3x) than
+    # the animation wants: either way every play and wait together take
+    # exactly ceil(audio * fps) frames at the draft tier.
+    params = VectorField.examples()[example]
+    duration = VectorField(params).min_seconds() * factor + 0.0123  # off-frame
+    with tempconfig({"frame_rate": DRAFT.frame_rate}):
+        clock = _FrameClock(VectorField(params), duration=duration)
+    clock.construct()
+    assert clock.frames == clock.beat_frames == math.ceil(duration * DRAFT.frame_rate)
+
+
+def test_draft_render_is_exactly_the_beat(tmp_path):
+    # The real thing, counted by ffprobe: 5.479 s of audio is 83 frames at
+    # 15 fps (82.185 rounded up).
+    duration = 5.479
+    assert _render_frames(ROTATION, duration, tmp_path) ==         math.ceil(duration * DRAFT.frame_rate) == 83
 
 
 def test_min_seconds_gives_every_step_its_floor():
@@ -84,6 +138,7 @@ def test_compiles_no_latex():
     "[x]",
     "x if y else 1",
     "a_sixty_character_identifier_that_no_parser_should_accept_ok",
+    "https://example.com/fields/a-sixty-character-url/with/no/spaces",
     "x +",
     "",
     "x" * 121,                   # over MAX_EXPR_CHARS
@@ -122,6 +177,18 @@ def test_never_calls_eval(monkeypatch):
 def test_rejects_bad_domain_or_density(overrides):
     with pytest.raises(ValidationError):
         VectorField(_field(**overrides))
+
+
+@pytest.mark.parametrize("params", [
+    {},                                   # no field at all
+    {"field_fn": {}},                     # a field with no components
+    {"field_fn": {"x": "1"}},             # half a field
+    {"field_fn": {"x": "   ", "y": "1"}},  # blank component
+], ids=["missing", "empty", "half", "blank"])
+def test_rejects_empty_field(params):
+    # The model has no meaningful empty VectorField: no field, nothing to draw.
+    with pytest.raises(ValidationError):
+        VectorField(params)
 
 
 @pytest.mark.parametrize("fn", [
@@ -171,3 +238,31 @@ def test_singular_field_is_clamped_and_skips_undefined_points():
     full = ARROW_FILL * unit * min(6 / nx, 2 / ny)
     lengths = [a.get_length() for a in arrows]
     assert max(lengths) == pytest.approx(full, rel=1e-6)
+
+
+# --- carry-in (SCENE_SPEC.md §6) --------------------------------------------
+
+
+def test_carried_field_is_the_settled_field():
+    # A later beat carrying the field in sees exactly what this beat left on
+    # screen: the same arrows, the same boxes once placed in STAGE.
+    video = VideoSpec(video_id="v", beats=(
+        BeatSpec(id="b01", narration="placeholder narration",
+                 component="VectorField", params=ROTATION, registers="field"),
+        BeatSpec(id="b02", narration="placeholder narration",
+                 component="TitleCard", params={"title": "Curl"},
+                 carry_in=["field"]),
+    ))
+    (recipe,) = resolve_carry_in(video)["b02"]
+    probe = _probe(ROTATION)
+    artifact = build_artifact(recipe, probe.theme)
+    fit_to_region(artifact, Region.STAGE)
+
+    plane, field = artifact.submobjects
+    settled = _labelled(probe, "field arrows").submobjects
+    assert [a._chalk_label for a in field.submobjects] == [a._chalk_label for a in settled]
+    for got, want in [(plane, _labelled(probe, "field plane")),
+                      *zip(field.submobjects, settled)]:
+        g, w = bbox(got), bbox(want)
+        assert (g.x, g.y, g.width, g.height) == pytest.approx(
+            (w.x, w.y, w.width, w.height), abs=1e-6)

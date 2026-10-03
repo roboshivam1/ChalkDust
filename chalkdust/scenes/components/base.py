@@ -10,6 +10,9 @@ from __future__ import annotations
 
 import textwrap
 from abc import ABC, abstractmethod
+from collections.abc import Iterator
+from contextlib import contextmanager
+from contextvars import ContextVar
 from typing import TYPE_CHECKING, Any, ClassVar
 
 from manim import Mobject
@@ -164,5 +167,24 @@ def label(mob: Mobject, text: str) -> Mobject:
 
 def wrap(s: str, width: int = 42) -> str:
     """Hard-wrap text. Manim's Text does not wrap on its own -- a long string
-    becomes one very wide line that gets scaled into illegibility."""
-    return textwrap.fill(s.strip(), width=width)
+    becomes one very wide line that gets scaled into illegibility.
+
+    `width` is scaled by the active wrap_scale(), 1.0 outside a repair."""
+    return textwrap.fill(s.strip(), width=max(1, round(width * _WRAP_SCALE.get())))
+
+
+# Mechanical repair (validate/repair.py, SCENE_SPEC.md §9) rebuilds a beat that
+# overflowed with every wrap() width scaled -- wider lines for content that is
+# too tall, narrower for content that is too wide. It lives here rather than in
+# validate/ because scenes must not import the validator.
+_WRAP_SCALE: ContextVar[float] = ContextVar("chalkdust_wrap_scale", default=1.0)
+
+
+@contextmanager
+def wrap_scale(factor: float) -> Iterator[None]:
+    """Scale every wrap() width by `factor` for the duration of the block."""
+    token = _WRAP_SCALE.set(factor)
+    try:
+        yield
+    finally:
+        _WRAP_SCALE.reset(token)

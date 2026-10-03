@@ -92,6 +92,11 @@ class AssemblyFailed(PipelineError):
     pass
 
 
+class DirectoryUnusable(PipelineError):
+    """--work-dir or --cache-dir cannot be used as a directory (it is a file,
+    or cannot be created). Checked before validation spends anything."""
+
+
 # --- results ----------------------------------------------------------------
 
 
@@ -132,6 +137,42 @@ def _format_validation(exc: ValidationError, indent: str = "  ") -> str:
     )
 
 
+def _decode_spec(path: Path, data: bytes) -> str:
+    """A spec is UTF-8 text. A UTF-8 byte-order mark (Notepad, some editors)
+    is accepted and dropped. Anything else -- notably UTF-16, which is what
+    Windows PowerShell 5.1's Out-File and `>` write by default -- is a spec
+    error with a fix the operator can act on, not a decode traceback."""
+    if data.startswith((b"\xff\xfe", b"\xfe\xff")):
+        raise SpecInvalid(
+            f"{path} is UTF-16 text; specs must be UTF-8. PowerShell's Out-File "
+            "and '>' write UTF-16 by default: re-save it with "
+            "`Set-Content -Encoding utf8` or `Out-File -Encoding utf8`.")
+    try:
+        return data.decode("utf-8-sig")
+    except UnicodeDecodeError as exc:
+        raise SpecInvalid(
+            f"{path} is not UTF-8 text (byte 0x{data[exc.start]:02x} at offset "
+            f"{exc.start}); re-save it as UTF-8.") from exc
+
+
+def ensure_dir(path: Path, option: str) -> Path:
+    """Create `path` as a directory, or say plainly why it cannot be one."""
+    path = Path(path)
+    try:
+        path.mkdir(parents=True, exist_ok=True)
+    except OSError as exc:
+        # The nearest part of the path that exists is what is in the way.
+        blocker = next((p for p in (path, *path.parents) if p.exists()), None)
+        if blocker == path and not path.is_dir():
+            reason = "it exists and is a file, not a directory"
+        elif blocker is not None and not blocker.is_dir():
+            reason = f"{blocker} is a file, not a directory"
+        else:
+            reason = f"cannot create it ({exc.strerror or exc})"
+        raise DirectoryUnusable(f"{option} {path}: {reason}") from exc
+    return path
+
+
 def load_spec(path: Path) -> VideoSpec:
     """Rung 1 (schema), including each beat's component params.
 
@@ -141,15 +182,21 @@ def load_spec(path: Path) -> VideoSpec:
     probe would otherwise fold a bad param into a build_error finding.
     """
     try:
-        text = Path(path).read_text(encoding="utf-8")
+        data = Path(path).read_bytes()
     except OSError as exc:
         raise SpecInvalid(f"cannot read spec {path}: {exc.strerror}") from exc
+    text = _decode_spec(path, data)
 
     try:
         spec = VideoSpec.model_validate_json(text)
     except ValidationError as exc:
         raise SpecInvalid(f"{path} is not a valid spec:\n"
                           f"{_format_validation(exc)}") from exc
+
+    if not spec.beats:
+        # Nothing to say and nothing to render: refuse here, not at assembly.
+        raise SpecInvalid(f"{path} is not a valid spec:\n"
+                          "  beats: a video needs at least one beat")
 
     problems = []
     try:
@@ -298,6 +345,9 @@ def validate(spec_path: Path, work_dir: Path = DEFAULT_WORK_DIR,
     """Rungs 1, 2 and 3, with no speech and no render."""
     spec = load_spec(spec_path)
     carry_in_recipes(spec)  # an unrebuildable carry-in is a spec error
+    # Manim writes here from the first semantic check on.
+    ensure_dir(work_dir, "--work-dir")
+    ensure_dir(Path(work_dir) / "manim", "--work-dir")
     checked = checked_beats(spec)
     for check in checked:
         if check.note:
@@ -320,6 +370,9 @@ def render(
     """Spec file -> finished MP4. Every stage is cached per beat (D-004), so a
     re-run after editing one narration line rebuilds only that beat."""
     work_dir = Path(work_dir)
+    # Before validation spends anything: a cache dir that cannot be one would
+    # otherwise surface only after the probe, as a traceback.
+    ensure_dir(cache_dir, "--cache-dir")
     spec = validate(spec_path, work_dir, verbose)
     out = Path(out) if out else Path("out") / f"{spec.video_id}-{quality.value}.mp4"
 

@@ -32,6 +32,9 @@ EXIT_ASSEMBLY_FAILED = 7
 # Added after 3-7 were in use, so it keeps them stable rather than sitting
 # in ladder order between spec (rung 1) and layout (rung 3).
 EXIT_SEMANTIC_REFUSED = 8
+# A --work-dir or --cache-dir that cannot be a directory: fix the command
+# line, not the spec.
+EXIT_DIRECTORY_UNUSABLE = 9
 
 EXIT_CODES: dict[type[pipeline.PipelineError], tuple[int, str]] = {
     pipeline.SpecInvalid: (EXIT_SPEC_INVALID, "spec invalid"),
@@ -40,6 +43,7 @@ EXIT_CODES: dict[type[pipeline.PipelineError], tuple[int, str]] = {
     pipeline.SpeechFailed: (EXIT_SPEECH_FAILED, "speech failed"),
     pipeline.RenderFailed: (EXIT_RENDER_FAILED, "render failed"),
     pipeline.AssemblyFailed: (EXIT_ASSEMBLY_FAILED, "assembly failed"),
+    pipeline.DirectoryUnusable: (EXIT_DIRECTORY_UNUSABLE, "directory unusable"),
 }
 
 

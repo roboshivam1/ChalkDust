@@ -14,6 +14,7 @@ from chalkdust.scenes.components.base import (  # noqa: F401
 )
 
 # Import for side effect: each module calls @register at import time.
+from chalkdust.scenes.components import answer_box  # noqa: F401,E402
 from chalkdust.scenes.components import box_flow  # noqa: F401,E402
 from chalkdust.scenes.components import bullet_reveal  # noqa: F401,E402
 from chalkdust.scenes.components import equation_derivation  # noqa: F401,E402

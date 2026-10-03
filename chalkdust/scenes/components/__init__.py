@@ -23,6 +23,7 @@ from chalkdust.scenes.components import free_body_diagram  # noqa: F401,E402
 from chalkdust.scenes.components import geometry_construct  # noqa: F401,E402
 from chalkdust.scenes.components import graph_plot  # noqa: F401,E402
 from chalkdust.scenes.components import number_line_walk  # noqa: F401,E402
+from chalkdust.scenes.components import problem_statement  # noqa: F401,E402
 from chalkdust.scenes.components import raw_scene  # noqa: F401,E402
 from chalkdust.scenes.components import solution_step  # noqa: F401,E402
 from chalkdust.scenes.components import split_compare  # noqa: F401,E402

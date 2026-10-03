@@ -10,19 +10,37 @@ step 1): the worker runs repair_beat() and renders a RepairedScene, which with
 an empty plan is exactly a ChalkdustScene. The plan is recomputed from the
 spec, not handed in, because beats render independently (D-005) and the plan
 is a term of the cache key (D-004).
+
+Two kinds of beat take a different path:
+
+  - A beat that carries artifacts in (SCENE_SPEC.md §6) is built with
+    continuity.beat_component(spec, recipes), so its carried artifacts are on
+    screen -- in the repair probe and in the render alike -- and its key holds
+    carry_in_fingerprint(recipes). render_video resolves the recipes once per
+    video; render_beat takes them as an argument.
+  - A RawScene beat (SCENE_SPEC.md §7) is routed to raw_scene.render_raw_beat
+    before any repair or scene build: its code runs out of process, and any
+    failure degrades it to BulletReveal instead of failing the beat.
 """
 
 from __future__ import annotations
 
 import shutil
+from collections.abc import Sequence
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from manim import tempconfig
 
+from chalkdust.continuity import (
+    ArtifactRecipe,
+    beat_component,
+    carry_in_fingerprint,
+    resolve_carry_in,
+)
 from chalkdust.core.cache import Cache, beat_render_key
 from chalkdust.core.models import Beat, BuildContext, Quality, Video
-from chalkdust.scenes.components import make_component
+from chalkdust.scenes.components.raw_scene import RawScene, render_raw_beat
 from chalkdust.scenes.theme import Theme, get_theme, resolve_fonts
 from chalkdust.validate.repair import RepairedScene, RepairPlan, repair_beat
 
@@ -57,8 +75,8 @@ def _require_duration(beat: Beat) -> float:
     return beat.duration
 
 
-def plan_repair(beat: Beat, theme: Theme, ctx: BuildContext,
-                work_dir: Path) -> RepairPlan:
+def plan_repair(beat: Beat, theme: Theme, ctx: BuildContext, work_dir: Path,
+                recipes: Sequence[ArtifactRecipe] = ()) -> RepairPlan:
     """The mechanical repair plan this beat renders with; empty when the beat
     is clean, and also when repair cannot fix it -- the render's own strict
     settle checks then raise, as before (SCENE_SPEC.md §11 rule 1).
@@ -66,25 +84,34 @@ def plan_repair(beat: Beat, theme: Theme, ctx: BuildContext,
     The probe builds a Manim scene, which creates its media dirs, so it runs
     under `work_dir` like the render itself: nothing lands in the cwd, and
     LaTeX compiled here lands in the Tex/ cache the render then reuses.
+
+    `recipes` are the beat's carried artifacts: the probe builds with them on
+    screen, exactly as the render will, so fixes are planned against the
+    frame that is actually drawn.
     """
     duration = _require_duration(beat)
     with tempconfig({**asdict(TIERS[ctx.quality]), "media_dir": str(work_dir)}):
-        return repair_beat(beat.spec, theme, duration).plan
+        return repair_beat(beat.spec, theme, duration, recipes=recipes).plan
 
 
 def render_key(beat: Beat, theme: Theme, ctx: BuildContext,
-               plan: RepairPlan) -> str:
+               plan: RepairPlan, recipes: Sequence[ArtifactRecipe] = ()) -> str:
     """The beat's cache key. `theme` must already be font-resolved -- the key
     has to describe the fonts that will actually be drawn, not the ones the
-    theme asked for. `plan` is the one the render applies (plan_repair)."""
+    theme asked for. `plan` is the one the render applies (plan_repair).
+
+    `recipes` are the beat's resolved carry-ins (continuity.resolve_carry_in);
+    a beat with a carry_in and no recipes raises, rather than keying a render
+    that ignores what it carries."""
     return beat_render_key(
         beat.spec, _require_duration(beat), ctx, asdict(theme),
         asdict(TIERS[ctx.quality]), plan.key_data(),
+        carried=carry_in_fingerprint(recipes) if recipes else None,
     )
 
 
 def _render(beat: Beat, theme: Theme, ctx: BuildContext, cache: Cache,
-            work_dir: Path) -> tuple[Path, bool]:
+            work_dir: Path, recipes: Sequence[ArtifactRecipe] = ()) -> tuple[Path, bool]:
     """Render under an already-resolved theme. Returns (path, rendered), where
     `rendered` is False on a cache hit.
 
@@ -92,8 +119,8 @@ def _render(beat: Beat, theme: Theme, ctx: BuildContext, cache: Cache,
     and the scene, so the key describes exactly what is drawn. The plan is
     computed even when the clip turns out to be cached: it is part of the key.
     """
-    plan = plan_repair(beat, theme, ctx, work_dir)
-    key = render_key(beat, theme, ctx, plan)
+    plan = plan_repair(beat, theme, ctx, work_dir, recipes)
+    key = render_key(beat, theme, ctx, plan, recipes)
     slot = cache.slot("beats", key, ".mp4")
     rendered = not slot.exists
 
@@ -116,7 +143,7 @@ def _render(beat: Beat, theme: Theme, ctx: BuildContext, cache: Cache,
         # stomp on each other's global config.
         with tempconfig(settings):
             scene = RepairedScene(
-                make_component(beat.spec.component, beat.spec.params),
+                beat_component(beat.spec, recipes),
                 plan=plan,
                 theme=theme,
                 duration=beat.duration,  # type: ignore[arg-type]
@@ -137,13 +164,19 @@ def _render(beat: Beat, theme: Theme, ctx: BuildContext, cache: Cache,
 
 
 def render_beat(beat: Beat, theme: str, ctx: BuildContext, cache: Cache,
-                work_dir: Path) -> Path:
+                work_dir: Path, recipes: Sequence[ArtifactRecipe] = ()) -> Path:
     """Render one beat, or return the cached file if it exists.
 
     Manim's scratch output goes under `work_dir`; nothing is written to the
-    current directory.
+    current directory. `recipes` are the beat's resolved carry-ins
+    (continuity.resolve_carry_in(video_spec)[beat.id]); required for a beat
+    with a carry_in. A RawScene beat goes to render_raw_beat, which takes the
+    theme by name and degrades instead of raising.
     """
-    path, _ = _render(beat, resolve_fonts(get_theme(theme)), ctx, cache, work_dir)
+    if beat.spec.component == RawScene.name:
+        return render_raw_beat(beat, theme, ctx, cache, work_dir)
+    path, _ = _render(beat, resolve_fonts(get_theme(theme)), ctx, cache, work_dir,
+                      recipes)
     return path
 
 
@@ -152,8 +185,16 @@ def render_video(video: Video, ctx: BuildContext, cache: Cache, work_dir: Path,
     # Resolved once per video: one font check, one substitution warning, and
     # the same theme in every beat's key.
     theme = resolve_fonts(get_theme(video.spec.theme))
+    # Once per video: which artifacts each beat carries, and how to rebuild
+    # them (SCENE_SPEC.md §6). Raises CarryInError if a producer cannot.
+    recipes = resolve_carry_in(video.spec)
     for beat in video.beats:
-        _, rendered = _render(beat, theme, ctx, cache, work_dir)
+        if beat.spec.component == RawScene.name:
+            render_raw_beat(beat, video.spec.theme, ctx, cache, work_dir)
+            status = "degraded" if beat.degraded else "raw"
+        else:
+            _, rendered = _render(beat, theme, ctx, cache, work_dir, recipes[beat.id])
+            status = "render" if rendered else "cached"
         if verbose:
-            print(f"  [{'render' if rendered else 'cached'}] {beat.id}")
+            print(f"  [{status}] {beat.id}")
     return video

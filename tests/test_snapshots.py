@@ -29,7 +29,9 @@ from chalkdust.validate.snapshot import (
     load,
     main,
     regenerate,
+    snapshot_exempt,
     snapshot_path,
+    snapshotted_names,
 )
 
 SNAPSHOT_DIR = Path(__file__).parent / "snapshots"
@@ -58,6 +60,25 @@ def _recorded(name: str) -> dict:
 
 
 @pytest.mark.parametrize("name", registered_names())
+def test_component_is_snapshotted_or_formally_exempt(name):
+    # A snapshot with no cases compares nothing and passes forever; that is
+    # how RawScene.json sat vacuous. Every component either records at least
+    # one case, or declares why it cannot (and then ships no snapshot file
+    # that would claim coverage it does not give).
+    reason = snapshot_exempt(name)
+    if reason:
+        assert reason.strip(), f"{name}: an exemption must state its reason"
+        assert get_component(name).examples() == [], (
+            f"{name} is exempt but declares examples(); snapshot them instead")
+        assert load(name, SNAPSHOT_DIR) is None, (
+            f"{name} is exempt but tests/snapshots/{name}.json exists")
+    else:
+        assert _recorded(name)["cases"], (
+            f"{name}'s snapshot records no cases, so it checks nothing; give "
+            f"{name} examples() and record it: {_regen(name)}")
+
+
+@pytest.mark.parametrize("name", snapshotted_names())
 class TestLibrary:
     def test_structure_unchanged(self, name):
         snap = _recorded(name)
@@ -128,6 +149,11 @@ class TestHarness:
         changed = copy.deepcopy(structure)
         changed["timeline"][0]["run_time"] += 0.5
         assert diff_structure(structure, changed)
+
+    def test_exempt_component_cannot_be_regenerated(self, tmp_path):
+        with pytest.raises(SystemExit):
+            main(["--reason", "x", "--component", "RawScene", "--dir", str(tmp_path)])
+        assert not snapshot_path("RawScene", tmp_path).exists()
 
     @pytest.mark.parametrize("argv", [[], ["--reason", "   "]])
     def test_regenerating_requires_a_reason(self, tmp_path, argv):

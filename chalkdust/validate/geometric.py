@@ -15,14 +15,15 @@ before compute is spent.
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 
 from manim.animation.animation import prepare_animation
 
+from chalkdust.continuity import ArtifactRecipe, beat_component
 from chalkdust.core.models import BeatSpec
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.regions import LayoutError
-from chalkdust.scenes.components import make_component
 
 
 @dataclass(frozen=True)
@@ -90,10 +91,16 @@ class LayoutProbe(ChalkdustScene):
 
 
 def validate_beat(spec: BeatSpec, theme: str = "default",
-                  duration: float = 8.0) -> Report:
-    """Check one beat's layout. Never raises -- failures come back as findings."""
+                  duration: float = 8.0,
+                  recipes: Sequence[ArtifactRecipe] = ()) -> Report:
+    """Check one beat's layout. Never raises -- failures come back as findings.
+
+    `recipes` are the beat's carried artifacts (SCENE_SPEC.md §6,
+    continuity.resolve_carry_in): they are built on screen first, as in the
+    render, so a beat is checked against the frame it will actually draw.
+    """
     try:
-        component = make_component(spec.component, spec.params)
+        component = beat_component(spec, recipes)
     except Exception as exc:
         return Report(spec.id, [Finding("build_error", f"{type(exc).__name__}: {exc}")])
 
@@ -129,5 +136,9 @@ def run_probe(probe: LayoutProbe, beat_id: str) -> Report:
     return report
 
 
-def validate_specs(specs: list[BeatSpec], theme: str = "default") -> list[Report]:
-    return [validate_beat(s, theme=theme) for s in specs]
+def validate_specs(specs: list[BeatSpec], theme: str = "default",
+                   recipes: Mapping[str, Sequence[ArtifactRecipe]] | None = None,
+                   ) -> list[Report]:
+    """validate_beat over `specs`; `recipes` is resolve_carry_in(video_spec)."""
+    recipes = recipes or {}
+    return [validate_beat(s, theme=theme, recipes=recipes.get(s.id, ())) for s in specs]

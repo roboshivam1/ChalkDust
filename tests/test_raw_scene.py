@@ -10,17 +10,20 @@ from __future__ import annotations
 import json
 import subprocess
 from dataclasses import asdict
+from types import ModuleType
 
 import pytest
 
 from chalkdust.core.cache import Cache
 from chalkdust.core.models import Beat, BeatSpec, BuildContext, Quality
 from chalkdust.render.worker import TIERS
+from chalkdust.scenes.components import raw_scene
 from chalkdust.scenes.components.raw_scene import (
     USAGE_LOG_NAME,
     RawScene,
     RawSceneError,
     RawSceneParams,
+    _exec_user,
     _fit_to_duration,
     _user_namespace,
     check_code,
@@ -28,6 +31,7 @@ from chalkdust.scenes.components.raw_scene import (
     render_raw_beat,
     run_raw_scene,
 )
+from chalkdust.scenes.components.raw_scene_allowlist import MANIM, vetted_modules
 from chalkdust.speech.base import probe_duration
 from chalkdust.validate.geometric import validate_beat
 
@@ -52,6 +56,42 @@ LONG_NARRATION = (
     "walks a long chain, and constant time quietly becomes linear time. "
     "That is the failure mode we are going to fix."
 )
+
+
+# What a real RawScene looks like: axes, a plotted curve, a tracker driving an
+# always_redraw dot, numpy maths, a rate function reached through its module,
+# LaTeX. Must pass the allowlist untouched.
+TYPICAL = r"""
+from manim import *
+import numpy as np
+
+class Sweep(Scene):
+    def construct(self):
+        axes = Axes(x_range=[0, TAU, PI / 2], y_range=[-1.5, 1.5, 1],
+                    x_length=8, y_length=4)
+        curve = axes.plot(lambda x: np.sin(x), color=BLUE)
+        t = ValueTracker(0)
+        dot = always_redraw(lambda: Dot(axes.c2p(t.get_value(),
+                                                 np.sin(t.get_value())), color=YELLOW))
+        label = MathTex(r"y = \sin x").next_to(axes, UP)
+        self.play(Create(axes), Write(label), run_time=1)
+        self.play(Create(curve), FadeIn(dot), run_time=1)
+        self.play(t.animate.set_value(TAU),
+                  rate_func=rate_functions.ease_in_out_sine, run_time=1)
+"""
+
+# The verifier's sandbox-escape repros: each reached a process or a file
+# delete through what `from manim import *` used to expose. Every one must be
+# refused statically, refused again at runtime, and degrade the beat.
+ESCAPE_REPROS = [
+    pytest.param('from manim import *\ncapture(["whoami"])', id="capture"),
+    pytest.param('from manim import *\nutils.commands.capture(["whoami"])',
+                 id="utils.commands.capture"),
+    pytest.param('from manim.utils.commands import capture\ncapture(["whoami"])',
+                 id="from-commands-import"),
+    pytest.param('from manim import *\nguarantee_empty_existence("victim")',
+                 id="guarantee_empty_existence"),
+]
 
 
 def _params(code: str) -> RawSceneParams:
@@ -105,6 +145,28 @@ class TestStaticCheck:
     def test_system_module_through_allowed_package(self, code):
         assert _kind(code) == "forbidden_import"
 
+    @pytest.mark.parametrize("code", ESCAPE_REPROS)
+    def test_verifier_escape_repros_rejected(self, code):
+        assert _kind(code) in {"forbidden_import", "forbidden_name"}
+
+    def test_typical_scene_passes(self):
+        check_code(TYPICAL)
+
+    @pytest.mark.parametrize("code", [
+        # Interpreter frames lead back to a module's globals.
+        "def g():\n    yield 1\nx = g().gi_frame.f_back",
+        # File writes and viewers on allowlisted objects.
+        "Square().get_image().save('x.png')",
+        "np.zeros(3).tofile('x.bin')",
+        # Swapping the LaTeX compiler command.
+        "t = Tex('a').tex_template",
+        # Private internals, and attribute reads hidden in a format string.
+        "Square()._original__init__",
+        "s = '{0.__class__}'.format(1)",
+    ])
+    def test_forbidden_attribute(self, code):
+        assert _kind(code) == "forbidden_name"
+
     def test_allowed_submodules_pass(self):
         check_code("import numpy.linalg\n"
                    "from manim.utils.rate_functions import smooth\n"
@@ -121,19 +183,45 @@ class TestStaticCheck:
 class TestRuntimeGuard:
     """The namespace generated code runs in, independent of the AST pass."""
 
+    # _exec_user is how the child runs generated code; it does not call
+    # check_code, so these exercise the runtime half on its own.
+
     def test_forbidden_import_at_runtime(self):
         with pytest.raises(RawSceneError) as exc_info:
-            exec("import os", _user_namespace())
+            _exec_user("import os")
         assert exc_info.value.kind == "forbidden_import"
 
     def test_allowed_import_at_runtime(self):
-        ns = _user_namespace()
-        exec("import math\nfrom manim import Circle", ns)
+        ns = _exec_user("import math\nfrom manim import Circle")
         assert ns["math"].pi > 3 and ns["Circle"] is not None
 
     def test_escape_builtins_absent(self):
         with pytest.raises(NameError):
-            exec("open('x')", _user_namespace())
+            _exec_user("open('x')")
+
+    def test_builtins_have_no_escape_hatches(self):
+        safe = _user_namespace()["__builtins__"]
+        assert not {"open", "__import__", "exec", "eval", "compile", "getattr",
+                    "globals", "vars", "type"} & set(safe)
+
+    def test_no_import_machinery_at_runtime(self):
+        # Without the rewrite there is no __import__ to run an import with.
+        with pytest.raises(ImportError):
+            exec("import math", _user_namespace())
+
+    def test_namespace_holds_no_module_objects(self):
+        ns = _user_namespace()
+        values = [v for k, v in ns.items() if k != "__builtins__"]
+        values += [v for mod in vetted_modules().values() for v in vars(mod).values()]
+        assert not [v for v in values if isinstance(v, ModuleType)]
+        assert not {"lib", "ctypeslib", "load", "save", "fromfile", "f2py", "os",
+                    "testing"} & set(vars(ns["np"]))
+
+    @pytest.mark.parametrize("code", ESCAPE_REPROS)
+    def test_verifier_escape_repros_refused_at_runtime(self, code):
+        # Even with the static check bypassed, the names are simply absent.
+        with pytest.raises((RawSceneError, NameError)):
+            _exec_user(code)
 
     @pytest.mark.parametrize("code", [
         "from manim.utils.file_ops import os as o; o.getcwd()",
@@ -141,15 +229,25 @@ class TestRuntimeGuard:
     ])
     def test_system_module_through_allowed_package_at_runtime(self, code):
         with pytest.raises(RawSceneError) as exc_info:
-            exec(code, _user_namespace())
+            _exec_user(code)
         assert exc_info.value.kind == "forbidden_import"
 
     def test_star_from_top_level_package_at_runtime(self):
-        # `from manim import *` binds a few module objects (typing, np);
-        # the fromlist check must not break the line every scene starts with.
-        ns = _user_namespace()
-        exec("from manim import *\nfrom numpy import *", ns)
+        ns = _exec_user("from manim import *\nfrom numpy import *")
         assert ns["Circle"] is not None
+
+    def test_typical_scene_defines_at_runtime(self):
+        ns = _exec_user(TYPICAL)
+        assert issubclass(ns["Sweep"], ns["Scene"])
+
+
+class TestAllowlist:
+    def test_every_allowlisted_name_resolves(self):
+        # The RawScene drift guard (it has no snapshot): a Manim or numpy
+        # upgrade that drops or renames an allowlisted name fails here, not
+        # in some beat's degraded render.
+        vetted_modules.cache_clear()
+        assert set(vars(vetted_modules()["manim"])) == MANIM
 
 
 class TestDegradationPaths:
@@ -175,6 +273,16 @@ class TestDegradationPaths:
         out = _run(_scene("raise ValueError('generated code bug')"), tmp_path)
         assert (out.ok, out.kind) == (False, "crash")
         assert "generated code bug" in out.message
+
+    def test_name_bound_elsewhere_still_absent_at_runtime(self, tmp_path):
+        # check_code collects bindings per module, not per scope: `capture`
+        # bound as a parameter of f passes it. The runtime namespace is what
+        # stops the read in construct().
+        code = _scene('capture(["whoami"])') + "\ndef f(capture):\n    return capture\n"
+        check_code(code)
+        out = _run(code, tmp_path)
+        assert (out.ok, out.kind) == (False, "crash")
+        assert "NameError" in out.message
 
     def test_layout_degrades(self, tmp_path):
         out = _run(_scene("t = Text('off screen').shift(RIGHT * 9)\n"
@@ -206,6 +314,69 @@ class TestDegradedBeat:
         assert entry["outcome"] == "degraded"
         assert entry["reason"] == "forbidden_import"
         assert entry["rationale"] == "needs os"
+
+
+    @pytest.mark.parametrize("code", ESCAPE_REPROS)
+    def test_verifier_escape_repros_degrade(self, code, tmp_path, cache_dir):
+        spec = BeatSpec(id="b07", narration="A point traces the curve.",
+                        component="RawScene",
+                        params={"rationale": "escape repro", "code": code})
+        beat = Beat(spec=spec, duration=2.0)
+        render_raw_beat(beat, "default", BuildContext(), Cache(cache_dir), tmp_path)
+        assert beat.degraded
+        entry = json.loads((tmp_path / USAGE_LOG_NAME).read_text().splitlines()[-1])
+        assert entry["outcome"] == "degraded"
+        assert entry["reason"] in {"forbidden_import", "forbidden_name"}
+
+    def test_carry_in_degrades_instead_of_raising(self, tmp_path):
+        # Out-of-process code cannot draw carried artifacts, and its key has
+        # no fingerprint: this used to raise ValueError from the render key.
+        spec = BeatSpec(id="b07", narration="A point traces the curve.",
+                        component="RawScene", carry_in=["bucket_array"],
+                        params={"rationale": "r", "code": GOOD})
+        beat = Beat(spec=spec, duration=2.0)
+        render_raw_beat(beat, "default", BuildContext(),
+                        Cache(tmp_path / "cache"), tmp_path)
+        assert beat.degraded
+        entry = json.loads((tmp_path / USAGE_LOG_NAME).read_text().splitlines()[-1])
+        assert (entry["outcome"], entry["reason"]) == ("degraded", "carry_in")
+
+
+@pytest.fixture(scope="module")
+def cache_dir(tmp_path_factory):
+    # Shared by the repro cases: the fallback BulletReveal renders once.
+    return tmp_path_factory.mktemp("repro-cache")
+
+
+class TestParentFailures:
+    """Failures after the child returns must degrade too, never raise."""
+
+    def test_fit_failure_degrades_and_logs(self, tmp_path, monkeypatch):
+        def broken_fit(*args, **kwargs):
+            raise RuntimeError("ffprobe exploded")
+
+        monkeypatch.setattr(raw_scene, "_fit_to_duration", broken_fit)
+        spec = BeatSpec(id="b07", narration="A square turns.", component="RawScene",
+                        params={"rationale": "rotation demo", "code": GOOD})
+        beat = Beat(spec=spec, duration=3.0)
+        path = render_raw_beat(beat, "default", BuildContext(),
+                               Cache(tmp_path / "cache"), tmp_path)
+        assert beat.degraded and path.exists()
+        entry = json.loads((tmp_path / USAGE_LOG_NAME).read_text().splitlines()[-1])
+        assert (entry["outcome"], entry["reason"]) == ("degraded", "fit")
+        assert "ffprobe exploded" in entry["detail"]
+
+    def test_unreadable_child_result_degrades(self, tmp_path, monkeypatch):
+        def fake_child(cmd, **kwargs):
+            job = json.loads(open(cmd[-1]).read())
+            with open(job["result"], "w") as f:
+                f.write("{not json")
+            return subprocess.CompletedProcess(cmd, 0, "", "")
+
+        monkeypatch.setattr(raw_scene.subprocess, "run", fake_child)
+        out = _run(GOOD, tmp_path)
+        assert (out.ok, out.kind) == (False, "crash")
+        assert "unreadable child result" in out.message
 
 
 class TestSuccess:

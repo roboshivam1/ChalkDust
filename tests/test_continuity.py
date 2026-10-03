@@ -28,8 +28,8 @@ from chalkdust.core.models import BeatSpec, BuildContext, CarryInError, Quality,
 from chalkdust.render.worker import TIERS
 from chalkdust.scenes.regions import bbox, region_rect
 from chalkdust.scenes.theme import DEFAULT, title_text
-from chalkdust.validate.geometric import LayoutProbe
-from chalkdust.validate.repair import RepairPlan
+from chalkdust.validate.geometric import LayoutProbe, validate_beat
+from chalkdust.validate.repair import RepairPlan, repair_beat
 
 # f2/f4's render-key terms (theme, tier, repair plan), fixed for these tests.
 _TERMS = (asdict(DEFAULT), asdict(TIERS[Quality.DRAFT]), RepairPlan().key_data())
@@ -164,3 +164,20 @@ class TestScene:
     def test_target_not_carried_is_typed_error(self, title_builder):
         with pytest.raises(CarryInError, match="no_such_thing"):
             carried(self._probe(), "no_such_thing")
+
+
+class TestValidationRungs:
+    """The geometric probe and the repair probe must build a carry-in beat
+    with its carried artifacts, as the render does (register N-4)."""
+
+    def test_validate_beat_builds_carried_artifacts(self, carry_in_video):
+        video = carry_in_video()
+        recipes = resolve_carry_in(video)["b02"]
+        report = validate_beat(video.beats[1], duration=4.0, recipes=recipes)
+        assert report.ok, f"\n{report}"
+
+    def test_repair_beat_builds_carried_artifacts(self, carry_in_video):
+        video = carry_in_video()
+        recipes = resolve_carry_in(video)["b02"]
+        result = repair_beat(video.beats[1], duration=4.0, recipes=recipes)
+        assert result.ok, f"\n{result.report}"

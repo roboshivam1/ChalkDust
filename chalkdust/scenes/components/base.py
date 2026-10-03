@@ -52,6 +52,11 @@ class Component(ABC):
 
     name: ClassVar[str]
     Params: ClassVar[type[ComponentParams]]
+    # Set (to the reason) only by a component that builds no fixed visual of
+    # its own, so it has nothing for the snapshot harness to record
+    # (SCENE_SPEC.md §11 rule 6). Such a component must say what guards it
+    # against Manim drift instead. Today: RawScene only.
+    snapshot_exempt: ClassVar[str | None] = None
 
     def __init__(self, params: ComponentParams | dict[str, Any]) -> None:
         if isinstance(params, dict):

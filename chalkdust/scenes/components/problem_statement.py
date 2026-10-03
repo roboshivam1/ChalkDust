@@ -17,23 +17,20 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Annotated, NamedTuple
 
-from manim import LEFT, RIGHT, UP, Mobject, VGroup, config
+from manim import LEFT, RIGHT, UP, Mobject, VGroup
 from pydantic import AfterValidator, Field
 
+from chalkdust.continuity import artifact_builder
 from chalkdust.core.models import Region
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import (
+    MIN_STEP_SECONDS,
     Component,
     ComponentParams,
     label,
     register,
 )
-from chalkdust.scenes.regions import (
-    DEFAULT_PADDING,
-    LayoutError,
-    fit_to_region,
-    region_rect,
-)
+from chalkdust.scenes.regions import DEFAULT_PADDING, fit_to_region, region_rect
 from chalkdust.scenes.theme import (
     Theme,
     body_cap_height,
@@ -41,6 +38,7 @@ from chalkdust.scenes.theme import (
     caption_text,
     emphasize,
     math,
+    refuse_invalid_latex,
 )
 
 # The paragraph measure in average characters: a comfortable reading line,
@@ -62,27 +60,16 @@ COLUMN_GAP = 1.6     # between the given column and the find column
 # inline size -- MathTex sets display maths otherwise.
 STRUT = r"\mathrm{H}\textstyle "
 
-# Relative weights of each step's share of the beat (D-002). The statement's
-# weight is split evenly over its lines, so the total -- and min_seconds() --
-# is known from the params alone, before any text is measured.
-SECONDS_PER_WEIGHT = 0.4
+# Relative weights of each step's share of the beat (D-002), handed to
+# scene.budget(). A weight of 1 -- one given -- is one reveal step, so it needs
+# MIN_STEP_SECONDS to register. The statement's weight is split evenly over
+# its lines, so the total -- and min_seconds() -- is known from the params
+# alone, before any text is measured.
+SECONDS_PER_WEIGHT = MIN_STEP_SECONDS
 STATEMENT_WEIGHT = 3
 GIVEN_WEIGHT = 1
 FIND_WEIGHT = 2
 HOLD_WEIGHT = 3
-
-
-class LatexError(LayoutError):
-    """Inline maths that does not compile, or compiles to nothing visible.
-
-    A LayoutError subclass because that is the only exception the geometric
-    probe preserves the kind of (validate/geometric.py) -- anything else is
-    reported as a build_error crash, which this is not: it is bad content
-    from the spec, and the repair loop should regenerate it (SCENE_SPEC.md §9).
-    """
-
-    def __init__(self, message: str) -> None:
-        super().__init__(message, kind="latex")
 
 
 def _inline(v: str) -> str:
@@ -146,6 +133,22 @@ def _maths(chunk: str) -> str:
     return STRUT + chunk
 
 
+def _braces_balance(chunk: str) -> bool:
+    """Every unescaped { closed by a later }, none left open. \\{ and \\} are
+    literal braces and do not count."""
+    depth, i = 0, 0
+    while i < len(chunk):
+        c = chunk[i]
+        if c == "\\":
+            i += 2
+            continue
+        depth += (c == "{") - (c == "}")
+        if depth < 0:
+            return False
+        i += 1
+    return depth == 0
+
+
 @lru_cache(maxsize=16)
 def _char_width(theme: Theme) -> float:
     """Average prose character width, for estimating where lines break. The
@@ -176,27 +179,30 @@ def _baselined(mob: Mobject, strut: Mobject) -> Mobject:
 class _Flow:
     """Lays one InlineText out into lines no wider than `width`."""
 
-    def __init__(self, s: str, theme: Theme, width: float) -> None:
-        self.theme, self.width = theme, width
+    def __init__(self, s: str, theme: Theme, width: float, what: str) -> None:
+        # `what` names the spec field ("text", "given[1]", "find") in a
+        # refusal, so the repair loop knows which one to regenerate.
+        self.theme, self.width, self.what = theme, width, what
         self.cap = body_cap_height(theme)
         self.tokens = _tokens(s)
         self.maths = {i: self._compile(t.text)
                       for i, t in enumerate(self.tokens) if t.is_math}
 
     def _compile(self, chunk: str) -> Mobject:
-        source = _maths(chunk)
-        try:
-            m = math(source, self.theme, size=_math_size(self.theme))
-        except ValueError as exc:
-            # Manim raises ValueError when LaTeX rejects the source. Its
-            # RuntimeError (no log file at all) is a broken installation, not
-            # bad content, so it is deliberately left to propagate.
-            raise LatexError(
-                f"ProblemStatement maths failed to compile: ${chunk}$ ({exc})"
-            ) from exc
+        # theme.math refuses LaTeX that does not compile as LayoutError kind
+        # "invalid_latex". Its renders-nothing check cannot fire here -- the
+        # strut always draws -- so a chunk that adds no glyph of its own
+        # (${}$, $\quad$) is refused the same way, by the same function.
+        what = f"ProblemStatement {self.what}"
+        if not _braces_balance(chunk):
+            # Manim closes its own wrapper group with a brace right after the
+            # source, so "\frac{1}{2" compiles -- swallowing the wrapper's
+            # brace -- and is never reported by LaTeX itself.
+            raise refuse_invalid_latex(what, chunk, "has unbalanced braces")
+        m = math(_maths(chunk), self.theme, size=_math_size(self.theme), what=what)
         glyphs = m.family_members_with_points()
         if len(glyphs) < 2:
-            raise LatexError(f"ProblemStatement maths ${chunk}$ draws nothing")
+            raise refuse_invalid_latex(what, chunk, "renders nothing")
         return _baselined(m, glyphs[0])
 
     def _estimate(self, i: int) -> float:
@@ -307,30 +313,78 @@ def _stack(rows: list[list[VGroup]], cap: float) -> list[VGroup]:
     return [VGroup(*lines) for lines in rows]
 
 
-def _on_frames(times: list[float]) -> list[float]:
-    """Snap budget() run times to whole frames so a real render lasts the budget.
+class _Layout(NamedTuple):
+    """The settled visual, at full opacity and not yet fitted to STAGE."""
 
-    Manim renders a play as ceil(run_time * fps) frames (np.arange over the
-    run time) and a static wait as floor(duration * fps) (freeze_current_frame),
-    and float noise turns an exact 0.2 s at 15 fps into four frames, not three.
-    Eight plays then overran a 2.4 s budget by eight frames, invisible to
-    skip_animations, whose clock just sums run times (D-002). Cumulative step
-    boundaries are rounded to frames instead, every play keeps at least one
-    frame, and the final wait absorbs the difference. The nudges of 1e-9 s pick
-    the intended frame count under either rounding. Could live in
-    ChalkdustScene.budget() for every multi-play component.
-    """
-    fps = config.frame_rate
-    edges, total = [0], 0.0
-    for t in times:
-        total += t
-        edges.append(round(total * fps))
-    frames = [max(b - a, 1) for a, b in zip(edges, edges[1:-1])]
-    # Below one frame per step (narration far under min_seconds()) the beat
-    # overruns whatever happens; Manim's minimum is one frame.
-    frames.append(max(edges[-1] - sum(frames), 1))
-    return ([max(n / fps - 1e-9, 1 / fps) for n in frames[:-1]]
-            + [frames[-1] / fps + 1e-9])
+    blocks: list[VGroup]        # statement, [given], find: the exclusive groups
+    lines: list[VGroup]         # statement lines, revealed one by one
+    given_head: Mobject | None
+    given_items: list[VGroup]
+    find_head: Mobject
+    find_item: VGroup
+
+
+def _layout(p: ProblemStatementParams, theme: Theme) -> _Layout:
+    """Statement over a GIVEN | FIND row. Shared by build() and the carry-in
+    artifact builder, so a carried problem is exactly the one that was shown."""
+    cap = body_cap_height(theme)
+    stage = region_rect(Region.STAGE).inset(DEFAULT_PADDING)
+    measure = min(stage.width, MEASURE_CHARS * _char_width(theme))
+    # GIVEN and FIND share the measure as two columns.
+    column = (measure - COLUMN_GAP * cap) / 2
+
+    lines = _Flow(p.text, theme, measure, "text").lines()
+    [statement] = _stack([lines], cap)
+    label(statement, "statement")
+    for i, line in enumerate(lines):
+        label(line, f"statement[{i}]")
+
+    def section(header: str, items: list[VGroup], x: float,
+                top: float) -> tuple[VGroup, Mobject]:
+        """A captioned column, header over its items, top-left at (x, top).
+        Both headers are caps-only captions, so side-by-side GIVEN and
+        FIND columns line up without being aligned to each other."""
+        head = caption_text(header, theme)
+        head.next_to(items[0], UP, buff=HEADER_GAP * cap, aligned_edge=LEFT)
+        block = VGroup(head, *items)
+        block.shift(UP * (top - block.get_top()[1])
+                    + RIGHT * (x - block.get_left()[0]))
+        return block, head
+
+    left = statement.get_left()[0]
+    top = statement.get_bottom()[1] - SECTION_GAP * cap
+    blocks = [statement]
+    given_items = _stack([_Flow(g, theme, column, f"given[{i}]").lines()
+                          for i, g in enumerate(p.given)], cap)
+    for i, item in enumerate(given_items):
+        label(item, f"given[{i}]")
+
+    # FIND sits beside the givens, or under the statement when there are
+    # none. A given whose maths is too wide to break overruns its column;
+    # then FIND drops below the givens at the full measure, so the overrun
+    # can never reach it.
+    given_head = None
+    find_x, find_top, find_width = left, top, measure
+    if given_items:
+        given_block, given_head = section("GIVEN", given_items, left, top)
+        blocks.append(label(given_block, "given"))
+        if given_block.get_right()[0] <= left + column + 1e-6:
+            find_x, find_width = left + column + COLUMN_GAP * cap, column
+        else:
+            find_top = given_block.get_bottom()[1] - SECTION_GAP * cap
+    [find_item] = _stack([_Flow(p.find, theme, find_width, "find").lines()], cap)
+    label(find_item, "find value")
+    emphasize(find_item, theme)
+    find_block, find_head = section("FIND", [find_item], find_x, find_top)
+    blocks.append(label(find_block, "find"))
+    return _Layout(blocks, lines, given_head, given_items, find_head, find_item)
+
+
+@artifact_builder("ProblemStatement")
+def _artifact(params: ProblemStatementParams, theme: Theme) -> Mobject:
+    """The stated problem, for a later beat to carry in (SCENE_SPEC.md §6) --
+    typically kept on screen, dimmed, while the solution is worked."""
+    return VGroup(*_layout(params, theme).blocks)
 
 
 # --- the component ----------------------------------------------------------
@@ -359,77 +413,28 @@ class ProblemStatement(Component):
                 for t in _tokens(field) if t.is_math]
 
     def build(self, scene: ChalkdustScene) -> None:
-        p: ProblemStatementParams = self.params
-        theme = scene.theme
-        cap = body_cap_height(theme)
-        stage = region_rect(Region.STAGE).inset(DEFAULT_PADDING)
-        measure = min(stage.width, MEASURE_CHARS * _char_width(theme))
-        # GIVEN and FIND share the measure as two columns.
-        column = (measure - COLUMN_GAP * cap) / 2
-
-        lines = _Flow(p.text, theme, measure).lines()
-        [statement] = _stack([lines], cap)
-        label(statement, "statement")
-        for i, line in enumerate(lines):
-            label(line, f"statement[{i}]")
-
-        def section(header: str, items: list[VGroup], x: float,
-                    top: float) -> tuple[VGroup, Mobject]:
-            """A captioned column, header over its items, top-left at (x, top).
-            Both headers are caps-only captions, so side-by-side GIVEN and
-            FIND columns line up without being aligned to each other."""
-            head = caption_text(header, theme)
-            head.next_to(items[0], UP, buff=HEADER_GAP * cap, aligned_edge=LEFT)
-            block = VGroup(head, *items)
-            block.shift(UP * (top - block.get_top()[1])
-                        + RIGHT * (x - block.get_left()[0]))
-            return block, head
-
-        left = statement.get_left()[0]
-        top = statement.get_bottom()[1] - SECTION_GAP * cap
-        blocks = [statement]
-        given_items = _stack([_Flow(g, theme, column).lines() for g in p.given], cap)
-        for i, item in enumerate(given_items):
-            label(item, f"given[{i}]")
-
-        # FIND sits beside the givens, or under the statement when there are
-        # none. A given whose maths is too wide to break overruns its column;
-        # then FIND drops below the givens at the full measure, so the overrun
-        # can never reach it.
-        given_head = None
-        find_x, find_top, find_width = left, top, measure
-        if given_items:
-            given_block, given_head = section("GIVEN", given_items, left, top)
-            blocks.append(label(given_block, "given"))
-            if given_block.get_right()[0] <= left + column + 1e-6:
-                find_x, find_width = left + column + COLUMN_GAP * cap, column
-            else:
-                find_top = given_block.get_bottom()[1] - SECTION_GAP * cap
-        [find_item] = _stack([_Flow(p.find, theme, find_width).lines()], cap)
-        label(find_item, "find value")
-        emphasize(find_item, theme)
-        find_block, find_head = section("FIND", [find_item], find_x, find_top)
-        blocks.append(label(find_block, "find"))
-
-        fit_to_region(label(VGroup(*blocks), "ProblemStatement"), Region.STAGE)
+        lay = _layout(self.params, scene.theme)
+        fit_to_region(label(VGroup(*lay.blocks), "ProblemStatement"), Region.STAGE)
 
         # Separate top-level mobjects so the settle check asserts the
         # statement and the columns never overlap; revealed by opacity, as
         # BulletReveal does, so the checks see the final geometry.
-        for block in blocks:
+        for block in lay.blocks:
             for mob in block.get_family():
                 mob.set_opacity(0)
             scene.add(block)
-        scene.exclusive(*blocks)
+        scene.exclusive(*lay.blocks)
 
-        times = iter(_on_frames(scene.budget(*self._weights(len(lines)))))
-        for line in lines:
+        # Whole-frame run times that sum to the beat exactly (D-002); the
+        # scene makes Manim render each as exactly that many frames.
+        times = iter(scene.budget(*self._weights(len(lay.lines))))
+        for line in lay.lines:
             scene.play(line.animate.set_opacity(1), run_time=next(times))
-        for i, item in enumerate(given_items):
-            reveal = [given_head, item] if i == 0 else [item]
+        for i, item in enumerate(lay.given_items):
+            reveal = [lay.given_head, item] if i == 0 else [item]
             scene.play(*(m.animate.set_opacity(1) for m in reveal), run_time=next(times))
-        scene.play(find_head.animate.set_opacity(1), find_item.animate.set_opacity(1),
-                   run_time=next(times))
+        scene.play(lay.find_head.animate.set_opacity(1),
+                   lay.find_item.animate.set_opacity(1), run_time=next(times))
         scene.settle("problem stated")
         scene.wait(next(times))
 
@@ -480,4 +485,11 @@ class ProblemStatement(Component):
             # Minimal: one character each, no givens.
             {"text": "x", "find": "y"},
             {"text": "$x$", "given": ["$y$"], "find": "$z$"},
+            # Invalid LaTeX, which must refuse as invalid_latex: an unknown
+            # command, an unclosed brace, and maths that compiles to nothing.
+            {"text": r"The net force on the block is $\notacommand{F}$.",
+             "find": "the acceleration"},
+            {"text": incline["text"], "given": [r"$\mu = \frac{1}{2$"],
+             "find": incline["find"]},
+            {"text": "x", "find": r"the value of $\quad$"},
         ]

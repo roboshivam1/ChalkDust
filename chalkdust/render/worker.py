@@ -25,6 +25,7 @@ Two kinds of beat take a different path:
 
 from __future__ import annotations
 
+import os
 import shutil
 from collections.abc import Sequence
 from dataclasses import asdict, dataclass
@@ -67,6 +68,19 @@ TIERS: dict[Quality, RenderTier] = {
 }
 
 
+def long_path(path: Path | str) -> Path:
+    """`path` absolute, with every Windows 8.3 short name expanded.
+
+    Manim hands its media dir to LaTeX, and TeX reads `~` in a path as an
+    active character: under C:/Users/LOKAVY~1/... (the short form %TEMP%
+    carries) every MathTex fails to compile (register N-3). os.path.realpath
+    expands short names component by component, also for a path that does
+    not exist yet; on macOS and Linux it only makes the path absolute and
+    resolves symlinks. Every dir this module hands Manim goes through here.
+    """
+    return Path(os.path.realpath(path))
+
+
 def _require_duration(beat: Beat) -> float:
     if beat.duration is None:
         raise ValueError(
@@ -90,6 +104,7 @@ def plan_repair(beat: Beat, theme: Theme, ctx: BuildContext, work_dir: Path,
     frame that is actually drawn.
     """
     duration = _require_duration(beat)
+    work_dir = long_path(work_dir)
     with tempconfig({**asdict(TIERS[ctx.quality]), "media_dir": str(work_dir)}):
         return repair_beat(beat.spec, theme, duration, recipes=recipes).plan
 
@@ -119,6 +134,7 @@ def _render(beat: Beat, theme: Theme, ctx: BuildContext, cache: Cache,
     and the scene, so the key describes exactly what is drawn. The plan is
     computed even when the clip turns out to be cached: it is part of the key.
     """
+    work_dir = long_path(work_dir)
     plan = plan_repair(beat, theme, ctx, work_dir, recipes)
     key = render_key(beat, theme, ctx, plan, recipes)
     slot = cache.slot("beats", key, ".mp4")
@@ -173,6 +189,7 @@ def render_beat(beat: Beat, theme: str, ctx: BuildContext, cache: Cache,
     with a carry_in. A RawScene beat goes to render_raw_beat, which takes the
     theme by name and degrades instead of raising.
     """
+    work_dir = long_path(work_dir)
     if beat.spec.component == RawScene.name:
         return render_raw_beat(beat, theme, ctx, cache, work_dir)
     path, _ = _render(beat, resolve_fonts(get_theme(theme)), ctx, cache, work_dir,
@@ -182,6 +199,7 @@ def render_beat(beat: Beat, theme: str, ctx: BuildContext, cache: Cache,
 
 def render_video(video: Video, ctx: BuildContext, cache: Cache, work_dir: Path,
                  verbose: bool = True) -> Video:
+    work_dir = long_path(work_dir)
     # Resolved once per video: one font check, one substitution warning, and
     # the same theme in every beat's key.
     theme = resolve_fonts(get_theme(video.spec.theme))

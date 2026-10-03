@@ -8,13 +8,16 @@ install and run identically on every OS.
 from __future__ import annotations
 
 import json
+import os
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
 
 from chalkdust import pipeline
 from chalkdust.core.models import Quality, VoiceConfig
+from chalkdust.render import worker
 from chalkdust.speech import tts
 from chalkdust.speech.base import TTSError, probe_duration, run
 
@@ -283,3 +286,47 @@ class TestValidateLadder:
         assert str(exc.value).startswith(
             "rung 3 (geometric, after mechanical repair) refused 1 beat(s): b01\n")
         assert fake_tts.calls == []
+
+
+def _short_path(path: Path) -> str:
+    """The Windows 8.3 form of an existing `path` (C:/Users/LOKAVY~1/...)."""
+    import ctypes
+
+    buf = ctypes.create_unicode_buffer(32768)
+    n = ctypes.windll.kernel32.GetShortPathNameW(str(path), buf, len(buf))
+    assert n, f"GetShortPathNameW failed for {path}"
+    return buf.value
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="8.3 short names are Windows-only")
+def test_dirs_handed_to_manim_are_long_paths(tmp_path, fake_tts, monkeypatch):
+    # Register N-3: TeX breaks on the '~' of an 8.3 name, so a work dir given
+    # in short form must reach Manim -- validation, repair probe and render
+    # alike -- with every short name expanded.
+    long_dir = tmp_path / "a long work directory"
+    long_dir.mkdir()
+    short = _short_path(long_dir)
+    if "~" not in short:
+        pytest.skip(f"this volume generates no 8.3 names ({short})")
+
+    handed: list[str] = []
+
+    def spy(real):
+        def tempconfig(settings, *args, **kwargs):
+            handed.extend(str(settings[k]) for k in ("media_dir", "video_dir")
+                          if k in settings)
+            return real(settings, *args, **kwargs)
+        return tempconfig
+
+    monkeypatch.setattr(pipeline, "tempconfig", spy(pipeline.tempconfig))
+    monkeypatch.setattr(worker, "tempconfig", spy(worker.tempconfig))
+    path = write_spec(tmp_path / "spec.json",
+                      _one_beat_spec("TitleCard", {"title": "Long paths only"}))
+    pipeline.render(path, Quality.DRAFT, tmp_path / "video.mp4",
+                    cache_dir=tmp_path / "cache", work_dir=Path(short))
+
+    # pipeline's scratch (validate + render), the worker's repair probe, and
+    # the worker's render (media_dir + video_dir).
+    assert len(handed) >= 5
+    assert [d for d in handed if "~" in d] == []
+    assert all(Path(d).is_relative_to(Path(os.path.realpath(long_dir))) for d in handed)

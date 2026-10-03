@@ -6,13 +6,26 @@ probe; these pin the behaviour specific to this component.
 
 from __future__ import annotations
 
+import json
+import math
 import re
+import subprocess
+from dataclasses import asdict
 
+import numpy as np
 import pytest
 from manim import tempconfig
 from pydantic import ValidationError
 
-from chalkdust.core.models import BeatSpec, Region
+from chalkdust.continuity import (
+    ArtifactRecipe,
+    beat_component,
+    build_artifact,
+    carried,
+    resolve_carry_in,
+)
+from chalkdust.core.models import BeatSpec, Quality, Region, VideoSpec
+from chalkdust.render.worker import TIERS
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.geometry_construct import (
     HOLD_MIN,
@@ -20,12 +33,15 @@ from chalkdust.scenes.components.geometry_construct import (
     STEP_MIN,
     GeometryConstruct,
     GeometryConstructParams,
+    _dist_to_segment,
     _resolve,
 )
-from chalkdust.scenes.regions import bbox
+from chalkdust.scenes.regions import bbox, region_rect
+from chalkdust.scenes.theme import DEFAULT, resolve_fonts
 from chalkdust.validate.geometric import LayoutProbe, validate_beat
 
-FPS = 15
+DRAFT = TIERS[Quality.DRAFT]
+FPS = DRAFT.frame_rate
 
 
 def _pt(name, x, y, **kw):
@@ -53,30 +69,64 @@ def _validate(params):
 # --- timing (D-002) ------------------------------------------------------------
 
 
-def _elapsed(params, duration, tmp_path) -> float:
-    """Run the real scene with rendering skipped; Manim still advances its
-    clock by every play's run_time, which is what the mp4 length follows."""
+class _FrameClock(ChalkdustScene):
+    """The real scene with rendering skipped, counting the frames each play()
+    and wait() would write. wait() is a play() of a Wait, and the base hands
+    Manim (n + 0.5) / fps for an n-frame run time (scenes/base.py), so a
+    play writes int(duration * fps) frames."""
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.frames = 0
+
+    def play(self, *args, **kwargs) -> None:
+        super().play(*args, **kwargs)
+        self.frames += int(self.duration * self.fps)
+
+
+def _clocked(params, duration, tmp_path) -> _FrameClock:
     with tempconfig({"dry_run": True, "media_dir": str(tmp_path),
                      "frame_rate": FPS, "verbosity": "WARNING"}):
-        scene = ChalkdustScene(GeometryConstruct(params), duration=duration,
-                               skip_animations=True)
+        scene = _FrameClock(GeometryConstruct(params), duration=duration,
+                            skip_animations=True)
         scene.render()
-        return scene.time
+    return scene
 
 
-@pytest.mark.parametrize("factor", [0.5, 3.0])
+@pytest.mark.parametrize("factor", [0.5, 3.0], ids=["short", "long"])
 @pytest.mark.parametrize("index", range(len(GeometryConstruct.examples())))
-def test_consumes_budget_exactly(index, factor, tmp_path):
+def test_frames_equal_beat_frames(index, factor, tmp_path):
+    # Narration far shorter and far longer than the build wants: either way
+    # the beat lasts exactly ceil(audio * fps) frames, every one from budget().
     params = GeometryConstruct.examples()[index]
     budget = GeometryConstruct(params).min_seconds() * factor
-    assert _elapsed(params, budget, tmp_path) == pytest.approx(budget, abs=1 / FPS)
+    scene = _clocked(params, budget, tmp_path)
+    assert scene.frames == scene.beat_frames == math.ceil(budget * FPS)
 
 
-def test_consumes_budget_for_a_lone_point(tmp_path):
-    # Minimal input: no given figure, one step -- no intro play, no weight.
-    params = {"construction": [_pt("A", 0, 0)]}
-    budget = 0.4
-    assert _elapsed(params, budget, tmp_path) == pytest.approx(budget, abs=1 / FPS)
+def test_frames_equal_beat_frames_for_a_lone_point(tmp_path):
+    # Minimal input: no given figure, one step -- no intro play.
+    scene = _clocked({"construction": [_pt("A", 0, 0)]}, 0.4, tmp_path)
+    assert scene.frames == scene.beat_frames == math.ceil(0.4 * FPS)
+
+
+def test_draft_render_is_exactly_the_beat(tmp_path):
+    # One real 480p15 encode, counted by ffprobe: the clip is the audio
+    # rounded up to whole frames, not a frame per play() more or less.
+    params = GeometryConstruct.examples()[1]
+    audio = GeometryConstruct(params).min_seconds() * 1.3
+    with tempconfig({**asdict(DRAFT), "media_dir": str(tmp_path),
+                     "disable_caching": True, "progress_bar": "none",
+                     "verbosity": "WARNING", "output_file": "frames"}):
+        scene = ChalkdustScene(GeometryConstruct(params), duration=audio)
+        scene.render()
+        movie = scene.renderer.file_writer.movie_file_path
+    out = subprocess.run(
+        ["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
+         "-show_entries", "stream=nb_read_frames", "-of", "json", str(movie)],
+        capture_output=True, text=True, check=True).stdout
+    frames = int(json.loads(out)["streams"][0]["nb_read_frames"])
+    assert frames == math.ceil(audio * FPS)
 
 
 def test_min_seconds_is_sum_of_step_minimums():
@@ -137,6 +187,15 @@ def test_blank_note_is_no_note():
                  {"kind": "segment", "ends": ["A", "B"]}]}, "zero length"),
     ({"shapes": [_pt("A", 0, 0), _pt("B", 1, 0), _pt("C", 2, 0),
                  {"kind": "polygon", "vertices": ["A", "B", "C"]}]}, "collinear"),
+    # Two names on one spot make a zero-length polygon side, like a segment;
+    # it used to reach build() and crash placing labels (rc2 must-fix).
+    ({"shapes": [_pt("A", 0, 0), _pt("B", 0, 0), _pt("C", 1, 0), _pt("D", 0, 1),
+                 {"kind": "polygon", "vertices": ["A", "B", "C", "D"]}]},
+     "polygon side AB has zero length"),
+    # ... including the closing side, last vertex back to the first.
+    ({"shapes": [_pt("A", 0, 0), _pt("B", 1, 0), _pt("C", 0, 1), _pt("D", 0, 0),
+                 {"kind": "polygon", "vertices": ["A", "B", "C", "D"]}]},
+     "polygon side DA has zero length"),
     ({"shapes": [_pt("A", 0, 0, note="given")]}, "notes belong to construction"),
     ({"shapes": [_pt("A", 0, 0)],
       "construction": [{"kind": "intersect", "of": ["x", "y"], "names": ["P"]}]},
@@ -225,3 +284,89 @@ def test_local_frame_is_unitless():
 def test_refuses_unreadable_figures(params, kind):
     report = _validate(params)
     assert report.kinds() == {kind}, f"\n{report}"
+
+
+def test_distance_to_a_degenerate_segment_is_distance_to_its_point():
+    # Label placement measures clearance from every side; a side of zero
+    # length must read as a point, not nan (nan scores pick no direction).
+    a = np.array([1.0, 1.0, 0.0])
+    assert _dist_to_segment(np.array([4.0, 5.0, 0.0]), a, a.copy()) == 5.0
+
+
+# --- continuity (SCENE_SPEC.md §6) -------------------------------------------------
+
+
+EUCLID = GeometryConstruct.examples()[0]
+# As a scene holds it: fonts resolved to what is installed, as the probe does.
+THEME = resolve_fonts(DEFAULT)
+
+
+def _carry_video() -> VideoSpec:
+    return VideoSpec(video_id="v", beats=(
+        BeatSpec(id="b01", narration="placeholder narration",
+                 component="GeometryConstruct", params=EUCLID,
+                 registers="euclid"),
+        BeatSpec(id="b02", narration="placeholder narration",
+                 component="BulletReveal", params={"items": ["All sides equal"]},
+                 carry_in=["euclid"]),
+    ))
+
+
+def _recipe() -> ArtifactRecipe:
+    return ArtifactRecipe(name="euclid", producer="GeometryConstruct",
+                          params=EUCLID)
+
+
+def _pieces(group) -> dict[str, list[np.ndarray]]:
+    return {p._chalk_label: [m.points for m in p.family_members_with_points()]
+            for p in group.submobjects}
+
+
+def test_artifact_builder_is_registered():
+    (recipe,) = resolve_carry_in(_carry_video())["b02"]
+    assert recipe == _recipe()
+
+
+def test_artifact_is_the_figure_the_beat_ends_on():
+    # Same pieces at the same points as the producing beat's last frame;
+    # the step captions are not part of the figure.
+    probe = LayoutProbe(GeometryConstruct(EUCLID), duration=8.0)
+    probe.construct()
+    (figure,) = [m for m in probe.mobjects
+                 if getattr(m, "_chalk_label", "") == "figure"]
+    want, got = _pieces(figure), _pieces(build_artifact(_recipe(), THEME))
+    assert sorted(got) == sorted(want)
+    for name, points in want.items():
+        assert len(got[name]) == len(points), name
+        assert all(np.allclose(g, w) for g, w in zip(got[name], points)), name
+
+
+def test_artifact_rebuild_is_deterministic():
+    a, b = build_artifact(_recipe(), THEME), build_artifact(_recipe(), THEME)
+    pa = [m.points for m in a.family_members_with_points()]
+    pb = [m.points for m in b.family_members_with_points()]
+    assert len(pa) == len(pb) > 0
+    assert all(np.array_equal(x, y) for x, y in zip(pa, pb))
+
+
+def test_artifact_layers_by_order_not_z_index():
+    # z-index is scene-wide: a carried point at z=2 would draw over the
+    # consuming beat's content. Fill, strokes, points -- by submobject order.
+    art = build_artifact(_recipe(), THEME)
+    assert {m.z_index for m in art.get_family()} == {0}
+    kinds = [p._chalk_label.split()[0] for p in art.submobjects]
+    rank = {"polygon": 0, "segment": 1, "circle": 1, "point": 2}
+    assert [rank[k] for k in kinds] == sorted(rank[k] for k in kinds)
+
+
+def test_carry_in_beat_builds_with_the_figure():
+    video = _carry_video()
+    recipes = resolve_carry_in(video)["b02"]
+    report = validate_beat(video.beats[1], recipes=recipes)
+    assert report.ok, f"\n{report}"
+    probe = LayoutProbe(beat_component(video.beats[1], recipes), duration=4.0,
+                        strict=False)
+    probe.construct()
+    figure = carried(probe, "euclid")
+    assert region_rect(Region.STAGE).contains(bbox(figure))
+    assert probe.layout_warnings == []

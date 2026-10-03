@@ -43,6 +43,7 @@ from manim import (
 )
 from pydantic import Field, field_validator, model_validator
 
+from chalkdust.continuity import artifact_builder
 from chalkdust.core.models import Region
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import (
@@ -59,7 +60,7 @@ from chalkdust.scenes.regions import (
     fit_to_region,
     region_rect,
 )
-from chalkdust.scenes.theme import body_text
+from chalkdust.scenes.theme import Theme, body_text
 
 # A construction longer than this is two beats. Fires at schema validation,
 # where the error points at the real fix (split the beat) -- same reasoning as
@@ -303,6 +304,14 @@ def _apply(el: _Element, points: dict[str, np.ndarray],
         verts = [need(v) for v in el.vertices]
         if len(set(el.vertices)) != len(el.vertices):
             raise ValueError("polygon repeats a vertex")
+        # Two names on one spot make a zero-length side, exactly as a
+        # zero-length segment: there is no side to draw (and no direction to
+        # measure a label's clearance from).
+        for k, v in enumerate(el.vertices):
+            w = el.vertices[(k + 1) % len(el.vertices)]
+            if np.linalg.norm(points[w] - points[v]) <= tol:
+                raise ValueError(f"polygon side {v}{w} has zero length: "
+                                 f"{v} and {w} are the same point")
         area = sum(_cross(verts[k], verts[(k + 1) % len(verts)])
                    for k in range(len(verts)))
         if abs(area) <= tol * tol:
@@ -385,25 +394,7 @@ class GeometryConstruct(Component):
     def build(self, scene: ChalkdustScene) -> None:
         p: GeometryConstructParams = self.params
         theme = scene.theme
-        local = _resolve(p)
-
-        labels = {n: label(body_text(n, theme), f"label {n}") for n in local}
-        pos = _place_in_stage(p, local, labels)
-
-        # Build every piece at its final position first, so the layout is
-        # decided once for the finished figure and never shifts mid-beat.
-        segs: list[tuple[np.ndarray, np.ndarray]] = []
-        circles: list[tuple[np.ndarray, float]] = []
-        pieces: list[Mobject] = []
-        for el in [*p.shapes, *p.construction]:
-            given = any(el is s for s in p.shapes)
-            pieces.append(self._piece(el, given, pos, labels, theme, segs,
-                                      circles))
-
-        _place_labels(pos, labels, segs, circles)
-
-        full = VGroup(*pieces)
-        fit_to_region(full, Region.STAGE)
+        pieces, labels = _figure(p, theme)
         _check_legible(labels, pieces)
 
         notes: dict[int, Mobject] = {}
@@ -451,46 +442,6 @@ class GeometryConstruct(Component):
 
         scene.settle("construction complete")
         scene.wait(times[-1])
-
-    def _piece(self, el, given, pos, labels, theme, segs, circles) -> Mobject:
-        pal = theme.palette
-        if isinstance(el, (PointElement, IntersectElement)):
-            names = [el.name] if isinstance(el, PointElement) else el.names
-            color = pal.fg if given else pal.accent
-            group = VGroup()
-            for n in names:
-                dot = Dot(pos[n], radius=DOT_RADIUS, color=color)
-                dot._chalk_point = n  # type: ignore[attr-defined]
-                # Points and their names sit above every stroke.
-                dot.set_z_index(2)
-                labels[n].set_z_index(2)
-                group.add(dot, labels[n])
-            return label(group, f"point {' '.join(names)}")
-
-        if isinstance(el, SegmentElement):
-            a, b = (pos[n] for n in el.ends)
-            segs.append((a, b))
-            line = Line(a, b, color=pal.fg, stroke_width=STROKE)
-            return label(line, f"segment {''.join(el.ends)}")
-
-        if isinstance(el, CircleElement):
-            c, t = pos[el.center], pos[el.through]
-            radius = float(np.linalg.norm(t - c))
-            circles.append((c, radius))
-            # Start the stroke at the `through` point, as the compass would.
-            angle = float(np.arctan2(t[1] - c[1], t[0] - c[0]))
-            circle = Circle(radius=radius,
-                            color=pal.fg if given else pal.muted,
-                            stroke_width=STROKE if given else COMPASS_STROKE)
-            circle.rotate(angle).move_to(c)
-            return label(circle, f"circle {el.center}->{el.through}")
-
-        verts = [pos[v] for v in el.vertices]
-        segs.extend(zip(verts, verts[1:] + verts[:1]))
-        poly = Polygon(*verts, color=pal.accent, stroke_width=STROKE,
-                       fill_color=pal.accent, fill_opacity=POLYGON_FILL)
-        poly.set_z_index(-1)  # fill sits beneath the strokes it encloses
-        return label(poly, f"polygon {''.join(el.vertices)}")
 
     @classmethod
     def examples(cls):
@@ -571,7 +522,90 @@ class GeometryConstruct(Component):
                         _seg("A", "B")],
              "construction": [_circ("A", "B", "cA"), _circ("B", "A", "cB"),
                               _meet("cA", "cB", ["C", "D"])]},
+            # A polygon side one notch above the zero-length rejection: two
+            # vertices 1e-6 apart in a unit figure. Schema-valid, so it must
+            # reach layout and refuse as illegible (one visible dot, two
+            # names) -- never crash placing labels around a speck of a side.
+            {"shapes": [_pt("A", 0, 0), _pt("B", 1e-6, 0), _pt("C", 1, 0),
+                        _pt("D", 0, 1),
+                        {"kind": "polygon", "vertices": ["A", "B", "C", "D"]}]},
+            # (d) Maths-looking input. GeometryConstruct compiles no LaTeX
+            # (latex_strings() is empty): a caption full of TeX source, even
+            # malformed, is plain text and draws as typed.
+            {"shapes": [_pt("A", 0, 0), _pt("B", 1, 0)],
+             "construction": [_circ("A", "B", "cA",
+                                    note=r"Radius $\frac{AB}{2}$ \unknown{")]},
         ]
+
+
+# --- the finished figure -------------------------------------------------------
+
+
+def _figure(p: GeometryConstructParams,
+            theme: Theme) -> tuple[list[Mobject], dict[str, Mobject]]:
+    """Every piece of the finished figure at its final place in STAGE, one per
+    element (shapes, then construction steps), plus the point labels by name.
+
+    Built in full before anything is animated, so the layout is decided once
+    for the finished figure and never shifts mid-beat. Pure in (params, theme):
+    the beat's build() and the carry-in builder both start here, so a carried
+    figure is the one the producing beat ended on.
+    """
+    local = _resolve(p)
+    labels = {n: label(body_text(n, theme), f"label {n}") for n in local}
+    pos = _place_in_stage(p, local, labels)
+
+    segs: list[tuple[np.ndarray, np.ndarray]] = []
+    circles: list[tuple[np.ndarray, float]] = []
+    pieces: list[Mobject] = []
+    for el in [*p.shapes, *p.construction]:
+        given = any(el is s for s in p.shapes)
+        pieces.append(_piece(el, given, pos, labels, theme, segs, circles))
+
+    _place_labels(pos, labels, segs, circles)
+    fit_to_region(VGroup(*pieces), Region.STAGE)
+    return pieces, labels
+
+
+def _piece(el, given, pos, labels, theme, segs, circles) -> Mobject:
+    pal = theme.palette
+    if isinstance(el, (PointElement, IntersectElement)):
+        names = [el.name] if isinstance(el, PointElement) else el.names
+        color = pal.fg if given else pal.accent
+        group = VGroup()
+        for n in names:
+            dot = Dot(pos[n], radius=DOT_RADIUS, color=color)
+            dot._chalk_point = n  # type: ignore[attr-defined]
+            # Points and their names sit above every stroke.
+            dot.set_z_index(2)
+            labels[n].set_z_index(2)
+            group.add(dot, labels[n])
+        return label(group, f"point {' '.join(names)}")
+
+    if isinstance(el, SegmentElement):
+        a, b = (pos[n] for n in el.ends)
+        segs.append((a, b))
+        line = Line(a, b, color=pal.fg, stroke_width=STROKE)
+        return label(line, f"segment {''.join(el.ends)}")
+
+    if isinstance(el, CircleElement):
+        c, t = pos[el.center], pos[el.through]
+        radius = float(np.linalg.norm(t - c))
+        circles.append((c, radius))
+        # Start the stroke at the `through` point, as the compass would.
+        angle = float(np.arctan2(t[1] - c[1], t[0] - c[0]))
+        circle = Circle(radius=radius,
+                        color=pal.fg if given else pal.muted,
+                        stroke_width=STROKE if given else COMPASS_STROKE)
+        circle.rotate(angle).move_to(c)
+        return label(circle, f"circle {el.center}->{el.through}")
+
+    verts = [pos[v] for v in el.vertices]
+    segs.extend(zip(verts, verts[1:] + verts[:1]))
+    poly = Polygon(*verts, color=pal.accent, stroke_width=STROKE,
+                   fill_color=pal.accent, fill_opacity=POLYGON_FILL)
+    poly.set_z_index(-1)  # fill sits beneath the strokes it encloses
+    return label(poly, f"polygon {''.join(el.vertices)}")
 
 
 def _reveal(piece: Mobject, kind: str):
@@ -662,7 +696,12 @@ def _place_labels(pos: dict[str, np.ndarray], labels: dict[str, Mobject],
 
 def _dist_to_segment(c: np.ndarray, a: np.ndarray, b: np.ndarray) -> float:
     ab = b - a
-    t = float(np.clip(np.dot(c - a, ab) / np.dot(ab, ab), 0.0, 1.0))
+    length_sq = float(np.dot(ab, ab))
+    if length_sq == 0.0:
+        # A degenerate segment is a point. Dividing by zero here yields nan,
+        # every label direction then scores nan, and none is ever chosen.
+        return float(np.linalg.norm(c - a))
+    t = float(np.clip(np.dot(c - a, ab) / length_sq, 0.0, 1.0))
     return float(np.linalg.norm(c - (a + t * ab)))
 
 
@@ -746,3 +785,30 @@ def _hexagon_steps():
         _seg("O", "E"),
         {"kind": "polygon", "vertices": ["A", "B", "C", "D", "E", "F"]},
     ]
+
+
+# --- continuity (SCENE_SPEC.md §6) ---------------------------------------------
+
+# Draw order of a carried figure, back to front: polygon fills, then strokes,
+# then points with their names.
+_LAYER = {PolygonElement: 0, SegmentElement: 1, CircleElement: 1,
+          PointElement: 2, IntersectElement: 2}
+
+
+@artifact_builder("GeometryConstruct")
+def _artifact(params: GeometryConstructParams, theme: Theme) -> Mobject:
+    """The finished figure as the beat's last frame shows it: every given and
+    constructed piece, every point named. Step captions are not part of it --
+    each describes a stroke being drawn, not the figure.
+
+    The beat orders its layers with z-indices (fills under strokes, points
+    over both). A carried artifact must not keep them: z-index is global to a
+    scene, so a dimmed carried point would draw over the new beat's own
+    content. The same order is kept by submobject order instead.
+    """
+    pieces, _ = _figure(params, theme)
+    elements = [*params.shapes, *params.construction]
+    order = sorted(range(len(pieces)), key=lambda i: _LAYER[type(elements[i])])
+    figure = VGroup(*(pieces[i] for i in order))
+    figure.set_z_index(0)  # whole family
+    return figure

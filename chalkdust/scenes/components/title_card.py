@@ -51,8 +51,8 @@ class TitleCard(Component):
         return [1] * n_parts + [3]
 
     def min_seconds(self) -> float:
-        # Each part's reveal (weight 1) gets at least MIN_STEP_SECONDS.
-        return MIN_STEP_SECONDS * sum(self._weights())
+        # One step per part the viewer must register; the hold is not a step.
+        return MIN_STEP_SECONDS * (len(self._weights()) - 1)
 
     def build(self, scene: ChalkdustScene) -> None:
         p: TitleCardParams = self.params

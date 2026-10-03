@@ -97,7 +97,7 @@ def test_clocked_frames_equal_beat_frames(params, factor):
 
 
 def test_reveal_all_short_draft_render_is_exactly_the_beat(tmp_path):
-    # Six bullets revealed at once, at half the minimum: 5 frames of audio.
+    # Six bullets revealed at once, at half the minimum: 4 frames of audio.
     # The reveal is one play(), so it is budgeted as one segment; budgeting
     # it as six summed ones gave every bullet a frame and ran 7 frames long.
     params = EXAMPLES[2]
@@ -106,16 +106,15 @@ def test_reveal_all_short_draft_render_is_exactly_the_beat(tmp_path):
         math.ceil(duration * DRAFT_FPS)
 
 
-def test_min_seconds_gives_the_shortest_reveal_a_minimum():
-    # Weights: heading 1, each bullet 2, hold 2. At min_seconds() the shortest
-    # reveal lasts MIN_STEP_SECONDS -- the heading when there is one, else a
-    # bullet, else (reveal="all") the single fade of every bullet.
+def test_min_seconds_is_one_step_per_reveal():
+    # A step is one play() the viewer must register: the heading, each bullet,
+    # or with reveal="all" the single fade of every bullet. The hold is not.
     assert make_component(NAME, EXAMPLES[0]).min_seconds() == \
-        pytest.approx(MIN_STEP_SECONDS * (2 + 2) / 2)
+        pytest.approx(MIN_STEP_SECONDS * 1)
     assert make_component(NAME, EXAMPLES[1]).min_seconds() == \
-        pytest.approx(MIN_STEP_SECONDS * (1 + 3 * 2 + 2) / 1)
+        pytest.approx(MIN_STEP_SECONDS * (1 + 3))
     assert make_component(NAME, EXAMPLES[2]).min_seconds() == \
-        pytest.approx(MIN_STEP_SECONDS * (12 + 2) / 12)
+        pytest.approx(MIN_STEP_SECONDS * 1)
 
 
 @pytest.mark.parametrize("params", EXAMPLES + STRESS)

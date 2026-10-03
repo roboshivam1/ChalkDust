@@ -64,10 +64,9 @@ class BulletReveal(Component):
         return heading + [2] * len(p.items) + [2]
 
     def min_seconds(self) -> float:
-        # The shortest reveal -- the heading's fade, else one bullet (or the
-        # one "all" fade) -- gets at least MIN_STEP_SECONDS.
-        weights = self._weights()
-        return MIN_STEP_SECONDS * sum(weights) / min(weights[:-1])
+        # One step per play() the viewer must register -- the heading, then
+        # each bullet (or the one "all" fade); the closing hold is not a step.
+        return MIN_STEP_SECONDS * (len(self._weights()) - 1)
 
     def build(self, scene: ChalkdustScene) -> None:
         p: BulletRevealParams = self.params

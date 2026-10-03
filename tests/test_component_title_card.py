@@ -96,13 +96,12 @@ def test_short_draft_render_is_exactly_the_beat(tmp_path):
     assert frames == math.ceil(duration * DRAFT_FPS)
 
 
-def test_min_seconds_gives_each_part_a_minimum_reveal():
-    # One weight per part plus a hold of three: at min_seconds() each part's
-    # fade-in lasts MIN_STEP_SECONDS.
+def test_min_seconds_is_one_step_per_part():
+    # Each part's fade-in is a step the viewer must register; the hold is not.
     assert make_component(NAME, EXAMPLES[0]).min_seconds() == \
-        pytest.approx(MIN_STEP_SECONDS * (1 + 3))
+        pytest.approx(MIN_STEP_SECONDS * 1)
     assert make_component(NAME, EXAMPLES[1]).min_seconds() == \
-        pytest.approx(MIN_STEP_SECONDS * (3 + 3))
+        pytest.approx(MIN_STEP_SECONDS * 3)
 
 
 @pytest.mark.parametrize("params", CASES, ids=CASE_IDS)

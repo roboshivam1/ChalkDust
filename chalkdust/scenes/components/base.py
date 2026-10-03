@@ -107,6 +107,16 @@ class Component(ABC):
         """
         return []
 
+    def carried_names(self) -> list[str]:
+        """Every carry-in name build() fetches with continuity.carried().
+
+        The semantic rung checks each one is in the beat's carry_in, so a
+        component pointed at an artifact the beat does not carry is refused
+        as a continuity error (SCENE_SPEC.md §6, §8) before anything is
+        built -- not as a build_error from deep inside the geometric probe.
+        """
+        return []
+
     # --- test fixtures ------------------------------------------------------
     # Each component declares its own cases so the shared test suite covers
     # every component automatically as the library grows (SCENE_SPEC.md §11).
@@ -125,6 +135,31 @@ class Component(ABC):
         exception like IndexError.
         """
         return []
+
+    # A component that acts on a carried artifact (SCENE_SPEC.md §6) cannot
+    # build from params alone: its fixtures carry their artifacts with them.
+    # Each case is {"carry_in": [ArtifactRecipe dict, ...], "params": {...}};
+    # the registry walks (tests/test_layout.py, the snapshot harness) build it
+    # with those artifacts on screen, as the render does. Same contracts as
+    # examples() / stress().
+
+    @classmethod
+    def carried_examples(cls) -> list[dict[str, Any]]:
+        """Realistic carried cases that MUST validate clean."""
+        return []
+
+    @classmethod
+    def carried_stress(cls) -> list[dict[str, Any]]:
+        """Abusive carried cases: fit, or refuse with a LayoutError."""
+        return []
+
+    @classmethod
+    def fixture_builders(cls) -> dict[str, Any]:
+        """Artifact builders the carried fixtures lend to producers that ship
+        none of their own yet, by producer component name. Lent only while a
+        fixture is built (validate/fixtures.lent_builders) and never over a
+        producer's real builder."""
+        return {}
 
 
 # --- registry ---------------------------------------------------------------

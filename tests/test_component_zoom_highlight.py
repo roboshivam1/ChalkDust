@@ -1,70 +1,77 @@
 """ZoomHighlight: the behaviours the registry-wide layout tests cannot pin.
 
-ZoomHighlight acts on a carried artifact (SCENE_SPEC.md §6), and
-tests/test_layout.py probes through validate_beat, which builds without
-carry-ins -- so the class leaves examples()/stress() empty and this file runs
-its carried_examples()/carried_stress() through beat_component instead, the
-way the compiler will.
+ZoomHighlight acts on a carried artifact (SCENE_SPEC.md §6). Its fixtures are
+carried_examples() / carried_stress(), which tests/test_layout.py and the
+snapshot harness also walk (validate/fixtures.py); here they are built the way
+the compiler builds them, through continuity.beat_component, and the pipeline
+renders one end to end.
 
-No shipped component registers an artifact builder yet, so BulletReveal is
-lent one for each test (monkeypatched, never left in the registry) that
-rebuilds its rows: one part per bullet. No LaTeX is involved.
+No shipped producer registers an artifact builder yet, so BulletReveal is lent
+ZoomHighlight's fixture builder for each test (monkeypatched, never left in
+the registry): its rows, one part per bullet. No LaTeX is involved.
 """
 
 from __future__ import annotations
 
+import json
+import math
+import subprocess
+from dataclasses import asdict
+from pathlib import Path
+
 import pytest
-from manim import DOWN, LEFT, RIGHT, Dot, VGroup, tempconfig
+from manim import tempconfig
+from manim.animation.animation import prepare_animation
 from pydantic import ValidationError
 
-from chalkdust import continuity
+from chalkdust import continuity, pipeline
 from chalkdust.continuity import beat_component, resolve_carry_in
-from chalkdust.core.models import BeatSpec, CarryInError, Region, VideoSpec
-from chalkdust.scenes.base import ChalkdustScene
+from chalkdust.core.models import BeatSpec, CarryInError, Quality, Region, VideoSpec, VoiceConfig
+from chalkdust.render.worker import TIERS
+from chalkdust.scenes.base import ChalkdustScene, frames_covering
 from chalkdust.scenes.components import get_component, make_component
-from chalkdust.scenes.components.base import wrap
 from chalkdust.scenes.components.zoom_highlight import MAX_ZOOM, ZoomHighlight
 from chalkdust.scenes.regions import LayoutError, bbox, region_rect, smallest_font_size
-from chalkdust.scenes.theme import body_text
+from chalkdust.speech import tts
+from chalkdust.speech.base import run
+from chalkdust.validate.fixtures import FixtureCase, fixture_cases
 from chalkdust.validate.geometric import LayoutProbe
+from chalkdust.validate.semantic import validate_semantic
 
 NAME = "ZoomHighlight"
-EXAMPLES = ZoomHighlight.carried_examples()
-STRESS = ZoomHighlight.carried_stress()
-CLEAN_REFUSALS = {"overflow", "illegible"}  # as in tests/test_layout.py
-DRAFT_FPS = 15
+EXAMPLES = fixture_cases(NAME, "examples")
+STRESS = fixture_cases(NAME, "stress")
+CLEAN_REFUSALS = {"overflow", "illegible", "invalid_latex"}  # as in tests/test_layout.py
+DRAFT = TIERS[Quality.DRAFT]
+DRAFT_FPS = DRAFT.frame_rate
 ARTIFACT = "chain_causes"
-
-
-def _rows_artifact(params, theme):
-    rows = [VGroup(Dot(radius=0.07, color=theme.palette.accent),
-                   body_text(wrap(item, 46), theme)).arrange(RIGHT, buff=0.28)
-            for item in params.items]
-    return VGroup(*rows).arrange(DOWN, buff=0.35, aligned_edge=LEFT)
 
 
 @pytest.fixture(autouse=True)
 def bullets_builder(monkeypatch):
-    monkeypatch.setitem(continuity._BUILDERS, "BulletReveal", _rows_artifact)
+    monkeypatch.setitem(continuity._BUILDERS, "BulletReveal",
+                        ZoomHighlight.fixture_builders()["BulletReveal"])
 
 
-def _video(producer: str, producer_params: dict, zoom_params: dict,
-           carry_in: tuple[str, ...] = (ARTIFACT,)) -> VideoSpec:
+def _video(case: FixtureCase, carry_in: tuple[str, ...] = (ARTIFACT,),
+           **zoom_params) -> VideoSpec:
+    """b01 registers the case's carried target; b02 zooms into it."""
+    (recipe,) = case.carry_in
     return VideoSpec(video_id="v", beats=[
-        BeatSpec(id="b01", narration="placeholder narration", component=producer,
-                 params=producer_params, registers=ARTIFACT),
+        BeatSpec(id="b01", narration="placeholder narration", component=recipe.producer,
+                 params=recipe.params, registers=recipe.name),
         BeatSpec(id="b02", narration="placeholder narration", component=NAME,
-                 params=zoom_params, carry_in=list(carry_in)),
+                 params={**case.params, **zoom_params}, carry_in=list(carry_in)),
     ])
 
 
-def _component(case):
-    video = _video(*case)
+def _component(case: FixtureCase, **zoom_params):
+    video = _video(case, **zoom_params)
     return beat_component(video.beats[1], resolve_carry_in(video)["b02"])
 
 
-def _probe(case, duration: float = 8.0) -> LayoutProbe:
-    probe = LayoutProbe(_component(case), duration=duration, strict=False)
+def _probe(case: FixtureCase, duration: float = 8.0, **zoom_params) -> LayoutProbe:
+    probe = LayoutProbe(_component(case, **zoom_params), duration=duration, strict=False)
     probe.construct()
     return probe
 
@@ -131,56 +138,108 @@ def test_whole_target_is_restored_and_framed():
         == pytest.approx(1.0)
 
 
+# --- hooks ----------------------------------------------------------------------
+
+
+def test_semantic_hooks():
+    comp = make_component(NAME, EXAMPLES[0].params)
+    assert comp.min_seconds() == pytest.approx(3.5)  # 7 weight units x 0.5 s
+    assert comp.latex_strings() == []                # the callout is plain Text
+    assert comp.carried_names() == [ARTIFACT]
+
+
 # --- timing (D-002) -----------------------------------------------------------
 
 
-def test_min_seconds_and_latex_strings():
-    comp = make_component(NAME, EXAMPLES[0][2])
-    assert comp.min_seconds() == pytest.approx(3.5)  # 7 weight units x 0.5 s
-    assert comp.latex_strings() == []
+class _Clock(LayoutProbe):
+    """A probe that also adds up the time every play() and wait() asks for. A
+    play() with no explicit run_time counts at its animations' own default,
+    so a forgotten run_time shows up as a frame mismatch."""
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.segments: list[float] = []
+
+    def play(self, *animations, **kwargs) -> None:  # type: ignore[override]
+        run_time = kwargs.get("run_time")
+        if run_time is None:
+            run_time = max(prepare_animation(a).run_time for a in animations)
+        self.segments.append(run_time)
+        super().play(*animations, **kwargs)
+
+    def wait(self, duration: float = 1.0, *args, **kwargs) -> None:  # type: ignore[override]
+        self.segments.append(duration)
 
 
 @pytest.mark.parametrize("factor", [0.5, 3.0], ids=["short", "long"])
 @pytest.mark.parametrize("case", EXAMPLES, ids=_ids(EXAMPLES, "ex"))
-def test_real_render_consumes_budget_within_one_frame(tmp_path, case, factor):
-    """Narration far shorter and far longer than the zoom wants: renders for
-    real at 480p15 and reads the time Manim actually wrote. The carried
-    target is added at t=0 without animation, so it must cost nothing."""
-    budget = make_component(NAME, case[2]).min_seconds() * factor
-    with tempconfig({"media_dir": str(tmp_path), "pixel_width": 854,
-                     "pixel_height": 480, "frame_rate": DRAFT_FPS,
+def test_clocked_frames_equal_beat_frames(case, factor, tmp_path):
+    """Narration far shorter and far longer than the zoom wants: every play
+    and wait is a whole number of draft frames, and together they are exactly
+    the beat's ceil(audio * fps) frames. The carried target appears at t=0
+    without animation, so it costs nothing."""
+    budget = make_component(NAME, case.params).min_seconds() * factor
+    with tempconfig({"frame_rate": DRAFT_FPS, "media_dir": str(tmp_path)}):
+        clock = _Clock(_component(case), duration=budget, strict=False)
+    clock.construct()
+    frames = [t * DRAFT_FPS for t in clock.segments]
+    assert all(f == pytest.approx(round(f), abs=1e-9) for f in frames)
+    assert sum(round(f) for f in frames) == clock.beat_frames == \
+        math.ceil(budget * DRAFT_FPS)
+
+
+def _count_frames(movie: Path) -> int:
+    out = subprocess.run(
+        ["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
+         "-show_entries", "stream=nb_read_frames", "-of", "json", str(movie)],
+        capture_output=True, text=True, check=True).stdout
+    return int(json.loads(out)["streams"][0]["nb_read_frames"])
+
+
+@pytest.mark.parametrize("factor", [0.5, 3.0], ids=["short", "long"])
+def test_draft_render_frames_equal_audio_rounded_up(tmp_path, factor):
+    """A real 480p15 render of the lens case (the reveal is a Transform from
+    a scaled copy), frames counted by ffprobe."""
+    case = EXAMPLES[1]
+    budget = make_component(NAME, case.params).min_seconds() * factor
+    with tempconfig({**asdict(DRAFT), "media_dir": str(tmp_path),
                      "disable_caching": True, "progress_bar": "none",
-                     "verbosity": "WARNING", "output_file": f"zoom_{factor}"}):
+                     "verbosity": "WARNING", "output_file": "zoom"}):
         scene = ChalkdustScene(_component(case), duration=budget)
         scene.render()
-    assert abs(scene.renderer.time - budget) <= 1 / DRAFT_FPS
+        movie = scene.renderer.file_writer.movie_file_path
+    assert _count_frames(movie) == math.ceil(budget * DRAFT_FPS)
 
 
 # --- typed refusals -------------------------------------------------------------
 
 
-def test_target_not_carried_is_typed_error():
+def test_target_not_carried_is_typed_error_at_build():
     # The beat carries chain_causes but zooms into something else.
-    producer, pp, zp = EXAMPLES[0]
-    case = (producer, pp, {**zp, "target_id": "bucket_array"})
     with pytest.raises(CarryInError) as exc_info:
-        _probe(case)
+        _probe(EXAMPLES[0], target_id="bucket_array")
     assert exc_info.value.name == "bucket_array"
 
 
+def test_target_not_carried_is_refused_by_the_semantic_rung():
+    # Registered by b01, but b02 does not carry it in: refused before build.
+    video = _video(EXAMPLES[0], carry_in=())
+    report = validate_semantic(video.beats[1], registered_artifacts={ARTIFACT},
+                               duration=8.0)
+    assert report.kinds() == {"carry_in"}
+
+
 def test_unregistered_target_fails_spec_validation():
-    producer, pp, zp = EXAMPLES[0]
     with pytest.raises(ValidationError) as exc_info:
-        _video(producer, pp, {**zp, "target_id": "nope"}, carry_in=("nope",))
+        _video(EXAMPLES[0], carry_in=("nope",), target_id="nope")
     err = exc_info.value.errors()[0]["ctx"]["error"]
     assert isinstance(err, CarryInError) and err.name == "nope"
 
 
 def test_part_out_of_range_is_typed_error():
     # Three rows: indices 0..2. Only the rebuilt artifact knows that.
-    producer, pp, zp = EXAMPLES[0]
     with pytest.raises(CarryInError, match=r"part\(s\) \[3\]") as exc_info:
-        _probe((producer, pp, {**zp, "parts": [1, 3]}))
+        _probe(EXAMPLES[0], parts=[1, 3])
     assert exc_info.value.name == ARTIFACT
 
 
@@ -199,3 +258,71 @@ def test_part_out_of_range_is_typed_error():
 def test_schema_rejects(params):
     with pytest.raises(ValidationError):
         get_component(NAME)(params)
+
+
+# --- through the pipeline (SCENE_SPEC.md §6, D-004) ---------------------------
+
+
+class _ToneTTS:
+    """A tone whose length follows the narration's character count; needs only
+    ffmpeg, so the pipeline test runs on any OS (as tests/test_pipeline.py)."""
+
+    name = "zoom_tone"
+    raw_format = "wav"
+    default_voice = "tone"
+
+    def synthesize(self, text: str, voice: VoiceConfig, out_path: Path) -> None:
+        seconds = max(1.0, 0.06 * len(text))
+        run(["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi",
+             "-i", f"sine=frequency=220:duration={seconds:.3f}", str(out_path)])
+
+
+def _spec_file(root: Path, video: VideoSpec) -> Path:
+    data = video.model_dump(mode="json")
+    data["voice"] = {"backend": _ToneTTS.name, "voice_id": "tone"}
+    for beat, narration in zip(data["beats"], (
+            "Three things make a hash table chain grow long.",
+            "Look at the load factor: past three quarters full, chains grow "
+            "faster than the table, and every lookup pays for it.")):
+        beat["narration"] = narration
+    path = root / "spec.json"
+    path.write_text(json.dumps(data), encoding="utf-8")
+    return path
+
+
+@pytest.fixture
+def tone_tts(monkeypatch):
+    monkeypatch.setitem(tts.BACKENDS, _ToneTTS.name, _ToneTTS())
+
+
+def test_pipeline_renders_a_zoom_into_an_earlier_beats_artifact(tmp_path, tone_tts):
+    """b01 (BulletReveal) registers chain_causes; b02 zooms into its second
+    row. ZoomHighlight's build() raises unless the artifact is on screen, so a
+    rendered b02 proves the render rebuilt b01's artifact for it. Each beat's
+    clip is exactly ceil(audio * fps) frames."""
+    path = _spec_file(tmp_path, _video(EXAMPLES[0]))
+    result = pipeline.render(path, Quality.DRAFT, tmp_path / "zoom.mp4",
+                             cache_dir=tmp_path / "cache", work_dir=tmp_path / "work")
+    assert result.rebuilt == ["b01", "b02"]
+    assert result.output.exists()
+    clips = sorted((tmp_path / "cache" / "beats").glob("*.mp4"))
+    assert sorted(_count_frames(c) for c in clips) == \
+        sorted(frames_covering(b.duration, DRAFT_FPS) for b in result.beats)
+
+
+def test_pipeline_refuses_a_target_the_beat_does_not_carry(tmp_path, tone_tts):
+    path = _spec_file(tmp_path, _video(EXAMPLES[0], carry_in=()))
+    with pytest.raises(pipeline.SemanticRefused) as exc_info:
+        pipeline.validate(path, work_dir=tmp_path / "work")
+    (report,) = exc_info.value.reports
+    assert (report.beat_id, report.kinds()) == ("b02", {"carry_in"})
+
+
+def test_pipeline_refuses_an_unregistered_target_as_spec_invalid(tmp_path, tone_tts):
+    video = _video(EXAMPLES[0]).model_dump(mode="json")
+    video["beats"][1]["params"]["target_id"] = "nope"
+    video["beats"][1]["carry_in"] = ["nope"]
+    path = tmp_path / "spec.json"
+    path.write_text(json.dumps(video), encoding="utf-8")
+    with pytest.raises(pipeline.SpecInvalid, match="nope"):
+        pipeline.validate(path, work_dir=tmp_path / "work")

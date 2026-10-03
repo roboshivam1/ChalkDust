@@ -13,9 +13,11 @@ from chalkdust.scenes.components import (
     registered_names,
 )
 from chalkdust.scenes.components.base import MIN_STEP_SECONDS
+from chalkdust.validate.fixtures import fixture_cases
 from chalkdust.validate.semantic import (
     MAX_BEAT_SECONDS,
     check_capacity,
+    check_carried_names,
     check_carry_in,
     check_duration,
     check_latex,
@@ -51,6 +53,27 @@ class _Stepper(Component):
         return list(self.params.tex)
 
 
+class _PointerParams(ComponentParams):
+    target_id: str
+
+
+class _Pointer(Component):
+    """Acts on a carried artifact named by its params, as ZoomHighlight
+    does. Not registered."""
+
+    name = "_Pointer"
+    Params = _PointerParams
+
+    def regions(self) -> set[Region]:
+        return {Region.STAGE}
+
+    def build(self, scene) -> None:  # never built by the semantic rung
+        raise AssertionError("semantic checks must not build the scene")
+
+    def carried_names(self) -> list[str]:
+        return [self.params.target_id]
+
+
 def _spec(component: str, params: dict, narration: str = "placeholder narration",
           carry_in: list[str] | None = None) -> BeatSpec:
     return BeatSpec(id="b01", narration=narration, component=component,
@@ -64,11 +87,13 @@ class TestHookDefaults:
     @pytest.mark.parametrize("name", registered_names())
     def test_defaults_are_permissive(self, name):
         cls = get_component(name)
-        if not cls.examples():
+        examples = fixture_cases(name, "examples")
+        if not examples:
             pytest.skip(f"{name} declares no examples")
-        component = cls(cls.examples()[0])
+        component = cls(examples[0].params)
         assert component.min_seconds() >= 0.0
         assert isinstance(component.latex_strings(), list)
+        assert isinstance(component.carried_names(), list)
 
 
 class TestDuration:
@@ -108,6 +133,18 @@ class TestCarryIn:
         assert "carry_in" in validate_semantic(spec).kinds()
         ok = validate_semantic(spec, registered_artifacts={"bucket_array"})
         assert "carry_in" not in ok.kinds()
+
+    def test_component_acting_on_an_artifact_not_carried_in_is_refused(self):
+        # Registered by an earlier beat, but this beat does not carry it in:
+        # continuity.carried() would raise at build, a spec bug, not layout.
+        findings = check_carried_names(_Pointer({"target_id": "bucket_array"}),
+                                       carry_in=[])
+        assert [f.kind for f in findings] == ["carry_in"]
+        assert "bucket_array" in findings[0].message
+
+    def test_component_acting_on_a_carried_artifact_passes(self):
+        assert check_carried_names(_Pointer({"target_id": "bucket_array"}),
+                                   carry_in=["bucket_array"]) == []
 
 
 class TestRegionConflicts:

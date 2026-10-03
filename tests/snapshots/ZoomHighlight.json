@@ -1,0 +1,1760 @@
+{
+ "component": "ZoomHighlight",
+ "manim_version": "0.21.0",
+ "reasons": [
+  "ZoomHighlight merged"
+ ],
+ "cases": [
+  {
+   "params": {
+    "target_id": "chain_causes",
+    "parts": [
+     1
+    ],
+    "callout": "Past 0.75 full, chains grow faster than the table"
+   },
+   "carry_in": [
+    {
+     "name": "chain_causes",
+     "producer": "BulletReveal",
+     "params": {
+      "heading": "Three causes",
+      "items": [
+       "A weak hash function",
+       "A load factor left too high",
+       "Adversarial keys chosen to collide"
+      ]
+     }
+    }
+   ],
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "Transform",
+       "animate",
+       "animate"
+      ],
+      "run_time": 1.433
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Transform"
+      ],
+      "run_time": 2.85
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.433
+     },
+     {
+      "op": "settle",
+      "label": "zoom highlight shown",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[chain_causes]",
+        "children": [
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.105,
+            "stroke_opacity": 0.105
+           },
+           {
+            "type": "Text",
+            "text": "A weak hash function",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.105,
+            "stroke_opacity": 0.105
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "A load factor left too high",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.105,
+            "stroke_opacity": 0.105
+           },
+           {
+            "type": "Text",
+            "text": "Adversarial keys chosen to collide",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.105,
+            "stroke_opacity": 0.105
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Group",
+        "label": "zoom lens",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Group",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Dot",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             },
+             {
+              "type": "Text",
+              "text": "A load factor left too high",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "text": "Past 0.75 full, chains grow faster than the table",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 4.283
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[chain_causes]",
+        "children": [
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.105,
+            "stroke_opacity": 0.105
+           },
+           {
+            "type": "Text",
+            "text": "A weak hash function",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.105,
+            "stroke_opacity": 0.105
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "A load factor left too high",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.105,
+            "stroke_opacity": 0.105
+           },
+           {
+            "type": "Text",
+            "text": "Adversarial keys chosen to collide",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.105,
+            "stroke_opacity": 0.105
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Group",
+        "label": "zoom lens",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Group",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Dot",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             },
+             {
+              "type": "Text",
+              "text": "A load factor left too high",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "text": "Past 0.75 full, chains grow faster than the table",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        7.097,
+        1.858
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.253,
+        0.664,
+        4.59,
+        0.329
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.478,
+        0.664,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.043,
+        0.664,
+        4.17,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.907,
+        -0.059,
+        5.282,
+        0.417
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.478,
+        -0.059,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.697,
+        -0.059,
+        4.862,
+        0.417
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.823,
+        7.097,
+        0.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.478,
+        -0.823,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        -0.823,
+        6.677,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.907,
+        -0.059,
+        7.933,
+        1.087
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.907,
+        -0.059,
+        7.933,
+        1.087
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.907,
+        -0.059,
+        7.433,
+        0.587
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.907,
+        -0.059,
+        7.433,
+        0.587
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.525,
+        -0.059,
+        0.197,
+        0.197
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.612,
+        -0.059,
+        6.842,
+        0.587
+       ],
+       "font_size": 45.03
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        9.187,
+        0.417
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        7.097,
+        1.858
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.253,
+        0.664,
+        4.59,
+        0.329
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.478,
+        0.664,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.043,
+        0.664,
+        4.17,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.907,
+        -0.059,
+        5.282,
+        0.417
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.478,
+        -0.059,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.697,
+        -0.059,
+        4.862,
+        0.417
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.823,
+        7.097,
+        0.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.478,
+        -0.823,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        -0.823,
+        6.677,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.907,
+        -0.059,
+        7.933,
+        1.087
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.907,
+        -0.059,
+        7.933,
+        1.087
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.907,
+        -0.059,
+        7.433,
+        0.587
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.907,
+        -0.059,
+        7.433,
+        0.587
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.525,
+        -0.059,
+        0.197,
+        0.197
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.612,
+        -0.059,
+        6.842,
+        0.587
+       ],
+       "font_size": 45.03
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        9.187,
+        0.417
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "target_id": "chain_causes",
+    "parts": [
+     1,
+     2
+    ],
+    "callout": "The modulo is where two keys collide"
+   },
+   "carry_in": [
+    {
+     "name": "chain_causes",
+     "producer": "BulletReveal",
+     "params": {
+      "items": [
+       "hash(key)",
+       "mod 8",
+       "bucket 4"
+      ]
+     }
+    }
+   ],
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "Transform",
+       "Transform",
+       "animate"
+      ],
+      "run_time": 1.433
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Transform"
+      ],
+      "run_time": 2.85
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.433
+     },
+     {
+      "op": "settle",
+      "label": "zoom highlight shown",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[chain_causes]",
+        "children": [
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.105,
+            "stroke_opacity": 0.105
+           },
+           {
+            "type": "Text",
+            "text": "hash(key)",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.105,
+            "stroke_opacity": 0.105
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "mod 8",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "bucket 4",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Group",
+        "label": "zoom lens",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Group",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Dot",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             },
+             {
+              "type": "Text",
+              "text": "mod 8",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           },
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Dot",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             },
+             {
+              "type": "Text",
+              "text": "bucket 4",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "text": "The modulo is where two keys collide",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 4.283
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[chain_causes]",
+        "children": [
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.105,
+            "stroke_opacity": 0.105
+           },
+           {
+            "type": "Text",
+            "text": "hash(key)",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.105,
+            "stroke_opacity": 0.105
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "mod 8",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "bucket 4",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Group",
+        "label": "zoom lens",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Group",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Dot",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             },
+             {
+              "type": "Text",
+              "text": "mod 8",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           },
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Dot",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             },
+             {
+              "type": "Text",
+              "text": "bucket 4",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "text": "The modulo is where two keys collide",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        2.326,
+        1.766
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.574,
+        2.326,
+        0.417
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.093,
+        0.574,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        0.574,
+        1.906,
+        0.417
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.36,
+        -0.147,
+        1.606,
+        0.325
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.093,
+        -0.147,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.15,
+        -0.147,
+        1.186,
+        0.325
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.138,
+        -0.821,
+        2.05,
+        0.323
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.093,
+        -0.821,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.072,
+        -0.821,
+        1.63,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.138,
+        -0.484,
+        5.624,
+        2.996
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.138,
+        -0.484,
+        5.624,
+        2.996
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.138,
+        -0.484,
+        5.124,
+        2.496
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.692,
+        0.358,
+        4.016,
+        0.812
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.525,
+        0.358,
+        0.35,
+        0.35
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.167,
+        0.358,
+        2.966,
+        0.812
+       ],
+       "font_size": 80.0
+      },
+      {
+       "bbox": [
+        -0.138,
+        -1.327,
+        5.124,
+        0.809
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.525,
+        -1.327,
+        0.35,
+        0.35
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.387,
+        -1.327,
+        4.074,
+        0.809
+       ],
+       "font_size": 80.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        7.332,
+        0.412
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        2.326,
+        1.766
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.574,
+        2.326,
+        0.417
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.093,
+        0.574,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        0.574,
+        1.906,
+        0.417
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.36,
+        -0.147,
+        1.606,
+        0.325
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.093,
+        -0.147,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.15,
+        -0.147,
+        1.186,
+        0.325
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.138,
+        -0.821,
+        2.05,
+        0.323
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.093,
+        -0.821,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.072,
+        -0.821,
+        1.63,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.138,
+        -0.484,
+        5.624,
+        2.996
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.138,
+        -0.484,
+        5.624,
+        2.996
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.138,
+        -0.484,
+        5.124,
+        2.496
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.692,
+        0.358,
+        4.016,
+        0.812
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.525,
+        0.358,
+        0.35,
+        0.35
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.167,
+        0.358,
+        2.966,
+        0.812
+       ],
+       "font_size": 80.0
+      },
+      {
+       "bbox": [
+        -0.138,
+        -1.327,
+        5.124,
+        0.809
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.525,
+        -1.327,
+        0.35,
+        0.35
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.387,
+        -1.327,
+        4.074,
+        0.809
+       ],
+       "font_size": 80.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        7.332,
+        0.412
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "target_id": "chain_causes",
+    "callout": "All three end the same way: one long chain"
+   },
+   "carry_in": [
+    {
+     "name": "chain_causes",
+     "producer": "BulletReveal",
+     "params": {
+      "heading": "Three causes",
+      "items": [
+       "A weak hash function",
+       "A load factor left too high",
+       "Adversarial keys chosen to collide"
+      ]
+     }
+    }
+   ],
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "Restore"
+      ],
+      "run_time": 1.433
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create"
+      ],
+      "run_time": 2.85
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.433
+     },
+     {
+      "op": "settle",
+      "label": "zoom highlight shown",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[chain_causes]",
+        "children": [
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "A weak hash function",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "A load factor left too high",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Adversarial keys chosen to collide",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "SurroundingRectangle",
+        "label": "focus frame",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "text": "All three end the same way: one long chain",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 4.283
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[chain_causes]",
+        "children": [
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "A weak hash function",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "A load factor left too high",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Adversarial keys chosen to collide",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "SurroundingRectangle",
+        "label": "focus frame",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "text": "All three end the same way: one long chain",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        7.097,
+        1.858
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.253,
+        0.664,
+        4.59,
+        0.329
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.478,
+        0.664,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.043,
+        0.664,
+        4.17,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.907,
+        -0.059,
+        5.282,
+        0.417
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.478,
+        -0.059,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.697,
+        -0.059,
+        4.862,
+        0.417
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.823,
+        7.097,
+        0.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.478,
+        -0.823,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        -0.823,
+        6.677,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        7.337,
+        2.098
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        8.469,
+        0.412
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        7.097,
+        1.858
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.253,
+        0.664,
+        4.59,
+        0.329
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.478,
+        0.664,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.043,
+        0.664,
+        4.17,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.907,
+        -0.059,
+        5.282,
+        0.417
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.478,
+        -0.059,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.697,
+        -0.059,
+        4.862,
+        0.417
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.823,
+        7.097,
+        0.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.478,
+        -0.823,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        -0.823,
+        6.677,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        7.337,
+        2.098
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        8.469,
+        0.412
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ]
+   }
+  }
+ ]
+}

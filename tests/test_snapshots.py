@@ -1,7 +1,8 @@
 """Snapshot tests (SCENE_SPEC.md §11 rule 6).
 
-Walks the registry like test_layout.py: every component's examples() must
-match its recorded snapshot in tests/snapshots/. A component without one
+Walks the registry like test_layout.py: every component's examples() (and
+carried_examples(), built with their carried artifacts) must match its
+recorded snapshot in tests/snapshots/. A component without one
 fails -- shipping a snapshot is part of shipping a component (§5), so a
 missing file is a missing deliverable, not a reason to skip. Component
 branches written before this harness existed carry none: merging one
@@ -23,12 +24,15 @@ import pytest
 from chalkdust.scenes.components import get_component, registered_names
 from chalkdust.validate.snapshot import (
     capture,
+    case_key,
     diff_geometry,
     diff_structure,
     fingerprint,
     load,
     main,
+    recorded_key,
     regenerate,
+    snapshot_cases,
     snapshot_exempt,
     snapshot_path,
     snapshotted_names,
@@ -44,7 +48,7 @@ def _regen(name: str) -> str:
 
 @lru_cache(maxsize=None)
 def _current(name: str) -> list[tuple[dict, list]]:
-    return [capture(name, params) for params in get_component(name).examples()]
+    return [capture(name, case.params, case.carry_in) for case in snapshot_cases(name)]
 
 
 def _recorded(name: str) -> dict:
@@ -52,8 +56,8 @@ def _recorded(name: str) -> dict:
     if snap is None:
         pytest.fail(f"{name} has no snapshot; shipping one is part of shipping "
                     f"the component (SCENE_SPEC.md §5). Record it: {_regen(name)}")
-    recorded = [case["params"] for case in snap["cases"]]
-    if recorded != get_component(name).examples():
+    recorded = [recorded_key(case) for case in snap["cases"]]
+    if recorded != [case_key(case) for case in snapshot_cases(name)]:
         pytest.fail(f"{name}.examples() changed since its snapshot was recorded. "
                     f"If intended: {_regen(name)}")
     return snap
@@ -68,7 +72,7 @@ def test_component_is_snapshotted_or_formally_exempt(name):
     reason = snapshot_exempt(name)
     if reason:
         assert reason.strip(), f"{name}: an exemption must state its reason"
-        assert get_component(name).examples() == [], (
+        assert snapshot_cases(name) == [], (
             f"{name} is exempt but declares examples(); snapshot them instead")
         assert load(name, SNAPSHOT_DIR) is None, (
             f"{name} is exempt but tests/snapshots/{name}.json exists")
@@ -185,3 +189,20 @@ class TestHarness:
         data = json.loads(path.read_text(encoding="utf-8"))
         assert "other|A|B|C" not in data["cases"][0]["geometry"]
         assert notes and "structure changed" in notes[0]
+
+    def test_carried_case_is_recorded_with_its_artifact(self, tmp_path):
+        # A component acting on a carried artifact records each case with the
+        # recipe it carries, built with that artifact on screen first.
+        regenerate("ZoomHighlight", "carried", tmp_path)
+        data = json.loads(snapshot_path("ZoomHighlight", tmp_path).read_text(encoding="utf-8"))
+        case = data["cases"][0]
+        assert case["carry_in"][0]["producer"] == "BulletReveal"
+        settle = next(op for op in case["structure"]["timeline"] if op["op"] == "settle")
+        labels = [m.get("label") for m in settle["mobjects"]]
+        assert "carried[chain_causes]" in labels
+
+    def test_plain_case_records_no_carry_in(self, tmp_path):
+        # Snapshots of components that build from params alone are unchanged.
+        regenerate("TitleCard", "plain", tmp_path)
+        data = json.loads(snapshot_path("TitleCard", tmp_path).read_text(encoding="utf-8"))
+        assert all("carry_in" not in case for case in data["cases"])

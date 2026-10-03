@@ -28,6 +28,7 @@ from chalkdust.core.models import BeatSpec, BuildContext, CarryInError, Quality,
 from chalkdust.render.worker import TIERS
 from chalkdust.scenes.regions import bbox, region_rect
 from chalkdust.scenes.theme import DEFAULT, title_text
+from chalkdust.validate.fixtures import lent_builders
 from chalkdust.validate.geometric import LayoutProbe, validate_beat
 from chalkdust.validate.repair import RepairPlan, repair_beat
 
@@ -181,3 +182,30 @@ class TestValidationRungs:
         recipes = resolve_carry_in(video)["b02"]
         result = repair_beat(video.beats[1], duration=4.0, recipes=recipes)
         assert result.ok, f"\n{result.report}"
+
+
+class TestFixtureBuilders:
+    """A consumer's fixtures may lend a producer an artifact builder while
+    they build (Component.fixture_builders, validate/fixtures.py). ZoomHighlight
+    lends BulletReveal one."""
+
+    def test_lent_only_inside_the_block(self):
+        assert "BulletReveal" not in continuity._BUILDERS
+        with lent_builders("ZoomHighlight"):
+            assert "BulletReveal" in continuity._BUILDERS
+        assert "BulletReveal" not in continuity._BUILDERS
+
+    def test_restored_when_the_build_raises(self):
+        with pytest.raises(RuntimeError):
+            with lent_builders("ZoomHighlight"):
+                raise RuntimeError("build failed")
+        assert "BulletReveal" not in continuity._BUILDERS
+
+    def test_never_over_a_real_builder(self, monkeypatch):
+        def real(params, theme):
+            return VGroup()
+
+        monkeypatch.setitem(continuity._BUILDERS, "BulletReveal", real)
+        with lent_builders("ZoomHighlight"):
+            assert continuity._BUILDERS["BulletReveal"] is real
+        assert continuity._BUILDERS["BulletReveal"] is real

@@ -90,6 +90,26 @@ def check_carry_in(carry_in: Iterable[str],
     ]
 
 
+def check_carried_names(component: Component,
+                        carry_in: Collection[str]) -> list[Finding]:
+    """Every artifact the component acts on must be carried into the beat.
+
+    A ZoomHighlight whose target_id the beat does not list in carry_in would
+    otherwise reach build(), where continuity.carried() raises CarryInError --
+    a spec bug the repair loop cannot fix, surfacing as a build_error.
+    """
+    return [
+        Finding(
+            "carry_in",
+            f"{component.name} acts on {name!r}, which this beat does not carry "
+            f"in; carry_in: {sorted(carry_in) or 'none'}. Add it to the beat's "
+            f"carry_in, or point the component at a carried artifact.",
+        )
+        for name in component.carried_names()
+        if name not in carry_in
+    ]
+
+
 # --- regions ----------------------------------------------------------------
 
 
@@ -233,6 +253,7 @@ def validate_semantic(
     seconds = duration if measured else estimate_seconds(spec.narration)
     report.findings += check_duration(component, seconds, measured=measured)
     report.findings += check_carry_in(spec.carry_in, registered_artifacts)
+    report.findings += check_carried_names(component, spec.carry_in)
     report.findings += check_region_conflicts(
         {spec.component: component.regions(), **(concurrent or {})}
     )

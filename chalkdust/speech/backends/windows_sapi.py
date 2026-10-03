@@ -24,9 +24,12 @@ from chalkdust.speech.base import TTSError, require, run
 RATE_STEPS = 10
 RATE_SPAN = 3.0
 
-# Strings reach PowerShell as base64 literals and are decoded there. Quoting
-# text into a script by escaping is fragile -- PowerShell treats the curly
-# quotes ‘ ’ as string delimiters too -- and base64 cannot break out.
+# Strings reach PowerShell on stdin, one base64 line each, and are decoded
+# there. Not on the command line: Windows caps that at 32767 characters, which
+# a long narration overflows (WinError 206). Not quoted into the script either:
+# escaping is fragile -- PowerShell treats the curly quotes ‘ ’ as string
+# delimiters too -- and base64 cannot break out. The script itself is fixed,
+# so the command line stays the same small size whatever the text.
 #
 # The trap writes failures as one plain line straight to stderr. Left to
 # itself, PowerShell run with -EncodedCommand serialises errors as CLIXML,
@@ -34,19 +37,21 @@ RATE_SPAN = 3.0
 SCRIPT = """
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
-trap {{ [Console]::Error.WriteLine($_.Exception.Message); exit 1 }}
-function arg($b) {{ [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($b)) }}
+trap { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }
+function arg { [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String([Console]::In.ReadLine())) }
+$voice = arg; $rate = [int](arg); $out = arg; $text = arg
 Add-Type -AssemblyName System.Speech
 $s = New-Object System.Speech.Synthesis.SpeechSynthesizer
-try {{
-    $s.SelectVoice((arg '{voice}'))
-    $s.Rate = {rate}
-    $s.SetOutputToWaveFile((arg '{out}'))
-    $s.Speak((arg '{text}'))
-}} finally {{
+try {
+    $s.SelectVoice($voice)
+    $s.Rate = $rate
+    $s.SetOutputToWaveFile($out)
+    $s.Speak($text)
+} finally {
     $s.Dispose()
-}}
+}
 """
+COMMAND = base64.b64encode(SCRIPT.encode("utf-16-le")).decode("ascii")
 
 
 def sapi_rate(rate: float) -> int:
@@ -72,15 +77,10 @@ class WindowsSAPI:
         # Windows PowerShell 5.1, not pwsh: System.Speech ships with .NET
         # Framework and is absent from the .NET that PowerShell 7 runs on.
         require("powershell")
-        script = SCRIPT.format(
-            voice=_b64(voice.voice_id),
-            rate=sapi_rate(voice.rate),
-            out=_b64(str(out_path)),
-            text=_b64(text),
-        )
+        args = [voice.voice_id, str(sapi_rate(voice.rate)), str(out_path), text]
         # -EncodedCommand takes base64 of UTF-16LE, so the script itself
         # needs no command-line quoting either.
-        run([
-            "powershell", "-NoProfile", "-NonInteractive",
-            "-EncodedCommand", base64.b64encode(script.encode("utf-16-le")).decode("ascii"),
-        ])
+        run(
+            ["powershell", "-NoProfile", "-NonInteractive", "-EncodedCommand", COMMAND],
+            input="".join(_b64(a) + "\n" for a in args),
+        )

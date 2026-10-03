@@ -152,6 +152,15 @@ def test_sapi_text_cannot_break_out_of_the_script(tmp_path):
 
 
 @windows_only
+def test_sapi_long_narration_is_not_limited_by_the_command_line(tmp_path):
+    # 9000 characters overflowed Windows' 32767-character command line when the
+    # text travelled there (raw FileNotFoundError, WinError 206); stdin has no cap.
+    text = ("collision " * 900)[:9000]
+    _, duration = tts.synthesize(text, VoiceConfig(rate=3.0), Cache(tmp_path))
+    assert duration > 100.0
+
+
+@windows_only
 def test_sapi_unknown_voice_raises_plain_message(tmp_path):
     voice = VoiceConfig(backend="windows_sapi", voice_id="Daniel")
     with pytest.raises(TTSError, match="No matching voice is installed") as exc:
@@ -175,7 +184,19 @@ def test_say_synthesizes_measured_canonical_audio(tmp_path):
 @pytest.mark.skipif(HAS_KOKORO, reason="kokoro extra is installed")
 def test_kokoro_without_extra_says_how_to_install(tmp_path):
     with pytest.raises(TTSError, match=r"pip install -e \"\.\[kokoro\]\""):
-        Kokoro().synthesize(TEXT, VoiceConfig(backend="kokoro"), tmp_path / "k.wav")
+        # A real Kokoro voice: called directly, the backend sees the model's
+        # unresolved voice_id default ('Daniel'), which it now rejects first.
+        voice = VoiceConfig(backend="kokoro", voice_id="af_heart")
+        Kokoro().synthesize(TEXT, voice, tmp_path / "k.wav")
+
+
+@pytest.mark.parametrize("voice_id", ["", "Microsoft David Desktop"])
+def test_kokoro_voice_without_a_language_letter_raises_plain_message(tmp_path, voice_id):
+    # Checked before the pipeline loads: '' used to raise a raw IndexError, and
+    # a letter outside KPipeline's LANG_CODES a raw AssertionError inside it.
+    voice = VoiceConfig(backend="kokoro", voice_id=voice_id)
+    with pytest.raises(TTSError, match="must start with a Kokoro language letter"):
+        Kokoro().synthesize(TEXT, voice, tmp_path / "k.wav")
 
 
 @needs_kokoro

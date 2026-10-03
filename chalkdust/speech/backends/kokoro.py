@@ -29,6 +29,20 @@ REPO_ID = "hexgrad/Kokoro-82M"
 # Kokoro's output rate, fixed by the model. Coincides with our canonical rate
 # today, but normalize_audio owns that conversion either way.
 KOKORO_RATE = 24_000
+# The language letters KPipeline accepts as lang_code (kokoro 0.9.4,
+# pipeline.py LANG_CODES). It asserts on anything else, so we check first.
+LANG_CODES = frozenset("abefhijpz")
+
+
+def lang_code(voice_id: str) -> str:
+    """The pipeline language a voice belongs to: its first letter."""
+    if not voice_id or voice_id[0] not in LANG_CODES:
+        raise TTSError(
+            f"kokoro voice_id {voice_id!r} must start with a Kokoro language letter "
+            f"({', '.join(sorted(LANG_CODES))}), e.g. 'af_heart'; see "
+            f"https://huggingface.co/hexgrad/Kokoro-82M/blob/main/VOICES.md"
+        )
+    return voice_id[0]
 
 
 class Kokoro:
@@ -54,9 +68,10 @@ class Kokoro:
         return self._pipelines[lang_code]
 
     def synthesize(self, text: str, voice: VoiceConfig, out_path: Path) -> None:
+        pipeline = self._pipeline(lang_code(voice.voice_id))
+
         import numpy as np  # a kokoro dependency; deferred with it
 
-        pipeline = self._pipeline(voice.voice_id[0])
         # The pipeline yields one result per chunk of text it decided to split
         # off; a beat's narration is one take, so stitch them back together.
         chunks = [r.audio.numpy() for r in pipeline(text, voice=voice.voice_id,

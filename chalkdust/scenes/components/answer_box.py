@@ -13,6 +13,11 @@ Three shapes of answer, all from the same three params:
 
 Value and units are compiled as ONE MathTex, so the units sit on the value's
 baseline whatever the value's height (a tall fraction, a square root).
+
+The settled answer can be carried into a later beat (SCENE_SPEC.md §6): the
+artifact builder below rebuilds it from the same params through the same
+`_parts()` that build() animates, so the carried copy is the answer the viewer
+saw.
 """
 
 from __future__ import annotations
@@ -27,12 +32,14 @@ from manim import (
     FadeIn,
     GrowFromCenter,
     MathTex,
+    Mobject,
     SurroundingRectangle,
     VGroup,
     Write,
 )
 from pydantic import StringConstraints, model_validator
 
+from chalkdust.continuity import artifact_builder
 from chalkdust.core.models import Region
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import (
@@ -42,7 +49,6 @@ from chalkdust.scenes.components.base import (
     register,
 )
 from chalkdust.scenes.regions import (
-    LayoutError,
     Rect,
     fit_to_region,
     region_rect,
@@ -52,6 +58,7 @@ from chalkdust.scenes.theme import (
     body_cap_height,
     caption_text,
     math,
+    refuse_invalid_latex,
     title_text,
 )
 
@@ -133,44 +140,20 @@ class AnswerBox(Component):
         return out
 
     def _source(self) -> str | None:
-        p: AnswerBoxParams = self.params
-        if p.value is None:
-            return None
-        if p.units is None:
-            return p.value
-        units = r"\,".join(p.units.split())
-        # A thick space before the units, as in typeset physics: "24 N".
-        return rf"{p.value} \; \mathrm{{{units}}}"
+        return _source(self.params)
 
     # --- build ---------------------------------------------------------------
 
     def build(self, scene: ChalkdustScene) -> None:
-        p: AnswerBoxParams = self.params
         theme = scene.theme
         cap = body_cap_height(theme)
-
-        # Value and badge share the title size, so one font size governs how
-        # far the fit may shrink them before refusing.
-        answer = None
-        source = self._source()
-        if source is not None:
-            answer = _answer_tex(source, self.params, theme)
-        badge = _badge(p.option, theme) if p.option is not None else None
-
-        contents = [m for m in (badge, answer) if m is not None]
-        if badge is not None and answer is not None:
-            badge.next_to(answer, LEFT, buff=cap * BADGE_GAP)
-        row = VGroup(*contents)
-        box = label(SurroundingRectangle(row, color=theme.palette.accent,
-                                         buff=cap * BOX_PAD, corner_radius=cap),
-                    "box")
-        boxed = VGroup(box, row)
+        tag, box, contents = _parts(self.params, theme)
+        boxed = VGroup(box, VGroup(*contents))
 
         # The label stays OUT of the fitted group: it is caption-sized, so
         # scaling it with the answer would refuse at a ~0.9 scale -- long
         # before the answer itself is anywhere near illegible. Reserve a band
         # for it at the top of the stage and fit the box below.
-        tag = label(caption_text("ANSWER", theme, theme.palette.accent), "label")
         stage = region_rect(Region.STAGE)
         band = tag.height + cap * LABEL_GAP
         below = Rect(stage.x, stage.y - band / 2, stage.width, stage.height - band)
@@ -185,11 +168,13 @@ class AnswerBox(Component):
         # The box encloses the row by design, so only these must never touch.
         scene.exclusive(tag, *contents)
 
+        # Whole-frame run times that sum to the beat exactly (scene.budget).
         times = iter(scene.budget(*self._segments()))
-        if answer is not None:
-            scene.play(Write(answer), run_time=next(times))
-        if badge is not None:
-            scene.play(GrowFromCenter(badge), run_time=next(times))
+        parts = {m._chalk_label: m for m in contents}
+        if "answer" in parts:
+            scene.play(Write(parts["answer"]), run_time=next(times))
+        if "option" in parts:
+            scene.play(GrowFromCenter(parts["option"]), run_time=next(times))
         scene.play(Create(box), FadeIn(tag, shift=UP * cap / 2), run_time=next(times))
         scene.settle("answer boxed")
         scene.wait(next(times))
@@ -209,9 +194,6 @@ class AnswerBox(Component):
 
     @classmethod
     def stress(cls):
-        # Invalid LaTeX is pinned in tests/test_component_answer_box.py rather
-        # than here: it refuses with kind "invalid_latex", which the
-        # registry-wide stress test does not (yet) count as a clean refusal.
         long_value = (r"a = \frac{(m_1 - m_2)\, g \sin\theta - \mu (m_1 + m_2)\, g \cos\theta}"
                       r"{m_1 + m_2 + I / r^2}")
         return [
@@ -228,34 +210,85 @@ class AnswerBox(Component):
             {"value": "0"},
             # Minimal MCQ: option alone.
             {"option": "A"},
+            # Invalid LaTeX: each must refuse as "invalid_latex", never box an
+            # answer nobody wrote.
+            {"value": r"\notacommand{x} = 1"},             # does not compile
+            {"value": r"\quad"},                           # compiles, draws nothing
+            {"value": r"\frac{1}{"},                       # LaTeX silently recovers
+            {"value": "x = 1", "units": r"m}\frac{1}{2"},   # escapes the \mathrm wrapper
+            {"value": "50%", "units": "N"},                # % is a comment, not percent
         ]
 
 
-def _answer_tex(source: str, params: AnswerBoxParams, theme: Theme) -> MathTex:
-    """Compile the answer through the theme's maths constructor, at title size.
+def _source(params: AnswerBoxParams) -> str | None:
+    """The one LaTeX string compiled for value and units, or None when the
+    option is the whole answer."""
+    if params.value is None:
+        return None
+    if params.units is None:
+        return params.value
+    units = r"\,".join(params.units.split())
+    # A thick space before the units, as in typeset physics: "24 N".
+    return rf"{params.value} \; \mathrm{{{units}}}"
 
-    Manim reports a LaTeX failure as a bare ValueError from deep inside its
-    compile step. Converting it here gives the repair loop a typed refusal it
-    can dispatch on (regenerate the spec) instead of a crash, and the probe
-    reports it as a finding of that kind.
+
+def _parts(params: AnswerBoxParams, theme: Theme) -> tuple[Mobject, Mobject, list[Mobject]]:
+    """(label, box, contents) at natural size: the settled answer, unplaced.
+
+    Shared by build(), which fits and animates it, and the carry-in artifact
+    builder, which returns it still -- so both draw the same answer.
+    contents holds the option badge and the answer, whichever are present,
+    badge first.
     """
-    # LaTeX recovers from some unbalanced braces without an error and draws
-    # something else ("\frac{1}{" becomes a lone 1), and a stray "}" in the
-    # units would close the \mathrm wrapper early. Either way the box would
-    # state an answer nobody wrote, so refuse before compiling.
+    cap = body_cap_height(theme)
+    # Value and badge share the title size, so one font size governs how far
+    # the fit may shrink them before refusing.
+    source = _source(params)
+    answer = _answer_tex(source, params, theme) if source is not None else None
+    badge = _badge(params.option, theme) if params.option is not None else None
+
+    contents = [m for m in (badge, answer) if m is not None]
+    if badge is not None and answer is not None:
+        badge.next_to(answer, LEFT, buff=cap * BADGE_GAP)
+    box = label(SurroundingRectangle(VGroup(*contents), color=theme.palette.accent,
+                                     buff=cap * BOX_PAD, corner_radius=cap),
+                "box")
+    tag = label(caption_text("ANSWER", theme, theme.palette.accent), "label")
+    return tag, box, contents
+
+
+@artifact_builder("AnswerBox")
+def _artifact(params: AnswerBoxParams, theme: Theme) -> Mobject:
+    """The settled answer for a later beat's carry_in (SCENE_SPEC.md §6):
+    label above the box, at natural size. CarryIn places and dims it."""
+    tag, box, contents = _parts(params, theme)
+    tag.next_to(box, UP, buff=body_cap_height(theme) * LABEL_GAP)
+    return VGroup(tag, box, *contents)
+
+
+def _answer_tex(source: str, params: AnswerBoxParams, theme: Theme) -> MathTex:
+    """Compile the answer through theme.math, at title size.
+
+    theme.math refuses LaTeX that does not compile or draws nothing (kind
+    "invalid_latex"). Two faults are refused here first, through the same
+    refuse_invalid_latex, because theme.math alone gets them wrong:
+
+      - unbalanced braces COMPILE and draw the wrong answer: LaTeX recovers
+        from "\\frac{1}{" by drawing a lone 1, and a stray "}" in the units
+        closes the \\mathrm wrapper early;
+      - an unescaped % comments out the rest of the line, closing brace and
+        environment end included; the compile fails, but Manim's error blames
+        dvisvgm. The repair loop needs the real fault: write \\% for percent.
+    """
     for field, text in (("value", params.value), ("units", params.units)):
-        if text is not None and not _braces_balance(text):
-            raise LayoutError(f"{field} has unbalanced braces: {text!r}",
-                              kind="invalid_latex")
-    try:
-        tex = math(source, theme, size=theme.type.title)
-    except ValueError as exc:
-        raise LayoutError(f"answer is not valid LaTeX: {source!r} ({exc})",
-                          kind="invalid_latex") from exc
-    if tex.width == 0 and tex.height == 0:
-        # Compiles, draws nothing (e.g. only spacing commands): an empty box.
-        raise LayoutError(f"answer renders nothing: {source!r}", kind="invalid_latex")
-    return label(tex, "answer")
+        if text is None:
+            continue
+        if not _braces_balance(text):
+            raise refuse_invalid_latex(field, text, "has unbalanced braces")
+        if _has_comment(text):
+            raise refuse_invalid_latex(
+                field, text, "has an unescaped % (a LaTeX comment; percent is \\%)")
+    return label(math(source, theme, size=theme.type.title, what="answer"), "answer")
 
 
 def _badge(option: str, theme: Theme) -> VGroup:
@@ -287,3 +320,16 @@ def _braces_balance(text: str) -> bool:
             if depth < 0:
                 return False
     return depth == 0
+
+
+def _has_comment(text: str) -> bool:
+    """True when the text has a % not escaped as \\%."""
+    escaped = False
+    for ch in text:
+        if escaped:
+            escaped = False
+        elif ch == "\\":
+            escaped = True
+        elif ch == "%":
+            return True
+    return False

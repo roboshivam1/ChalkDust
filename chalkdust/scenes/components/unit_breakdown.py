@@ -66,6 +66,10 @@ def _first_baseline(text: Text, first_line: str) -> float:
     """
     n = len("".join(first_line.split()))
     bottoms = sorted(g.get_bottom()[1] for g in text.submobjects[:n])
+    if not bottoms:
+        # No glyphs to vote: fall back to the box. _layout refuses a label
+        # that draws nothing before it gets here, so this is a last guard.
+        return float(text.get_bottom()[1])
     return float(bottoms[len(bottoms) // 2])
 
 
@@ -105,9 +109,24 @@ class UnitBreakdownParams(ComponentParams):
 
 # What a refusal names, per term, so the repair loop can point the LLM at the
 # exact spec field to regenerate (SCENE_SPEC.md §9).
-def _fields(p: UnitBreakdownParams) -> list[tuple[str, UnitTerm]]:
-    return [("quantity.unit", p.quantity),
-            *((f"decomposition[{i}].unit", t) for i, t in enumerate(p.decomposition))]
+def _fields(p: UnitBreakdownParams, attr: str = "unit") -> list[tuple[str, UnitTerm]]:
+    return [(f"quantity.{attr}", p.quantity),
+            *((f"decomposition[{i}].{attr}", t) for i, t in enumerate(p.decomposition))]
+
+
+def _refuse_blank_label(what: str, text: str, lab: Mobject) -> None:
+    """Refuse a label that draws nothing, kind "illegible".
+
+    Pango can shape a non-blank string to zero glyphs: a lone zero-width
+    space or soft hyphen, or a script the body font has no glyphs for (Arabic,
+    Hebrew). The label would hang invisibly under its unit, so it is bad
+    content from the spec, named by field like an invalid unit."""
+    if not any(m.has_points() for m in lab.get_family()):
+        raise LayoutError(
+            f"{what}: {text!r} renders no glyphs in the body font. Write the "
+            f"label in text the font can draw, or omit it.",
+            kind="illegible",
+        )
 
 
 def _expression(p: UnitBreakdownParams) -> str:
@@ -204,6 +223,9 @@ def _layout(p: UnitBreakdownParams, theme: Theme) -> _Row:
         if t.label else None
         for i, t in enumerate(terms_in)
     ]
+    for (what, t), lab in zip(_fields(p, "label"), labels):
+        if lab is not None:
+            _refuse_blank_label(what, t.label, lab)
 
     # Re-space horizontally only: TeX already set the baselines, and a pure
     # x-shift keeps them.
@@ -359,4 +381,8 @@ class UnitBreakdown(Component):
             {"quantity": {"unit": "x }} {{ y"}, "decomposition": [{"unit": "z"}]},
             # Compiles to no glyphs: a unit that renders nothing.
             {"quantity": {"unit": r"\mathrm{N}"}, "decomposition": [{"unit": r"\quad"}]},
+            # A label Pango shapes to zero glyphs (a lone zero-width space
+            # survives strip()): refuses as "illegible", naming the label.
+            {"quantity": {"unit": r"\mathrm{N}", "label": "\u200b"},
+             "decomposition": [{"unit": r"\mathrm{kg}", "label": "mass"}]},
         ]

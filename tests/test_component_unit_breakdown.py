@@ -240,6 +240,21 @@ class TestLayout:
             assert gap_before > 0 and gap_after > 0
             assert gap_before == pytest.approx(gap_after, abs=1e-6)
 
+    @pytest.mark.parametrize("params,field", [
+        ({"quantity": {"unit": r"\mathrm{N}", "label": "\u200b"},
+          "decomposition": [{"unit": r"\mathrm{kg}", "label": "mass"}]}, "quantity.label"),
+        ({"quantity": {"unit": r"\mathrm{N}", "label": "force"},
+          "decomposition": [{"unit": r"\mathrm{kg}", "label": "\u00ad"}]},
+         "decomposition[0].label"),
+    ], ids=["zero-width-space", "soft-hyphen"])
+    def test_label_that_draws_nothing_refuses_naming_the_field(self, params, field):
+        # Non-blank to strip(), yet Pango shapes it to zero glyphs (as it does
+        # Arabic or Hebrew without a font for them). Hanging that label from
+        # its first baseline once raised a raw IndexError; it must refuse.
+        report = validate_beat(_spec(params))
+        assert report.kinds() == {"illegible"}, f"\n{report}"
+        assert report.findings[0].message.startswith(field), f"\n{report}"
+
     def test_wide_labels_under_narrow_units_never_collide(self):
         params = {"quantity": {"unit": "a", "label": "a fairly long label"},
                   "decomposition": [{"unit": "b", "label": "another long one"},

@@ -110,6 +110,21 @@ def test_lower_third_claimed_only_with_notes():
     assert GeometryConstruct(noted).regions() == {Region.STAGE, Region.LOWER_THIRD}
 
 
+def test_blank_note_is_no_note():
+    # Whitespace is no caption: it must not claim LOWER_THIRD, weigh on the
+    # timing, or build an empty Text over the figure (verify1 must-fix).
+    bare = _euclid()
+    blank = {**bare, "construction": [
+        {**bare["construction"][0], "note": "   "},
+        *bare["construction"][1:]]}
+    assert GeometryConstructParams(**blank).construction[0].note is None
+    component = GeometryConstruct(blank)
+    assert component.regions() == {Region.STAGE}
+    assert component.min_seconds() == GeometryConstruct(bare).min_seconds()
+    report = _validate(blank)
+    assert report.ok, f"\n{report}"
+
+
 # --- schema refusals (rung 1) ----------------------------------------------------
 
 

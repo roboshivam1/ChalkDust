@@ -41,7 +41,7 @@ from manim import (
     Polygon,
     VGroup,
 )
-from pydantic import Field, model_validator
+from pydantic import Field, field_validator, model_validator
 
 from chalkdust.core.models import Region
 from chalkdust.scenes.base import ChalkdustScene
@@ -105,6 +105,15 @@ class _Element(ComponentParams):
     # A caption for this step, shown in LOWER_THIRD while it is drawn. Only
     # construction steps may carry one; the given figure appears all at once.
     note: str | None = None
+
+    @field_validator("note")
+    @classmethod
+    def _blank_is_none(cls, v: str | None) -> str | None:
+        # A blank caption is no caption. Normalised here, once, so regions(),
+        # the timing weights and build() cannot disagree about whether a step
+        # has one -- wrap() would strip it to an empty Text sitting on the
+        # figure.
+        return (v.strip() or None) if v is not None else None
 
 
 class PointElement(_Element):
@@ -547,6 +556,9 @@ class GeometryConstruct(Component):
             # (c) Minimal: a lone point, given or constructed.
             {"shapes": [_pt("A", 0, 0)]},
             {"construction": [_pt("A", 0, 0, note="A point")]},
+            # (c) Empty caption: whitespace only is no note at all.
+            {"shapes": [_pt("A", 0, 0), _pt("B", 1, 0)],
+             "construction": [_circ("A", "B", "cA", note="   ")]},
             # Hostile geometry, all schema-valid: two points almost on top
             # of each other (labels collide), a circle that is a speck beside
             # a long segment, and a figure at an absurd offset and scale.

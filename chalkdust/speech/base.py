@@ -27,13 +27,20 @@ class TTSError(RuntimeError):
 
 
 class TTSBackend(Protocol):
-    """Synthesise `text` to `out_path` as a WAV file.
+    """Synthesise `text` to `out_path`, in the backend's own raw format.
 
-    Backends may write any format ffmpeg can read; normalisation happens
-    afterwards in tts.py.
+    Each engine has a native output (`say` writes AIFF, SAPI and Kokoro WAV),
+    so the backend declares it as `raw_format` -- the file extension the stage
+    gives `out_path`, which is how ffmpeg recognises the file when
+    normalize_audio converts it to the canonical format afterwards in tts.py.
+
+    `default_voice` is used when a spec names no voice_id: voice ids are
+    meaningful only to the backend that owns them (docs/VOICE.md).
     """
 
     name: str
+    raw_format: str
+    default_voice: str
 
     def synthesize(self, text: str, voice: VoiceConfig, out_path: Path) -> None: ...
 

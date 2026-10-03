@@ -16,6 +16,10 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
+# Self-hosted neural TTS (speech/backends/kokoro.py). Pulls in torch. kokoro
+# 0.9.4 and its misaki dependency declare Requires-Python <3.13, so on 3.13
+# this extra refuses to install; the base install never needs it.
+kokoro = ["kokoro>=0.9.4"]
 
 [project.scripts]
 chalkdust = "chalkdust.cli:main"

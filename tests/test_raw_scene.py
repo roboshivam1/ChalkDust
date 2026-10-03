@@ -9,12 +9,13 @@ from __future__ import annotations
 
 import json
 import subprocess
+from dataclasses import asdict
 
 import pytest
 
 from chalkdust.core.cache import Cache
 from chalkdust.core.models import Beat, BeatSpec, BuildContext, Quality
-from chalkdust.render.worker import QUALITY_FLAGS
+from chalkdust.render.worker import TIERS
 from chalkdust.scenes.components.raw_scene import (
     USAGE_LOG_NAME,
     RawScene,
@@ -30,7 +31,7 @@ from chalkdust.scenes.components.raw_scene import (
 from chalkdust.speech.base import probe_duration
 from chalkdust.validate.geometric import validate_beat
 
-DRAFT = QUALITY_FLAGS[Quality.DRAFT]
+DRAFT = asdict(TIERS[Quality.DRAFT])
 
 GOOD = """
 from manim import *

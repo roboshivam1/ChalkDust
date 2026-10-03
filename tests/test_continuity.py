@@ -7,6 +7,8 @@ in the registry).
 
 from __future__ import annotations
 
+from dataclasses import asdict
+
 import numpy as np
 import pytest
 from manim import VGroup
@@ -22,10 +24,15 @@ from chalkdust.continuity import (
     resolve_carry_in,
 )
 from chalkdust.core.cache import beat_render_key
-from chalkdust.core.models import BeatSpec, BuildContext, CarryInError, Region, VideoSpec
+from chalkdust.core.models import BeatSpec, BuildContext, CarryInError, Quality, Region, VideoSpec
+from chalkdust.render.worker import TIERS
 from chalkdust.scenes.regions import bbox, region_rect
 from chalkdust.scenes.theme import DEFAULT, title_text
 from chalkdust.validate.geometric import LayoutProbe
+from chalkdust.validate.repair import RepairPlan
+
+# f2/f4's render-key terms (theme, tier, repair plan), fixed for these tests.
+_TERMS = (asdict(DEFAULT), asdict(TIERS[Quality.DRAFT]), RepairPlan().key_data())
 
 
 def _title_artifact(params, theme):
@@ -102,7 +109,7 @@ class TestCacheKey:
         consumer = _consumer()
         recipes = (ArtifactRecipe(name="bucket_array", producer="TitleCard",
                                   params={"title": producer_title}),)
-        return beat_render_key(consumer, 5.0, BuildContext(),
+        return beat_render_key(consumer, 5.0, BuildContext(), *_TERMS,
                                carried=carry_in_fingerprint(recipes))
 
     def test_editing_producer_changes_consumer_key(self):
@@ -113,12 +120,12 @@ class TestCacheKey:
 
     def test_carry_beat_without_fingerprint_refuses(self):
         with pytest.raises(ValueError, match="carry_in_fingerprint"):
-            beat_render_key(_consumer(), 5.0, BuildContext())
+            beat_render_key(_consumer(), 5.0, BuildContext(), *_TERMS)
 
     def test_plain_beat_key_unaffected(self):
         plain = _beat("b01")
-        assert beat_render_key(plain, 5.0, BuildContext()) == \
-            beat_render_key(plain, 5.0, BuildContext(), carried=None)
+        assert beat_render_key(plain, 5.0, BuildContext(), *_TERMS) == \
+            beat_render_key(plain, 5.0, BuildContext(), *_TERMS, carried=None)
 
 
 class TestScene:

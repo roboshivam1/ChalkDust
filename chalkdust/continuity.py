@@ -15,7 +15,7 @@ part of the consuming beat's key (`carry_in_fingerprint`, core/cache.py).
 
 Flow:
     recipes = resolve_carry_in(video_spec)[beat.id]      # spec level
-    key     = beat_render_key(spec, dur, ctx,
+    key     = beat_render_key(spec, dur, ctx, theme, tier, repair,
                               carried=carry_in_fingerprint(recipes))
     scene   = ChalkdustScene(beat_component(spec, recipes), ...)
     # inside a component's build():  target = carried(scene, "bucket_array")

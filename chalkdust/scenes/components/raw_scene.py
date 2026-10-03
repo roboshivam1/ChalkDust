@@ -45,7 +45,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from types import ModuleType
@@ -55,12 +55,12 @@ from manim import Scene, ValueTracker, tempconfig
 from pydantic import Field
 
 import chalkdust
-from chalkdust.core.cache import Cache, beat_render_key, content_hash
+from chalkdust.core.cache import Cache, content_hash
 from chalkdust.core.models import Beat, BeatSpec, BuildContext, Region
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import Component, ComponentParams, register
 from chalkdust.scenes.regions import LayoutError, assert_in_safe_area, assert_legible
-from chalkdust.scenes.theme import get_theme
+from chalkdust.scenes.theme import get_theme, resolve_fonts
 
 # Generous for a draft render of one beat; a hang is the only thing that
 # should ever reach it.
@@ -337,7 +337,7 @@ def run_raw_scene(params: RawSceneParams, duration: float, quality: dict[str, in
     """Render generated code to `out_path`, fitted to `duration`. Never raises
     for anything the code does; failures come back as an outcome.
 
-    `quality` is a worker.QUALITY_FLAGS entry: pixel_width, pixel_height,
+    `quality` is a worker.TIERS entry as a dict: pixel_width, pixel_height,
     frame_rate.
     """
     try:
@@ -449,18 +449,23 @@ def render_raw_beat(beat: Beat, theme: str, ctx: BuildContext, cache: Cache,
     re-runs next time; the degraded BulletReveal is cached under its own key.
     Sets beat.degraded on fallback, and logs every call.
     """
-    from chalkdust.render.worker import QUALITY_FLAGS, render_beat  # worker imports us
+    from chalkdust.render.worker import TIERS, render_beat, render_key  # worker imports us
+    from chalkdust.validate.repair import RepairPlan
 
     if beat.duration is None:
         raise ValueError(f"{beat.id} has no duration; the speech stage must run first")
     params = RawSceneParams.model_validate(beat.spec.params)
 
-    slot = cache.slot("beats", beat_render_key(beat.spec, beat.duration, ctx), ".mp4")
+    # The worker's key: font-resolved theme, tier settings, repair plan. A
+    # RawScene is never mechanically repaired (it renders out of process), so
+    # its plan is the empty one.
+    key = render_key(beat, resolve_fonts(get_theme(theme)), ctx, RepairPlan())
+    slot = cache.slot("beats", key, ".mp4")
     cached = slot.exists
     if cached:
         outcome = RawOutcome(True)
     else:
-        outcome = run_raw_scene(params, beat.duration, QUALITY_FLAGS[ctx.quality],
+        outcome = run_raw_scene(params, beat.duration, asdict(TIERS[ctx.quality]),
                                 theme, slot.tmp, work_dir, timeout)
         if outcome.ok:
             slot.commit()
@@ -471,7 +476,7 @@ def render_raw_beat(beat: Beat, theme: str, ctx: BuildContext, cache: Cache,
         return slot.path
 
     fallback = Beat(spec=degrade_spec(beat.spec), duration=beat.duration)
-    path = render_beat(fallback, theme, ctx, cache)
+    path = render_beat(fallback, theme, ctx, cache, work_dir)
     beat.render_path = path
     beat.degraded = True
     return path

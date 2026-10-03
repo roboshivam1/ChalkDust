@@ -18,6 +18,7 @@ from __future__ import annotations
 import unicodedata
 from collections.abc import Callable
 from functools import lru_cache
+from statistics import median
 
 from manim import (
     Code,
@@ -86,6 +87,17 @@ PANEL_LIFT = 0.06         # panel fill, this far from bg toward fg
 # Line pitch over digit height for Code's default line_spacing. Only used for
 # a one-line listing, where there is no second line number to measure from.
 SINGLE_LINE_PITCH = 1.75
+
+# How far, in mono cells, a glyph's ink centre may sit from its source column
+# before the listing is refused (_refuse_misplaced). Measured in Courier New:
+# text that draws correctly -- ASCII, Latin-1, Greek, Cyrillic, Vietnamese,
+# q + U+0301, typographic quotes, arrows and box drawing, whose corners hug a
+# cell edge -- is at most 0.23 cells off; a glyph with no advance (U+02DC,
+# U+0181-U+0188) or a run of combining marks the font gives advance moves
+# every later glyph at least 1.04 cells (an ideographic space, drawn by a
+# fallback font, 0.67). Half a cell is the line between "in its own cell"
+# and "in a neighbour's".
+COLUMN_TOLERANCE = 0.5
 
 # Code checks that every non-space character became exactly one glyph and
 # raises a bare ValueError when one did not. Two kinds of character never do,
@@ -601,6 +613,86 @@ def _refuse_unrenderable(source: str, theme: Theme) -> None:
         )
 
 
+def _refuse_misplaced(code: Code, source: str, theme: Theme) -> None:
+    """Refuse a built listing whose glyphs do not land on their mono columns
+    (kind "unrenderable_text", SCENE_SPEC.md §11 rule 1).
+
+    _refuse_unrenderable counts glyphs; this measures where they went. Some
+    characters draw exactly one path alone and in context, so every count
+    passes, yet Pango gives them no advance in a line: U+02DC SMALL TILDE
+    lands on the next letter, U+0181-U+0188 pile into one blob, and Courier
+    New gives stacked combining marks advance, pushing the rest of the line
+    right. A code listing's columns are part of what it says (indentation,
+    alignment), so that is garbled text that validate_beat would call ok.
+
+    The model is what a mono listing promises: every character after Code's
+    tab expansion (tab_width 4, as Code is built here) takes one column,
+    except combining marks, which take none. Each base glyph's ink centre
+    must sit within COLUMN_TOLERANCE cells of its column. Column 0 is taken
+    from the glyphs whose place nothing but ASCII decides -- an ASCII glyph
+    with only ASCII before it on its line, whose advance the mono font fixes
+    -- not from every glyph: a median over the whole listing drifts toward
+    a line's shifted tail and lets the shift it is meant to catch through.
+    Runs on the listing at natural size, where _cell measured the cell, and
+    costs arithmetic only -- no extra Text.
+    """
+    font = theme.type.mono_font
+    _, advance = _cell(theme)
+    lines = [line.expandtabs(4) for line in source.split("\n")]
+    # (line number, index in the expanded line, offset in cells from column,
+    #  whether only ASCII decides where it sits)
+    placed: list[tuple[int, int, float, bool]] = []
+    for n, line in enumerate(lines, start=1):
+        glyphs = iter(code.code_lines[n - 1])
+        col = -1
+        for j, c in enumerate(line):
+            mark = unicodedata.category(c)[0] == "M"
+            if not mark:
+                col += 1
+            if c.isspace():
+                continue  # Code keeps no glyph for whitespace
+            # One glyph per visible character is what _refuse_unrenderable and
+            # Code's own count check held the listing to, line by line.
+            glyph = next(glyphs, None)
+            if glyph is None:
+                raise LayoutError(
+                    f"CodeWalk source line {n} draws fewer glyphs than it has "
+                    f"visible characters in font {font!r}. Rewrite it with "
+                    f"characters that font draws one by one.",
+                    kind=UNRENDERABLE_TEXT,
+                )
+            if not mark:
+                placed.append((n, j, glyph.get_x() / advance - col,
+                               line[:j + 1].isascii()))
+    if not placed:
+        return
+    # A listing with no such glyph (every line opens on non-ASCII) falls back
+    # to each line's first glyph, which nothing before it can have moved.
+    anchors = [off for _, _, off, ascii_only in placed if ascii_only] or [
+        next(off for m, _, off, _ in placed if m == n)
+        for n in dict.fromkeys(m for m, *_ in placed)
+    ]
+    origin = median(anchors)
+    for i, (n, j, off, _) in enumerate(placed):
+        if abs(off - origin) <= COLUMN_TOLERANCE:
+            continue
+        # Name the cause with the effect: the text from the glyph before the
+        # stray one on its line (the character that took the wrong advance
+        # is in there) through the stray glyph itself.
+        start = placed[i - 1][1] if i and placed[i - 1][0] == n else j
+        text = lines[n - 1][start:j + 1]
+        points = " ".join(f"U+{ord(c):04X}" for c in text)
+        raise LayoutError(
+            f"CodeWalk source line {n}: {text!r} ({points}) does not advance "
+            f"one column per character in font {font!r} -- "
+            f"{lines[n - 1][j]!r} is drawn {abs(off - origin):.1f} cells from "
+            f"its column, so the listing's glyphs collapse or shift against "
+            f"its source. Rewrite it with characters that font spaces one per "
+            f"column.",
+            kind=UNRENDERABLE_TEXT,
+        )
+
+
 def _listing(p: CodeWalkParams, theme: Theme) -> Code:
     """The listing at its natural size, unplaced: shared by build() and the
     carry-in artifact so the two cannot drift apart -- and so the artifact
@@ -609,10 +701,14 @@ def _listing(p: CodeWalkParams, theme: Theme) -> Code:
     Size first: it is arithmetic on the source, and it bounds the alphabet
     the glyph probe then has to draw (a pasted file of 100k distinct
     characters refuses as overflow at once, not after 100k probe Texts).
+    Then the glyph guard, before Code is built; then, on the built listing,
+    the column check -- the one failure only the laid-out glyphs show.
     """
     _refuse_oversized(p, theme)
     _refuse_unrenderable(p.source, theme)
-    code = label(_code(p.source, p.language, theme), "code")
+    code = _code(p.source, p.language, theme)
+    _refuse_misplaced(code, p.source, theme)
+    code = label(code, "code")
     # Code builds its Paragraphs itself, bypassing theme.mono_text, so tag
     # them here or the legibility floor never sees this text.
     tag_font_size(code.code_lines, theme.type.mono)

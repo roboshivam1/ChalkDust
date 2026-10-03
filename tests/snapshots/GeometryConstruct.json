@@ -1,0 +1,7646 @@
+{
+ "component": "GeometryConstruct",
+ "manim_version": "0.21.0",
+ "reasons": [
+  "GeometryConstruct merged",
+  "rc2: Euclid I.1 example's closing caption shortened so the example fits the semantic rung's 12 s library budget (min_seconds 12.6 -> 11.27)"
+ ],
+ "cases": [
+  {
+   "params": {
+    "shapes": [
+     {
+      "kind": "point",
+      "name": "A",
+      "at": [
+       0,
+       0
+      ]
+     },
+     {
+      "kind": "point",
+      "name": "B",
+      "at": [
+       1,
+       0
+      ]
+     },
+     {
+      "kind": "segment",
+      "ends": [
+       "A",
+       "B"
+      ]
+     }
+    ],
+    "construction": [
+     {
+      "kind": "circle",
+      "center": "A",
+      "through": "B",
+      "id": "cA",
+      "note": "Compass on A, opened to B"
+     },
+     {
+      "kind": "circle",
+      "center": "B",
+      "through": "A",
+      "id": "cB",
+      "note": "Same opening, centred on B"
+     },
+     {
+      "kind": "intersect",
+      "of": [
+       "cA",
+       "cB"
+      ],
+      "names": [
+       "C"
+      ],
+      "note": "The circles cross at C"
+     },
+     {
+      "kind": "segment",
+      "ends": [
+       "A",
+       "C"
+      ]
+     },
+     {
+      "kind": "segment",
+      "ends": [
+       "B",
+       "C"
+      ]
+     },
+     {
+      "kind": "polygon",
+      "vertices": [
+       "A",
+       "B",
+       "C"
+      ],
+      "note": "All three sides equal the radius AB"
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate",
+       "Create"
+      ],
+      "run_time": 0.883
+     },
+     {
+      "op": "settle",
+      "label": "given figure",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "FadeIn"
+      ],
+      "run_time": 1.767
+     },
+     {
+      "op": "settle",
+      "label": "construction[0]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle A->B",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "note[0]",
+        "text": "Compass on A, opened to B",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "FadeOut",
+       "FadeIn"
+      ],
+      "run_time": 1.483
+     },
+     {
+      "op": "settle",
+      "label": "construction[1]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle A->B",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle B->A",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "note[1]",
+        "text": "Same opening, centred on B",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "FadeOut",
+       "FadeIn"
+      ],
+      "run_time": 1.483
+     },
+     {
+      "op": "settle",
+      "label": "construction[2]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle A->B",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle B->A",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point C",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label C",
+            "text": "C",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "note[2]",
+        "text": "The circles cross at C",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "FadeOut"
+      ],
+      "run_time": 0.717
+     },
+     {
+      "op": "settle",
+      "label": "construction[3]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle A->B",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle B->A",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point C",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label C",
+            "text": "C",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AC",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create"
+      ],
+      "run_time": 0.717
+     },
+     {
+      "op": "settle",
+      "label": "construction[4]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle A->B",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle B->A",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point C",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label C",
+            "text": "C",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AC",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "label": "segment BC",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "DrawBorderThenFill",
+       "FadeIn"
+      ],
+      "run_time": 2.067
+     },
+     {
+      "op": "settle",
+      "label": "construction[5]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle A->B",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle B->A",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point C",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label C",
+            "text": "C",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AC",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "label": "segment BC",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "label": "polygon ABC",
+          "color": "#58A6FF",
+          "fill_opacity": 0.18,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "note[5]",
+        "text": "All three sides equal the radius AB",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "settle",
+      "label": "construction complete",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle A->B",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle B->A",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point C",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label C",
+            "text": "C",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AC",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "label": "segment BC",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "label": "polygon ABC",
+          "color": "#58A6FF",
+          "fill_opacity": 0.18,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "note[5]",
+        "text": "All three sides equal the radius AB",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.883
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle A->B",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle B->A",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point C",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label C",
+            "text": "C",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AC",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "label": "segment BC",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "label": "polygon ABC",
+          "color": "#58A6FF",
+          "fill_opacity": 0.18,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "note[5]",
+        "text": "All three sides equal the radius AB",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        -0.029,
+        -0.425,
+        2.779,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.159,
+        -0.425,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.96,
+        -0.216,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.269,
+        -0.535,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.131,
+        -0.425,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.96,
+        -0.216,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.241,
+        -0.535,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.216,
+        1.921,
+        0.0
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.76,
+        -0.216,
+        4.242,
+        3.842
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.159,
+        -0.425,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.96,
+        -0.216,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.269,
+        -0.535,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.131,
+        -0.425,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.96,
+        -0.216,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.241,
+        -0.535,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.216,
+        1.921,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.96,
+        -0.216,
+        3.842,
+        3.842
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        5.489,
+        0.412
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.216,
+        5.763,
+        3.842
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.159,
+        -0.425,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.96,
+        -0.216,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.269,
+        -0.535,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.131,
+        -0.425,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.96,
+        -0.216,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.241,
+        -0.535,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.216,
+        1.921,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.96,
+        -0.216,
+        3.842,
+        3.842
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.96,
+        -0.216,
+        3.842,
+        3.842
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        5.59,
+        0.417
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.763,
+        4.074
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.159,
+        -0.425,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.96,
+        -0.216,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.269,
+        -0.535,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.131,
+        -0.425,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.96,
+        -0.216,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.241,
+        -0.535,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.216,
+        1.921,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.96,
+        -0.216,
+        3.842,
+        3.842
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.96,
+        -0.216,
+        3.842,
+        3.842
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.662,
+        0.281,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.448,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.772,
+        0.281,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        4.244,
+        0.329
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.763,
+        4.074
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.159,
+        -0.425,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.96,
+        -0.216,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.269,
+        -0.535,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.131,
+        -0.425,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.96,
+        -0.216,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.241,
+        -0.535,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.216,
+        1.921,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.96,
+        -0.216,
+        3.842,
+        3.842
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.96,
+        -0.216,
+        3.842,
+        3.842
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.662,
+        0.281,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.448,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.772,
+        0.281,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.48,
+        0.616,
+        0.96,
+        1.664
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.763,
+        4.074
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.159,
+        -0.425,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.96,
+        -0.216,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.269,
+        -0.535,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.131,
+        -0.425,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.96,
+        -0.216,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.241,
+        -0.535,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.216,
+        1.921,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.96,
+        -0.216,
+        3.842,
+        3.842
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.96,
+        -0.216,
+        3.842,
+        3.842
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.662,
+        0.281,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.448,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.772,
+        0.281,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.48,
+        0.616,
+        0.96,
+        1.664
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.48,
+        0.616,
+        0.96,
+        1.664
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.763,
+        4.074
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.159,
+        -0.425,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.96,
+        -0.216,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.269,
+        -0.535,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.131,
+        -0.425,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.96,
+        -0.216,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.241,
+        -0.535,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.216,
+        1.921,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.96,
+        -0.216,
+        3.842,
+        3.842
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.96,
+        -0.216,
+        3.842,
+        3.842
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.662,
+        0.281,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.448,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.772,
+        0.281,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.48,
+        0.616,
+        0.96,
+        1.664
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.48,
+        0.616,
+        0.96,
+        1.664
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.616,
+        1.921,
+        1.664
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        6.746,
+        0.406
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.763,
+        4.074
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.159,
+        -0.425,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.96,
+        -0.216,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.269,
+        -0.535,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.131,
+        -0.425,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.96,
+        -0.216,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.241,
+        -0.535,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.216,
+        1.921,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.96,
+        -0.216,
+        3.842,
+        3.842
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.96,
+        -0.216,
+        3.842,
+        3.842
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.662,
+        0.281,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.448,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.772,
+        0.281,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.48,
+        0.616,
+        0.96,
+        1.664
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.48,
+        0.616,
+        0.96,
+        1.664
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.616,
+        1.921,
+        1.664
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        6.746,
+        0.406
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.763,
+        4.074
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.159,
+        -0.425,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.96,
+        -0.216,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.269,
+        -0.535,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.131,
+        -0.425,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.96,
+        -0.216,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.241,
+        -0.535,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.216,
+        1.921,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.96,
+        -0.216,
+        3.842,
+        3.842
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.96,
+        -0.216,
+        3.842,
+        3.842
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.662,
+        0.281,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.448,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.772,
+        0.281,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.48,
+        0.616,
+        0.96,
+        1.664
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.48,
+        0.616,
+        0.96,
+        1.664
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.616,
+        1.921,
+        1.664
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        6.746,
+        0.406
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "shapes": [
+     {
+      "kind": "point",
+      "name": "A",
+      "at": [
+       -2,
+       0
+      ]
+     },
+     {
+      "kind": "point",
+      "name": "B",
+      "at": [
+       2,
+       0
+      ]
+     },
+     {
+      "kind": "segment",
+      "ends": [
+       "A",
+       "B"
+      ],
+      "id": "AB"
+     }
+    ],
+    "construction": [
+     {
+      "kind": "circle",
+      "center": "A",
+      "through": "B",
+      "id": "c1",
+      "note": "Circle at A through B"
+     },
+     {
+      "kind": "circle",
+      "center": "B",
+      "through": "A",
+      "id": "c2",
+      "note": "Circle at B through A"
+     },
+     {
+      "kind": "intersect",
+      "of": [
+       "c1",
+       "c2"
+      ],
+      "names": [
+       "P",
+       "Q"
+      ],
+      "note": "They meet at P and Q"
+     },
+     {
+      "kind": "segment",
+      "ends": [
+       "P",
+       "Q"
+      ],
+      "id": "PQ",
+      "note": "PQ is the perpendicular bisector"
+     },
+     {
+      "kind": "intersect",
+      "of": [
+       "PQ",
+       "AB"
+      ],
+      "names": [
+       "M"
+      ],
+      "note": "M is the midpoint of AB"
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate",
+       "Create"
+      ],
+      "run_time": 0.917
+     },
+     {
+      "op": "settle",
+      "label": "given figure",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "FadeIn"
+      ],
+      "run_time": 1.517
+     },
+     {
+      "op": "settle",
+      "label": "construction[0]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle A->B",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "note[0]",
+        "text": "Circle at A through B",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "FadeOut",
+       "FadeIn"
+      ],
+      "run_time": 1.517
+     },
+     {
+      "op": "settle",
+      "label": "construction[1]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle A->B",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle B->A",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "note[1]",
+        "text": "Circle at B through A",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "FadeOut",
+       "FadeIn"
+      ],
+      "run_time": 1.817
+     },
+     {
+      "op": "settle",
+      "label": "construction[2]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle A->B",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle B->A",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point P Q",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label P",
+            "text": "P",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label Q",
+            "text": "Q",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "note[2]",
+        "text": "They meet at P and Q",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "FadeOut",
+       "FadeIn"
+      ],
+      "run_time": 1.517
+     },
+     {
+      "op": "settle",
+      "label": "construction[3]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle A->B",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle B->A",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point P Q",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label P",
+            "text": "P",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label Q",
+            "text": "Q",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment PQ",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "note[3]",
+        "text": "PQ is the perpendicular bisector",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "FadeOut",
+       "FadeIn"
+      ],
+      "run_time": 1.817
+     },
+     {
+      "op": "settle",
+      "label": "construction[4]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle A->B",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle B->A",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point P Q",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label P",
+            "text": "P",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label Q",
+            "text": "Q",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment PQ",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point M",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label M",
+            "text": "M",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "note[4]",
+        "text": "M is the midpoint of AB",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "settle",
+      "label": "construction complete",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle A->B",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle B->A",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point P Q",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label P",
+            "text": "P",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label Q",
+            "text": "Q",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment PQ",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point M",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label M",
+            "text": "M",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "note[4]",
+        "text": "M is the midpoint of AB",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.9
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment AB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle A->B",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle B->A",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point P Q",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label P",
+            "text": "P",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label Q",
+            "text": "Q",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment PQ",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point M",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label M",
+            "text": "M",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "note[4]",
+        "text": "M is the midpoint of AB",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        -0.029,
+        -0.085,
+        2.759,
+        0.956
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.15,
+        0.124,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.951,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.26,
+        0.234,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.121,
+        -0.294,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.951,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.231,
+        -0.404,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.085,
+        1.901,
+        0.0
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.751,
+        -0.085,
+        4.203,
+        3.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.15,
+        0.124,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.951,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.26,
+        0.234,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.121,
+        -0.294,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.951,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.231,
+        -0.404,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.085,
+        1.901,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.951,
+        -0.085,
+        3.803,
+        3.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        4.006,
+        0.417
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.085,
+        5.704,
+        3.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.15,
+        0.124,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.951,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.26,
+        0.234,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.121,
+        -0.294,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.951,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.231,
+        -0.404,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.085,
+        1.901,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.951,
+        -0.085,
+        3.803,
+        3.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.951,
+        -0.085,
+        3.803,
+        3.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        4.055,
+        0.417
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.704,
+        4.28
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.15,
+        0.124,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.951,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.26,
+        0.234,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.121,
+        -0.294,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.951,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.231,
+        -0.404,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.085,
+        1.901,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.951,
+        -0.085,
+        3.803,
+        3.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.951,
+        -0.085,
+        3.803,
+        3.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        0.31,
+        4.28
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.562,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.881,
+        0.243,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.731,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -2.066,
+        0.31,
+        0.349
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        4.313,
+        0.417
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.704,
+        4.28
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.15,
+        0.124,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.951,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.26,
+        0.234,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.121,
+        -0.294,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.951,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.231,
+        -0.404,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.085,
+        1.901,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.951,
+        -0.085,
+        3.803,
+        3.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.951,
+        -0.085,
+        3.803,
+        3.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        0.31,
+        4.28
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.562,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.881,
+        0.243,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.731,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -2.066,
+        0.31,
+        0.349
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.085,
+        0.0,
+        3.293
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        6.296,
+        0.412
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.704,
+        4.28
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.15,
+        0.124,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.951,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.26,
+        0.234,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.121,
+        -0.294,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.951,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.231,
+        -0.404,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.085,
+        1.901,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.951,
+        -0.085,
+        3.803,
+        3.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.951,
+        -0.085,
+        3.803,
+        3.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        0.31,
+        4.28
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.562,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.881,
+        0.243,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.731,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -2.066,
+        0.31,
+        0.349
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.085,
+        0.0,
+        3.293
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.202,
+        0.124,
+        0.524,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.312,
+        0.234,
+        0.304,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        4.489,
+        0.412
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.704,
+        4.28
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.15,
+        0.124,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.951,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.26,
+        0.234,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.121,
+        -0.294,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.951,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.231,
+        -0.404,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.085,
+        1.901,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.951,
+        -0.085,
+        3.803,
+        3.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.951,
+        -0.085,
+        3.803,
+        3.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        0.31,
+        4.28
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.562,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.881,
+        0.243,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.731,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -2.066,
+        0.31,
+        0.349
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.085,
+        0.0,
+        3.293
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.202,
+        0.124,
+        0.524,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.312,
+        0.234,
+        0.304,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        4.489,
+        0.412
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.704,
+        4.28
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.15,
+        0.124,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.951,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.26,
+        0.234,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.121,
+        -0.294,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.951,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.231,
+        -0.404,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.085,
+        1.901,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.951,
+        -0.085,
+        3.803,
+        3.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.951,
+        -0.085,
+        3.803,
+        3.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        0.31,
+        4.28
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.562,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.881,
+        0.243,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.731,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -2.066,
+        0.31,
+        0.349
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.085,
+        0.0,
+        3.293
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.202,
+        0.124,
+        0.524,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.085,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.312,
+        0.234,
+        0.304,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        4.489,
+        0.412
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "shapes": [
+     {
+      "kind": "point",
+      "name": "O",
+      "at": [
+       0,
+       0
+      ]
+     },
+     {
+      "kind": "point",
+      "name": "A",
+      "at": [
+       4,
+       0
+      ]
+     },
+     {
+      "kind": "point",
+      "name": "B",
+      "at": [
+       2,
+       3.4641016
+      ]
+     },
+     {
+      "kind": "segment",
+      "ends": [
+       "O",
+       "A"
+      ],
+      "id": "OA"
+     },
+     {
+      "kind": "segment",
+      "ends": [
+       "O",
+       "B"
+      ],
+      "id": "OB"
+     },
+     {
+      "kind": "point",
+      "name": "R",
+      "at": [
+       1.5,
+       0
+      ]
+     }
+    ],
+    "construction": [
+     {
+      "kind": "circle",
+      "center": "O",
+      "through": "R",
+      "id": "cO"
+     },
+     {
+      "kind": "intersect",
+      "of": [
+       "cO",
+       "OB"
+      ],
+      "names": [
+       "S"
+      ]
+     },
+     {
+      "kind": "circle",
+      "center": "R",
+      "through": "S",
+      "id": "cR"
+     },
+     {
+      "kind": "circle",
+      "center": "S",
+      "through": "R",
+      "id": "cS"
+     },
+     {
+      "kind": "intersect",
+      "of": [
+       "cR",
+       "cS"
+      ],
+      "names": [
+       "T"
+      ]
+     },
+     {
+      "kind": "segment",
+      "ends": [
+       "O",
+       "T"
+      ]
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate",
+       "animate",
+       "Create",
+       "Create",
+       "animate"
+      ],
+      "run_time": 1.317
+     },
+     {
+      "op": "settle",
+      "label": "given figure",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point O",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label O",
+            "text": "O",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment OA",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "label": "segment OB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point R",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label R",
+            "text": "R",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "construction[0]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point O",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label O",
+            "text": "O",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment OA",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "label": "segment OB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point R",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label R",
+            "text": "R",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Circle",
+          "label": "circle O->R",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "run_time": 0.783
+     },
+     {
+      "op": "settle",
+      "label": "construction[1]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point O",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label O",
+            "text": "O",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment OA",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "label": "segment OB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point R",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label R",
+            "text": "R",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Circle",
+          "label": "circle O->R",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point S",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label S",
+            "text": "S",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "construction[2]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point O",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label O",
+            "text": "O",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment OA",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "label": "segment OB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point R",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label R",
+            "text": "R",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Circle",
+          "label": "circle O->R",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point S",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label S",
+            "text": "S",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Circle",
+          "label": "circle R->S",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "construction[3]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point O",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label O",
+            "text": "O",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment OA",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "label": "segment OB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point R",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label R",
+            "text": "R",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Circle",
+          "label": "circle O->R",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point S",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label S",
+            "text": "S",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Circle",
+          "label": "circle R->S",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle S->R",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "run_time": 0.783
+     },
+     {
+      "op": "settle",
+      "label": "construction[4]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point O",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label O",
+            "text": "O",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment OA",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "label": "segment OB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point R",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label R",
+            "text": "R",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Circle",
+          "label": "circle O->R",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point S",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label S",
+            "text": "S",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Circle",
+          "label": "circle R->S",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle S->R",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point T",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label T",
+            "text": "T",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create"
+      ],
+      "run_time": 1.05
+     },
+     {
+      "op": "settle",
+      "label": "construction[5]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point O",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label O",
+            "text": "O",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment OA",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "label": "segment OB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point R",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label R",
+            "text": "R",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Circle",
+          "label": "circle O->R",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point S",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label S",
+            "text": "S",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Circle",
+          "label": "circle R->S",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle S->R",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point T",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label T",
+            "text": "T",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment OT",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "settle",
+      "label": "construction complete",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point O",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label O",
+            "text": "O",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment OA",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "label": "segment OB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point R",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label R",
+            "text": "R",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Circle",
+          "label": "circle O->R",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point S",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label S",
+            "text": "S",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Circle",
+          "label": "circle R->S",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle S->R",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point T",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label T",
+            "text": "T",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment OT",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.317
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "figure",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "point O",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label O",
+            "text": "O",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point A",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label A",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "point B",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label B",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment OA",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "label": "segment OB",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point R",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label R",
+            "text": "R",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Circle",
+          "label": "circle O->R",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point S",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label S",
+            "text": "S",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Circle",
+          "label": "circle R->S",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Circle",
+          "label": "circle S->R",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "point T",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "label T",
+            "text": "T",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Line",
+          "label": "segment OT",
+          "color": "#E6EDF3",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.348,
+        0.236,
+        4.017,
+        3.648
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.398,
+        -1.314,
+        0.524,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.196,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.508,
+        -1.424,
+        0.304,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.098,
+        -1.308,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.899,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.208,
+        -1.418,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.522,
+        1.791,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.352,
+        1.582,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.632,
+        1.901,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.352,
+        -1.099,
+        3.095,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.422,
+        0.241,
+        1.548,
+        2.681
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.155,
+        -1.308,
+        0.5,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.035,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.265,
+        -1.418,
+        0.28,
+        0.318
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        4.714,
+        4.32
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.398,
+        -1.314,
+        0.524,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.196,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.508,
+        -1.424,
+        0.304,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.098,
+        -1.308,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.899,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.208,
+        -1.418,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.522,
+        1.791,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.352,
+        1.582,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.632,
+        1.901,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.352,
+        -1.099,
+        3.095,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.422,
+        0.241,
+        1.548,
+        2.681
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.155,
+        -1.308,
+        0.5,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.035,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.265,
+        -1.418,
+        0.28,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.196,
+        -1.099,
+        2.322,
+        2.322
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        4.714,
+        4.32
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.398,
+        -1.314,
+        0.524,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.196,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.508,
+        -1.424,
+        0.304,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.098,
+        -1.308,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.899,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.208,
+        -1.418,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.522,
+        1.791,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.352,
+        1.582,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.632,
+        1.901,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.352,
+        -1.099,
+        3.095,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.422,
+        0.241,
+        1.548,
+        2.681
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.155,
+        -1.308,
+        0.5,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.035,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.265,
+        -1.418,
+        0.28,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.196,
+        -1.099,
+        2.322,
+        2.322
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.792,
+        0.121,
+        0.473,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.616,
+        -0.094,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.902,
+        0.231,
+        0.253,
+        0.329
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        4.714,
+        4.32
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.398,
+        -1.314,
+        0.524,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.196,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.508,
+        -1.424,
+        0.304,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.098,
+        -1.308,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.899,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.208,
+        -1.418,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.522,
+        1.791,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.352,
+        1.582,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.632,
+        1.901,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.352,
+        -1.099,
+        3.095,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.422,
+        0.241,
+        1.548,
+        2.681
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.155,
+        -1.308,
+        0.5,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.035,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.265,
+        -1.418,
+        0.28,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.196,
+        -1.099,
+        2.322,
+        2.322
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.792,
+        0.121,
+        0.473,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.616,
+        -0.094,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.902,
+        0.231,
+        0.253,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.035,
+        -1.099,
+        2.242,
+        2.242
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        4.714,
+        4.32
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.398,
+        -1.314,
+        0.524,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.196,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.508,
+        -1.424,
+        0.304,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.098,
+        -1.308,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.899,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.208,
+        -1.418,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.522,
+        1.791,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.352,
+        1.582,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.632,
+        1.901,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.352,
+        -1.099,
+        3.095,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.422,
+        0.241,
+        1.548,
+        2.681
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.155,
+        -1.308,
+        0.5,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.035,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.265,
+        -1.418,
+        0.28,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.196,
+        -1.099,
+        2.322,
+        2.322
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.792,
+        0.121,
+        0.473,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.616,
+        -0.094,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.902,
+        0.231,
+        0.253,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.035,
+        -1.099,
+        2.242,
+        2.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.616,
+        -0.094,
+        2.242,
+        2.242
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        4.714,
+        4.32
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.398,
+        -1.314,
+        0.524,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.196,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.508,
+        -1.424,
+        0.304,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.098,
+        -1.308,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.899,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.208,
+        -1.418,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.522,
+        1.791,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.352,
+        1.582,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.632,
+        1.901,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.352,
+        -1.099,
+        3.095,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.422,
+        0.241,
+        1.548,
+        2.681
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.155,
+        -1.308,
+        0.5,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.035,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.265,
+        -1.418,
+        0.28,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.196,
+        -1.099,
+        2.322,
+        2.322
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.792,
+        0.121,
+        0.473,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.616,
+        -0.094,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.902,
+        0.231,
+        0.253,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.035,
+        -1.099,
+        2.242,
+        2.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.616,
+        -0.094,
+        2.242,
+        2.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.721,
+        0.115,
+        0.472,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.545,
+        -0.094,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.831,
+        0.225,
+        0.252,
+        0.318
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        4.714,
+        4.32
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.398,
+        -1.314,
+        0.524,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.196,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.508,
+        -1.424,
+        0.304,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.098,
+        -1.308,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.899,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.208,
+        -1.418,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.522,
+        1.791,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.352,
+        1.582,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.632,
+        1.901,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.352,
+        -1.099,
+        3.095,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.422,
+        0.241,
+        1.548,
+        2.681
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.155,
+        -1.308,
+        0.5,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.035,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.265,
+        -1.418,
+        0.28,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.196,
+        -1.099,
+        2.322,
+        2.322
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.792,
+        0.121,
+        0.473,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.616,
+        -0.094,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.902,
+        0.231,
+        0.253,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.035,
+        -1.099,
+        2.242,
+        2.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.616,
+        -0.094,
+        2.242,
+        2.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.721,
+        0.115,
+        0.472,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.545,
+        -0.094,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.831,
+        0.225,
+        0.252,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.326,
+        -0.596,
+        1.741,
+        1.005
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        4.714,
+        4.32
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.398,
+        -1.314,
+        0.524,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.196,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.508,
+        -1.424,
+        0.304,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.098,
+        -1.308,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.899,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.208,
+        -1.418,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.522,
+        1.791,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.352,
+        1.582,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.632,
+        1.901,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.352,
+        -1.099,
+        3.095,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.422,
+        0.241,
+        1.548,
+        2.681
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.155,
+        -1.308,
+        0.5,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.035,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.265,
+        -1.418,
+        0.28,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.196,
+        -1.099,
+        2.322,
+        2.322
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.792,
+        0.121,
+        0.473,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.616,
+        -0.094,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.902,
+        0.231,
+        0.253,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.035,
+        -1.099,
+        2.242,
+        2.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.616,
+        -0.094,
+        2.242,
+        2.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.721,
+        0.115,
+        0.472,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.545,
+        -0.094,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.831,
+        0.225,
+        0.252,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.326,
+        -0.596,
+        1.741,
+        1.005
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        4.714,
+        4.32
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.398,
+        -1.314,
+        0.524,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.196,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.508,
+        -1.424,
+        0.304,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.098,
+        -1.308,
+        0.518,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.899,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.208,
+        -1.418,
+        0.298,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.522,
+        1.791,
+        0.46,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.352,
+        1.582,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.632,
+        1.901,
+        0.24,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.352,
+        -1.099,
+        3.095,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.422,
+        0.241,
+        1.548,
+        2.681
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.155,
+        -1.308,
+        0.5,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.035,
+        -1.099,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.265,
+        -1.418,
+        0.28,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.196,
+        -1.099,
+        2.322,
+        2.322
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.792,
+        0.121,
+        0.473,
+        0.549
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.616,
+        -0.094,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.902,
+        0.231,
+        0.253,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.035,
+        -1.099,
+        2.242,
+        2.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.616,
+        -0.094,
+        2.242,
+        2.242
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.721,
+        0.115,
+        0.472,
+        0.538
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.545,
+        -0.094,
+        0.12,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.831,
+        0.225,
+        0.252,
+        0.318
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.326,
+        -0.596,
+        1.741,
+        1.005
+       ],
+       "font_size": null
+      }
+     ]
+    ]
+   }
+  }
+ ]
+}

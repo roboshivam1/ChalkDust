@@ -8,8 +8,11 @@ A walk is a list of steps over one number line:
 
 Jumps arc above the line with their label at the apex; marks and intervals
 label below the tick numbers. Every label is placed by measuring, not by
-convention: it is nudged away from arcs and other labels until clear, and if
-that cannot be done inside the stage the beat refuses (SCENE_SPEC.md §11.1).
+convention. A jump label must read as its own arc's, so arcs are stacked
+(an outer arc raised over an inner arc's label) rather than labels nudged
+past arcs they do not belong to. Mark and interval labels are nudged down
+clear of other labels. If either cannot be done inside the stage the beat
+refuses (SCENE_SPEC.md §11.1).
 
 All text is Pango (theme constructors), never LaTeX. Number-line labels are
 short ("+3", "x < 5", "start") and Unicode covers them, so this component has
@@ -84,12 +87,22 @@ LABEL_BUFF = 0.15      # label to its anchor (arc apex, tick band)
 LABEL_PAD = 0.06       # clearance a placed label keeps from everything else
 NUDGE = 0.08           # placement search step
 MAX_NUDGES = 60        # ~5 units of search; past that the stage is full
-ARC_RISE_RATIO = 0.3   # arc height per unit of chord
+ARC_RISE_RATIO = 0.3   # natural arc height per unit of chord
 MIN_ARC_RISE = 0.35
 MAX_ARC_RISE = 1.1
 BACK_RISE_FACTOR = 0.65  # a jump back over the same span must not coincide
+# An arc that would cut between another jump's label and that label's own arc
+# is raised in RISE_STEP increments until it passes clear over the label. A
+# label pushed higher than the stage holds at natural size means the walk is
+# too tangled for one beat.
+RISE_STEP = 0.1
+ARC_CLEAR = 0.14       # a label to any arc but its own; > WALKER_RADIUS, so the
+                       # walker riding another arc never grazes it
+ASSOC_GAP = 0.3        # a foreign arc above a jump label keeps this clear of
+                       # it, about twice LABEL_BUFF, so the label reads as
+                       # sitting on its own arc and not hanging off the other
 MIN_JUMP_WIDTH = 0.3   # below this the arrow tip is wider than the arc
-ARC_SAMPLES = 120
+SAMPLES_PER_CURVE = 16  # per cubic segment of an arc (8 segments)
 WALKER_RADIUS = 0.1
 ENDPOINT_RADIUS = 0.09
 INTERVAL_STROKE = 8
@@ -267,60 +280,53 @@ class NumberLineWalk(Component):
         below_top = tick_labels.get_bottom()[1] - LABEL_BUFF
         placed = [bbox(tick_labels)]
 
-        # Pass 1: every arc, so labels placed in pass 2 can avoid arcs that
-        # appear later in the walk as well as earlier ones.
-        arcs, paths = {}, {}
+        # Pass 1: every jump's arc and label, laid out together so each label
+        # sits on its own arc and nothing else (see _stack_jumps).
+        jumps: dict[int, tuple[float, float]] = {}
         pos: float | None = None
         for i, step in enumerate(p.steps):
             if isinstance(step, MarkStep):
                 pos = step.at
             elif isinstance(step, JumpStep):
-                arcs[i], paths[i] = self._arc(line, pos, step.to, theme)
+                jumps[i] = (pos, step.to)
                 pos = step.to
+        # Highest a jump label may reach: the stage's height above the bottom
+        # of the tick numbers, so stacking never forces the beat to shrink.
+        ceiling = tick_labels.get_bottom()[1] + inner.height
+        arcs, paths, labels = self._stack_jumps(line, jumps, bounds, placed,
+                                                ceiling, theme)
+        placed += [bbox(m) for m in labels.values()]
         obstacles = (np.vstack([_samples(a) for a in arcs.values()])
                      if arcs else np.empty((0, 3)))
 
-        # Pass 2: visuals and labels, placed in walk order.
+        # Pass 2: marks and intervals, labelled below the tick numbers.
         visuals: dict[int, list[VMobject]] = {}
-        labels: dict[int, VMobject] = {}
         walker = None
         palette_cycle = [theme.palette.accent_alt, theme.palette.success]
         n_intervals = 0
-        pos = None
         for i, step in enumerate(p.steps):
-            text: str | None = step.label
+            if isinstance(step, JumpStep):
+                continue
             if isinstance(step, MarkStep):
                 if walker is None:
                     walker = Dot(line.n2p(step.at), radius=WALKER_RADIUS,
                                  color=theme.palette.accent)
-                anchor, above = line.n2p(step.at), False
+                anchor = line.n2p(step.at)
                 colour = theme.palette.fg
-                pos = step.at
-            elif isinstance(step, JumpStep):
-                text = text or _signed(step.to - pos)
-                anchor = (line.n2p(pos) + line.n2p(step.to)) / 2
-                anchor = anchor + UP * (arcs[i].get_top()[1] - anchor[1])
-                above = True
-                colour = theme.palette.accent
-                pos = step.to
             else:
                 colour = palette_cycle[n_intervals % len(palette_cycle)]
                 n_intervals += 1
                 visuals[i] = self._interval(line, step, colour, theme)
                 anchor = visuals[i][0].get_center()
-                above = False
 
-            if not text:
+            if not step.label:
                 continue
-            mob = label(body_text(wrap(text, LABEL_WRAP), theme, colour),
+            mob = label(body_text(wrap(step.label, LABEL_WRAP), theme, colour),
                         f"steps[{i}] label")
-            if above:
-                mob.next_to(anchor, UP, buff=LABEL_BUFF)
-            else:
-                mob.set_x(anchor[0])
-                mob.align_to(np.array([0.0, below_top, 0.0]), UP)
+            mob.set_x(anchor[0])
+            mob.align_to(np.array([0.0, below_top, 0.0]), UP)
             _clamp_x(mob, bounds)
-            _place(mob, placed, obstacles, UP if above else DOWN)
+            _place(mob, placed, obstacles, DOWN)
             placed.append(bbox(mob))
             labels[i] = mob
 
@@ -375,21 +381,73 @@ class NumberLineWalk(Component):
                 shown.add(t)
         return shown
 
-    def _arc(self, line: NumberLine, start: float, end: float, theme):
+    def _stack_jumps(self, line: NumberLine, jumps: dict[int, tuple[float, float]],
+                     bounds: tuple[float, float], placed: list[Rect],
+                     ceiling: float, theme):
+        """Arcs and labels for every jump, so each label reads as its own arc's.
+
+        A label sits on its arc's apex. Nudging it clear of a crowd (the old
+        approach) pushed a backward jump's label up past the forward arc that
+        spans it, where a viewer reads it as the forward jump's. Instead the
+        arcs are laid out inner first (shortest chord first): an arc that
+        would cut between an earlier label and that label's arc, or pass just
+        over it, is raised until it clears the label. Nested jumps become
+        nested arcs with each label on its own one; a walk that cannot be
+        stacked that way below `ceiling` refuses (SCENE_SPEC.md §11.1).
+        """
+        curves: dict[int, np.ndarray] = {}   # sampled drawn arcs, for the search
+        boxes: dict[int, Rect] = {}
+        arcs, paths, labels = {}, {}, {}
+        order = sorted(jumps, key=lambda i: (abs(jumps[i][1] - jumps[i][0]), i))
+        for i in order:
+            start, end = jumps[i]
+            chord = abs(float(line.n2p(end)[0] - line.n2p(start)[0]))
+            if chord < MIN_JUMP_WIDTH:
+                raise LayoutError(
+                    f"jump {_fmt(start)} -> {_fmt(end)} spans only {chord:.2f} "
+                    f"units (floor {MIN_JUMP_WIDTH}); narrow the range or use "
+                    "bigger steps.",
+                    kind="illegible",
+                )
+            text = self.params.steps[i].label or _signed(end - start)
+            mob = label(body_text(wrap(text, LABEL_WRAP), theme, theme.palette.accent),
+                        f"steps[{i}] label")
+            rise = min(MAX_ARC_RISE, max(MIN_ARC_RISE, ARC_RISE_RATIO * chord))
+            if end < start:
+                rise *= BACK_RISE_FACTOR
+            while True:
+                # Measured on the arc as drawn: add_tip pulls the arc's end
+                # back and re-fits it, which lifts it off the ideal circle.
+                arc, path = self._arc(line, start, end, rise, theme)
+                pts = _samples(arc)
+                mob.next_to(arc.get_top(), UP, buff=LABEL_BUFF)
+                _clamp_x(mob, bounds)
+                box = bbox(mob)
+                if box.top > ceiling:
+                    raise LayoutError(
+                        f"steps[{i}] label cannot sit on its own arc clear of the "
+                        "other jumps; split this beat into fewer jumps.",
+                        kind="overflow",
+                    )
+                pad = Rect(box.x, box.y, box.width + 2 * LABEL_PAD,
+                           box.height + 2 * LABEL_PAD)
+                if (not any(pad.intersects(r) for r in [*placed, *boxes.values()])
+                        and _reads_as_own(box, pts, curves.values())
+                        and all(_reads_as_own(boxes[j], curves[j], [pts])
+                                for j in boxes)):
+                    break
+                rise += RISE_STEP
+            curves[i], boxes[i] = pts, box
+            arcs[i], paths[i], labels[i] = arc, path, mob
+        # Walk order, so the scene's draw order is the walk's.
+        return tuple({i: d[i] for i in jumps} for d in (arcs, paths, labels))
+
+    def _arc(self, line: NumberLine, start: float, end: float, rise: float, theme):
         """An arrowed arc above the line from start to end, plus the bare arc
         the walker travels along (the drawn one is shortened by its tip)."""
         a, b = line.n2p(start), line.n2p(end)
         chord = float(np.linalg.norm(b - a))
-        if chord < MIN_JUMP_WIDTH:
-            raise LayoutError(
-                f"jump {_fmt(start)} -> {_fmt(end)} spans only {chord:.2f} units "
-                f"(floor {MIN_JUMP_WIDTH}); narrow the range or use bigger steps.",
-                kind="illegible",
-            )
-        rise = min(MAX_ARC_RISE, max(MIN_ARC_RISE, ARC_RISE_RATIO * chord))
         backward = end < start
-        if backward:
-            rise *= BACK_RISE_FACTOR
         # Chord and sagitta fix the arc's angle; the sign keeps it above the
         # line whichever way the walker travels.
         angle = 4 * math.atan(2 * rise / chord) * (1 if backward else -1)
@@ -495,11 +553,41 @@ def _kind(step: Step) -> Literal["mark", "jump", "interval"]:
 
 def _samples(arc: VMobject) -> np.ndarray:
     """Points along an arc (and its tip) for collision tests. Bezier control
-    points alone sit off the curve, so they would report false hits."""
-    pts = [arc.point_from_proportion(t) for t in np.linspace(0, 1, ARC_SAMPLES)]
-    for tip in arc.get_tips():
-        pts.extend(tip.get_vertices())
-    return np.array(pts)
+    points alone sit off the curve, so they would report false hits; the
+    cubics are evaluated directly (vectorised -- the stacking search samples
+    many candidate arcs, and point_from_proportion is slow)."""
+    curves = arc.points.reshape(-1, 4, 3)
+    t = np.linspace(0, 1, SAMPLES_PER_CURVE)[None, :, None]
+    u = 1 - t
+    on_curve = (u ** 3 * curves[:, None, 0] + 3 * u * u * t * curves[:, None, 1]
+                + 3 * u * t * t * curves[:, None, 2] + t ** 3 * curves[:, None, 3])
+    tips = [tip.get_vertices() for tip in arc.get_tips()]
+    return np.vstack([on_curve.reshape(-1, 3), *tips])
+
+
+def _reads_as_own(box: Rect, own: np.ndarray, others) -> bool:
+    """Would a viewer pair this jump label with its own arc?
+
+    True when no other arc comes within ARC_CLEAR of the label, and in the
+    label's central column (its middle half) no other arc runs between the
+    label and its own arc, alongside its own arc (within LABEL_BUFF under
+    it), or closer than ASSOC_GAP above the label. Those are the ways a label
+    ends up looking like a neighbour's.
+    """
+    lo, hi = box.x - box.width / 4, box.x + box.width / 4
+    col = (own[:, 0] >= lo) & (own[:, 0] <= hi)
+    if not col.any():
+        return False   # clamped off its own arc entirely
+    own_floor = own[col, 1].min()
+    for pts in others:
+        x, y = pts[:, 0], pts[:, 1]
+        if np.any((x > box.left - ARC_CLEAR) & (x < box.right + ARC_CLEAR)
+                  & (y > box.bottom - ARC_CLEAR) & (y < box.top + ARC_CLEAR)):
+            return False
+        in_col = (x >= lo) & (x <= hi)
+        if np.any(in_col & (y > own_floor - LABEL_BUFF) & (y < box.top + ASSOC_GAP)):
+            return False
+    return True
 
 
 def _clamp_x(mob: VMobject, bounds: tuple[float, float]) -> None:
@@ -518,7 +606,9 @@ def _place(mob: VMobject, placed: list[Rect], obstacles: np.ndarray,
            direction: np.ndarray) -> None:
     """Nudge `mob` along `direction` until it clears every placed label and
     every arc. Measured, so a crowded walk degrades to a taller stack -- and
-    then to a refusal from fit_to_region -- never to overlapping text."""
+    then to a refusal from fit_to_region -- never to overlapping text. Used
+    for the below-line labels only; a jump label nudged this way could end
+    up over another jump's arc (see _stack_jumps)."""
     for _ in range(MAX_NUDGES):
         box = bbox(mob)
         pad = Rect(box.x, box.y, box.width + 2 * LABEL_PAD, box.height + 2 * LABEL_PAD)
@@ -544,10 +634,27 @@ def _frame_times(scene: ChalkdustScene, weights: list[float]) -> list[float]:
     multi-step beat ends audibly off its audio. Rounding the cumulative
     boundaries keeps the total within half a frame of the budget. The
     epsilons land each call on exactly its frame count despite float error.
+
+    Every phase gets at least one frame: Manim refuses a zero run_time with a
+    bare ValueError, and wait() is a play() underneath. A phase that rounds
+    to nothing borrows its frame from the longest phase. A budget with fewer
+    frames than phases cannot show the walk at all and refuses as a typed
+    LayoutError, which the repair loop can act on (split or re-narrate).
     """
     fps = config.frame_rate
+    total = int(round(scene.beat_duration * fps))
+    if total < len(weights):
+        raise LayoutError(
+            f"{scene.beat_duration:.3f} s is {total} frames at {fps:g} fps, fewer "
+            f"than the walk's {len(weights)} phases; lengthen the narration "
+            "or split this beat.",
+            kind="overflow",
+        )
     edges = np.round(np.cumsum(scene.budget(*weights)) * fps)
-    frames = np.diff(np.concatenate([[0.0], edges]))
+    frames = np.diff(np.concatenate([[0.0], edges])).astype(int)
+    while (frames == 0).any():
+        frames[int(np.argmax(frames))] -= 1
+        frames[int(np.argmin(frames))] += 1
     eps = 1e-6
     out = [(f - eps) / fps for f in frames[:-1]]   # play(): ceil
     out.append((frames[-1] + eps) / fps)            # wait(): floor

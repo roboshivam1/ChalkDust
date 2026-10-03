@@ -28,6 +28,8 @@ from dataclasses import dataclass
 
 import numpy as np
 from manim import (
+    DOWN,
+    UP,
     Create,
     FadeIn,
     Polygon,
@@ -452,7 +454,11 @@ class BoxFlow(Component):
                                    stroke_color=theme.palette.muted,
                                    stroke_width=STROKE)
             box.move_to(at(col_x[c], item_y[i]))
+            # Pin the text's top (its cap line, as BulletReveal assumes), not
+            # its centre: centring by bounding box lifts any label with a
+            # descender, and a row of boxes would not share a baseline.
             texts[i].move_to(box.get_center())
+            texts[i].align_to(box, UP).shift(DOWN * PAD_Y)
             nodes.append(label(VGroup(box, texts[i]), f"node[{node.id}]"))
 
         # --- ports: spread several edge ends along one box side -------------

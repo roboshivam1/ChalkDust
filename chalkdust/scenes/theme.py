@@ -7,12 +7,26 @@ be swapped by config, and it is why `theme` is a cache-key input (D-004).
 
 from __future__ import annotations
 
+import json
+import os
+import shutil
+import subprocess
+import unicodedata
 from dataclasses import dataclass, field
 from functools import lru_cache
+from pathlib import Path
 
-from manim import MathTex, Mobject, Tex, Text, VMobject
+from manim import MathTex, Mobject, Tex, Text, VMobject, config
+from manim.utils.tex import TexTemplate
+from manim.utils.tex_file_writing import make_tex_compilation_command
 
-from chalkdust.scenes.regions import INVALID_LATEX, LayoutError, tag_font_size
+from chalkdust.core.cache import content_hash
+from chalkdust.scenes.regions import (
+    INVALID_LATEX,
+    UNRENDERABLE_TEXT,
+    LayoutError,
+    tag_font_size,
+)
 
 
 @dataclass(frozen=True)
@@ -97,37 +111,318 @@ def check_fonts(theme: Theme) -> list[str]:
 
 # --- text constructors ------------------------------------------------------
 # Every text mobject in the system should come from one of these. They apply
-# the theme and tag the font size so the legibility check in regions.py works.
+# the theme and tag the font size so the legibility check in regions.py works,
+# and they refuse text the resolved font cannot draw (check_renderable), so no
+# component lays out an inkless or tofu-filled Text (SCENE_SPEC.md §11 rule 1).
 
 
-def title_text(s: str, theme: Theme, color: str | None = None) -> Text:
-    t = Text(s, font=theme.type.heading_font, font_size=theme.type.title,
-             color=color or theme.palette.fg, weight="BOLD")
-    return tag_font_size(t, theme.type.title)
+def title_text(s: str, theme: Theme, color: str | None = None, *,
+               what: str = "text") -> Text:
+    return _text(s, theme.type.heading_font, theme.type.title,
+                 color or theme.palette.fg, "BOLD", what)
 
 
-def heading_text(s: str, theme: Theme, color: str | None = None) -> Text:
-    t = Text(s, font=theme.type.heading_font, font_size=theme.type.heading,
-             color=color or theme.palette.fg, weight="SEMIBOLD")
-    return tag_font_size(t, theme.type.heading)
+def heading_text(s: str, theme: Theme, color: str | None = None, *,
+                 what: str = "text") -> Text:
+    return _text(s, theme.type.heading_font, theme.type.heading,
+                 color or theme.palette.fg, "SEMIBOLD", what)
 
 
-def body_text(s: str, theme: Theme, color: str | None = None) -> Text:
-    t = Text(s, font=theme.type.body_font, font_size=theme.type.body,
-             color=color or theme.palette.fg)
-    return tag_font_size(t, theme.type.body)
+def body_text(s: str, theme: Theme, color: str | None = None, *,
+              what: str = "text") -> Text:
+    return _text(s, theme.type.body_font, theme.type.body,
+                 color or theme.palette.fg, "NORMAL", what)
 
 
-def caption_text(s: str, theme: Theme, color: str | None = None) -> Text:
-    t = Text(s, font=theme.type.body_font, font_size=theme.type.caption,
-             color=color or theme.palette.muted)
-    return tag_font_size(t, theme.type.caption)
+def caption_text(s: str, theme: Theme, color: str | None = None, *,
+                 what: str = "text") -> Text:
+    return _text(s, theme.type.body_font, theme.type.caption,
+                 color or theme.palette.muted, "NORMAL", what)
 
 
-def mono_text(s: str, theme: Theme, color: str | None = None) -> Text:
-    t = Text(s, font=theme.type.mono_font, font_size=theme.type.mono,
-             color=color or theme.palette.fg)
-    return tag_font_size(t, theme.type.mono)
+def mono_text(s: str, theme: Theme, color: str | None = None, *,
+              what: str = "text") -> Text:
+    return _text(s, theme.type.mono_font, theme.type.mono,
+                 color or theme.palette.fg, "NORMAL", what)
+
+
+def _text(s: str, font: str, size: float, color: str, weight: str,
+          what: str) -> Text:
+    """Build one themed Text, or refuse it as kind "unrenderable_text".
+
+    Three guards, each for a way Pango turns content into something that is
+    not the content, and each grounded in what Manim actually does rather
+    than in a character count -- a glyph count is not a character count
+    once ligatures merge "fi" into one glyph, or combining marks compose:
+
+      1. check_renderable first: every distinct character the font cannot
+         draw by itself refuses, before anything is built or laid out.
+      2. Manim's own "rendered fewer glyph(s)" ValueError (raised only when
+         glyphs are mapped back to characters) becomes the typed refusal
+         instead of a build_error.
+      3. A built Text with no points at all refuses: it is a zero-size
+         mobject that crashed layouts (no centre to align on, a zero width
+         to divide by) or sat in the frame as a silent gap. This catches what
+         the per-character probe skips on purpose: a string made only of
+         format characters (U+200B, U+2060, a soft hyphen).
+    """
+    check_renderable(s, font, weight=weight, what=what)
+    try:
+        t = Text(s, font=font, font_size=size, color=color, weight=weight)
+    except ValueError as exc:
+        if "rendered fewer glyph" not in str(exc):
+            raise
+        raise LayoutError(
+            f"{what} {s!r} cannot be drawn in font {font!r}: it shapes to "
+            f"fewer glyphs than it has characters. Rewrite it with characters "
+            f"that font draws.", kind=UNRENDERABLE_TEXT) from exc
+    if not any(len(m.points) for m in t.get_family()):
+        raise LayoutError(
+            f"{what} {s!r} draws nothing in font {font!r}: it has no character "
+            f"that font can draw (only spaces, zero-width or format "
+            f"characters, or a script the font lacks). Write the text the "
+            f"viewer should read.", kind=UNRENDERABLE_TEXT)
+    return tag_font_size(t, size)
+
+
+# --- glyph coverage -----------------------------------------------------------
+# Pango never fails on a character the font lacks. Depending on the character
+# it draws nothing (right-to-left letters and emoji under the fallback fonts
+# on Windows -- measured: Hebrew letters and U+1F600 in Arial shape to no
+# glyph) or a missing-glyph box with the code point in hex (CJK and
+# private-use in Arial or Courier New). Either way the render "succeeds" and is wrong, and an
+# inkless label crashed several layouts. Asking the font about each character
+# alone is the one probe that does not depend on ligatures or shaping context.
+
+# Characters the per-character probe does not ask about, by Unicode category:
+# combining marks (M*) draw only on a base -- alone, Pango adds a dotted
+# circle, which would read as two glyphs -- and format characters (Cf: ZWNJ,
+# ZWJ, bidi marks, soft hyphen) are legitimately invisible. Whitespace is
+# skipped by str.isspace(). A string made ONLY of these draws nothing, which
+# _text's no-points guard refuses.
+_UNPROBED_CATEGORIES = ("Mn", "Mc", "Me", "Cf")
+
+
+@lru_cache(maxsize=8192)
+def _glyph_paths(ch: str, font: str, weight: str) -> int:
+    """How many paths Pango draws for `ch` alone in `font`; -1 if it refuses.
+
+    Manim gives every shaped glyph its own submobject. One means the font
+    drew the character; zero means nothing was drawn; a missing-glyph box
+    is the box plus one path per hex digit (5 for a BMP code point). Cached
+    per process: coverage is a property of the installed font, and a font
+    installed mid-run would not reach the render key until the next process
+    anyway (see _installed_fonts).
+    """
+    try:
+        return len(Text(ch, font=font, weight=weight).submobjects)
+    except Exception:
+        # NUL, a lone surrogate: Pango or the encoder refuses the string.
+        return -1
+
+
+def unsupported_characters(text: str, font: str, *,
+                           weight: str = "NORMAL") -> list[tuple[str, str]]:
+    """Distinct characters of `text` that `font` cannot draw, with why.
+
+    In order of first appearance. A character passes when it draws as exactly
+    one path, or as no more paths than its canonical decomposition has
+    characters (HarfBuzz may draw a precomposed letter the font lacks as base
+    plus mark). Whitespace, combining marks and format characters are not
+    probed (see _UNPROBED_CATEGORIES).
+    """
+    out: list[tuple[str, str]] = []
+    for ch in dict.fromkeys(text):
+        if ch.isspace() or unicodedata.category(ch) in _UNPROBED_CATEGORIES:
+            continue
+        n = _glyph_paths(ch, font, weight)
+        if n == 1 or 1 < n <= len(unicodedata.normalize("NFD", ch)):
+            continue
+        if n < 0:
+            why = "cannot be shaped at all"
+        elif n == 0 and unicodedata.bidirectional(ch) in ("R", "AL"):
+            why = "draws nothing (a right-to-left letter this font does not shape)"
+        elif n == 0:
+            why = "draws nothing"
+        else:
+            why = "draws a missing-glyph box"
+        out.append((ch, why))
+    return out
+
+
+def check_renderable(text: str, font: str, *, weight: str = "NORMAL",
+                     what: str = "text") -> None:
+    """Refuse `text` as kind "unrenderable_text" if `font` cannot draw it.
+
+    The reusable form of the theme's glyph guard. The text constructors call
+    it on everything they build; a component that builds text some other way
+    (CodeWalk through Manim's Code) calls it on that text with the resolved
+    font it passes along, e.g. check_renderable(source, theme.type.mono_font).
+    The message names the resolved font, because the fix is either the text
+    or the font installed on the render machine -- right-to-left scripts in
+    particular draw nothing with the fallback fonts and are refused, not
+    reshaped.
+    """
+    bad = unsupported_characters(text, font, weight=weight)
+    if not bad:
+        return
+    shown = "; ".join(f"{_describe(ch)} {why}" for ch, why in bad[:6])
+    more = f"; and {len(bad) - 6} more" if len(bad) > 6 else ""
+    raise LayoutError(
+        f"{what} {text!r} cannot be drawn in font {font!r}: {shown}{more}. "
+        f"Rewrite it with characters that font draws.",
+        kind=UNRENDERABLE_TEXT)
+
+
+def _describe(ch: str) -> str:
+    name = unicodedata.name(ch, "")
+    return f"U+{ord(ch):04X}" + (f" {name}" if name else "")
+
+
+# --- maths ------------------------------------------------------------------
+
+# The environment theme.math compiles in. MathTex's own default, named and
+# passed explicitly so the standalone check below and the real build cannot
+# drift apart: a check in plain math mode would refuse every aligned
+# derivation that uses &.
+MATH_ENVIRONMENT = "align*"
+
+# A LaTeX run that has not finished by now is looping (`\def\a{\a}\a` never
+# returns), not slow: a cold MiKTeX compile that downloads packages measured
+# ~23 s on this project's machines.
+LATEX_CHECK_TIMEOUT = 120.0
+
+
+def check_latex_source(source: str, *, what: str = "maths",
+                tex_template: TexTemplate | None = None,
+                environment: str = MATH_ENVIRONMENT) -> None:
+    """Compile `source` exactly as written; refuse it as "invalid_latex" if
+    LaTeX reports an error.
+
+    Why a second compile: MathTex rewrites its source before compiling it.
+    It closes unbalanced braces (`\\frac{1}{` draws a fraction with an empty
+    denominator), turns an unpaired `\\left(` into `\\big(`, and wraps a stray
+    `}}` so that `}} = 1` draws "= 1". Each of those compiles, renders, and
+    is not what the spec says. Compiling the raw source with the same
+    TexTemplate and the same environment MathTex uses (align*) is the one
+    check that sees the source as the author wrote it. Used by theme.math at
+    build and by the semantic rung (validate.semantic.check_latex), so both
+    rungs refuse the same strings with the same kind.
+
+    Cached by hash(source, template, environment), in memory and on disk
+    under `{media_dir}/latex/` -- media_dir is always the run's work dir
+    (pipeline.manim_scratch, the render worker, geometric.probe_media), so
+    the cache lives with Manim's own Tex cache, never in the cwd. A verdict
+    is cached only when it is the expression's: a toolchain failure or a
+    timeout is retried next time.
+
+    A failure that is not the expression's fault -- no `latex` on PATH, or
+    a template that does not compile even around "x" -- raises RuntimeError,
+    which the rungs report as build_error: regenerating the spec cannot fix
+    it.
+    """
+    template = tex_template or config["tex_template"]
+    key = content_hash("latex-check", source, template.body,
+                       template.tex_compiler, template.output_format,
+                       environment)
+    verdict = _latex_verdicts.get(key)
+    record = _latex_dir() / f"{key}.json"
+    if verdict is None and record.exists():
+        try:
+            verdict = json.loads(record.read_text(encoding="utf-8"))["error"]
+            _latex_verdicts[key] = verdict
+        except (OSError, ValueError, KeyError):
+            verdict = None  # unreadable record: compile again
+    if verdict is None and key not in _latex_verdicts:
+        verdict = _compile_raw(source, key, template, environment, what)
+        _latex_verdicts[key] = verdict
+        try:
+            tmp = record.with_name(f".tmp-{os.getpid()}-{record.name}")
+            tmp.write_text(json.dumps({"error": verdict}), encoding="utf-8")
+            os.replace(tmp, record)
+        except OSError:
+            pass  # a cache write failing must not fail the check
+    if verdict:
+        raise refuse_invalid_latex(what, source, "does not compile",
+                                   RuntimeError(verdict))
+
+
+# key -> None (compiles) or LaTeX's first error line. Per process, in front of
+# the on-disk records.
+_latex_verdicts: dict[str, str | None] = {}
+
+
+def _latex_dir() -> Path:
+    d = Path(config.media_dir) / "latex"
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+
+def _compile_raw(source: str, key: str, template: TexTemplate,
+                 environment: str, what: str) -> str | None:
+    """Run the template's compiler once on the raw source.
+
+    Returns None when it compiles, else LaTeX's first error line (the
+    expression's fault). Raises LayoutError(invalid_latex) on a timeout and
+    RuntimeError when the toolchain itself is at fault; neither is cached.
+    """
+    error = _run_latex(template.get_texcode_for_expression_in_env(source, environment),
+                       key, template, what, source)
+    if error is not None and _run_latex(
+            template.get_texcode_for_expression_in_env("x", environment),
+            content_hash("latex-baseline", template.body, environment),
+            template, "the TeX template", "x") is not None:
+        raise RuntimeError(
+            f"the TeX toolchain cannot compile its own template around 'x' "
+            f"({error}); check the LaTeX install, not the spec")
+    return error
+
+
+def _run_latex(texcode: str, key: str, template: TexTemplate, what: str,
+               source: str) -> str | None:
+    compiler = template.tex_compiler
+    if not isinstance(compiler, str):
+        compiler = compiler[0]
+    # A private scratch dir per run: two processes checking the same source
+    # at once must not share a .log or .dvi (Windows locks open files).
+    work = _latex_dir() / f".run-{key}-{os.getpid()}"
+    work.mkdir(parents=True, exist_ok=True)
+    tex_file = work / f"{key}.tex"
+    tex_file.write_text(texcode, encoding="utf-8")
+    command = make_tex_compilation_command(
+        compiler, template.output_format, tex_file, work)
+    try:
+        cp = subprocess.run(command, stdin=subprocess.DEVNULL,
+                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                            timeout=LATEX_CHECK_TIMEOUT)
+    except FileNotFoundError as exc:
+        shutil.rmtree(work, ignore_errors=True)
+        raise RuntimeError(f"{compiler!r} is not on PATH; LaTeX cannot be "
+                           f"checked or rendered") from exc
+    except subprocess.TimeoutExpired as exc:
+        shutil.rmtree(work, ignore_errors=True)
+        raise refuse_invalid_latex(
+            what, source, f"does not finish compiling within "
+            f"{LATEX_CHECK_TIMEOUT:.0f} s (a macro that never terminates?)") from exc
+    error = None
+    if cp.returncode != 0:
+        error = _first_tex_error(tex_file.with_suffix(".log"))
+    shutil.rmtree(work, ignore_errors=True)
+    return error
+
+
+def _first_tex_error(log: Path) -> str:
+    """LaTeX's first '! ...' line, with the 'l.N ...' context if present."""
+    try:
+        lines = log.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return "LaTeX failed and wrote no log"
+    for i, line in enumerate(lines):
+        if line.startswith("! "):
+            where = next((ln.strip() for ln in lines[i + 1:i + 12]
+                          if ln.startswith("l.")), "")
+            return f"{line[2:].strip()}" + (f" at {where}" if where else "")
+    return "LaTeX failed without an error line"
 
 
 def math(s: str, theme: Theme, size: float | None = None,
@@ -137,11 +432,15 @@ def math(s: str, theme: Theme, size: float | None = None,
 
     Bad LaTeX refuses as LayoutError kind "invalid_latex" (see
     refuse_invalid_latex); `what` names the content in that message, e.g.
-    "step[2]", so the refusal points at the spec field to regenerate.
+    "step[2]", so the refusal points at the spec field to regenerate. The
+    raw source is compiled first (check_latex_source), because MathTex silently
+    repairs unbalanced braces and an unpaired \\left before compiling.
     """
     size = size or theme.type.heading
+    check_latex_source(s, what=what)
     try:
-        m = MathTex(s, font_size=size * 1.2, color=color or theme.palette.fg)
+        m = MathTex(s, font_size=size * 1.2, color=color or theme.palette.fg,
+                    tex_environment=MATH_ENVIRONMENT)
     except ValueError as exc:
         raise refuse_invalid_latex(what, s, "does not compile", exc) from exc
     if m.width == 0 and m.height == 0:

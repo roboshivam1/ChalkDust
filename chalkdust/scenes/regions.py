@@ -42,6 +42,16 @@ DEFAULT_PADDING = 0.15
 # raise and check it: theme.math() raises it, the stress tests accept it.
 INVALID_LATEX = "invalid_latex"
 
+# LayoutError kind for text the resolved font cannot draw: characters that
+# shape to no glyph (right-to-left letters and emoji under the fallback fonts,
+# zero-width-only strings) or to a missing-glyph box (CJK, private-use).
+# Raised by the theme's text constructors (theme.check_renderable), so every
+# component refuses such text one way instead of laying out an empty or
+# tofu-filled mobject -- which crashed some layouts (an inkless label has no
+# centre to align on) and silently dropped words in others. Like
+# invalid_latex, the fix is the spec (SCENE_SPEC.md §11 rule 1).
+UNRENDERABLE_TEXT = "unrenderable_text"
+
 
 class LayoutError(Exception):
     """Raised when content cannot be placed legibly.
@@ -56,6 +66,9 @@ class LayoutError(Exception):
       overflow      -- content cannot be scaled to fit at all
       invalid_latex -- maths that does not compile, or compiles to nothing
                        (theme.refuse_invalid_latex); the fix is the spec
+      unrenderable_text -- text the resolved font draws as nothing or as
+                       missing-glyph boxes (theme.check_renderable); the
+                       fix is the spec
     """
 
     def __init__(self, message: str, kind: str = "layout") -> None:

@@ -196,10 +196,13 @@ def test_inkless_text_refuses_as_illegible(params, tmp_path):
     # Text that draws no glyph in the mono font passes the schema and rung 1
     # but has nothing to read or to align on a baseline: a typed refusal,
     # never a raw IndexError from positioning an empty Text.
+    # The theme's text constructors refuse undrawable text first, as kind
+    # "unrenderable_text" (theme.check_renderable), before this component's
+    # own glyph check would.
     spec = BeatSpec(id="b01", narration="placeholder narration",
                     component="StepTrace", params=params)
     report = validate_beat(spec, media_dir=tmp_path)
-    assert report.kinds() == {"illegible"}, f"\n{report}"
+    assert report.kinds() == {"unrenderable_text"}, f"\n{report}"
 
 
 # --- muting -----------------------------------------------------------------------

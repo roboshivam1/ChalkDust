@@ -23,7 +23,7 @@ from chalkdust.core.models import BeatSpec, Region
 from chalkdust.scenes.components import Component, make_component
 from chalkdust.scenes.components.raw_scene import RawScene
 from chalkdust.scenes.regions import MIN_FONT_SIZE, LayoutError, region_rect
-from chalkdust.scenes.theme import DEFAULT, math
+from chalkdust.scenes.theme import DEFAULT, check_latex_source, math
 from chalkdust.validate.geometric import Finding, Report, probe_media
 
 # --- duration ---------------------------------------------------------------
@@ -187,7 +187,11 @@ def check_latex(component: Component,
                 media_dir: Path | str | None = None) -> list[Finding]:
     """Compile each of the component's LaTeX strings standalone.
 
-    Through theme.math, the constructor build() uses, so the expression is
+    First as written, through theme.check_latex_source: MathTex repairs
+    unbalanced braces and an unpaired \\left before compiling, so only a
+    compile of the raw source sees them (an empty-denominator \\frac{1}{
+    would otherwise pass here and render). Then through theme.math, the
+    constructor build() uses, so the expression is
     compiled exactly as the render will compile it, a success lands in
     Manim's Tex cache for the real build, and a failure is the same refusal
     the geometric rung would raise: kind "invalid_latex"
@@ -206,8 +210,10 @@ def check_latex(component: Component,
     findings = []
     with probe_media(media_dir):
         for i, source in enumerate(component.latex_strings()):
+            what = f"{component.name} latex_strings()[{i}]"
             try:
-                math(source, DEFAULT, what=f"{component.name} latex_strings()[{i}]")
+                check_latex_source(source, what=what)
+                math(source, DEFAULT, what=what)
             except LayoutError as exc:
                 findings.append(Finding(exc.kind, str(exc)))
             except Exception as exc:

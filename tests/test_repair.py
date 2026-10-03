@@ -6,7 +6,8 @@ component would, so the registry walks elsewhere never see them.
 
 from __future__ import annotations
 
-from manim import RIGHT, FadeIn
+import pytest
+from manim import RIGHT, FadeIn, tempconfig
 
 from chalkdust.core.models import Region
 from chalkdust.scenes.components import Component, ComponentParams
@@ -23,6 +24,15 @@ from chalkdust.validate.repair import (
     propose_fix,
     repair_component,
 )
+
+
+@pytest.fixture(autouse=True)
+def _manim_scratch_in_tmp(tmp_path):
+    """Every file Manim writes here goes to tmp_path, never the cwd: the
+    probes respect a caller's media_dir (geometric.probe_media), and Text
+    built outside a probe (propose_fix below) writes its SVGs under it too."""
+    with tempconfig({"media_dir": str(tmp_path / "manim")}):
+        yield
 
 
 class _MisplacedParams(ComponentParams):

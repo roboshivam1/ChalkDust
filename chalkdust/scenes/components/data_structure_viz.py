@@ -16,7 +16,6 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass, field
-from itertools import accumulate
 from typing import Annotated, Literal
 
 from manim import (
@@ -32,11 +31,12 @@ from manim import (
     Line,
     Rectangle,
     VGroup,
+    Mobject,
     VMobject,
-    config,
 )
 from pydantic import Field, StringConstraints, model_validator
 
+from chalkdust.continuity import artifact_builder
 from chalkdust.core.models import Region
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import (
@@ -88,12 +88,10 @@ OP_MIN = {
     "insert": 1.0,
     "traverse": 0.8,
 }
-# An animation never runs longer than this multiple of its minimum. The rest of
-# its slot is a pause on the settled frame while the narrator talks over it --
-# a six-second swap reads as broken, not as calm.
+# An animation never runs longer than this multiple of its minimum. Narration
+# beyond that becomes a pause on the settled frame after each step while the
+# narrator talks over it -- a six-second swap reads as broken, not as calm.
 ANIM_STRETCH = 2.0
-# Nudge so Manim renders exactly the frame count we computed; see _frame_counts.
-FRAME_EPS = 1e-6
 
 KINDS_OPS = {
     "array": {"highlight", "swap", "set"},
@@ -390,7 +388,8 @@ class _Board:
     """All mobjects for one structure, laid out relative to each other.
 
     `layout` holds everything the beat will ever show and is what gets fitted
-    to the stage; `shown` is the subset on screen when the beat opens.
+    to the stage; `shown` is the subset on screen when the beat opens;
+    `final()` is the subset on screen once every operation has run.
     """
 
     def __init__(self, theme: Theme, plan: _Plan, ops: list) -> None:
@@ -415,6 +414,18 @@ class _Board:
         return shape.set_stroke(self.theme.palette.fg, width=STROKE).set_fill(
             self.theme.palette.accent, opacity=0
         )
+
+    def final(self) -> VGroup:
+        """The structure after every operation, in neutral styling.
+
+        Replays the operations' effect on WHAT is shown (values swapped or
+        overwritten, cells pushed and popped, nodes inserted) without
+        animating, on a freshly built board. The focus accent and traverse
+        trails are deliberately left out: they belong to the beat that played
+        the operations, and a later beat carrying this structure in decides
+        its own emphasis. Call at most once per board.
+        """
+        raise NotImplementedError
 
     def refocus(self, targets: list[VMobject]) -> list[Animation]:
         """Move the accent from the previous op's items to this op's.
@@ -459,9 +470,9 @@ class _ArrayBoard(_Board):
             label(self._shape_style(Rectangle(width=w, height=h)), f"cell[{i}]")
             for i in range(len(plan.values))
         ]
-        row = VGroup(*self.cells).arrange(RIGHT, buff=0)
+        self.row = VGroup(*self.cells).arrange(RIGHT, buff=0)
         self.texts = [self._value(v).move_to(c) for v, c in zip(plan.values, self.cells)]
-        indices = [
+        self.indices = [
             caption_text(str(i), theme).next_to(c, DOWN, buff=INDEX_GAP * self.cap)
             for i, c in enumerate(self.cells)
         ]
@@ -470,8 +481,20 @@ class _ArrayBoard(_Board):
             i: self._value(_s(op.value)).move_to(self.cells[op.at])
             for i, op in enumerate(ops) if isinstance(op, SetValue)
         }
-        self.shown.add(row, *self.texts, *indices)
+        self.shown.add(self.row, *self.texts, *self.indices)
         self.layout.add(self.shown, *self.future.values())
+
+    def final(self) -> VGroup:
+        texts = list(self.texts)
+        for i, op in enumerate(self.ops):
+            if isinstance(op, Swap):
+                a, b = op.at
+                texts[a], texts[b] = texts[b], texts[a]
+            elif isinstance(op, SetValue):
+                texts[op.at] = self.future[i]
+        for text, cell in zip(texts, self.cells):
+            text.move_to(cell)
+        return VGroup(self.row, *texts, *self.indices)
 
     def animations(self, i, op):
         if isinstance(op, Highlight):
@@ -514,6 +537,7 @@ class _StackBoard(_Board):
         container = label(VGroup(
             Line(bl + rise, bl), Line(bl, br), Line(br, br + rise),
         ).set_stroke(theme.palette.muted, width=STROKE), "stack container")
+        self.container = container
         self.stack = [self._cell(v, k) for k, v in enumerate(plan.values)]
         self.future: dict[int, VMobject] = {}
         depth = len(self.stack)
@@ -525,6 +549,15 @@ class _StackBoard(_Board):
                 depth -= 1
         self.shown.add(container, *self.stack)
         self.layout.add(slots, self.shown, *self.future.values())
+
+    def final(self) -> VGroup:
+        stack = list(self.stack)
+        for i, op in enumerate(self.ops):
+            if isinstance(op, Push):
+                stack.append(self.future[i])
+            elif isinstance(op, Pop):
+                stack.pop()
+        return VGroup(self.container, *stack)
 
     def _cell(self, s: str, depth: int) -> VGroup:
         box = self._shape_style(Rectangle(width=self.slots[0].width, height=self.cell_h))
@@ -606,6 +639,10 @@ class _TreeBoard(_NodeBoard):
                        *[n for n in self.nodes.values() if n not in arriving])
         self.layout.add(self.shown, *self.future.values())
 
+    def final(self) -> VGroup:
+        # Trees only grow: after the last insert every node and edge is shown.
+        return VGroup(*self.edges.values(), *self.nodes.values())
+
     def animations(self, i, op):
         if isinstance(op, Highlight):
             return self._highlight(op)
@@ -640,6 +677,10 @@ class _GraphBoard(_NodeBoard):
         self.shown.add(*self.edges.values(), *nodes)
         self.layout.add(self.shown)
 
+    def final(self) -> VGroup:
+        # Operations on a graph only change emphasis, never its contents.
+        return VGroup(*self.edges.values(), *self.nodes.values())
+
     def animations(self, i, op):
         if isinstance(op, Highlight):
             return self._highlight(op)
@@ -652,39 +693,6 @@ BOARDS = {
     "tree": _TreeBoard,
     "graph": _GraphBoard,
 }
-
-
-# --- timing helper --------------------------------------------------------------
-
-
-def _frame_counts(seconds: list[float], plays: list[bool], fps: float) -> list[int]:
-    """Whole-frame lengths for consecutive play/wait segments.
-
-    Manim renders a play() as ceil(run_time * fps) frames (np.arange in
-    Scene.get_time_progression) and a wait() as floor(duration * fps) frames
-    (CairoRenderer.freeze_current_frame). Unquantised run times therefore drift
-    up to a frame per call, which across a dozen operations is audible A/V
-    desync. Rounding the CUMULATIVE boundaries keeps the total within half a
-    frame of the budget however many segments there are.
-
-    Every play needs at least one frame or Manim never applies it; the frame is
-    borrowed from the longest segment that can spare one.
-    """
-    bounds = [round(c * fps) for c in accumulate(seconds)]
-    counts = [b - a for a, b in zip([0] + bounds, bounds)]
-    if bounds[-1] < sum(plays):
-        raise LayoutError(
-            f"{sum(plays)} animation steps cannot fit in {bounds[-1]} frames; "
-            "the narration is far too short for this many operations. Split the beat.",
-            kind="overflow",
-        )
-    for k, is_play in enumerate(plays):
-        if is_play and counts[k] == 0:
-            donors = [j for j in range(len(counts)) if counts[j] > int(plays[j])]
-            j = max(donors, key=lambda j: counts[j])
-            counts[j] -= 1
-            counts[k] = 1
-    return counts
 
 
 # --- the component ------------------------------------------------------------
@@ -719,33 +727,40 @@ class DataStructureViz(Component):
         board = self.board(scene.theme)
         label(board.shown, p.kind)
 
+        # Every step plays at its minimum scaled by how much longer the
+        # narration is than min_seconds(), up to ANIM_STRETCH; narration
+        # beyond that becomes a pause after each step, in proportion to it.
+        # scene.budget() turns the weights into whole frames summing exactly
+        # to the beat (D-002).
         mins = [INTRO_MIN] + [OP_MIN[op.op] for op in p.operations]
-        slots = scene.budget(*mins, HOLD_MIN)
-        seconds, plays = [], []
-        for slot, m in zip(slots, mins):
-            run = min(slot, ANIM_STRETCH * m)
-            seconds += [run, slot - run]
-            plays += [True, False]
-        seconds.append(slots[-1])
-        plays.append(False)
-        fps = config.frame_rate
-        frames = _frame_counts(seconds, plays, fps)
+        stretch = scene.beat_duration / self.min_seconds()
+        play = min(stretch, ANIM_STRETCH)
+        pause = stretch - play
+        weights: list[float] = []
+        for m in mins:
+            weights += [m * play, m * pause] if pause > 0 else [m * play]
+        weights.append(HOLD_MIN * stretch)
+        if scene.beat_frames < len(weights):
+            # budget() would still hand every segment a frame, making the
+            # clip longer than its narration. Refuse instead.
+            raise LayoutError(
+                f"{len(weights)} timed steps cannot fit in {scene.beat_frames} "
+                "frames; the narration is far too short for this many "
+                "operations. Split the beat.",
+                kind="overflow",
+            )
+        times = iter(scene.budget(*weights))
 
-        # The epsilons land Manim's ceil (play) and floor (wait) on exactly
-        # the frame counts computed above.
-        def hold(n: int) -> None:
-            if n:
-                scene.wait(n / fps + FRAME_EPS)
-
-        scene.play(FadeIn(board.shown), run_time=frames[0] / fps - FRAME_EPS)
+        scene.play(FadeIn(board.shown), run_time=next(times))
         scene.settle(f"{p.kind} shown")
-        hold(frames[1])
+        if pause > 0:
+            scene.wait(next(times))
         for i, op in enumerate(p.operations):
-            k = 2 * (i + 1)
-            scene.play(*board.animations(i, op), run_time=frames[k] / fps - FRAME_EPS)
+            scene.play(*board.animations(i, op), run_time=next(times))
             scene.settle(f"operations[{i}] {op.op}")
-            hold(frames[k + 1])
-        hold(frames[-1])
+            if pause > 0:
+                scene.wait(next(times))
+        scene.wait(next(times))
 
     @classmethod
     def examples(cls):
@@ -809,3 +824,13 @@ class DataStructureViz(Component):
                             {"op": "insert", "parent": 3, "side": "left", "value": 4},
                             {"op": "insert", "parent": 4, "side": "left", "value": 5}]},
         ]
+
+
+@artifact_builder(DataStructureViz.name)
+def _artifact(params: DataStructureVizParams, theme: Theme) -> Mobject:
+    """The structure as the beat leaves it, for a later beat's carry-in
+    (SCENE_SPEC.md §6): b02 DataStructureViz registers "bucket_array", b03
+    carries it in. Fitted exactly as the producing beat fitted it, so it is
+    the same size the viewer last saw; CarryIn places and dims it."""
+    final = DataStructureViz(params).board(theme).final()
+    return label(final, f"{params.kind} (final state)")

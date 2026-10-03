@@ -49,6 +49,10 @@ MEASURE_CHARS = 64
 LINE_PITCH = 1.7     # baseline to baseline for an ordinary line of prose
 LINE_CLEARANCE = 0.25  # minimum ink gap when tall inline maths needs more room
 WORD_SPACE = 0.4     # between prose and an adjacent maths chunk
+# Between maths and prose the source joins with no space ("$\mu$.",
+# "$x$-axis"): TeX's italic correction, so a slanted letter's tail does not
+# run into the punctuation after it.
+ITALIC_GAP = 0.08
 ITEM_GAP = 0.5       # extra space between two given items
 HEADER_GAP = 0.5     # between a GIVEN/FIND header and its content
 SECTION_GAP = 1.4    # between the statement and the given/find row
@@ -231,6 +235,7 @@ class _Flow:
     def _line(self, idx: list[int]) -> VGroup:
         """Build one line, baseline at y=0, left edge at x=0."""
         pieces: list[tuple[Mobject, bool]] = []
+        is_maths = {id(m) for m in self.maths.values()}
         run: list[str] = []
         run_space = False
 
@@ -253,10 +258,13 @@ class _Flow:
                     run.append((" " if t.space_before else "") + t.text)
         flush()
 
-        x = 0.0
+        x, after_maths = 0.0, False
         for mob, spaced in pieces:
             if spaced:
                 x += WORD_SPACE * self.cap
+            elif after_maths and id(mob) not in is_maths:
+                x += ITALIC_GAP * self.cap
+            after_maths = id(mob) in is_maths
             mob.shift(RIGHT * (x - mob.get_left()[0]))
             x = mob.get_right()[0]
         return VGroup(*(m for m, _ in pieces))

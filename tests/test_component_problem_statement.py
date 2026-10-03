@@ -31,6 +31,7 @@ from chalkdust.core.models import BeatSpec, Quality, Region, VideoSpec
 from chalkdust.render.worker import TIERS, long_path
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.problem_statement import (
+    ITALIC_GAP,
     STRUT,
     WORD_SPACE,
     ProblemStatement,
@@ -216,6 +217,15 @@ class TestInlineLayout:
         space = WORD_SPACE * body_cap_height(probe.theme)
         assert rests.get_left()[0] - m.get_right()[0] == pytest.approx(space, rel=0.05)
         assert axis.get_left()[0] - x.get_right()[0] < space / 2
+
+    def test_unspaced_prose_after_maths_keeps_an_italic_gap(self):
+        # "$\mu$." -- the period must not touch the mu's tail (seen in a draft
+        # render: they joined), yet stay far tighter than a word space.
+        probe = _probe({"text": r"friction is $\mu$.", "find": "y"})
+        [line] = _blocks(probe)["statement"].submobjects
+        _, mu, period = line.submobjects
+        gap = period.get_left()[0] - mu.get_right()[0]
+        assert gap == pytest.approx(ITALIC_GAP * body_cap_height(probe.theme), rel=0.05)
 
     def test_long_statement_wraps_into_aligned_lines(self):
         lines = _blocks(_probe(INCLINE))["statement"].submobjects

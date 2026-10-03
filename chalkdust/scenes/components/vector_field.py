@@ -316,7 +316,8 @@ class VectorField(Component):
         # --- arrows --------------------------------------------------------
         X, Y, U, V = sample(p)
         ok = _drawable_mask(U, V)
-        mag = np.hypot(U, V)
+        with np.errstate(all="ignore"):
+            mag = np.hypot(U, V)
         ref = float(np.percentile(mag[ok], REF_PERCENTILE))
         full = ARROW_FILL * cell
 

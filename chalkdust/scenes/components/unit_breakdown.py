@@ -16,7 +16,9 @@ what this one showed.
 
 from __future__ import annotations
 
+import unicodedata
 from dataclasses import dataclass
+from functools import lru_cache
 
 from manim import RIGHT, UP, Mobject, Text, VGroup
 from pydantic import Field, field_validator
@@ -31,7 +33,7 @@ from chalkdust.scenes.components.base import (
     register,
     wrap,
 )
-from chalkdust.scenes.regions import LayoutError, fit_to_region
+from chalkdust.scenes.regions import UNRENDERABLE_TEXT, LayoutError, fit_to_region
 from chalkdust.scenes.theme import (
     Theme,
     body_cap_height,
@@ -46,6 +48,11 @@ LABEL_WRAP = 16
 # Spacing in body cap heights, so it scales with the theme.
 OPERATOR_PAD = 0.9  # each side of "=" / "\cdot", beyond the column edge
 LABEL_DROP = 2.2    # lowest unit glyph down to the labels' common baseline
+LABEL_CLEAR = 1.0   # least clear space between the unit row and any label's ink
+
+# Drawn ahead of each label's first line to measure that line's baseline
+# (see _first_baseline): a glyph with a flat bottom on the baseline.
+REFERENCE = "x"
 
 # Relative weights of each step's share of the beat (D-002). One unit of
 # weight must be at least this long for the step to stay legible, so the
@@ -56,29 +63,121 @@ FACTOR_WEIGHT = 2
 HOLD_WEIGHT = 3
 
 
-def _first_baseline(text: Text, first_line: Text) -> float:
-    """y of the baseline of `text`'s first line, measured on `first_line`: that
-    line alone, built with the same font and size.
+def _first_baseline(text: Text, probe: Text, reference: Text) -> float | None:
+    """y of the baseline of `text`'s first line, or None if it cannot be
+    measured.
 
-    Bounding-box tops vary with ascenders and bottoms with descenders, so
-    neither gives a stable line to hang text from. On a single line every
-    glyph sits on one baseline, and the median glyph bottom is that baseline,
-    outvoting the odd descender (the "g" in "length"). It is measured on the
-    line alone because nothing maps a multi-line Text's glyphs back to its
-    lines: Pango draws no glyph for a zero-width or format character and
-    composes "e" plus a combining acute into one, so slicing the first n
-    glyphs for n characters (rb2) took glyphs from the second line and hung
-    the label a whole line too high, into the unit row. The first line's ink
-    is the top of the whole label (the next line starts a full line pitch
-    lower), so its baseline sits the same distance below `text`'s top as it
-    does below `first_line`'s.
+    `probe` is the same label built with REFERENCE and a space in front of
+    its first line, and `reference` is REFERENCE built alone, all with one
+    font and size. The baseline is read off the reference glyph, never off
+    the label's own glyphs: every way of voting over those failed on some
+    label. Slicing "the first n glyphs for n characters" (rb2) took glyphs
+    from the second line once Pango drew no glyph for a zero-width character.
+    Its fix, the median bottom of a separately built first line, landed on a
+    combining mark Pango cannot compose ("n" plus a circumflex is two glyphs,
+    the hat the upper one), hanging the "n" most of a cap height low, and a
+    stack of marks under one letter out-voted the letter and climbed into the
+    unit row. An "x" sits on the baseline by construction, and the space
+    keeps the label from kerning, ligating or composing with it.
+
+    The probe's other glyphs are the label's own, only the first line moved
+    right: Pango sets line heights from the font, not the ink, so the
+    vertical arrangement is the same. The depth from their top to the
+    reference's bottom is therefore the depth from `text`'s top to its first
+    baseline, scaled by however much `text` has been scaled since.
     """
-    bottoms = sorted(g.get_bottom()[1] for g in first_line.submobjects
-                     if g.has_points())
-    # first_line came from a theme constructor, which refuses text that draws
-    # nothing, so there is always a glyph to vote.
-    depth = first_line.get_top()[1] - bottoms[len(bottoms) // 2]
-    return float(text.get_top()[1] - depth)
+    ref_w, ref_h = reference.width, reference.height
+    glyphs = [g for g in probe.submobjects if g.has_points()]
+    # The reference is the top-left REFERENCE-shaped glyph: an "x" in the
+    # label is further right, or (at a line start) lower. Matched by size,
+    # not by index: Pango does not emit glyphs in reading order (it drew a
+    # missing-glyph box ahead of the letter before it).
+    refs = [g for g in glyphs if abs(g.width - ref_w) < 1e-3 and abs(g.height - ref_h) < 1e-3]
+    if not refs:
+        return None
+    left = min(g.get_left()[0] for g in refs)
+    ref = max((g for g in refs if g.get_left()[0] < left + 1e-3),
+              key=lambda g: g.get_top()[1])
+    rest = [g for g in glyphs if g is not ref]
+    own = [g for g in text.submobjects if g.has_points()]
+    if not rest or len(rest) != len(own):
+        # The label shaped differently behind the reference than alone, so
+        # its glyphs are not the probe's: nothing ties the two together.
+        return None
+    top = max(g.get_top()[1] for g in rest)
+    height = top - min(g.get_bottom()[1] for g in rest)
+    if height <= 0:
+        return None
+    return float(text.get_top()[1] - (top - ref.get_bottom()[1]) * text.height / height)
+
+
+def _is_mark(c: str) -> bool:
+    return unicodedata.category(c) in ("Mn", "Mc", "Me")
+
+
+@lru_cache(maxsize=1024)
+def _mark_paths(mark: str, font: str) -> int:
+    """How many paths Pango draws for REFERENCE carrying `mark` in `font`:
+    one or two when the font draws the mark (composed, or base plus mark),
+    more when it draws a missing-glyph box (box plus hex digits) instead.
+    Probed on a base because a mark alone draws a dotted circle as well."""
+    return sum(1 for g in Text(REFERENCE + mark, font=font).submobjects
+               if g.has_points())
+
+
+def _check_marks(s: str, theme: Theme, what: str) -> None:
+    """Refuse, as "unrenderable_text" naming the field, a label whose
+    combining marks Pango would draw as something else.
+
+    The theme's glyph guard leaves combining marks unprobed on purpose (alone,
+    every mark draws a dotted circle), so two failures get past it: a mark
+    the body font lacks draws a missing-glyph box ("v" + U+20D7, a vector
+    arrow), and a mark with no letter before it draws a dotted circle under
+    itself. A mark after a space sits on the space, which draws nothing, so
+    only a leading one has no base at all.
+    """
+    font = theme.type.body_font
+    if _is_mark(s[0]):
+        raise LayoutError(
+            f"{what} {s!r} starts with a combining mark, which has no letter "
+            f"to sit on: Pango draws a dotted circle under it. Put the mark "
+            f"after the letter it belongs to.", kind=UNRENDERABLE_TEXT)
+    for mark in dict.fromkeys(c for c in s if _is_mark(c)):
+        if _mark_paths(mark, font) > 2:
+            raise LayoutError(
+                f"{what} {s!r} cannot be drawn in font {font!r}: combining "
+                f"mark U+{ord(mark):04X} {unicodedata.name(mark, '')} draws a "
+                f"missing-glyph box. Rewrite it with characters that font "
+                f"draws.", kind=UNRENDERABLE_TEXT)
+
+
+def _label_text(s: str, theme: Theme, what: str) -> Text:
+    """A label as drawn: wrapped, through the theme's text constructor (whose
+    glyph guard refuses what the body font cannot draw), then the marks that
+    guard leaves to the caller."""
+    text = body_text(_wrap_label(s), theme, theme.palette.muted, what=what)
+    _check_marks(s, theme, what)
+    return text
+
+
+def _wrap_label(s: str) -> str:
+    """wrap(), without ever starting a line with a combining mark.
+
+    textwrap hard-breaks a long word at any character, so it can cut a stack
+    of marks off its letter ("a" with twenty dots under it), and the marks
+    that open the next line then sit on a dotted circle. A line's leading
+    marks go back to the end of the line they were cut from.
+    """
+    lines = wrap(s, LABEL_WRAP).split("\n")
+    out = [lines[0]]
+    for line in lines[1:]:
+        cut = 0
+        while cut < len(line) and _is_mark(line[cut]):
+            cut += 1
+        out[-1] += line[:cut]
+        if line[cut:]:
+            out.append(line[cut:])
+    return "\n".join(out)
 
 
 class UnitTerm(ComponentParams):
@@ -213,11 +312,11 @@ def _layout(p: UnitBreakdownParams, theme: Theme) -> _Row:
     # a label the body font cannot draw, wholly or in part (a lone zero-width
     # space, an emoji, a right-to-left script, CJK the font has no glyphs for),
     # refuses there as "unrenderable_text" naming the field (SCENE_SPEC.md
-    # §11 rule 1), before anything is laid out around it.
+    # §11 rule 1), before anything is laid out around it; so do combining
+    # marks it would draw as a box or a dotted circle (_check_marks).
     label_fields = _fields(p, "label")
     labels = [
-        label(body_text(wrap(t.label, LABEL_WRAP), theme, theme.palette.muted,
-                        what=what), f"label[{i}]")
+        label(_label_text(t.label, theme, what), f"label[{i}]")
         if t.label else None
         for i, (what, t) in enumerate(label_fields)
     ]
@@ -246,15 +345,32 @@ def _layout(p: UnitBreakdownParams, theme: Theme) -> _Row:
     # Labels share one baseline for their first line, so a two-line label
     # hangs down rather than pushing its neighbours, and "mass" sits level
     # with "length" despite having no ascenders.
-    baseline = min(term.get_bottom()[1] for term in terms) - LABEL_DROP * cap
-    present = []
+    reference = body_text(REFERENCE, theme, theme.palette.muted)
+    hung = []  # (term, label, its first baseline)
     for term, lab, (what, t) in zip(terms, labels, label_fields):
         if lab is None:
             continue
-        first_line = body_text(wrap(t.label, LABEL_WRAP).split("\n", 1)[0],
-                               theme, theme.palette.muted, what=what)
+        probe = body_text(f"{REFERENCE} {_wrap_label(t.label)}", theme,
+                          theme.palette.muted, what=what)
+        y = _first_baseline(lab, probe, reference)
+        if y is None:
+            raise LayoutError(
+                f"{what} {t.label!r} shapes differently after other text than "
+                f"alone in font {theme.type.body_font!r}, so its first line has "
+                f"no baseline to hang it from. Rewrite it with plain letters.",
+                kind=UNRENDERABLE_TEXT)
+        hung.append((term, lab, y))
+    # The common baseline sits LABEL_DROP caps under the lowest unit glyph,
+    # or lower if a label's ink rises far above its baseline (a stack of
+    # combining marks over one letter): every label then still clears the
+    # row by LABEL_CLEAR caps, and they all stay level.
+    rise = max((lab.get_top()[1] - y for _, lab, y in hung), default=0.0)
+    baseline = (min(term.get_bottom()[1] for term in terms)
+                - max(LABEL_DROP * cap, rise + LABEL_CLEAR * cap))
+    present = []
+    for term, lab, y in hung:
         lab.shift(RIGHT * (term.get_center()[0] - lab.get_center()[0])
-                  + UP * (baseline - _first_baseline(lab, first_line)))
+                  + UP * (baseline - y))
         present.append(lab)
 
     label(row, "units")
@@ -405,4 +521,22 @@ class UnitBreakdown(Component):
              "decomposition": [{"unit": r"\mathrm{kg}",
                                 "label": "me\u0301tre\u2060kilo\u0301 and more"},
                                {"unit": r"\mathrm{m}", "label": "length"}]},
+            # Combining marks that do not compose into their letter. Twenty
+            # dots under "a" (once out-voted it and hung it up against N, and
+            # longer than a wrapped line, so wrap() cut the stack onto a
+            # dotted circle), a dozen circumflexes over "A" (ink far above its
+            # baseline, which drops the shared baseline to keep the row clear)
+            # and an uncomposed "n" hat: each first line on the shared
+            # baseline, clear of the row.
+            {"quantity": {"unit": r"\mathrm{N}", "label": "a" + "\u0323" * 20},
+             "decomposition": [{"unit": r"\mathrm{kg}",
+                                "label": "A" + "\u0302" * 12 + " aaaa ssss"},
+                               {"unit": r"\mathrm{m}", "label": "n\u0302"}]},
+            # A combining arrow the body font lacks draws a missing-glyph box,
+            # and a leading mark a dotted circle: each refuses as
+            # "unrenderable_text" naming its label.
+            {"quantity": {"unit": r"\mathrm{N}", "label": "force"},
+             "decomposition": [{"unit": r"\mathrm{kg}", "label": "v\u20d7"}]},
+            {"quantity": {"unit": r"\mathrm{N}", "label": "\u0302n force"},
+             "decomposition": [{"unit": r"\mathrm{kg}", "label": "mass"}]},
         ]

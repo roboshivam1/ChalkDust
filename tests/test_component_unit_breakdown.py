@@ -13,6 +13,7 @@ import json
 import math
 import shutil
 import subprocess
+import unicodedata
 import uuid
 from dataclasses import asdict
 from pathlib import Path
@@ -35,8 +36,10 @@ from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import wrap
 from chalkdust.scenes.components.unit_breakdown import (
     LABEL_WRAP,
+    REFERENCE,
     UnitBreakdown,
     _first_baseline,
+    _wrap_label,
 )
 from chalkdust.scenes.regions import (
     INVALID_LATEX,
@@ -231,9 +234,12 @@ class TestLayout:
         _, labels = _built_labels(NEWTON)
         texts = [t["label"] for t in [NEWTON["quantity"], *NEWTON["decomposition"]]]
         theme = resolve_fonts(get_theme("default"), warn=False)
-        lines = [body_text(wrap(s, LABEL_WRAP).split("\n", 1)[0], theme)
-                 for s in texts]
-        baselines = [_first_baseline(m, line) for m, line in zip(labels, lines)]
+        probes = [body_text(f"{REFERENCE} {wrap(s, LABEL_WRAP)}", theme)
+                  for s in texts]
+        reference = body_text(REFERENCE, theme)
+        baselines = [_first_baseline(m, probe, reference)
+                     for m, probe in zip(labels, probes)]
+        assert None not in baselines
         assert max(baselines) - min(baselines) < 0.02, baselines
 
     def test_operators_sit_midway_between_their_neighbours_glyphs(self):
@@ -262,13 +268,23 @@ class TestLayout:
         ({"quantity": {"unit": r"\mathrm{N}", "label": "force"},
           "decomposition": [{"unit": r"\mathrm{kg}", "label": "mass 质量"}]},
          "decomposition[0].label"),
-    ], ids=["zero-width-space", "soft-hyphen", "emoji-then-words", "arabic", "cjk"])
+        ({"quantity": {"unit": r"\mathrm{N}", "label": "force"},
+          "decomposition": [{"unit": r"\mathrm{kg}", "label": "v\u20d7"}]},
+         "decomposition[0].label"),
+        ({"quantity": {"unit": r"\mathrm{N}", "label": "\u0302n force"},
+          "decomposition": [{"unit": r"\mathrm{kg}", "label": "mass"}]},
+         "quantity.label"),
+    ], ids=["zero-width-space", "soft-hyphen", "emoji-then-words", "arabic", "cjk",
+            "mark-the-font-lacks", "leading-mark"])
     def test_label_the_font_cannot_draw_refuses_naming_the_field(self, params, field):
         # Non-blank to strip(), yet the body font draws none or only part of
         # it. Wholly glyphless once raised a raw IndexError (rb1); partly
         # glyphless (rb2's emoji run) validated, then rendered its label a
         # line too high, inside the unit row. Both refuse through the theme's
-        # glyph guard, naming the label to regenerate.
+        # glyph guard, naming the label to regenerate. Combining marks, which
+        # that guard leaves unprobed, refuse the same way when Pango would draw
+        # a missing-glyph box (an arrow Arial lacks) or a dotted circle (a mark
+        # with no letter before it).
         report = validate_beat(_spec(params))
         assert report.kinds() == {UNRENDERABLE_TEXT}, f"\n{report}"
         assert report.findings[0].message.startswith(field), f"\n{report}"
@@ -295,6 +311,35 @@ class TestLayout:
         assert max(bottoms) - min(bottoms) < 0.02, bottoms
         for m in labels:
             assert bbox(m).top < bbox(units).bottom
+
+    def test_uncomposable_combining_mark_sits_on_the_shared_baseline(self):
+        # Pango draws "n" plus a combining circumflex as two glyphs. Voting
+        # over the first line's glyph bottoms (the median of [n, ^]) took the
+        # hat's bottom for the baseline and hung "n" most of a cap height
+        # below "mass". Hung from a reference glyph, both base letters (no
+        # descenders) sit on one baseline.
+        params = {"quantity": {"unit": r"\mathrm{N}", "label": "n\u0302"},
+                  "decomposition": [{"unit": r"\mathrm{kg}", "label": "mass"},
+                                    {"unit": r"\mathrm{m}", "label": "length"}]}
+        units, labels = _built_labels(params)
+        n_hat, mass = labels[0], labels[1]
+        n, hat = [g for g in n_hat.submobjects if g.has_points()]
+        assert n.height > 2 * hat.height  # the letter, not the hat
+        m = next(g for g in mass.submobjects if g.has_points())
+        assert abs(n.get_bottom()[1] - m.get_bottom()[1]) < 0.02, (
+            n.get_bottom()[1], m.get_bottom()[1])
+        assert bbox(n_hat).top < bbox(units).bottom
+
+    def test_wrapping_never_cuts_combining_marks_off_their_letter(self):
+        # Twenty dots under "a" outrun LABEL_WRAP. textwrap cut the stack
+        # mid-way, and the marks opening the second line drew on a dotted
+        # circle. The stack stays on the one line, with its letter.
+        stack = "a" + "\u0323" * 20
+        assert "\n" in wrap(stack, LABEL_WRAP)
+        assert _wrap_label(stack) == stack
+        lines = _wrap_label(stack + " and a few more words").split("\n")
+        assert lines[0] == stack
+        assert not any(unicodedata.category(line[0]).startswith("M") for line in lines)
 
     def test_wide_labels_under_narrow_units_never_collide(self):
         params = {"quantity": {"unit": "a", "label": "a fairly long label"},

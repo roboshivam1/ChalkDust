@@ -5,6 +5,7 @@ from __future__ import annotations
 import pytest
 from pydantic import Field
 
+from chalkdust.continuity import fixture_beat
 from chalkdust.core.models import BeatSpec, Region
 from chalkdust.scenes.components import (
     Component,
@@ -12,11 +13,13 @@ from chalkdust.scenes.components import (
     get_component,
     registered_names,
 )
+from chalkdust.scenes.components import base as components_base
 from chalkdust.scenes.components.base import MIN_STEP_SECONDS
 from chalkdust.scenes.regions import INVALID_LATEX
 from chalkdust.validate.semantic import (
     MAX_BEAT_SECONDS,
     check_capacity,
+    check_carried_targets,
     check_carry_in,
     check_duration,
     check_latex,
@@ -52,6 +55,27 @@ class _Stepper(Component):
         return list(self.params.tex)
 
 
+class _PointerParams(ComponentParams):
+    target_id: str
+
+
+class _Pointer(Component):
+    """Acts on the carried artifact its params name, as Callout and
+    ZoomHighlight do. Deliberately NOT registered."""
+
+    name = "_Pointer"
+    Params = _PointerParams
+
+    def regions(self) -> set[Region]:
+        return {Region.STAGE}
+
+    def build(self, scene) -> None:  # never built by the semantic rung
+        raise AssertionError("semantic checks must not build the scene")
+
+    def carried_targets(self) -> list[str]:
+        return [self.params.target_id]
+
+
 def _spec(component: str, params: dict, narration: str = "placeholder narration",
           carry_in: list[str] | None = None) -> BeatSpec:
     return BeatSpec(id="b01", narration=narration, component=component,
@@ -70,6 +94,7 @@ class TestHookDefaults:
         component = cls(cls.examples()[0])
         assert component.min_seconds() >= 0.0
         assert isinstance(component.latex_strings(), list)
+        assert isinstance(component.carried_targets(), list)
 
 
 class TestDuration:
@@ -109,6 +134,25 @@ class TestCarryIn:
         assert "carry_in" in validate_semantic(spec).kinds()
         ok = validate_semantic(spec, registered_artifacts={"bucket_array"})
         assert "carry_in" not in ok.kinds()
+
+    def test_target_not_carried_in_is_refused_by_name(self):
+        # Registered by an earlier beat, but this beat does not carry it in:
+        # carried() would raise CarryInError inside build(), a spec bug the
+        # geometric rung could only report as a build_error.
+        findings = check_carried_targets(_Pointer({"target_id": "causes"}),
+                                         carry_in=["steps"])
+        assert [f.kind for f in findings] == ["carry_in"]
+        assert "'causes'" in findings[0].message
+
+    def test_carried_target_passes(self):
+        assert check_carried_targets(_Pointer({"target_id": "causes"}),
+                                     carry_in=["causes"]) == []
+
+    def test_validate_semantic_checks_carried_targets(self, monkeypatch):
+        monkeypatch.setitem(components_base._REGISTRY, _Pointer.name, _Pointer)
+        spec = _spec(_Pointer.name, {"target_id": "causes"})
+        report = validate_semantic(spec, registered_artifacts={"causes"})
+        assert report.kinds() == {"carry_in"}
 
 
 class TestRegionConflicts:
@@ -185,12 +229,10 @@ class TestLibrary:
 
     @pytest.mark.parametrize("name", registered_names())
     def test_examples_validate_clean(self, name, tmp_path):
-        cls = get_component(name)
-        for params in cls.examples():
+        for params in get_component(name).examples():
             # A carry-in consumer's case carries its fixture artifacts in,
             # registered by an earlier beat, as a real spec would.
-            carried = [r.name for r in cls.fixture_carry_in(params)]
-            report = validate_semantic(_spec(name, params, carry_in=carried),
-                                       registered_artifacts=carried, duration=12.0,
-                                       media_dir=tmp_path)
+            spec, _ = fixture_beat(name, params)
+            report = validate_semantic(spec, registered_artifacts=spec.carry_in,
+                                       duration=12.0, media_dir=tmp_path)
             assert report.ok, f"\n{report}"

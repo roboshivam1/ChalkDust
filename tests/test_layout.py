@@ -1,34 +1,31 @@
 """Layout invariants across the whole component library.
 
 These tests walk the registry, so every component added later is covered
-automatically -- no test file to remember to update.
+automatically -- no test file to remember to update. A component that acts on
+a carried artifact (Callout, ZoomHighlight) is walked too: each case is built
+with the artifacts its Component.fixture_carry_in names on screen, as the
+render builds a carry-in beat (SCENE_SPEC.md §6).
 """
 
 from __future__ import annotations
 
 import pytest
 
-from chalkdust.core.models import BeatSpec, Region
+from chalkdust.continuity import fixture_beat
+from chalkdust.core.models import Region
 from chalkdust.scenes.components import get_component, registered_names
 from chalkdust.scenes.regions import LayoutError, region_rect, safe_area
-from chalkdust.validate.geometric import validate_beat
+from chalkdust.validate.geometric import Report, validate_beat
 
 # Kinds that represent a component correctly refusing overloaded content.
 CLEAN_REFUSALS = {"overflow", "illegible", "invalid_latex", "unrenderable_text"}
 
 
-def _spec(component: str, params: dict, bid: str = "b01",
-          carry_in: list[str] | None = None) -> BeatSpec:
-    return BeatSpec(id=bid, narration="placeholder narration", 
-                    component=component, params=params, carry_in=carry_in or [])
-
-
-def _validate(component: str, params: dict):
-    """validate_beat with the case's carried artifacts on screen, as the
-    pipeline builds a carry-in beat (Component.fixture_carry_in; empty for a
-    component that carries nothing in)."""
-    recipes = get_component(component).fixture_carry_in(params)
-    spec = _spec(component, params, carry_in=[r.name for r in recipes])
+def _validate(component: str, params: dict) -> Report:
+    """validate_beat on one case, built as the pipeline builds its beat: a
+    carry-in consumer's case with its fixture artifacts on screen first
+    (continuity.fixture_beat; a plain beat for every other component)."""
+    spec, recipes = fixture_beat(component, params)
     return validate_beat(spec, recipes=recipes)
 
 

@@ -1,7 +1,8 @@
 """Carry-in continuity (SCENE_SPEC.md §6).
 
 These tests lend TitleCard a builder for the duration of each test
-(monkeypatched, never left in the registry); BulletReveal ships its own.
+(monkeypatched, never left in the registry); the producers that ship their
+own, BulletReveal among them, are left as they are.
 """
 
 from __future__ import annotations
@@ -96,11 +97,11 @@ class TestValidation:
             _video(_producer(), twin)
         assert _carry_error(exc_info).name == "bucket_array"
 
-    def test_producer_without_builder_is_typed_error(self, monkeypatch):
-        # Valid spec, but the producer has no artifact builder. BulletReveal
-        # ships one now, so it is taken away for this test.
-        monkeypatch.delitem(continuity._BUILDERS, "BulletReveal")
-        video = _video(_beat("b01", registers="bucket_array"), _consumer())
+    def test_producer_without_builder_is_typed_error(self):
+        # Valid spec, but TitleCard ships no artifact builder (and this test
+        # does not lend it one). BulletReveal, the producer here before, now
+        # ships its own.
+        video = _video(_producer(), _consumer())
         with pytest.raises(CarryInError):
             resolve_carry_in(video)
 

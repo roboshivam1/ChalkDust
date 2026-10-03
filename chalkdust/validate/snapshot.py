@@ -2,7 +2,9 @@
 
 A snapshot records what a component builds for each of its examples(), probed
 exactly as the geometric validator probes -- animations snapped to their end
-state, no frame encoded. It has two halves:
+state, no frame encoded. A carry-in consumer's case is built with its fixture
+artifacts on screen (continuity.fixture_beat), so the carried target is part
+of what is recorded. It has two halves:
 
   structure  Font-independent, compared on every machine. The timeline (each
              play's animation classes and run time, each wait, each settle
@@ -43,7 +45,7 @@ from manim import MarkupText, Mobject, SingleStringMathTex, Text, VMobject, conf
 from manim.mobject.mobject import _AnimationBuilder
 from manim.mobject.svg.svg_mobject import VMobjectFromSVGPath
 
-from chalkdust.continuity import CarryIn
+from chalkdust.continuity import CarryIn, beat_component, fixture_beat
 from chalkdust.core.models import Region
 from chalkdust.core.version import MANIM_VERSION
 from chalkdust.scenes.components import Component, get_component, registered_names
@@ -162,14 +164,13 @@ def _paint(mob: Mobject) -> dict[str, Any]:
 
 
 def capture(name: str, params: dict[str, Any]) -> tuple[dict, list]:
-    """(structure, geometry) for one component instance -- built with the
-    case's carried artifacts on screen (Component.fixture_carry_in), as the
-    pipeline builds a carry-in beat, so the snapshot is the frame it draws."""
-    cls = get_component(name)
-    recipes = cls.fixture_carry_in(params)
-    component = cls(params)
-    probe = SnapshotProbe(CarryIn(component, recipes) if recipes else component,
-                          theme=THEME, duration=DURATION, strict=False)
+    """(structure, geometry) for one component instance -- built as the
+    pipeline builds its beat (continuity.fixture_beat): a carry-in consumer's
+    case with its fixture artifacts on screen first, so the snapshot is the
+    frame it draws and records the carried target with it."""
+    spec, recipes = fixture_beat(name, params)
+    probe = SnapshotProbe(beat_component(spec, recipes), theme=THEME,
+                          duration=DURATION, strict=False)
     probe.construct()
     return {"timeline": probe.timeline}, probe.geometry
 

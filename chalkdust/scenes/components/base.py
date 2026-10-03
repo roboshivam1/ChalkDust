@@ -144,7 +144,15 @@ class Component(ABC):
         A carry-in consumer (SCENE_SPEC.md §6) cannot build without its target
         on screen, so the registry walks (test_layout, test_snapshots, the
         semantic TestLibrary) build each case with these recipes carried in,
-        exactly as the pipeline would. Empty for every other component.
+        exactly as the pipeline would (continuity.fixture_beat). Empty for
+        every other component.
+
+        Derived from the case's own params (typically its `target_id`), so
+        examples() and stress() stay plain params lists and a snapshot keys
+        its cases by params alone; the carried target is still recorded,
+        because it is on screen. Each recipe's producer must ship a real
+        @artifact_builder -- BulletReveal does -- so a fixture shows the
+        artifact the render would carry, never a stand-in.
         """
         return []
 

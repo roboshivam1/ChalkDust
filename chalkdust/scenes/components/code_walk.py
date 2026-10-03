@@ -15,6 +15,7 @@ shorter excerpt, which is a decision for the script, not the renderer
 
 from __future__ import annotations
 
+import unicodedata
 from functools import lru_cache
 
 from manim import (
@@ -42,7 +43,14 @@ from chalkdust.scenes.components.base import (
     label,
     register,
 )
-from chalkdust.scenes.regions import LayoutError, fit_to_region, tag_font_size
+from chalkdust.scenes.regions import (
+    DEFAULT_PADDING,
+    MIN_FONT_SIZE,
+    LayoutError,
+    fit_to_region,
+    region_rect,
+    tag_font_size,
+)
 from chalkdust.scenes.theme import Palette, Theme
 
 # Schema-level density limit, like BulletReveal's six items: past eight stops
@@ -70,6 +78,24 @@ PANEL_LIFT = 0.06         # panel fill, this far from bg toward fg
 # Line pitch over digit height for Code's default line_spacing. Only used for
 # a one-line listing, where there is no second line number to measure from.
 SINGLE_LINE_PITCH = 1.75
+
+# Code checks that every non-space character became exactly one glyph and
+# raises a bare ValueError when one did not. Two kinds of character never do:
+# format characters (category Cf: zero-width space and joiner, bidi marks, soft
+# hyphen) draw nothing, and emoji are drawn by Pango from a colour font that
+# yields no outline. Both are refused at the schema, where the repair loop can
+# read which character on which line to drop (SCENE_SPEC.md §8 rung 1).
+# The BMP characters with Emoji_Presentation=Yes (Unicode emoji-data.txt);
+# every other emoji lives in the pictograph blocks U+1F000-U+1FAFF.
+_EMOJI_BMP = frozenset(
+    [0x231A, 0x231B, *range(0x23E9, 0x23ED), 0x23F0, 0x23F3, 0x25FD, 0x25FE,
+     0x2614, 0x2615, *range(0x2648, 0x2654), 0x267F, 0x2693, 0x26A1, 0x26AA,
+     0x26AB, 0x26BD, 0x26BE, 0x26C4, 0x26C5, 0x26CE, 0x26D4, 0x26EA, 0x26F2,
+     0x26F3, 0x26F5, 0x26FA, 0x26FD, 0x2705, 0x270A, 0x270B, 0x2728, 0x274C,
+     0x274E, 0x2753, 0x2754, 0x2755, 0x2757, 0x2795, 0x2796, 0x2797, 0x27B0,
+     0x27BF, 0x2B1B, 0x2B1C, 0x2B50, 0x2B55]
+)
+_PICTOGRAPHS = range(0x1F000, 0x1FB00)
 
 
 class LineSpan(BaseModel):
@@ -113,14 +139,28 @@ class CodeWalkParams(ComponentParams):
     @field_validator("source")
     @classmethod
     def _normalise_source(cls, v: str) -> str:
-        """Drop trailing whitespace and blank lines at either end.
+        """Compose accents, refuse undrawable characters, and drop trailing
+        whitespace and blank lines at either end.
+
+        NFC first: a decomposed accent ("e" + U+0301) is two characters that
+        Pango draws as one glyph, which Code refuses; the composed form looks
+        the same and is one character, one glyph.
 
         Pygments strips leading and trailing newlines before lexing (its
         `stripnl` default), so a leading blank line would silently shift every
         displayed line number against the highlights. Normalising here means
         the numbers the spec validates against are the numbers on screen.
         """
-        lines = [line.rstrip() for line in v.splitlines()]
+        lines = [line.rstrip() for line in unicodedata.normalize("NFC", v).splitlines()]
+        for n, line in enumerate(lines, start=1):
+            for ch in line:
+                if _undrawable(ch):
+                    name = unicodedata.name(ch, "unnamed character")
+                    raise ValueError(
+                        f"source line {n} contains U+{ord(ch):04X} {name}, which "
+                        "a code listing cannot draw (emoji and zero-width or "
+                        "format characters); remove it or spell it in ASCII"
+                    )
         while lines and not lines[0]:
             lines.pop(0)
         while lines and not lines[-1]:
@@ -259,6 +299,11 @@ class CodeWalk(Component):
              "source": "# https://example.com/" + "a-path-segment-without-any-spaces/" * 3
                        + "index.html\nfetch()",
              "highlights": [{"start": 1}, {"start": 2}]},
+            # (a) a whole 200-line file pasted in: refused on size before
+            # Code is built (Pango would drop glyphs past the frame).
+            {"language": "python",
+             "source": "\n".join(f"x{i} = {i}" for i in range(200)),
+             "highlights": [{"start": 1}]},
             # (c) minimal: one character, no highlights.
             {"language": "c", "source": "x"},
             # (c) a highlight that lands on a blank line mid-listing.
@@ -299,13 +344,22 @@ def _code_style(palette: Palette) -> type[Style]:
     )
 
 
-def _listing(p: CodeWalkParams, theme: Theme) -> Code:
-    """The listing at its natural size, unplaced: shared by build() and the
-    carry-in artifact so the two cannot drift apart."""
-    code = label(
-        Code(
-            code_string=p.source,
-            language=p.language,
+def _undrawable(ch: str) -> bool:
+    """A character Code cannot turn into exactly one glyph (see _EMOJI_BMP)."""
+    cp = ord(ch)
+    if unicodedata.category(ch) == "Cf":
+        return True
+    return cp in _EMOJI_BMP or (
+        cp in _PICTOGRAPHS and unicodedata.category(ch) in ("So", "Sk")
+    )
+
+
+def _code(source: str, language: str, theme: Theme) -> Code:
+    """Manim's Code in the theme's colours and mono type, at natural size."""
+    try:
+        return Code(
+            code_string=source,
+            language=language,
             formatter_style=_code_style(theme.palette),
             add_line_numbers=True,
             background="rectangle",
@@ -314,9 +368,85 @@ def _listing(p: CodeWalkParams, theme: Theme) -> Code:
                 "font": theme.type.mono_font,
                 "font_size": theme.type.mono,
             },
-        ),
-        "code",
-    )
+        )
+    except ValueError as exc:
+        # Backstop for a character the schema does not know the theme's mono
+        # font cannot draw: Code checks one glyph per non-space character and
+        # raises a bare ValueError. Only that check is translated; any other
+        # ValueError is a bug and propagates as one.
+        if "rendered fewer glyph" not in str(exc):
+            raise
+        raise LayoutError(
+            f"CodeWalk listing has characters the {theme.type.mono_font} font "
+            "cannot draw as one glyph each (an emoji, combining or invisible "
+            "character); spell them in ASCII",
+            kind="illegible",
+        ) from exc
+
+
+@lru_cache(maxsize=8)
+def _cell(theme: Theme) -> tuple[float, float]:
+    """(line pitch, column advance) of a listing at the theme's mono size,
+    measured off a two-line ASCII probe rather than assumed from the font."""
+    probe = _code("0000000000\n0000000000", "text", theme)
+    nums, first = probe.line_numbers, probe.code_lines[0]
+    pitch = nums[0].get_y() - nums[1].get_y()
+    advance = (first[-1].get_x() - first[0].get_x()) / (len(first) - 1)
+    return pitch, advance
+
+
+def _cells(line: str) -> float:
+    """A lower bound on how many mono cells `line` takes.
+
+    Printable ASCII is one Courier cell by construction, and East Asian wide
+    characters are square, so at least one. Anything else counts half a cell:
+    the narrowest glyph measured across Latin, Greek, Cyrillic, Hebrew, Arabic,
+    Indic, Thai, symbols and punctuation is 0.87 of a cell, and a script the
+    mono font lacks falls back to wider glyphs. Combining marks and whitespace
+    other than the space count nothing.
+    """
+    total = 0.0
+    for c in line:
+        if " " <= c <= "~" or unicodedata.east_asian_width(c) in ("W", "F"):
+            total += 1
+        elif not c.isspace() and unicodedata.category(c)[0] != "M":
+            total += 0.5
+    return total
+
+
+def _refuse_oversized(p: CodeWalkParams, theme: Theme) -> None:
+    """Refuse, before Code is built, a listing that cannot fit the STAGE even
+    at the legibility floor.
+
+    Code draws each Paragraph on a Pango surface the size of the output frame
+    (config.pixel_width x pixel_height) and silently drops the glyphs that
+    fall off it, which surfaces as Code's bare glyph-count ValueError -- for a
+    pasted 200-line file, or one 3000-column line, before fit_to_region ever
+    gets to say overflow. Both bounds here are lower bounds on the listing's
+    size (line-number centres span (lines - 1) pitches; columns are counted
+    by _cells), so this never refuses a listing fit_to_region would accept.
+    """
+    pitch, advance = _cell(theme)
+    floor = MIN_FONT_SIZE / theme.type.mono  # the smallest scale fit allows
+    room = region_rect(Region.STAGE).inset(DEFAULT_PADDING)
+    lines = p.source.split("\n")
+    columns = max(_cells(line.expandtabs(4)) for line in lines)
+    tall = (len(lines) - 1) * pitch * floor > room.height
+    wide = (columns - 1) * advance * floor > room.width
+    if tall or wide:
+        raise LayoutError(
+            f"CodeWalk listing of {len(lines)} lines, at least {columns:.0f} columns, "
+            f"cannot fit the stage at the legibility floor (font_size "
+            f"{MIN_FONT_SIZE:.0f}). Show a shorter excerpt, or split the beat.",
+            kind="overflow",
+        )
+
+
+def _listing(p: CodeWalkParams, theme: Theme) -> Code:
+    """The listing at its natural size, unplaced: shared by build() and the
+    carry-in artifact so the two cannot drift apart."""
+    _refuse_oversized(p, theme)
+    code = label(_code(p.source, p.language, theme), "code")
     # Code builds its Paragraphs itself, bypassing theme.mono_text, so tag
     # them here or the legibility floor never sees this text.
     tag_font_size(code.code_lines, theme.type.mono)

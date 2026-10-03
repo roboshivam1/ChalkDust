@@ -12,6 +12,7 @@ from manim import tempconfig
 from chalkdust.core.cache import Cache
 from chalkdust.core.models import Beat, BeatSpec, BuildContext, Quality
 from chalkdust.render.worker import render_beat
+from chalkdust.validate.geometric import validate_beat
 
 
 @pytest.fixture(autouse=True)
@@ -56,3 +57,18 @@ def test_draft_tier_sets_output_resolution_and_rate(tmp_path):
     stream = json.loads(probe.stdout)["streams"][0]
     # 480p15 is D-006's draft tier; the render must come out exactly that.
     assert (stream["width"], stream["height"], stream["r_frame_rate"]) == (854, 480, "15/1")
+
+
+def test_render_applies_the_mechanical_repair_plan(tmp_path, off_edge_beat):
+    # The beat's text sits off the right edge: the geometric probe flags it,
+    # and repair_beat nudges it back (SCENE_SPEC.md §9 step 1). The render must
+    # build with that plan -- its own strict settle checks raise LayoutError on
+    # the unrepaired layout, so a clip coming out means the repair was applied.
+    with tempconfig({"media_dir": str(tmp_path / "probe")}):
+        report = validate_beat(off_edge_beat.spec, duration=1.0)
+    assert report.kinds() == {"out_of_bounds"}
+
+    out = render_beat(off_edge_beat, "default", BuildContext(),
+                      Cache(tmp_path / "cache"), tmp_path / "work")
+
+    assert out.is_file()

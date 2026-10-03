@@ -4,6 +4,12 @@ Manim writes its output, partial movie files and text/LaTeX scratch under a
 media dir, by name. We want beats in the cache, keyed by content (D-004), so
 this drives the render inside a caller-given work dir, moves the output into
 the cache, then deletes the partial movie files that produced it.
+
+Every beat is built with its mechanical repair plan applied (SCENE_SPEC.md §9
+step 1): the worker runs repair_beat() and renders a RepairedScene, which with
+an empty plan is exactly a ChalkdustScene. The plan is recomputed from the
+spec, not handed in, because beats render independently (D-005) and the plan
+is a term of the cache key (D-004).
 """
 
 from __future__ import annotations
@@ -16,9 +22,9 @@ from manim import tempconfig
 
 from chalkdust.core.cache import Cache, beat_render_key
 from chalkdust.core.models import Beat, BuildContext, Quality, Video
-from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components import make_component
 from chalkdust.scenes.theme import Theme, get_theme, resolve_fonts
+from chalkdust.validate.repair import RepairedScene, RepairPlan, repair_beat
 
 
 @dataclass(frozen=True)
@@ -43,16 +49,37 @@ TIERS: dict[Quality, RenderTier] = {
 }
 
 
-def render_key(beat: Beat, theme: Theme, ctx: BuildContext) -> str:
-    """The beat's cache key. `theme` must already be font-resolved -- the key
-    has to describe the fonts that will actually be drawn, not the ones the
-    theme asked for."""
+def _require_duration(beat: Beat) -> float:
     if beat.duration is None:
         raise ValueError(
             f"{beat.id} has no duration; the speech stage must run first"
         )
+    return beat.duration
+
+
+def plan_repair(beat: Beat, theme: Theme, ctx: BuildContext,
+                work_dir: Path) -> RepairPlan:
+    """The mechanical repair plan this beat renders with; empty when the beat
+    is clean, and also when repair cannot fix it -- the render's own strict
+    settle checks then raise, as before (SCENE_SPEC.md §11 rule 1).
+
+    The probe builds a Manim scene, which creates its media dirs, so it runs
+    under `work_dir` like the render itself: nothing lands in the cwd, and
+    LaTeX compiled here lands in the Tex/ cache the render then reuses.
+    """
+    duration = _require_duration(beat)
+    with tempconfig({**asdict(TIERS[ctx.quality]), "media_dir": str(work_dir)}):
+        return repair_beat(beat.spec, theme, duration).plan
+
+
+def render_key(beat: Beat, theme: Theme, ctx: BuildContext,
+               plan: RepairPlan) -> str:
+    """The beat's cache key. `theme` must already be font-resolved -- the key
+    has to describe the fonts that will actually be drawn, not the ones the
+    theme asked for. `plan` is the one the render applies (plan_repair)."""
     return beat_render_key(
-        beat.spec, beat.duration, ctx, asdict(theme), asdict(TIERS[ctx.quality])
+        beat.spec, _require_duration(beat), ctx, asdict(theme),
+        asdict(TIERS[ctx.quality]), plan.key_data(),
     )
 
 
@@ -61,10 +88,12 @@ def _render(beat: Beat, theme: Theme, ctx: BuildContext, cache: Cache,
     """Render under an already-resolved theme. Returns (path, rendered), where
     `rendered` is False on a cache hit.
 
-    The same resolved theme object feeds both the key and the scene, so the
-    key describes exactly what is drawn.
+    The same resolved theme object and the same repair plan feed both the key
+    and the scene, so the key describes exactly what is drawn. The plan is
+    computed even when the clip turns out to be cached: it is part of the key.
     """
-    key = render_key(beat, theme, ctx)
+    plan = plan_repair(beat, theme, ctx, work_dir)
+    key = render_key(beat, theme, ctx, plan)
     slot = cache.slot("beats", key, ".mp4")
     rendered = not slot.exists
 
@@ -86,8 +115,9 @@ def _render(beat: Beat, theme: Theme, ctx: BuildContext, cache: Cache,
         # tempconfig scopes these settings, so parallel workers later will not
         # stomp on each other's global config.
         with tempconfig(settings):
-            scene = ChalkdustScene(
+            scene = RepairedScene(
                 make_component(beat.spec.component, beat.spec.params),
+                plan=plan,
                 theme=theme,
                 duration=beat.duration,  # type: ignore[arg-type]
             )

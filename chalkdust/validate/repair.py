@@ -17,9 +17,10 @@ Three levers, matching the spec:
 
 A repair is a RepairPlan, not a mutated scene. Beats render independently and
 are cached by the hash of their spec (D-004, D-005), so the render has to
-reproduce the repaired layout from the spec alone: render with RepairedScene
-and the plan repair_beat() returns. The plan is a pure function of the spec,
-theme, and library version, so the cache key stays honest.
+reproduce the repaired layout from the spec alone: the render worker runs
+repair_beat() and builds a RepairedScene with the plan it returns. The plan
+itself (RepairPlan.key_data) is a term of the beat's render key, so a change
+to the repair code that changes what is drawn also changes the key.
 
 LIMITATIONS, same register as geometric.py's:
   - Fixes are keyed on the order in which distinct mobjects are first added to
@@ -54,6 +55,7 @@ from chalkdust.scenes.regions import (
     scale_with_tags,
     smallest_font_size,
 )
+from chalkdust.scenes.theme import Theme
 from chalkdust.validate.geometric import Finding, LayoutProbe, Report, run_probe
 
 # Re-probes after the first validation. Each costs one build; the whole
@@ -103,6 +105,18 @@ class RepairPlan:
     @property
     def empty(self) -> bool:
         return self.wrap_scale == 1.0 and not self.fixes
+
+    def key_data(self) -> dict:
+        """The plan as plain data for the render cache key (D-004).
+
+        Rounded like the key's duration term, so float noise in a recomputed
+        plan does not cause spurious misses; 1e-6 units is far below a pixel.
+        """
+        return {
+            "wrap_scale": round(self.wrap_scale, 6),
+            "fixes": {str(i): [round(f.scale, 6), round(f.dx, 6), round(f.dy, 6)]
+                      for i, f in sorted(self.fixes.items())},
+        }
 
     def with_fixes(self, new: dict[int, Fix]) -> RepairPlan:
         merged = dict(self.fixes)
@@ -244,7 +258,7 @@ class RepairResult:
         return self.ok and not self.plan.empty
 
 
-def repair_beat(spec: BeatSpec, theme: str = "default",
+def repair_beat(spec: BeatSpec, theme: Theme | str = "default",
                 duration: float = 8.0) -> RepairResult:
     """Validate one beat and mechanically repair it if it fails. Never raises."""
     try:
@@ -255,7 +269,8 @@ def repair_beat(spec: BeatSpec, theme: str = "default",
     return repair_component(component, spec.id, theme=theme, duration=duration)
 
 
-def repair_component(component: Component, beat_id: str, theme: str = "default",
+def repair_component(component: Component, beat_id: str,
+                     theme: Theme | str = "default",
                      duration: float = 8.0) -> RepairResult:
     """The bounded loop: probe, propose, re-probe, at most MAX_ATTEMPTS times."""
     plan = RepairPlan()
@@ -285,7 +300,7 @@ def repair_component(component: Component, beat_id: str, theme: str = "default",
     return RepairResult(beat_id, RepairPlan(), history[0], history)
 
 
-def _probe(component: Component, beat_id: str, plan: RepairPlan, theme: str,
+def _probe(component: Component, beat_id: str, plan: RepairPlan, theme: Theme | str,
            duration: float) -> tuple[Report, dict[int, Fix]]:
     probe = RepairProbe(component, plan=plan, theme=theme, duration=duration,
                         strict=False)

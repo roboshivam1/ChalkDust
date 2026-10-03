@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import copy
 import json
+import sys
 from functools import lru_cache
 from pathlib import Path
 
@@ -92,6 +93,16 @@ def title():
 class TestHarness:
     """The harness must catch drift, tolerate noise, and only regenerate on
     purpose."""
+
+    def test_missing_snapshot_fails_naming_the_record_command(self, monkeypatch):
+        # A component merged without its snapshot must fail -- not skip -- and
+        # say exactly how to record one, or nobody ever will.
+        monkeypatch.setattr(sys.modules[__name__], "load", lambda name, d: None)
+        with pytest.raises(pytest.fail.Exception) as failed:
+            _recorded("TitleCard")
+        assert ("python -m chalkdust.validate.snapshot --reason"
+                in str(failed.value))
+        assert "--component TitleCard" in str(failed.value)
 
     def test_layout_drift_is_caught(self, title):
         _, geometry = title

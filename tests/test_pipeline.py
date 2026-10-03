@@ -11,6 +11,7 @@ import json
 import os
 import subprocess
 import sys
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -18,6 +19,7 @@ import pytest
 from chalkdust import pipeline
 from chalkdust.core.models import Quality, VoiceConfig
 from chalkdust.render import worker
+from chalkdust.scenes.theme import DEFAULT, THEMES
 from chalkdust.speech import tts
 from chalkdust.speech.base import TTSError, probe_duration, run
 
@@ -364,3 +366,38 @@ class TestCarryInEndToEnd:
         edited = self._render(tmp_path, spec, "params.mp4")
         assert edited.rebuilt == ["b01", "b02"]
         assert all(b.speech_cached for b in edited.beats)
+
+
+class TestRenderKeyTerms:
+    """What the pipeline hands the worker reaches the beat's render key
+    (D-004, D-006): the spec's theme and the quality tier are key terms; the
+    work dir is scratch and is not -- moving it must not re-render."""
+
+    SPEC = _one_beat_spec("TitleCard", {"title": "Key terms"})
+
+    def _render(self, root: Path, spec: dict, quality=Quality.DRAFT,
+                work: str = "work") -> pipeline.RunResult:
+        path = write_spec(root / "spec.json", spec)
+        return pipeline.render(path, quality, root / f"{quality.value}.mp4",
+                               cache_dir=root / "cache", work_dir=root / work)
+
+    def _clips(self, root: Path) -> int:
+        return len(list((root / "cache" / "beats").glob("*.mp4")))
+
+    def test_two_tiers_two_keys(self, tmp_path, fake_tts):
+        assert self._render(tmp_path, self.SPEC, Quality.DRAFT).rebuilt == ["b01"]
+        assert self._render(tmp_path, self.SPEC, Quality.FINAL).rebuilt == ["b01"]
+        assert self._clips(tmp_path) == 2
+
+    def test_two_themes_two_keys(self, tmp_path, fake_tts, monkeypatch):
+        paper = replace(DEFAULT, name="paper",
+                        palette=replace(DEFAULT.palette, bg="#FAF7F0", fg="#1F2328"))
+        monkeypatch.setitem(THEMES, "paper", paper)
+        assert self._render(tmp_path, self.SPEC).rebuilt == ["b01"]
+        assert self._render(tmp_path, {**self.SPEC, "theme": "paper"}).rebuilt == ["b01"]
+        assert self._clips(tmp_path) == 2
+
+    def test_work_dir_is_not_a_key_term(self, tmp_path, fake_tts):
+        assert self._render(tmp_path, self.SPEC, work="work_a").rebuilt == ["b01"]
+        assert self._render(tmp_path, self.SPEC, work="work_b").rebuilt == []
+        assert self._clips(tmp_path) == 1

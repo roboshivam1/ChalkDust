@@ -99,3 +99,67 @@ def test_render_reports_a_degraded_raw_scene_beat(
     assert "RawScene -> DEGRADED to BulletReveal (reason in " in out
     assert "raw_scene_usage.jsonl" in out
     assert "beats: 0 cached, 1 rebuilt, 1 degraded (b01)" in out
+
+
+@pytest.mark.parametrize("encode,code,message", [
+    # Windows PowerShell 5.1's Out-File and '>' write UTF-16 LE with a BOM.
+    (lambda text: text.replace("\n", "\r\n").encode("utf-16"),
+     cli.EXIT_SPEC_INVALID, "is UTF-16 text; specs must be UTF-8"),
+    # Stray bytes that are no encoding of anything.
+    (lambda text: text.encode("utf-8").replace(b"cs-binary", b"\x80\x81", 1),
+     cli.EXIT_SPEC_INVALID, "is not UTF-8 text (byte 0x80 at offset"),
+    # A UTF-8 BOM (Notepad, Set-Content -Encoding utf8) is still UTF-8.
+    (lambda text: text.encode("utf-8-sig"), cli.EXIT_OK, None),
+], ids=["utf16", "stray_bytes", "utf8_bom"])
+def test_spec_encoding_is_utf8_or_a_readable_refusal(
+        encode, code, message, tmp_path, capsys):
+    spec = example_spec()
+    spec["beats"] = spec["beats"][:1]
+    text = write_spec(tmp_path / "plain.json", spec).read_text(encoding="utf-8")
+    path = tmp_path / "spec.json"
+    path.write_bytes(encode(text))
+
+    rc = cli.main(["validate", str(path), "--work-dir", str(tmp_path / "work")])
+
+    err = capsys.readouterr().err
+    assert rc == code
+    if message:
+        assert err.startswith("chalkdust: spec invalid: ")
+        assert message in err
+    assert "Traceback" not in err
+
+
+@pytest.mark.parametrize("argv", [
+    ["validate", "--work-dir", "{file}"],
+    ["render", "--work-dir", "{file}", "--cache-dir", "{tmp}/cache"],
+    ["render", "--cache-dir", "{file}", "--work-dir", "{tmp}/work"],
+], ids=["validate_work_dir", "render_work_dir", "render_cache_dir"])
+def test_a_dir_option_naming_a_file_is_refused_readably(
+        argv, tmp_path, capsys, fake_tts):
+    spec = example_spec()
+    spec["beats"] = spec["beats"][:1]
+    path = write_spec(tmp_path / "spec.json", spec)
+    afile = tmp_path / "afile"
+    afile.write_text("not a directory", encoding="utf-8")
+    argv = [a.format(file=afile, tmp=tmp_path) for a in argv]
+
+    rc = cli.main([argv[0], str(path), *argv[1:]])
+
+    err = capsys.readouterr().err
+    assert rc == cli.EXIT_DIRECTORY_UNUSABLE
+    assert err.startswith("chalkdust: directory unusable: --")
+    assert f"{afile}: it exists and is a file, not a directory" in err
+    assert fake_tts.calls == []  # refused before any speech
+
+
+def test_a_spec_with_no_beats_is_refused_at_validation(tmp_path, capsys):
+    spec = {**example_spec(), "beats": []}
+    path = write_spec(tmp_path / "spec.json", spec)
+
+    rc = cli.main(["validate", str(path), "--work-dir", str(tmp_path / "work")])
+
+    out, err = capsys.readouterr()
+    assert rc == cli.EXIT_SPEC_INVALID
+    assert "ok (0 beats)" not in out
+    assert err.startswith("chalkdust: spec invalid: ")
+    assert "beats: a video needs at least one beat" in err

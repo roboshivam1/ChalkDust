@@ -21,7 +21,7 @@ from dataclasses import asdict
 
 import numpy as np
 import pytest
-from manim import DOWN, LEFT, ORIGIN, RIGHT, UP, MathTex, Restore, Square, tempconfig
+from manim import DOWN, LEFT, ORIGIN, RIGHT, UP, Line, MathTex, Restore, Square, tempconfig
 from pydantic import ValidationError
 
 from chalkdust import continuity
@@ -179,6 +179,17 @@ class TestDiscontinuities:
                                           x_range=[-20, 20])).params)
         assert plan.y1 < 20 and plan.y0 > -20
 
+    def test_marker_near_a_pole_sits_on_its_drawn_curve(self, tmp_path):
+        # 1/x at x=0.001 lies between the samples at 0 and 0.0025: the window
+        # grew to y=1000 while the curve stopped near 400, and the dot floated.
+        # The marker's x is now a sample, so the curve is drawn to the dot.
+        scene = _probe(_params(functions=[{"expr": "1/x"}], x_range=[-1, 1],
+                               markers=[{"x": 0.001, "label": "blows up"}]), tmp_path)
+        mobs = {getattr(m, "_chalk_label", ""): m for m in scene.mobjects}
+        dot = mobs["marker[0]"].get_center()
+        gap = np.linalg.norm(mobs["curve[0]"].points - dot, axis=1).min()
+        assert gap < 1e-6
+
     def test_markers_are_never_cropped(self):
         p = GraphPlot(_params(functions=[{"expr": "1/x"}], x_range=[-5, 5],
                               markers=[{"x": 0.05, "label": "spike"}])).params
@@ -229,6 +240,30 @@ class TestTicks:
         labels = [m for m in mobs["axes"].submobjects if getattr(m, "_chalk_font_size", None)]
         assert labels
         assert not [m for m in labels if _inked(ink, bbox(m), INK_CLEARANCE)]
+
+    @pytest.mark.parametrize("params", GraphPlot.examples() + GraphPlot.stress()[2:] + [
+        # Realistic beats where a curve once ran through the label text.
+        {"functions": [{"expr": "x^2"}], "x_range": [-2, 2],
+         "markers": [{"x": -2, "label": "start"}, {"x": 2, "label": "end"}]},
+        {"functions": [{"expr": "exp(x)"}], "x_range": [0, 3],
+         "markers": [{"x": 3, "label": "e cubed"}]},
+        {"functions": [{"expr": "x^2"}], "x_range": [-3, 3],
+         "markers": [{"x": 1, "label": "here the slope equals two, steeper than before"}]},
+    ])
+    def test_no_ink_runs_through_a_marker_label(self, params, tmp_path):
+        # A curve through caption text cuts its glyphs, and no validator sees
+        # it. Ink is taken from the built scene: curves, axis lines and tick
+        # marks (example 2's "tan = 1" once touched the x=1 tick).
+        mobs = {getattr(m, "_chalk_label", ""): m for m in _probe(params, tmp_path).mobjects}
+        paths = [np.vstack([sp[::4], sp[-1:]])
+                 for name, curve in mobs.items() if name.startswith("curve")
+                 for sp in curve.get_subpaths()]
+        paths += [np.array([m.get_start(), m.get_end()])
+                  for m in mobs["axes"].submobjects if isinstance(m, Line)]
+        ink = _ink(paths)
+        labels = [m for name, m in mobs.items() if name.endswith(".label")]
+        assert len(labels) == sum(bool(m.get("label")) for m in params.get("markers", []))
+        assert not [m._chalk_label for m in labels if _inked(ink, bbox(m), INK_CLEARANCE)]
 
     @pytest.mark.parametrize("params", GraphPlot.examples() + GraphPlot.stress()[2:])
     def test_every_axis_keeps_at_least_two_labels(self, params, tmp_path):
@@ -426,6 +461,8 @@ class TestRejections:
         {"functions": [{"expr": "sqrt(x)"}], "x_range": [-2, -1]},   # undefined everywhere
         {"y_range": [5, 6]},                                         # never enters window
         {"y_range": [0, 1e-200]},                                    # below MIN_SPAN
+        {"functions": [{"expr": "1/x"}], "x_range": [-1, 1],         # too close to the
+         "markers": [{"x": 1e-90}]},                                 # pole to draw to
     ])
     def test_rejected_at_schema(self, overrides):
         with pytest.raises(ValidationError):

@@ -2,7 +2,8 @@
  "component": "GraphPlot",
  "manim_version": "0.21.0",
  "reasons": [
-  "GraphPlot merged"
+  "GraphPlot merged",
+  "GraphPlot fix round: marker labels never on ink (tick marks are obstacles), marker x in the sample grid"
  ],
  "cases": [
   {
@@ -4748,8 +4749,8 @@
       },
       {
        "bbox": [
-        0.13,
-        0.217,
+        0.31,
+        0.458,
         0.961,
         0.244
        ],
@@ -5074,8 +5075,8 @@
       },
       {
        "bbox": [
-        0.13,
-        0.217,
+        0.31,
+        0.458,
         0.961,
         0.244
        ],

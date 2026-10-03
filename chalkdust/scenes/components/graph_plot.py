@@ -416,7 +416,11 @@ def _plan(exprs: tuple[str, ...], x_range: tuple[float, float],
     """Sample, choose the window, split into runs. Raises ValueError with a
     message aimed at the spec author (or the repair loop)."""
     x0, x1 = x_range
-    xs = np.linspace(x0, x1, N_SAMPLES)
+    # Every marker's x is a sample, so the drawn curve passes exactly through
+    # its dot. Without this a marker between the last sample and a pole (1/x
+    # at x=0.001) grew the window to its own y while the curve stopped far
+    # below it, and the dot floated with nothing reaching it.
+    xs = np.union1d(np.linspace(x0, x1, N_SAMPLES), [mx for mx, _ in markers])
     samples = [evaluate(e, xs) for e in exprs]
     for i, (e, ys) in enumerate(zip(exprs, samples)):
         if not np.isfinite(ys).any():
@@ -424,7 +428,7 @@ def _plan(exprs: tuple[str, ...], x_range: tuple[float, float],
 
     marker_ys = []
     for j, (mx, fi) in enumerate(markers):
-        my = float(evaluate(exprs[fi], np.array([mx]))[0])
+        my = float(samples[fi][np.searchsorted(xs, mx)])
         if not np.isfinite(my):
             raise ValueError(f"markers[{j}] at x={mx}: functions[{fi}] {exprs[fi]!r} is undefined there")
         marker_ys.append(my)
@@ -447,6 +451,16 @@ def _plan(exprs: tuple[str, ...], x_range: tuple[float, float],
         if not r:
             raise ValueError(f"functions[{i}] {e!r} never enters the visible y-window [{y0:.4g}, {y1:.4g}]")
         runs.append(tuple(r))
+
+    for j, (mx, fi) in enumerate(markers):
+        # The marker's sample is in the grid, but a run can still drop it: so
+        # close to a pole that the step to the next sample reads as a jump
+        # (1/x at 1e-90), it is a lone point and no curve is drawn to it.
+        if not any((r[:, 0] == mx).any() for r in runs[fi]):
+            raise ValueError(
+                f"markers[{j}] at x={mx} is too close to where functions[{fi}] "
+                f"{exprs[fi]!r} blows up for the curve to be drawn to it; move "
+                "the marker further from the asymptote")
     return _Plan(x0, x1, y0, y1, tuple(runs), tuple(marker_ys))
 
 
@@ -599,6 +613,11 @@ TICK_LEN = 0.12
 LABEL_GAP = 0.1             # tick to tick label
 LABEL_SEP = 0.2             # minimum clear space between neighbouring tick labels
 MARKER_BUFF = 0.12
+MARKER_REACH = 0.85         # largest gap (per axis) between a marker label and its dot
+# Label-to-dot distances tried, nearest first, and the wrap widths tried at
+# each (the first is the usual one).
+MARKER_OFFSETS = (MARKER_BUFF, 0.3, 0.55, MARKER_REACH)
+MARKER_WRAPS = (22, 34, 14)
 INK_CLEARANCE = 0.05       # clear space a label wants from any drawn line
 INK_STEP = 0.02            # max spacing of the points that stand in for curve ink
 MIN_PLOT_SIZE = 1.5         # smaller than this is not a graph, it is a doodle
@@ -791,10 +810,10 @@ class GraphPlot(Component):
                 curve.add_points_as_corners(pts[1:])
             curves.append(label(curve, f"curve[{i}]"))
 
-        # Where marker labels would rather not sit: on a curve or an axis line.
-        x_axis, y_axis = axes.submobjects[:2]
-        ink = np.vstack([curve_ink] + [
-            np.linspace(line.get_start(), line.get_end(), 200) for line in (x_axis, y_axis)])
+        # Where a marker label may never sit: on a curve, an axis line or a
+        # tick mark (example 2's "tan = 1" once touched the x=1 tick).
+        ink = np.vstack([curve_ink, _ink([np.array([m.get_start(), m.get_end()])
+                                          for m in axes.submobjects if isinstance(m, Line)])])
         markers = self._markers(plan, theme, plot, to_point, ink, obstacles=[
             bbox(m) for m in axes.submobjects if getattr(m, "_chalk_font_size", None)])
         return _Layout(legend, entries, axes, curves, markers)
@@ -959,15 +978,26 @@ class GraphPlot(Component):
 
             text = None
             if m.label:
-                text = label(caption_text(wrap(m.label, 22), theme, theme.palette.fg),
+                text = label(self._place_label(theme, at, m, to_point, plot, ink, taken, h),
                              f"marker[{j}].label")
-                text = self._place_label(text, at, m, to_point, plot, ink, taken, h)
                 taken.append(bbox(text))
             placed.append((dot, text, path))
         return placed
 
-    def _place_label(self, text, at, m: GraphMarker, to_point, plot: Rect,
-                     ink: np.ndarray, taken: list[Rect], h: float):
+    def _place_label(self, theme: Theme, at, m: GraphMarker, to_point, plot: Rect,
+                     ink: np.ndarray, taken: list[Rect], h: float) -> Mobject:
+        """The marker's label, placed where nothing is drawn.
+
+        Every constraint is hard: inside the plot, clear of every label and
+        dot, and clear of all ink -- curves, axes, tick marks. A curve through
+        caption text cuts its glyphs ("start" with the s slashed), so there
+        is no "touching is still readable" fallback. Candidates go nearest
+        first: each side of the dot at increasing distance, and at each
+        distance the label wrapped narrow-and-tall or wide-and-short as well
+        as at its usual width, since a gap beside a curve is rarely the shape
+        of the default wrap. Nothing clear within MARKER_REACH of the dot is a
+        refusal: further away, the label no longer reads as the dot's.
+        """
         expr = self.params.functions[m.function].expr
         y = evaluate(expr, np.array([m.x - h, m.x, m.x + h]))
         p0, p1, p2 = to_point(np.array([m.x - h, m.x, m.x + h]), np.nan_to_num(y))
@@ -979,25 +1009,23 @@ class GraphPlot(Component):
             first = [UL, DR] if slope > 0 else [UR, DL]
         order = first + [d for d in (UR, UL, DR, DL, UP, DOWN, RIGHT, LEFT)
                          if not any(d is f for f in first)]
-        # Hard constraints: inside the plot, clear of every label and dot.
-        # Soft: clear of curve and axis ink -- preferred, but a label touching
-        # a line is still readable, so the first hard-valid side is the fallback.
-        fallback = None
-        for d in order:
-            text.next_to(at, d, buff=MARKER_BUFF)
-            box = bbox(text)
-            if not plot.contains(box) or any(box.intersects(t) for t in taken):
-                continue
-            if not _inked(ink, box):
-                return text
-            if fallback is None:
-                fallback = d
-        if fallback is not None:
-            return text.next_to(at, fallback, buff=MARKER_BUFF)
+        texts: dict[str, Mobject] = {}
+        for w in MARKER_WRAPS:
+            s = wrap(m.label, w)
+            texts.setdefault(s, caption_text(s, theme, theme.palette.fg))
+        for buff in MARKER_OFFSETS:
+            for text in texts.values():
+                for d in order:
+                    text.next_to(at, d, buff=buff)
+                    box = bbox(text)
+                    if (plot.contains(box) and not any(box.intersects(t) for t in taken)
+                            and not _inked(ink, box)):
+                        return text
         raise LayoutError(
-            f"GraphPlot: no room to label the marker at x={m.x} without covering "
-            "another label or leaving the plot. Fewer or shorter marker labels, or "
-            "split the beat.", kind="overflow")
+            f"GraphPlot: no room to label the marker at x={m.x} within "
+            f"{MARKER_REACH:g} of its dot without a curve, axis or another label "
+            "running through it. Shorten the label, move the marker, or split "
+            "the beat.", kind="overflow")
 
     # --- fixtures --------------------------------------------------------------
 

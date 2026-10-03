@@ -219,8 +219,11 @@ class TestGlyphless:
         # A zero-width title once made the side's box 0x0 and the shared
         # scale divided by it (raw ZeroDivisionError, a build_error). Any
         # glyphless part must refuse cleanly, naming the field to rewrite.
+        # The theme's text constructors refuse undrawable text first, as kind
+        # "unrenderable_text" (theme.check_renderable), before this component's
+        # own glyph check would.
         report = validate_beat(_spec(STRESS[which]))
-        assert report.kinds() == {"illegible"}, f"\n{report}"
+        assert report.kinds() == {"unrenderable_text"}, f"\n{report}"
         assert field in report.findings[0].message
 
 

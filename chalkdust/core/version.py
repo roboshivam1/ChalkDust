@@ -11,8 +11,11 @@ CHALKDUST_VERSION = "0.1.0"
 # 0.2.0: budget() hands out whole frames, so every beat's clip is exactly
 #        ceil(audio * fps) frames long (it drifted by up to a frame per
 #        segment); clips rendered under 0.1.0 must not be reused (D-004).
-# 0.3.0: minor bump for the component wave (SCENE_SPEC.md ง10): new
-#        components added; existing components' rendering is unchanged.
+# 0.3.0: minor bump for the component wave (SCENE_SPEC.md ยง10): adds
+#        AnswerBox, BoxFlow, DataStructureViz, FreeBodyDiagram,
+#        GeometryConstruct, GraphPlot, NumberLineWalk, SolutionStep,
+#        SplitCompare, StepTrace and VectorField; existing components'
+#        rendering is unchanged.
 COMPONENT_LIBRARY_VERSION = "0.3.0"
 
 # Bump when a theme's palette, typography, or motion language changes.

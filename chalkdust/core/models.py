@@ -12,6 +12,7 @@ The load-bearing idea is the split between spec and state:
 
 from __future__ import annotations
 
+import unicodedata
 from enum import Enum
 from pathlib import Path
 from typing import Any
@@ -95,6 +96,45 @@ class WordTiming(BaseModel):
     end: float
 
 
+# Code points refused anywhere in spec text (rung 1, SCENE_SPEC.md §8), by
+# Unicode category: Co private use (U+E000, U+F06D -- a glyph only some
+# symbol font assigns; every theme font draws a missing-glyph box), Cn
+# unassigned (and noncharacters such as U+FFFE), Cs a lone surrogate (cannot
+# even be encoded to UTF-8 for Pango or the voice). None of them means the
+# same thing on any two machines. Format characters (Cf) are NOT refused:
+# ZWNJ, ZWJ and bidi marks are legitimate inside real words.
+_UNDRAWABLE_CATEGORIES = {"Co": "private-use", "Cn": "unassigned", "Cs": "surrogate"}
+
+
+def _text_problems(value: object, where: str) -> list[str]:
+    """Rung-1 code-point problems in `value` (a JSON-like tree), with where.
+
+    Extends pipeline.load_spec's control-character check (9387422) from
+    "nothing invisible to the parser" to "nothing no font can draw".
+
+    Text with no visible character is refused here for narration only, by
+    _narration_sane's letter-or-digit rule. In params an invisible-only
+    string is the component's to judge -- GeometryConstruct reads a blank or
+    zero-width note as "no note" by contract -- and whatever a component does
+    draw meets the theme's glyph guard at build (theme.check_renderable,
+    kind "unrenderable_text").
+    """
+    if isinstance(value, str):
+        for i, c in enumerate(value):
+            cat = unicodedata.category(c)
+            if cat in _UNDRAWABLE_CATEGORIES:
+                return [f"{where}: {_UNDRAWABLE_CATEGORIES[cat]} code point "
+                        f"U+{ord(c):04X} at offset {i}; no font draws it the "
+                        f"same everywhere -- write the character it stands for"]
+        return []
+    if isinstance(value, dict):
+        return [p for k, v in value.items() for p in _text_problems(v, f"{where}.{k}")]
+    if isinstance(value, (list, tuple)):
+        return [p for i, v in enumerate(value)
+                for p in _text_problems(v, f"{where}[{i}]")]
+    return []
+
+
 class BeatSpec(BaseModel, frozen=True):
     """One beat, declaratively. This is what the LLM emits (Phase 2) and what
     you hand-write for now.
@@ -136,6 +176,26 @@ class BeatSpec(BaseModel, frozen=True):
                 f"narration is {len(v.split())} words (max {MAX_NARRATION_WORDS}). "
                 "Split this into multiple beats."
             )
+        problems = _text_problems(v, "narration")
+        if problems:
+            raise ValueError("; ".join(problems))
+        return v
+
+    @field_validator("params")
+    @classmethod
+    def _param_text_sane(cls, v: dict[str, Any]) -> dict[str, Any]:
+        """Rung 1 for every string in the params, nested ones included.
+
+        Only what no font and no component could honour: private-use,
+        unassigned or surrogate code points. Whether a font can draw a real
+        character -- and whether text with no visible character is an absent
+        value or an error -- is decided later: by the component's schema,
+        then by the theme at build (theme.check_renderable), with the
+        resolved font.
+        """
+        problems = _text_problems(v, "params")
+        if problems:
+            raise ValueError("; ".join(problems))
         return v
 
 

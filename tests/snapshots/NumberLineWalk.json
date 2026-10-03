@@ -2,7 +2,8 @@
  "component": "NumberLineWalk",
  "manim_version": "0.21.0",
  "reasons": [
-  "NumberLineWalk merged"
+  "NumberLineWalk merged",
+  "NumberLineWalk: jump arrow tip detached so the stroke grows under the walker"
  ],
  "cases": [
   {
@@ -47,6 +48,7 @@
       "animations": [
        "Create",
        "MoveAlongPath",
+       "FadeIn",
        "FadeIn"
       ],
       "run_time": 2.35
@@ -56,6 +58,7 @@
       "animations": [
        "Create",
        "MoveAlongPath",
+       "FadeIn",
        "FadeIn"
       ],
       "run_time": 2.35
@@ -261,16 +264,22 @@
        {
         "type": "ArcBetweenPoints",
         "label": "jump 2->7",
-        "children": [
-         {
-          "type": "ArrowTriangleFilledTip",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
         "regions": [
          "stage"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 2->7 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
         ]
        },
        {
@@ -288,14 +297,20 @@
        {
         "type": "ArcBetweenPoints",
         "label": "jump 7->4",
-        "children": [
-         {
-          "type": "ArrowTriangleFilledTip",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 7->4 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
         "regions": [
          "stage",
          "stage_right"
@@ -520,16 +535,22 @@
        {
         "type": "ArcBetweenPoints",
         "label": "jump 2->7",
-        "children": [
-         {
-          "type": "ArrowTriangleFilledTip",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
         "regions": [
          "stage"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 2->7 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
         ]
        },
        {
@@ -547,14 +568,20 @@
        {
         "type": "ArcBetweenPoints",
         "label": "jump 7->4",
-        "children": [
-         {
-          "type": "ArrowTriangleFilledTip",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 7->4 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
         "regions": [
          "stage",
          "stage_right"
@@ -833,9 +860,9 @@
       },
       {
        "bbox": [
-        1.805,
+        1.76,
         0.12,
-        5.861,
+        5.772,
         1.752
        ],
        "font_size": null
@@ -860,9 +887,9 @@
       },
       {
        "bbox": [
-        2.977,
+        3.043,
         -0.395,
-        3.517,
+        3.384,
         0.721
        ],
        "font_size": null
@@ -1141,9 +1168,9 @@
       },
       {
        "bbox": [
-        1.805,
+        1.76,
         0.12,
-        5.861,
+        5.772,
         1.752
        ],
        "font_size": null
@@ -1168,9 +1195,9 @@
       },
       {
        "bbox": [
-        2.977,
+        3.043,
         -0.395,
-        3.517,
+        3.384,
         0.721
        ],
        "font_size": null
@@ -1245,6 +1272,7 @@
       "animations": [
        "Create",
        "MoveAlongPath",
+       "FadeIn",
        "FadeIn"
       ],
       "run_time": 1.6
@@ -1254,6 +1282,7 @@
       "animations": [
        "Create",
        "MoveAlongPath",
+       "FadeIn",
        "FadeIn"
       ],
       "run_time": 1.6
@@ -1263,6 +1292,7 @@
       "animations": [
        "Create",
        "MoveAlongPath",
+       "FadeIn",
        "FadeIn"
       ],
       "run_time": 1.6
@@ -1272,6 +1302,7 @@
       "animations": [
        "Create",
        "MoveAlongPath",
+       "FadeIn",
        "FadeIn"
       ],
       "run_time": 1.6
@@ -1491,14 +1522,20 @@
        {
         "type": "ArcBetweenPoints",
         "label": "jump 0->3",
-        "children": [
-         {
-          "type": "ArrowTriangleFilledTip",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 0->3 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
         "regions": [
          "stage",
          "stage_left"
@@ -1519,14 +1556,19 @@
        {
         "type": "ArcBetweenPoints",
         "label": "jump 3->6",
-        "children": [
-         {
-          "type": "ArrowTriangleFilledTip",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 3->6 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
         "regions": [
          "stage"
         ]
@@ -1546,16 +1588,22 @@
        {
         "type": "ArcBetweenPoints",
         "label": "jump 6->9",
-        "children": [
-         {
-          "type": "ArrowTriangleFilledTip",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
         "regions": [
          "stage"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 6->9 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
         ]
        },
        {
@@ -1573,14 +1621,20 @@
        {
         "type": "ArcBetweenPoints",
         "label": "jump 9->12",
-        "children": [
-         {
-          "type": "ArrowTriangleFilledTip",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 9->12 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
         "regions": [
          "stage",
          "stage_right"
@@ -1819,14 +1873,20 @@
        {
         "type": "ArcBetweenPoints",
         "label": "jump 0->3",
-        "children": [
-         {
-          "type": "ArrowTriangleFilledTip",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 0->3 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
         "regions": [
          "stage",
          "stage_left"
@@ -1847,14 +1907,19 @@
        {
         "type": "ArcBetweenPoints",
         "label": "jump 3->6",
-        "children": [
-         {
-          "type": "ArrowTriangleFilledTip",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 3->6 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
         "regions": [
          "stage"
         ]
@@ -1874,16 +1939,22 @@
        {
         "type": "ArcBetweenPoints",
         "label": "jump 6->9",
-        "children": [
-         {
-          "type": "ArrowTriangleFilledTip",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
         "regions": [
          "stage"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 6->9 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
         ]
        },
        {
@@ -1901,14 +1972,20 @@
        {
         "type": "ArcBetweenPoints",
         "label": "jump 9->12",
-        "children": [
-         {
-          "type": "ArrowTriangleFilledTip",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 9->12 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
         "regions": [
          "stage",
          "stage_right"
@@ -2214,9 +2291,9 @@
       },
       {
        "bbox": [
-        -4.425,
+        -4.467,
         -0.162,
-        2.931,
+        2.846,
         0.933
        ],
        "font_size": null
@@ -2241,9 +2318,9 @@
       },
       {
        "bbox": [
-        -1.494,
+        -1.537,
         -0.162,
-        2.931,
+        2.846,
         0.933
        ],
        "font_size": null
@@ -2268,9 +2345,9 @@
       },
       {
        "bbox": [
-        1.436,
+        1.394,
         -0.162,
-        2.931,
+        2.846,
         0.933
        ],
        "font_size": null
@@ -2295,9 +2372,9 @@
       },
       {
        "bbox": [
-        4.367,
+        4.324,
         -0.162,
-        2.931,
+        2.846,
         0.933
        ],
        "font_size": null
@@ -2603,9 +2680,9 @@
       },
       {
        "bbox": [
-        -4.425,
+        -4.467,
         -0.162,
-        2.931,
+        2.846,
         0.933
        ],
        "font_size": null
@@ -2630,9 +2707,9 @@
       },
       {
        "bbox": [
-        -1.494,
+        -1.537,
         -0.162,
-        2.931,
+        2.846,
         0.933
        ],
        "font_size": null
@@ -2657,9 +2734,9 @@
       },
       {
        "bbox": [
-        1.436,
+        1.394,
         -0.162,
-        2.931,
+        2.846,
         0.933
        ],
        "font_size": null
@@ -2684,9 +2761,9 @@
       },
       {
        "bbox": [
-        4.367,
+        4.324,
         -0.162,
-        2.931,
+        2.846,
         0.933
        ],
        "font_size": null

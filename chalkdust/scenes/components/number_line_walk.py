@@ -122,6 +122,7 @@ ASSOC_GAP = 0.3        # a foreign arc above a jump label keeps this clear of
 MIN_JUMP_WIDTH = 0.3   # below this the arrow tip is wider than the arc
 SAMPLES_PER_CURVE = 16  # per cubic segment of an arc (8 segments)
 WALKER_RADIUS = 0.1
+ARRIVAL = 0.15         # last fraction of a jump, in which its arrow tip fades in
 ENDPOINT_RADIUS = 0.09
 INTERVAL_STROKE = 8
 
@@ -384,7 +385,16 @@ class NumberLineWalk(Component):
                     anims.append(FadeIn(c.walker, scale=0.5))
                     walker_shown = True
             elif isinstance(step, JumpStep):
-                anims += [Create(c.arcs[i]), MoveAlongPath(c.walker, c.paths[i])]
+                # Create() on the arc with its tip attached draws the stroke in
+                # the first half and the tip in the second (lag_ratio 1 over
+                # the family), so the stroke ran ahead of the walker. Detached
+                # (remove(), not pop_tips(), which re-fits the arc), the stroke
+                # grows under the walker and the tip lands as it arrives.
+                arc = c.arcs[i]
+                tip = label(arc.tip, f"{arc._chalk_label} tip")
+                arc.remove(tip)
+                anims += [Create(arc), MoveAlongPath(c.walker, c.paths[i]),
+                          FadeIn(tip, rate_func=_on_arrival)]
             else:
                 anims += [Create(c.visuals[i][0]),
                           *(FadeIn(m) for m in c.visuals[i][1:])]
@@ -687,6 +697,12 @@ class NumberLineWalk(Component):
             # A jump too small to draw at this range: must refuse, not smear.
             {"range": [0, 1000], "steps": [{"at": 500}, {"to": 501}]},
         ]
+
+
+def _on_arrival(t: float) -> float:
+    """Rate function: nothing until the last ARRIVAL of a jump, then linear
+    to full. A jump's arrow tip appears as the walker reaches it."""
+    return min(1.0, max(0.0, (t - (1 - ARRIVAL)) / ARRIVAL))
 
 
 def _kind(step: Step) -> Literal["mark", "jump", "interval"]:

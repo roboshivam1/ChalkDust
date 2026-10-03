@@ -13,7 +13,8 @@ from dataclasses import asdict
 
 import numpy as np
 import pytest
-from manim import tempconfig
+from manim import Create, MoveAlongPath, tempconfig
+from manim.animation.animation import prepare_animation
 from pydantic import ValidationError
 
 from chalkdust.continuity import ArtifactRecipe, build_artifact
@@ -26,7 +27,7 @@ from chalkdust.scenes.components.number_line_walk import (
     tick_values,
 )
 from chalkdust.scenes.regions import LayoutError, bbox
-from chalkdust.scenes.theme import DEFAULT
+from chalkdust.scenes.theme import DEFAULT, resolve_fonts
 from chalkdust.validate.geometric import LayoutProbe, validate_beat
 
 # One of every step kind, so every play() path is timed.
@@ -43,6 +44,7 @@ MIXED = {
 
 
 FPS = 15
+THEME = resolve_fonts(DEFAULT, warn=False)   # as a scene resolves it
 # intro + one phase per step + final hold
 MIXED_PHASES = 1 + len(MIXED["steps"]) + 1
 
@@ -293,7 +295,7 @@ class TestCarryIn:
 
     def test_artifact_is_deterministic(self):
         recipe = self._recipe(NumberLineWalk.examples()[0])
-        a, b = (build_artifact(recipe, DEFAULT) for _ in range(2))
+        a, b = (build_artifact(recipe, THEME) for _ in range(2))
         labels = [[getattr(m, "_chalk_label", None) for m in art] for art in (a, b)]
         assert labels[0] == labels[1]
         np.testing.assert_allclose(a.get_all_points(), b.get_all_points())
@@ -301,7 +303,7 @@ class TestCarryIn:
     def test_artifact_shows_the_walk_where_it_ends(self):
         # example0 is 2 -> 7 -> 4: the walker stands on 4, both arcs drawn.
         params = NumberLineWalk.examples()[0]
-        art = build_artifact(self._recipe(params), DEFAULT)
+        art = build_artifact(self._recipe(params), THEME)
         names = {getattr(m, "_chalk_label", None) for m in art}
         assert {"number line", "tick labels", "jump 2->7", "jump 7->4",
                 "steps[0] label", "steps[1] label", "steps[2] label"} <= names
@@ -316,6 +318,48 @@ class TestCarryIn:
         report = validate_beat(consumer, recipes=[
             self._recipe(NumberLineWalk.examples()[0])])
         assert report.ok, f"\n{report}"
+
+
+class _HalfwayProbe(LayoutProbe):
+    """Records, halfway through every jump, how far the drawn stroke's end is
+    from the walker and how opaque the arrow tip is."""
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.halfway: list[tuple[float, float]] = []
+
+    def play(self, *animations, **kwargs) -> None:  # type: ignore[override]
+        anims = [prepare_animation(a) for a in animations]
+        stroke = next((a for a in anims if isinstance(a, Create)), None)
+        walk = next((a for a in anims if isinstance(a, MoveAlongPath)), None)
+        if stroke is not None and walk is not None:
+            for a in anims:
+                a.begin()
+            for a in anims:
+                a.interpolate(0.5)
+            tip = next(a.mobject for a in anims
+                       if getattr(a.mobject, "_chalk_label", "").endswith(" tip"))
+            gap = float(np.linalg.norm(stroke.mobject.get_end()
+                                       - walk.mobject.get_center()))
+            self.halfway.append((gap, tip.get_fill_opacity()))
+            for a in anims:
+                a.interpolate(1.0)
+        super().play(*anims, **kwargs)
+
+
+class TestJumpDrawing:
+    def test_stroke_grows_under_the_walker(self):
+        # Create() over an arc with its tip attached drew the whole stroke in
+        # the first half of the jump (lag_ratio 1 over arc + tip), so the line
+        # ran a half-chord ahead of the walker. Halfway through a jump the
+        # stroke must end at the walker, and the tip must not be showing yet.
+        params = NumberLineWalk.examples()[0]
+        probe = _HalfwayProbe(NumberLineWalk(params), duration=10.0, strict=True)
+        probe.construct()
+        assert len(probe.halfway) == 2
+        for gap, tip_opacity in probe.halfway:
+            assert gap < 0.25, probe.halfway       # was 3.4 and 1.9 (whole stroke drawn)
+            assert tip_opacity == 0.0, probe.halfway
 
 
 class TestTicks:

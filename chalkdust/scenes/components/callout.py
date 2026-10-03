@@ -14,6 +14,7 @@ brings it back to full strength, and points at it.
 
 from __future__ import annotations
 
+import unicodedata
 from typing import Annotated, Any, Literal
 
 import numpy as np
@@ -28,7 +29,7 @@ from manim import (
     Mobject,
     MoveToTarget,
 )
-from pydantic import Field, StringConstraints
+from pydantic import AfterValidator, Field, StringConstraints
 
 from chalkdust.continuity import DIM_DARKNESS, ArtifactRecipe, carried
 from chalkdust.core.models import CarryInError, Region
@@ -73,11 +74,27 @@ _SIDES = {"left": LEFT, "right": RIGHT, "above": UP, "below": DOWN}
 
 NonBlank = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
 
+# Characters that draw nothing: controls, format characters (zero-width
+# space, BOM, word joiner, direction marks) and separators. str.strip() keeps
+# the format characters, so NonBlank alone lets a label of them through, and
+# a label that draws nothing has nothing to place or point from.
+_INVISIBLE = {"Cc", "Cf", "Zs", "Zl", "Zp"}
+
+
+def _has_glyphs(s: str) -> str:
+    if all(c.isspace() or unicodedata.category(c) in _INVISIBLE for c in s):
+        raise ValueError("text has no visible characters (only spaces, "
+                         "zero-width or direction marks); write the label")
+    return s
+
+
+Visible = Annotated[NonBlank, AfterValidator(_has_glyphs)]
+
 
 class CalloutParams(ComponentParams):
     # A carry-in name, not a mobject: the beat must list it in `carry_in`.
     target_id: NonBlank
-    text: NonBlank
+    text: Visible
     side: Literal["left", "right", "above", "below"] = "right"
     # Optional: point at one top-level part of the target (the n-th bullet,
     # the n-th array cell) instead of the whole artifact. Without it a callout
@@ -110,6 +127,19 @@ class Callout(Component):
         theme = scene.theme
         target = carried(scene, p.target_id)  # CarryInError if not carried in
 
+        # CarryIn centres every carried artifact in STAGE, and the label and
+        # arrow are placed against the target alone: anything else carried in
+        # would sit under them. A Callout annotates one artifact; refuse the
+        # rest by name rather than draw over it.
+        others = sorted(set(getattr(scene, "_chalk_carried", {})) - {p.target_id})
+        if others:
+            raise LayoutError(
+                f"Callout annotates {p.target_id!r} alone, but this beat also "
+                f"carries in {others}, which the label and arrow would cover; "
+                f"carry in only {p.target_id!r}",
+                kind="overlap",
+            )
+
         parts = target.submobjects
         if p.part is not None and p.part >= len(parts):
             raise CarryInError(
@@ -126,6 +156,14 @@ class Callout(Component):
             body_text(wrap(p.text, WRAP_BESIDE if beside else WRAP_ACROSS), theme),
             "callout",
         )
+        if not text.family_members_with_points():
+            # The schema refuses invisible-only text; this is the font's
+            # word (a character it draws as nothing) and it ends the same way.
+            raise LayoutError(
+                f"Callout label {p.text!r} draws no glyphs in the theme's font; "
+                f"write the label in visible characters",
+                kind="illegible",
+            )
 
         # The plan: the target's full-strength state (CarryIn saved it before
         # dimming), moved and if need be shrunk to leave a band for the label.

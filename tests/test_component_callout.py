@@ -169,6 +169,29 @@ def test_schema_rejects(params):
         make_component(NAME, params)
 
 
+@pytest.mark.parametrize("text", ["\u200b", "\ufeff", "\u2060", "\u200e",
+                                  " \u200b\u00ad "],
+                         ids=["zwsp", "bom", "word-joiner", "lrm", "mixed"])
+def test_label_of_only_invisible_characters_is_refused_by_the_schema(text):
+    # str.strip() keeps format characters, so these passed NonBlank and rung 1
+    # and then crashed placing a label with no points (IndexError ->
+    # build_error). They are a spec error: refused at rung 1, by field.
+    with pytest.raises(ValidationError, match="no visible characters"):
+        make_component(NAME, {"target_id": "t", "text": text})
+
+
+def test_label_that_draws_nothing_refuses_as_illegible(monkeypatch):
+    # Past the schema, a character the theme's font draws as nothing must
+    # still end as a clean refusal, not an IndexError from placing it.
+    from manim import VGroup
+
+    from chalkdust.scenes.components import callout
+    monkeypatch.setattr(callout, "body_text", lambda s, theme: VGroup())
+    with pytest.raises(LayoutError) as exc_info:
+        _probe({"target_id": "t", "text": "note"})
+    assert exc_info.value.kind == "illegible"
+
+
 # --- typed carry-in errors (spec bugs, not layout) --------------------------
 
 
@@ -197,6 +220,22 @@ def test_target_not_carried_in_is_refused_at_rung_2():
     report = validate_semantic(spec, registered_artifacts={"t"}, duration=4.0)
     assert report.kinds() == {"carry_in"}
     assert "'something_else'" in str(report)
+
+
+def test_second_carried_artifact_refuses_as_overlap():
+    # CarryIn centres every carried artifact in STAGE; the label and arrow
+    # were placed against the target alone and drew over the other list,
+    # and validate_beat said ok. It must refuse, naming what is in the way.
+    t = ArtifactRecipe(name="t", producer="BulletReveal",
+                       params={"items": ["Hash the key", "Find the bucket",
+                                         "Walk the chain"]})
+    other = ArtifactRecipe(name="other", producer="BulletReveal",
+                           params={"items": ["Each of these bullets runs a full line"] * 6})
+    params = {"target_id": "t", "text": "A note that sits right of the target",
+              "part": 1}
+    report = validate_beat(_spec(params, ["t", "other"]), recipes=[t, other])
+    assert report.kinds() == {"overlap"}, f"\n{report}"
+    assert "'other'" in str(report)
 
 
 def test_part_out_of_range_is_typed_error():

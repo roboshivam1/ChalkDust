@@ -17,6 +17,7 @@ import json
 import math
 import re
 import subprocess
+import unicodedata
 from dataclasses import asdict
 
 import numpy as np
@@ -305,6 +306,68 @@ class TestBuild:
                                  "highlights": [{"start": 1}]}))
         code, _bar = probe.mobjects
         assert _rows_hold(code, source)
+
+    @pytest.mark.parametrize("source,named", [
+        ("s = 'a˜b'", "U+02DC"),
+        ("# ƁƂƃƄƅƆƇƈƉ ok", "U+0181"),
+        ("z̀́̂̃̄̅ = 1", "U+0305"),
+    ], ids=["small-tilde", "latin-ext-b-stack", "stacked-marks"])
+    def test_glyphs_off_their_columns_refuse_unrenderable(self, source, named):
+        # Every count passes for these -- each character draws one path alone
+        # and in context -- yet in a line the tilde lands on the b, the nine
+        # letters pile into one blob, and the marks push "= 1" three cells
+        # right, while validation said ok. The column check on the built
+        # listing refuses them, in the beat and in the carry-in artifact.
+        recipe = ArtifactRecipe(name="listing", producer="CodeWalk",
+                                params={"language": "python", "source": source})
+        for attempt in (lambda: _probe(CodeWalk(recipe.params)),
+                        lambda: build_artifact(recipe, THEME)):
+            with pytest.raises(LayoutError) as info:
+                attempt()
+            assert info.value.kind == UNRENDERABLE_TEXT
+            message = str(info.value)
+            assert named in message and repr(MONO) in message
+            assert message.startswith("CodeWalk source line 1:")
+            assert "column" in message
+
+    @pytest.mark.parametrize("source", [
+        "s = 'q́'\nx = 1",
+        "s = 'café'\nx = 1",
+        "# Tiếng Việt có dấu\nx = 1",
+        next(case["source"] for case in CodeWalk.stress()
+             if "мир" in case["source"]),
+        "# → ← ↑ ↓ ↔\n# ┌─┐ │ └─┘\nx = 1",
+        "s = “quoted” + ‘single’  # — em – en …\n"
+        "n = 3 × 4 ÷ 2 − 1",
+    ], ids=["q-acute", "nfd-e-acute", "vietnamese", "latin-greek-cyrillic",
+            "arrows-boxes", "typographic"])
+    def test_text_the_font_spaces_renders_on_its_columns(self, source):
+        # The column check must not cost text the font does space one per
+        # column: measured on its own here, every base glyph sits within
+        # half a cell of its column (combining marks take none), counted
+        # from the first glyph of its line.
+        probe = _probe(CodeWalk({"language": "python", "source": source}))
+        code = probe.mobjects[0]
+        # One cell of the placed (fitted) listing: a natural-size probe's
+        # digit pitch, scaled as line number 1 was scaled.
+        ref = code_walk._code("00\n00", "text", THEME)
+        advance = ref.code_lines[0][1].get_x() - ref.code_lines[0][0].get_x()
+        advance *= code.line_numbers[0].height / ref.line_numbers[0].height
+        text = unicodedata.normalize("NFC", source).split("\n")
+        for i, line in enumerate(text):
+            glyphs = iter(code.code_lines[i])
+            col, first = -1, None
+            for c in line:
+                mark = unicodedata.category(c)[0] == "M"
+                col += not mark
+                if c.isspace():
+                    continue
+                x = next(glyphs).get_x()
+                if mark:
+                    continue
+                if first is None:
+                    first = (x, col)
+                assert abs((x - first[0]) / advance - (col - first[1])) <= 0.5, (i, c)
 
     def test_minimal_listing_has_no_highlight_bar(self):
         probe = _probe(CodeWalk({"language": "c", "source": "x"}))

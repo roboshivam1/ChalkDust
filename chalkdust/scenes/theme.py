@@ -187,6 +187,10 @@ FALLBACKS = {
 }
 
 
+# Substitutions already announced in this process, as (role, wanted, used).
+_WARNED: set[tuple[str, str, str]] = set()
+
+
 def _installed_fonts() -> set[str]:
     try:
         import manimpango
@@ -199,9 +203,12 @@ def _installed_fonts() -> set[str]:
 def resolve_fonts(theme: Theme, warn: bool = True) -> Theme:
     """Return a copy of `theme` with any missing font swapped for a fallback.
 
-    Called once per scene construction. If nothing in the fallback chain is
-    installed we leave the original name and let Pango decide -- but by then
-    the warning has already been printed.
+    Called on every scene construction -- every probe, repair attempt and
+    render -- so each substitution is printed once per process, not once per
+    scene: a validation pass over a video would otherwise repeat the same
+    line hundreds of times and bury everything else. If nothing in the
+    fallback chain is installed we leave the original name and let Pango
+    decide -- but by then the warning has already been printed.
     """
     available = _installed_fonts()
     if not available:
@@ -212,7 +219,8 @@ def resolve_fonts(theme: Theme, warn: bool = True) -> Theme:
             return wanted
         for candidate in FALLBACKS[role]:
             if candidate in available:
-                if warn:
+                if warn and (role, wanted, candidate) not in _WARNED:
+                    _WARNED.add((role, wanted, candidate))
                     print(f"[theme] {wanted!r} missing, using {candidate!r} for {role}")
                 return candidate
         return wanted

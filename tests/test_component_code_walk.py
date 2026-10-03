@@ -3,7 +3,9 @@
 Layout of examples() and stress() is covered by test_layout.py walking the
 registry; this file pins what that walk cannot see: the timing contract
 (clocked frames and one real draft render counted with ffprobe), the schema's
-refusals, where the highlight actually lands, and the carry-in artifact.
+refusals, the glyph guard's refusals (text the resolved mono font cannot draw
+one glyph per character, kind "unrenderable_text"), where the highlight
+actually lands, and the carry-in artifact.
 
 CodeWalk compiles no LaTeX (latex_strings() is empty), so there is no
 invalid-LaTeX case here or in stress(); nothing on PATH beyond ffmpeg/ffprobe.
@@ -13,6 +15,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 import subprocess
 from dataclasses import asdict
 
@@ -26,18 +29,21 @@ from chalkdust.continuity import ArtifactRecipe, build_artifact, resolve_carry_i
 from chalkdust.core.models import BeatSpec, Quality, Region, VideoSpec
 from chalkdust.render.worker import TIERS
 from chalkdust.scenes.base import ChalkdustScene
+from chalkdust.scenes.components import code_walk
 from chalkdust.scenes.components.code_walk import (
     DIM_OPACITY,
     MAX_HIGHLIGHTS,
     CodeWalk,
 )
-from chalkdust.scenes.regions import LayoutError, bbox, fit_to_region
+from chalkdust.scenes.regions import UNRENDERABLE_TEXT, LayoutError, bbox, fit_to_region
 from chalkdust.scenes.theme import DEFAULT, resolve_fonts
 from chalkdust.validate.geometric import LayoutProbe, validate_beat
 
 SOURCE = "def f(x):\n    y = x * 2\n    return y\n\nprint(f(3))"
 EXAMPLES = CodeWalk.examples()
 DRAFT = TIERS[Quality.DRAFT]
+THEME = resolve_fonts(DEFAULT, warn=False)
+MONO = THEME.type.mono_font  # Courier New where JetBrains Mono is missing
 
 
 def _probe(component: CodeWalk) -> LayoutProbe:
@@ -65,6 +71,36 @@ class _Clock(LayoutProbe):
 
     def wait(self, duration: float = 1.0, *args, **kwargs) -> None:  # type: ignore[override]
         self.segments.append(duration * self.fps)
+
+
+def _forbid_building_code(monkeypatch) -> None:
+    """Make any Code construction for a listing fail the test. The size
+    check's own probe listing (_cell, cached per theme) is built first."""
+    code_walk._cell(THEME)
+
+    class _NoCode:
+        default_paragraph_config = Code.default_paragraph_config
+
+        def __init__(self, *args, **kwargs) -> None:
+            raise AssertionError("Code was built for a listing the guard should refuse")
+
+    monkeypatch.setattr(code_walk, "Code", _NoCode)
+
+
+def _rows_hold(code: Code, source: str) -> bool:
+    """Each source line has one glyph per visible character, every one of
+    them on that line's row -- what a glyph-to-character shift breaks (the
+    shifted glyphs land on the row above, while the counts can still match)."""
+    nums = code.line_numbers
+    pitch = abs(nums[0].get_y() - nums[1].get_y())
+    for i, line in enumerate(source.split("\n")):
+        glyphs = list(code.code_lines[i])
+        if len(glyphs) != sum(not c.isspace() for c in line):
+            return False
+        top, bottom = nums[i].get_y() + pitch / 2, nums[i].get_y() - pitch / 2
+        if any(g.get_bottom()[1] >= top or g.get_top()[1] <= bottom for g in glyphs):
+            return False
+    return True
 
 
 def _clocked(params: dict, duration: float) -> _Clock:
@@ -134,8 +170,13 @@ class TestSchema:
          "highlights": [{"start": 1, "colour": "red"}]},
         {"language": "python", "source": SOURCE,
          "highlights": [{"start": 1}] * (MAX_HIGHLIGHTS + 1)},
+        {"language": "python", "source": SOURCE, "highlights": [{"start": True}]},
+        {"language": "python", "source": SOURCE, "highlights": [{"start": "2"}]},
+        {"language": "python", "source": SOURCE,
+         "highlights": [{"start": 1, "end": "3"}]},
     ], ids=["empty", "whitespace", "unknown-language", "past-last-line",
-            "line-zero", "reversed-span", "unknown-span-field", "too-many-steps"])
+            "line-zero", "reversed-span", "unknown-span-field", "too-many-steps",
+            "bool-line", "string-line", "string-end"])
     def test_rejects(self, params):
         with pytest.raises(ValidationError):
             CodeWalk(params)
@@ -194,13 +235,76 @@ class TestBuild:
             _probe(CodeWalk({"language": "python", "source": source}))
         assert info.value.kind == "overflow"
 
-    def test_glyph_the_font_cannot_draw_refuses_illegible(self):
-        # Past the schema's list: a combining grapheme joiner draws nothing,
-        # and Code's glyph-count ValueError is refused as illegible text.
+    def test_glyph_the_font_cannot_draw_refuses_unrenderable(self):
+        # Past the schema's list: a combining grapheme joiner draws nothing.
+        # It is refused as the theme refuses text its font cannot draw, not
+        # as "illegible" (that kind means too small, which splitting the beat
+        # would fix; this only a rewrite fixes).
         comp = CodeWalk({"language": "python", "source": "x = 'a\u034fb'"})
+        with pytest.raises(LayoutError, match=r"U\+0061 U\+034F") as info:
+            _probe(comp)
+        assert info.value.kind == UNRENDERABLE_TEXT
+
+    @pytest.mark.parametrize("source,named", [
+        ("# \u4f60\u597d\u4e16\u754c\nname = '\u6771\u4eac'  # tokyo", "U+4F60"),
+        ("# \u2200x \u2264 \u221e\nx = 1", "U+2200"),
+        ("# \u0928\u092e\u0938\u094d\u0924\u0947\nx = 1", "U+0928"),
+        ("# \u0e2a\u0e27\u0e31\u0e2a\u0e14\u0e35\nx = 1", "U+0E2A"),
+        ("# \u05e9\u05dc\u05d5\u05dd\nx = 1", "U+05E9"),
+        ("# \u0645\u0631\u062d\u0628\u0627\nx = 1", "U+0645"),
+        ("love = '\u2764\ufe0f'\nx = 1", "U+2764"),
+        ("key = '1\ufe0f\u20e3'\nx = 1", "U+0031 U+FE0F U+20E3"),
+        ("s = 'x\ufe0f'\nx = 1", "U+0078 U+FE0F"),
+        ("\u0301x = 1\ny = 2", "U+0301"),
+        ("p = '\ue000'\nx = 1", "U+E000"),
+        ("u = '\u0378'\nx = 1", "U+0378"),
+        ("m = '\U0001d400'\nx = 1", "U+1D400"),
+    ], ids=["cjk", "maths-symbols", "devanagari", "thai", "hebrew", "arabic",
+            "heart-vs16", "keycap", "variation-selector", "lone-mark",
+            "private-use", "unassigned", "math-alnum"])
+    def test_text_the_mono_font_cannot_draw_refuses_before_code(self, source, named,
+                                                                monkeypatch):
+        # Each of these drew missing-glyph boxes or nothing; Code then mapped
+        # glyphs to characters off by the difference, dropped later lines and
+        # left its " pA1" alignment glyphs in the frame, and validation said
+        # ok. The theme's glyph guard refuses them before Code is built,
+        # naming the character, its line and the resolved font.
+        _forbid_building_code(monkeypatch)
+        comp = CodeWalk({"language": "python", "source": source})
         with pytest.raises(LayoutError) as info:
             _probe(comp)
-        assert info.value.kind == "illegible"
+        assert info.value.kind == UNRENDERABLE_TEXT
+        message = str(info.value)
+        assert named in message and repr(MONO) in message
+        assert re.match(r"CodeWalk source lines? 1\b", message)
+
+    def test_context_shaping_the_probes_miss_is_still_refused(self, monkeypatch):
+        # The last check is Code's own assumption, on the whole listing: one
+        # glyph per visible character. Blind the cluster probe (as shaping in
+        # context would) and the keycap still refuses, before Code is built.
+        monkeypatch.setattr(code_walk, "_cluster_paths",
+                            lambda cluster, font: sum(not c.isspace() for c in cluster))
+        _forbid_building_code(monkeypatch)
+        comp = CodeWalk({"language": "python", "source": "key = '1\ufe0f\u20e3'\nx = 1"})
+        with pytest.raises(LayoutError,
+                           match="draws 15 glyphs for its 12 visible characters") as info:
+            _probe(comp)
+        assert info.value.kind == UNRENDERABLE_TEXT
+
+    @pytest.mark.parametrize("source", [
+        "s = 'na\u00efve caf\u00e9 \u00df \u00f1'\nx = 1",
+        "s = '\u03b1\u03b2\u03b3 \u03a9 \u03bb'\nx = 1",
+        "s = '\u043f\u0440\u0438\u0432\u0435\u0442'\nx = 1",
+        "s = 'q\u0301'\nx = 1",
+        "v = 'Vi\u1ec7t \u01d8'\nx = 1",
+    ], ids=["latin-1", "greek", "cyrillic", "q-acute", "vietnamese"])
+    def test_text_the_font_draws_renders_on_its_rows(self, source):
+        # The guard must not cost the scripts the font does draw: each glyph
+        # lands on its own line's row, none shifted, nothing left over.
+        probe = _probe(CodeWalk({"language": "python", "source": source,
+                                 "highlights": [{"start": 1}]}))
+        code, _bar = probe.mobjects
+        assert _rows_hold(code, source)
 
     def test_minimal_listing_has_no_highlight_bar(self):
         probe = _probe(CodeWalk({"language": "c", "source": "x"}))
@@ -259,6 +363,14 @@ class TestCarryIn:
         with pytest.raises(LayoutError) as info:
             self._artifact(params)
         assert info.value.kind == "overflow"
+
+    def test_artifact_refuses_unrenderable_text_like_the_beat(self):
+        # The builder shares the guarded path: a carried listing cannot bring
+        # back the garbled CJK listing the producing beat refuses.
+        params = {"language": "python", "source": "# \u4f60\u597d\nx = 1"}
+        with pytest.raises(LayoutError, match=r"U\+4F60") as info:
+            self._artifact(params)
+        assert info.value.kind == UNRENDERABLE_TEXT
 
     def test_carried_listing_validates_in_a_later_beat(self):
         video = VideoSpec(video_id="v", beats=(

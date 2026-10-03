@@ -16,6 +16,7 @@ shorter excerpt, which is a decision for the script, not the renderer
 from __future__ import annotations
 
 import unicodedata
+from collections.abc import Callable
 from functools import lru_cache
 
 from manim import (
@@ -23,6 +24,7 @@ from manim import (
     FadeIn,
     ManimColor,
     Rectangle,
+    Text,
     Transform,
     VGroup,
     VMobject,
@@ -46,12 +48,18 @@ from chalkdust.scenes.components.base import (
 from chalkdust.scenes.regions import (
     DEFAULT_PADDING,
     MIN_FONT_SIZE,
+    UNRENDERABLE_TEXT,
     LayoutError,
     fit_to_region,
     region_rect,
     tag_font_size,
 )
-from chalkdust.scenes.theme import Palette, Theme
+from chalkdust.scenes.theme import (
+    Palette,
+    Theme,
+    check_renderable,
+    unsupported_characters,
+)
 
 # Schema-level density limit, like BulletReveal's six items: past eight stops
 # the beat is a lecture, and the error points at the real fix (split the beat).
@@ -80,11 +88,16 @@ PANEL_LIFT = 0.06         # panel fill, this far from bg toward fg
 SINGLE_LINE_PITCH = 1.75
 
 # Code checks that every non-space character became exactly one glyph and
-# raises a bare ValueError when one did not. Two kinds of character never do:
-# format characters (category Cf: zero-width space and joiner, bidi marks, soft
-# hyphen) draw nothing, and emoji are drawn by Pango from a colour font that
-# yields no outline. Both are refused at the schema, where the repair loop can
-# read which character on which line to drop (SCENE_SPEC.md §8 rung 1).
+# raises a bare ValueError when one did not. Two kinds of character never do,
+# in any font: format characters (category Cf: zero-width space and joiner,
+# bidi marks, soft hyphen) draw nothing, and emoji are drawn by Pango from a
+# colour font that yields no outline. Both are refused at the schema, where
+# the repair loop can read which character on which line to drop
+# (SCENE_SPEC.md §8 rung 1). That is an early refusal for the common cases,
+# not the guard: what the *resolved* mono font cannot draw (CJK in Courier
+# New, a right-to-left letter, U+2764 behind a variation selector) is only
+# knowable from the font, and is refused before Code is built by
+# _refuse_unrenderable, through the theme's glyph guard.
 # The BMP characters with Emoji_Presentation=Yes (Unicode emoji-data.txt);
 # every other emoji lives in the pictograph blocks U+1F000-U+1FAFF.
 _EMOJI_BMP = frozenset(
@@ -103,8 +116,10 @@ class LineSpan(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    start: int = Field(ge=1)
-    end: int | None = Field(default=None, ge=1)
+    # Strict: lax mode reads `true` as line 1 and "2" as line 2, so a
+    # malformed highlight would light a line nobody asked for.
+    start: int = Field(ge=1, strict=True)
+    end: int | None = Field(default=None, ge=1, strict=True)
 
     @model_validator(mode="after")
     def _ordered(self) -> LineSpan:
@@ -309,6 +324,26 @@ class CodeWalk(Component):
             # (c) a highlight that lands on a blank line mid-listing.
             {"language": "python", "source": "a = 1\n\nb = 2",
              "highlights": [{"start": 2}, {"start": 1, "end": 3}]},
+            # (e) text the mono font may lack, each of which garbled the
+            # listing while validation said ok: CJK (missing-glyph boxes),
+            # a right-to-left comment (draws nothing), an emoji the schema
+            # lets through (U+2764 + VS16), a keycap built from combining
+            # marks, and Unicode maths. Private-use code points never get
+            # this far: rung 1 refuses them in any spec param.
+            {"language": "python",
+             "source": "# 你好世界\nname = '東京'  # tokyo",
+             "highlights": [{"start": 2}]},
+            {"language": "python", "source": "x = 1  # שלום עולם\ny = 2",
+             "highlights": [{"start": 1}]},
+            {"language": "python", "source": "love = '\u2764\ufe0f'\nprint(love)"},
+            {"language": "python", "source": "key = '1\ufe0f\u20e3'\nprint(key)"},
+            {"language": "python", "source": "# ∀x ≤ ∞\nx = 1",
+             "highlights": [{"start": 2}]},
+            # (e) accented Latin, Greek and Cyrillic, which the font does draw:
+            # these must render, every glyph on its own row.
+            {"language": "python",
+             "source": "café = 'naïve'  # ß ñ\nλ = 'αβγ Ω'\nмир = 'привет'",
+             "highlights": [{"start": 2}, {"start": 3}]},
         ]
 
 
@@ -354,6 +389,13 @@ def _undrawable(ch: str) -> bool:
     )
 
 
+def _paragraph_config(theme: Theme) -> dict:
+    """What Code passes to its Paragraphs: its defaults (line_spacing,
+    disable_ligatures) under the theme's mono type."""
+    return {**Code.default_paragraph_config,
+            "font": theme.type.mono_font, "font_size": theme.type.mono}
+
+
 def _code(source: str, language: str, theme: Theme) -> Code:
     """Manim's Code in the theme's colours and mono type, at natural size."""
     try:
@@ -364,23 +406,20 @@ def _code(source: str, language: str, theme: Theme) -> Code:
             add_line_numbers=True,
             background="rectangle",
             background_config={"stroke_color": theme.palette.muted},
-            paragraph_config={
-                "font": theme.type.mono_font,
-                "font_size": theme.type.mono,
-            },
+            paragraph_config=_paragraph_config(theme),
         )
     except ValueError as exc:
-        # Backstop for a character the schema does not know the theme's mono
-        # font cannot draw: Code checks one glyph per non-space character and
-        # raises a bare ValueError. Only that check is translated; any other
-        # ValueError is a bug and propagates as one.
+        # Backstop behind _refuse_unrenderable, as theme._text keeps one behind
+        # check_renderable: Code checks one glyph per non-space character and
+        # raises a bare ValueError. Only that check is translated, to the
+        # theme's kind for it; any other ValueError is a bug and propagates.
         if "rendered fewer glyph" not in str(exc):
             raise
         raise LayoutError(
-            f"CodeWalk listing has characters the {theme.type.mono_font} font "
-            "cannot draw as one glyph each (an emoji, combining or invisible "
-            "character); spell them in ASCII",
-            kind="illegible",
+            f"CodeWalk source cannot be drawn in font {theme.type.mono_font!r}: "
+            "it shapes to fewer glyphs than it has characters. Rewrite it with "
+            "characters that font draws.",
+            kind=UNRENDERABLE_TEXT,
         ) from exc
 
 
@@ -442,10 +481,137 @@ def _refuse_oversized(p: CodeWalkParams, theme: Theme) -> None:
         )
 
 
+def _clusters(line: str) -> list[str]:
+    """`line` split into base characters, each with the combining marks that
+    follow it (a mark at the start of a line stands alone)."""
+    out: list[str] = []
+    for c in line:
+        if out and unicodedata.category(c)[0] == "M":
+            out[-1] += c
+        else:
+            out.append(c)
+    return out
+
+
+@lru_cache(maxsize=4096)
+def _cluster_paths(cluster: str, font: str) -> int:
+    """How many paths Pango draws for `cluster` alone in `font`, or -1 if it
+    refuses the string: the theme's per-character probe, for a base + marks."""
+    try:
+        return len(Text(cluster, font=font).submobjects)
+    except Exception:
+        return -1
+
+
+def _lines_with(source: str, found: Callable[[str], bool]) -> str:
+    """'line 3' or 'lines 1, 4': the source lines `found` picks, for a message."""
+    nums = [str(n) for n, line in enumerate(source.split("\n"), start=1) if found(line)]
+    return f"line{'s' if len(nums) > 1 else ''} {', '.join(nums)}"
+
+
+class _GlyphCount(Text):
+    """A Text that keeps how many glyphs Pango drew, before Manim maps them
+    onto characters (with disable_ligatures, that mapping drops extras)."""
+
+    def _gen_chars(self):  # type: ignore[override]
+        self.glyphs = len(self.submobjects)
+        return super()._gen_chars()
+
+
+def _refuse_unrenderable(source: str, theme: Theme) -> None:
+    """Refuse, before Code is built, a listing the resolved mono font cannot
+    draw as one glyph per character (kind "unrenderable_text", SCENE_SPEC.md
+    §11 rule 1).
+
+    Code maps the glyphs Pango draws back onto the source's characters by
+    count. A character the font lacks is not an error to Pango: it draws a
+    missing-glyph box -- a box plus one path per hex digit -- or nothing.
+    Too few glyphs and Code raises a bare ValueError; too many and the
+    mapping shifts silently: colours land on the wrong characters, later
+    lines lose their glyphs, and the alignment glyphs Code strips from the
+    last line (" pA1") stay in the frame -- while validate_beat says ok. So
+    the listing is refused from the font, before anything is drawn.
+
+    Three checks. The first two run over distinct pieces, so their cost is
+    the alphabet, not the listing (both are cached per process), and they
+    name what to rewrite:
+      1. theme.check_renderable on the distinct characters -- the guard every
+         theme text constructor applies. It names each character the font
+         cannot draw, and the font.
+      2. Each cluster that check does not settle -- a base carrying combining
+         marks or a mark with no base (the theme does not probe marks; alone,
+         HarfBuzz gives one a dotted circle), or a precomposed letter (the
+         theme lets one draw as base + mark) -- is drawn whole and must come
+         out as exactly one path per non-space character, which is what Code
+         assumes. A keycap 1 + U+FE0F + U+20E3 draws six.
+      3. Code's assumption itself, so shaping in context cannot slip past the
+         probes: the whole listing, drawn as Code's Paragraph draws it, must
+         come out as exactly one glyph per non-space character. An ASCII
+         listing skips it -- check 1 drew each of its characters as one path,
+         and nothing in a mono font changes that count but the programming
+         ligatures Manim already warns about -- so only a listing that leaves
+         ASCII pays for the extra Text.
+    """
+    font = theme.type.mono_font
+    chars = "".join(dict.fromkeys(c for c in source if not c.isspace()))
+    try:
+        check_renderable(chars, font, what="CodeWalk source characters")
+    except LayoutError as exc:
+        bad = {c for c, _ in unsupported_characters(chars, font)}
+        where = _lines_with(source, lambda line: not bad.isdisjoint(line))
+        raise LayoutError(f"CodeWalk source {where}: {exc}", kind=exc.kind) from exc
+
+    lines = source.split("\n")
+    for cluster in dict.fromkeys(cl for line in lines for cl in _clusters(line)):
+        if (len(unicodedata.normalize("NFD", cluster)) == 1
+                and unicodedata.category(cluster)[0] != "M"):
+            continue  # one plain character: check_renderable saw it draw one path
+        want = sum(not c.isspace() for c in cluster)
+        got = _cluster_paths(cluster, font)
+        if got != want:
+            points = " ".join(f"U+{ord(c):04X}" for c in cluster)
+            where = _lines_with(source, lambda line: cluster in _clusters(line))
+            drawn = "cannot be shaped" if got < 0 else f"draws {got} glyph(s)"
+            raise LayoutError(
+                f"CodeWalk source {where}: {cluster!r} ({points}) {drawn} in "
+                f"font {font!r}, not {want} (one per character), so the "
+                f"listing's glyphs would no longer line up with its characters. "
+                f"Rewrite it with characters that font draws.",
+                kind=UNRENDERABLE_TEXT,
+            )
+
+    if source.isascii():
+        return
+    want = sum(not c.isspace() for c in source)
+    try:
+        got: int | None = _GlyphCount(source, **_paragraph_config(theme)).glyphs
+    except ValueError as exc:
+        if "rendered fewer glyph" not in str(exc):
+            raise
+        got = None  # fewer than `want`; Manim does not say how many
+    if got != want:
+        drawn = "fewer glyphs" if got is None else f"{got} glyphs"
+        raise LayoutError(
+            f"CodeWalk source draws {drawn} for its {want} visible characters "
+            f"in font {font!r} (its non-ASCII text is shaped in context), so "
+            f"the listing's glyphs would no longer line up with its "
+            f"characters. Rewrite the non-ASCII text in characters that font "
+            f"draws one by one.",
+            kind=UNRENDERABLE_TEXT,
+        )
+
+
 def _listing(p: CodeWalkParams, theme: Theme) -> Code:
     """The listing at its natural size, unplaced: shared by build() and the
-    carry-in artifact so the two cannot drift apart."""
+    carry-in artifact so the two cannot drift apart -- and so the artifact
+    refuses exactly what the beat refuses.
+
+    Size first: it is arithmetic on the source, and it bounds the alphabet
+    the glyph probe then has to draw (a pasted file of 100k distinct
+    characters refuses as overflow at once, not after 100k probe Texts).
+    """
     _refuse_oversized(p, theme)
+    _refuse_unrenderable(p.source, theme)
     code = label(_code(p.source, p.language, theme), "code")
     # Code builds its Paragraphs itself, bypassing theme.mono_text, so tag
     # them here or the legibility floor never sees this text.

@@ -33,20 +33,27 @@ ACODEC = ["-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2"]
 def mux_beat(video_path: Path, audio_path: Path, out_path: Path) -> None:
     """Combine one beat's silent video with its narration.
 
-    Video duration is authoritative. Manim quantises to whole frames, so the
-    video is typically a few milliseconds longer than the audio -- we pad the
-    audio with silence rather than letting ffmpeg truncate the video to match.
+    Audio is master (D-002): the narration always plays in full. Manim
+    quantises every animation to whole frames, so the clip usually lands a
+    little SHORT of the audio (measured: 3.879 s audio, 3.867 s video), and the
+    shortfall grows with the number of animations. Capping at the video's
+    length clipped the end of the sentence.
+
+    So the result runs to whichever input is longer. A short video holds its
+    last frame -- the beat's settled end state -- and a short audio is padded
+    with silence.
     """
     require("ffmpeg")
-    v_dur = probe_duration(video_path)
+    target = max(probe_duration(video_path), probe_duration(audio_path))
 
     run([
         "ffmpeg", "-y", "-loglevel", "error",
         "-i", str(video_path),
         "-i", str(audio_path),
-        # apad adds silence; -t caps the result at the video's exact length.
+        # Both pads are unbounded; -t cuts the result at the exact target.
+        "-vf", "tpad=stop_mode=clone:stop=-1",
         "-af", "apad",
-        "-t", f"{v_dur:.6f}",
+        "-t", f"{target:.6f}",
         *VCODEC, *ACODEC,
         "-map", "0:v:0", "-map", "1:a:0",
         str(out_path),

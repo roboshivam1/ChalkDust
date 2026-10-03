@@ -17,7 +17,7 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Annotated, NamedTuple
 
-from manim import LEFT, RIGHT, UP, Mobject, VGroup
+from manim import LEFT, RIGHT, UP, Mobject, VGroup, config
 from pydantic import AfterValidator, Field
 
 from chalkdust.core.models import Region
@@ -307,6 +307,32 @@ def _stack(rows: list[list[VGroup]], cap: float) -> list[VGroup]:
     return [VGroup(*lines) for lines in rows]
 
 
+def _on_frames(times: list[float]) -> list[float]:
+    """Snap budget() run times to whole frames so a real render lasts the budget.
+
+    Manim renders a play as ceil(run_time * fps) frames (np.arange over the
+    run time) and a static wait as floor(duration * fps) (freeze_current_frame),
+    and float noise turns an exact 0.2 s at 15 fps into four frames, not three.
+    Eight plays then overran a 2.4 s budget by eight frames, invisible to
+    skip_animations, whose clock just sums run times (D-002). Cumulative step
+    boundaries are rounded to frames instead, every play keeps at least one
+    frame, and the final wait absorbs the difference. The nudges of 1e-9 s pick
+    the intended frame count under either rounding. Could live in
+    ChalkdustScene.budget() for every multi-play component.
+    """
+    fps = config.frame_rate
+    edges, total = [0], 0.0
+    for t in times:
+        total += t
+        edges.append(round(total * fps))
+    frames = [max(b - a, 1) for a, b in zip(edges, edges[1:-1])]
+    # Below one frame per step (narration far under min_seconds()) the beat
+    # overruns whatever happens; Manim's minimum is one frame.
+    frames.append(max(edges[-1] - sum(frames), 1))
+    return ([max(n / fps - 1e-9, 1 / fps) for n in frames[:-1]]
+            + [frames[-1] / fps + 1e-9])
+
+
 # --- the component ----------------------------------------------------------
 
 
@@ -396,7 +422,7 @@ class ProblemStatement(Component):
             scene.add(block)
         scene.exclusive(*blocks)
 
-        times = iter(scene.budget(*self._weights(len(lines))))
+        times = iter(_on_frames(scene.budget(*self._weights(len(lines)))))
         for line in lines:
             scene.play(line.animate.set_opacity(1), run_time=next(times))
         for i, item in enumerate(given_items):

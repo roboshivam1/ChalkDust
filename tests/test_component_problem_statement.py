@@ -8,6 +8,7 @@ these compile real maths and are never skipped without it.
 from __future__ import annotations
 
 import pytest
+from manim import config, tempconfig
 from pydantic import ValidationError
 
 from chalkdust.core.models import BeatSpec
@@ -65,6 +66,19 @@ class TestTiming:
 
     def test_minimal_input_consumes_budget(self):
         assert _elapsed(MINIMAL, 6.0) == pytest.approx(6.0, abs=FRAME)
+
+    def test_real_render_lasts_an_off_frame_budget(self, tmp_path):
+        """Drawn frames, not summed run times: Manim rounds every play up to
+        whole frames, which skip_animations cannot see. 7.3127 s lands on no
+        frame boundary at 15 fps; unsnapped, the eight steps overran by six
+        frames."""
+        with tempconfig({"quality": "low_quality", "media_dir": str(tmp_path),
+                         "write_to_movie": False, "disable_caching": True,
+                         "progress_bar": "none", "verbosity": "WARNING"}):
+            scene = ChalkdustScene(ProblemStatement(INCLINE), duration=7.3127)
+            scene.render()
+            frame = 1 / config.frame_rate
+        assert scene.renderer.time == pytest.approx(7.3127, abs=frame)
 
     def test_min_seconds_grows_with_each_given(self):
         none = ProblemStatement(MINIMAL).min_seconds()

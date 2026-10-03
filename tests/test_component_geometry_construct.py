@@ -175,6 +175,30 @@ def test_blank_note_is_no_note():
     assert report.ok, f"\n{report}"
 
 
+@pytest.mark.parametrize("note", ["​", "﻿", "⁠", "­",
+                                  "‎", " ​\t﻿ "])
+def test_invisible_note_is_no_note(note):
+    # str.strip() keeps zero-width and format characters, so such a note used
+    # to survive, build an inkless Text and refuse as 'overlap' (rc2 verify).
+    params = {"shapes": [_pt("A", 0, 0), _pt("B", 1, 0)],
+              "construction": [{"kind": "circle", "center": "A",
+                                "through": "B", "note": note}]}
+    assert GeometryConstructParams(**params).construction[0].note is None
+    assert GeometryConstruct(params).regions() == {Region.STAGE}
+    report = _validate(params)
+    assert report.ok, f"\n{report}"
+
+
+@pytest.mark.parametrize("note", ["before\u0000after", "bell\u0007", "\u0000"])
+def test_rejects_control_characters_in_note(note):
+    # A NUL reached Pango and raised a raw ValueError at build (rc2 verify).
+    params = {"shapes": [_pt("A", 0, 0), _pt("B", 1, 0)],
+              "construction": [{"kind": "circle", "center": "A",
+                                "through": "B", "note": note}]}
+    with pytest.raises(ValidationError, match="control character"):
+        GeometryConstructParams.model_validate(params)
+
+
 # --- schema refusals (rung 1) ----------------------------------------------------
 
 
@@ -294,6 +318,21 @@ def test_local_frame_is_unitless():
 def test_refuses_unreadable_figures(params, kind):
     report = _validate(params)
     assert report.kinds() == {kind}, f"\n{report}"
+
+
+@pytest.mark.parametrize("params", [
+    # Subnormal separation: the scale overflows to inf.
+    {"shapes": [_pt("A", 0, 0), _pt("B", 5e-324, 0)]},
+    {"construction": [_pt("A", 0, 0), _pt("B", 2.2e-308, 0)]},
+    # Extent overflow: the circle's c + r is inf.
+    {"shapes": [_pt("A", 0, 0), _pt("B", 1e308, 0)],
+     "construction": [{"kind": "circle", "center": "A", "through": "B"}]},
+])
+def test_refuses_coordinates_that_overflow_placement(params):
+    # Finite coordinates whose placement leaves the reals used to reach label
+    # placement as nan and crash with a TypeError (rc2 verify).
+    report = _validate(params)
+    assert report.kinds() == {"illegible"}, f"\n{report}"
 
 
 def test_distance_to_a_degenerate_segment_is_distance_to_its_point():

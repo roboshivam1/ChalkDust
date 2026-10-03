@@ -19,6 +19,7 @@ at build time, like every other component (SCENE_SPEC.md §11 rule 1).
 from __future__ import annotations
 
 import re
+import unicodedata
 from typing import Annotated, Literal, Union
 
 import numpy as np
@@ -101,6 +102,13 @@ Coord = Annotated[float, Field(allow_inf_nan=False)]
 # A TeX control word (\frac, \sqrt) or an inline $...$ span: maths source that
 # a plain-text caption would draw literally.
 _TEX_MARKUP = re.compile(r"\\[A-Za-z]+|\$[^$]+\$")
+# Characters that put no ink on screen: control and format characters
+# (U+200B, U+FEFF, U+2060, U+00AD, U+200E ...) and every kind of space.
+# str.strip() keeps the format characters, so it cannot decide this.
+_INKLESS = {"Cc", "Cf", "Zs", "Zl", "Zp"}
+# The only control characters a caption may hold; wrap() treats them as
+# whitespace. Any other (NUL above all) reaches Pango and breaks its markup.
+_CAPTION_CONTROLS = {"\t", "\n", "\r"}
 
 
 # --- params -----------------------------------------------------------------
@@ -118,7 +126,20 @@ class _Element(ComponentParams):
         # the timing weights and build() cannot disagree about whether a step
         # has one -- wrap() would strip it to an empty Text sitting on the
         # figure.
-        if v is None or not v.strip():
+        if v is None:
+            return None
+        bad = sorted({c for c in v if unicodedata.category(c) == "Cc"}
+                     - _CAPTION_CONTROLS)
+        if bad:
+            raise ValueError(
+                f"note {v!r} contains control character(s) "
+                f"{', '.join(f'U+{ord(c):04X}' for c in bad)}; a note is "
+                "plain caption text"
+            )
+        if all(unicodedata.category(c) in _INKLESS for c in v):
+            # Nothing visible -- whitespace, or zero-width and other format
+            # characters only. Text would draw nothing, yet still sit on the
+            # figure as an empty box.
             return None
         if _TEX_MARKUP.search(v):
             # Captions are plain Text: TeX here would reach the screen as its
@@ -551,6 +572,17 @@ class GeometryConstruct(Component):
             {"shapes": [_pt("A", 0, 0), _pt("B", 1, 0)],
              "construction": [_circ("A", "B", "cA",
                                     note="r = |AB|, angle BAC = 60°, {} $ ^ _")]},
+            # (c) Empty caption, invisibly: zero-width and format characters
+            # only. No ink, so no note -- never an empty box on the figure.
+            {"shapes": [_pt("A", 0, 0), _pt("B", 1, 0)],
+             "construction": [_circ("A", "B", "cA",
+                                    note="​﻿⁠­‎")]},
+            # Finite coordinates that overflow placement: a subnormal
+            # separation (the scale overflows to inf) and a circle whose
+            # extent passes 1e308 (c + r is inf). Both refuse as illegible.
+            {"shapes": [_pt("A", 0, 0), _pt("B", 5e-324, 0)]},
+            {"shapes": [_pt("A", 0, 0), _pt("B", 1e308, 0)],
+             "construction": [_circ("A", "B", "cA")]},
         ]
 
 
@@ -651,27 +683,43 @@ def _place_in_stage(p: GeometryConstructParams, local: dict[str, np.ndarray],
     no intrinsic size, so "natural size" means nothing for the geometry. Text
     is never scaled here -- labels keep their theme size.
     """
-    lo = np.min(list(local.values()), axis=0)
-    hi = np.max(list(local.values()), axis=0)
-    for el in [*p.shapes, *p.construction]:
-        if isinstance(el, CircleElement):
-            c = local[el.center]
-            r = float(np.linalg.norm(local[el.through] - c))
-            lo = np.minimum(lo, c - r)
-            hi = np.maximum(hi, c + r)
+    # Coordinates are any finite float, so the arithmetic below can still
+    # leave the reals: a subnormal separation overflows the scale (5e-324
+    # apart gives s = inf), and a circle near 1e308 overflows its extent
+    # (c + r = inf). Either way positions turn nan, every label direction
+    # scores nan and label placement crashes. Overflow is checked for
+    # explicitly below, so numpy's warnings about it are noise.
+    with np.errstate(over="ignore", invalid="ignore"):
+        lo = np.min(list(local.values()), axis=0)
+        hi = np.max(list(local.values()), axis=0)
+        for el in [*p.shapes, *p.construction]:
+            if isinstance(el, CircleElement):
+                c = local[el.center]
+                r = float(np.linalg.norm(local[el.through] - c))
+                lo = np.minimum(lo, c - r)
+                hi = np.maximum(hi, c + r)
 
-    margin = max(max(m.width, m.height) for m in labels.values()) + LABEL_BUFF
-    inner = region_rect(Region.STAGE).inset(DEFAULT_PADDING + margin)
-    span = hi - lo
-    ratios = [avail / size for avail, size in
-              ((inner.width, span[0]), (inner.height, span[1])) if size > 0]
-    s = min(ratios) if ratios else 1.0  # a lone point: any scale will do
-    mid = (lo + hi) / 2
+        margin = max(max(m.width, m.height) for m in labels.values()) + LABEL_BUFF
+        inner = region_rect(Region.STAGE).inset(DEFAULT_PADDING + margin)
+        span = hi - lo
+        ratios = [avail / size for avail, size in
+                  ((inner.width, span[0]), (inner.height, span[1])) if size > 0]
+        s = min(ratios) if ratios else 1.0  # a lone point: any scale will do
+        mid = (lo + hi) / 2
 
-    out = {}
-    for n, v in local.items():
-        x, y = s * (v - mid)
-        out[n] = inner.center + np.array([x, y, 0.0])
+        out = {}
+        for n, v in local.items():
+            x, y = s * (v - mid)
+            out[n] = inner.center + np.array([x, y, 0.0])
+
+    if not (np.isfinite(s) and s > 0
+            and all(np.isfinite(q).all() for q in (lo, hi, span, mid))
+            and all(np.isfinite(q).all() for q in out.values())):
+        raise LayoutError(
+            f"the figure cannot be scaled into STAGE: its local coordinates "
+            f"span {span[0]:.3g} x {span[1]:.3g}, beyond what floating point "
+            "can map onto the screen; restate it with coordinates of everyday "
+            "size (say 0 to 10)", kind="illegible")
     return out
 
 

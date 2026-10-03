@@ -152,8 +152,14 @@ class ZoomHighlight(Component):
             marker = label(Group(card, mag), "zoom lens")
             marker.move_to(focus)
             _clamp_into(marker, region_rect(Region.STAGE).inset(DEFAULT_PADDING))
-            # Grows out of the focus: starts at the focus's own size and spot.
-            reveal = FadeIn(marker, scale=1 / zoom, target_position=focus.get_center())
+            # Grows out of the focus: starts at the focus's own size and spot,
+            # opaque throughout. A FadeIn would cross-fade the magnified copy
+            # over the original for the whole step -- double-exposed text.
+            # Transform to a copy, not Restore: Restore calls become(), which
+            # a plain Group cannot interpolate.
+            settled = marker.copy()
+            marker.scale(1 / zoom).move_to(focus)
+            reveal = Transform(marker, settled)
         else:
             marker = label(
                 SurroundingRectangle(focus, buff=FRAME_BUFF, color=theme.palette.accent,
@@ -175,6 +181,10 @@ class ZoomHighlight(Component):
             scene.play(*(Transform(m, f.copy()) for m, f in zip(focus, focus_full)),
                        *(m.animate.fade(RECEDE) for m in others),
                        run_time=t_focus)
+        # On screen before the reveal starts, as Scene.play would put it: the
+        # lens's Transform is not an introducer, and LayoutProbe only adds
+        # what introducers introduce -- without this the probe never sees it.
+        scene.add(marker)
         scene.play(reveal, run_time=t_zoom)
         scene.play(FadeIn(callout), run_time=t_callout)
         scene.settle("zoom highlight shown")

@@ -1,8 +1,8 @@
 """Carry-in continuity (SCENE_SPEC.md §6).
 
-No shipped component registers an artifact builder yet, so these tests lend
-TitleCard a builder for the duration of each test (monkeypatched, never left
-in the registry).
+These tests lend TitleCard a builder for the duration of each test
+(monkeypatched, never left in the registry); the producers that ship their
+own, BulletReveal among them, are left as they are.
 """
 
 from __future__ import annotations
@@ -98,8 +98,10 @@ class TestValidation:
         assert _carry_error(exc_info).name == "bucket_array"
 
     def test_producer_without_builder_is_typed_error(self):
-        # Valid spec, but BulletReveal has no artifact builder.
-        video = _video(_beat("b01", registers="bucket_array"), _consumer())
+        # Valid spec, but TitleCard ships no artifact builder (and this test
+        # does not lend it one). BulletReveal, the producer here before, now
+        # ships its own.
+        video = _video(_producer(), _consumer())
         with pytest.raises(CarryInError):
             resolve_carry_in(video)
 

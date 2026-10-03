@@ -1,25 +1,32 @@
 """Layout invariants across the whole component library.
 
 These tests walk the registry, so every component added later is covered
-automatically -- no test file to remember to update.
+automatically -- no test file to remember to update. A component that acts on
+a carried artifact (Callout, ZoomHighlight) is walked too: each case is built
+with the artifacts its Component.fixture_carry_in names on screen, as the
+render builds a carry-in beat (SCENE_SPEC.md §6).
 """
 
 from __future__ import annotations
 
 import pytest
 
-from chalkdust.core.models import BeatSpec, Region
+from chalkdust.continuity import fixture_beat
+from chalkdust.core.models import Region
 from chalkdust.scenes.components import get_component, registered_names
 from chalkdust.scenes.regions import LayoutError, region_rect, safe_area
-from chalkdust.validate.geometric import validate_beat
+from chalkdust.validate.geometric import Report, validate_beat
 
 # Kinds that represent a component correctly refusing overloaded content.
 CLEAN_REFUSALS = {"overflow", "illegible", "invalid_latex", "unrenderable_text"}
 
 
-def _spec(component: str, params: dict, bid: str = "b01") -> BeatSpec:
-    return BeatSpec(id=bid, narration="placeholder narration", 
-                    component=component, params=params)
+def _validate(component: str, params: dict) -> Report:
+    """validate_beat on one case, built as the pipeline builds its beat: a
+    carry-in consumer's case with its fixture artifacts on screen first
+    (continuity.fixture_beat; a plain beat for every other component)."""
+    spec, recipes = fixture_beat(component, params)
+    return validate_beat(spec, recipes=recipes)
 
 
 def _cases(kind: str):
@@ -37,7 +44,7 @@ class TestExamples:
 
     @pytest.mark.parametrize("name,params", _cases("examples"))
     def test_validates_clean(self, name, params):
-        report = validate_beat(_spec(name, params))
+        report = _validate(name, params)
         assert report.ok, f"\n{report}"
 
 
@@ -47,7 +54,7 @@ class TestStress:
 
     @pytest.mark.parametrize("name,params", _cases("stress"))
     def test_fits_or_refuses_cleanly(self, name, params):
-        report = validate_beat(_spec(name, params))
+        report = _validate(name, params)
         if report.ok:
             return  # handled it; fine
         bad = report.kinds() - CLEAN_REFUSALS
@@ -60,7 +67,7 @@ class TestStress:
     def test_no_crash(self, name, params):
         # build_error means an exception that is not a LayoutError escaped --
         # an IndexError or TypeError from unhandled content volume.
-        report = validate_beat(_spec(name, params))
+        report = _validate(name, params)
         crashes = [f for f in report.findings if f.kind == "build_error"]
         assert not crashes, f"\n{report}"
 

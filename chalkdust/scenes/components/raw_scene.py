@@ -608,7 +608,9 @@ def _fit_to_duration(src: Path, dst: Path, duration: float, fps: int) -> None:
 def degrade_spec(spec: BeatSpec) -> BeatSpec:
     """The BulletReveal that replaces a failed RawScene: the narration, one
     sentence per bullet, overflow folded into the last of six. Continuity
-    fields are dropped -- BulletReveal neither uses nor rebuilds artifacts."""
+    fields are dropped: the fallback carries nothing in, and a later beat
+    carrying in what the RawScene beat registers is refused at resolution
+    (RawScene has no artifact builder), whatever renders in its place."""
     sentences = [s for s in re.split(r"(?<=[.!?])\s+", spec.narration) if s]
     if len(sentences) > 6:
         sentences = sentences[:5] + [" ".join(sentences[5:])]

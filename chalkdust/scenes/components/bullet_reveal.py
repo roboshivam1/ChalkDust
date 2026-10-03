@@ -2,14 +2,15 @@
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Annotated, Literal
 
 from manim import DOWN, LEFT, ORIGIN, UP, Dot, FadeIn, VGroup
-from pydantic import Field
+from pydantic import Field, StringConstraints
 
 from chalkdust.core.models import Region
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import (
+    MIN_STEP_SECONDS,
     Component,
     ComponentParams,
     label,
@@ -26,13 +27,18 @@ LINE_HEIGHT = 1.7   # one line of text, anchor to anchor
 PARA_GAP = 0.9      # additional space between bullets
 DOT_GAP = 0.28      # horizontal space between dot and text (absolute units)
 
+# Blank text is refused at the schema rung. A blank bullet is a dot with
+# nothing beside it, and a blank heading builds an empty mobject at the origin
+# that "overlaps" the bullets. Leave the heading out instead of passing "".
+NonBlank = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+
 
 class BulletRevealParams(ComponentParams):
-    heading: str | None = None
+    heading: NonBlank | None = None
     # Capped at 6. A density limit that fires at schema validation -- cheaper
     # than the legibility check, and its error points at the real fix (split
     # the beat) rather than at a font size.
-    items: list[str] = Field(min_length=1, max_length=6)
+    items: list[NonBlank] = Field(min_length=1, max_length=6)
     reveal: Literal["sequential", "all"] = "sequential"
 
 
@@ -46,6 +52,22 @@ class BulletReveal(Component):
         if self.params.heading:
             r.add(Region.TITLE_BAR)
         return r
+
+    def _weights(self) -> list[float]:
+        """Budget weights, one per play() plus the closing hold: the heading,
+        then each bullet (or, with reveal="all", every bullet in one play).
+        Shared by build() and min_seconds() so they cannot drift apart."""
+        p: BulletRevealParams = self.params
+        heading = [1] if p.heading else []
+        if p.reveal == "all":
+            return heading + [2 * len(p.items)] + [2]
+        return heading + [2] * len(p.items) + [2]
+
+    def min_seconds(self) -> float:
+        # The shortest reveal -- the heading's fade, else one bullet (or the
+        # one "all" fade) -- gets at least MIN_STEP_SECONDS.
+        weights = self._weights()
+        return MIN_STEP_SECONDS * sum(weights) / min(weights[:-1])
 
     def build(self, scene: ChalkdustScene) -> None:
         p: BulletRevealParams = self.params
@@ -97,8 +119,7 @@ class BulletReveal(Component):
         if heading is not None:
             scene.exclusive(heading, bullets)
 
-        weights = ([1] if heading is not None else []) + [2] * len(rows) + [2]
-        times = scene.budget(*weights)
+        times = scene.budget(*self._weights())
         idx = 0
 
         if heading is not None:
@@ -106,7 +127,7 @@ class BulletReveal(Component):
             idx += 1
 
         if p.reveal == "all":
-            scene.play(FadeIn(bullets), run_time=sum(times[idx:-1]))
+            scene.play(FadeIn(bullets), run_time=times[idx])
         else:
             for row in rows:
                 scene.play(row.animate.set_opacity(1), run_time=times[idx])
@@ -137,4 +158,11 @@ class BulletReveal(Component):
             # One unwrappable token.
             {"items": ["antidisestablishmentarianism" * 4]},
             {"heading": "Short", "items": ["a"] * 6},  # minimal content
+            {"items": ["a"]},  # minimal: one one-character bullet, no heading
+            {"heading": "H", "items": ["a"], "reveal": "all"},
+            # 3x volume revealed all at once.
+            {"heading": "A heading that runs considerably longer than it should",
+             "items": ["Each of these bullets says far more than a viewer can "
+                       "take in while it fades in"] * 6,
+             "reveal": "all"},
         ]

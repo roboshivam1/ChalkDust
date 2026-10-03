@@ -252,3 +252,25 @@ def test_narration_with_nothing_to_speak_is_refused_at_rung_1(
     assert err.startswith("chalkdust: spec invalid: ")
     assert "beats.1.narration: Value error, narration has nothing to speak" in err
     assert fake_tts.calls == []
+
+
+def test_a_work_dir_whose_full_path_has_a_tilde_is_refused_up_front(
+        tmp_path, capsys, fake_tts):
+    # Register N-10: TeX cannot compile under a path holding a literal '~',
+    # and the failure surfaced as misleading invalid-LaTeX findings (rc 8).
+    # An 8.3 short name is fine -- long_path expands it (N-3) -- so only a
+    # '~' that survives expansion is refused, before the spec costs anything.
+    spec = example_spec()
+    spec["beats"] = spec["beats"][:1]
+    path = write_spec(tmp_path / "spec.json", spec)
+    work = tmp_path / "my~scratch" / "work"
+
+    rc = cli.main(["render", str(path), "--cache-dir", str(tmp_path / "cache"),
+                   "--work-dir", str(work)])
+
+    err = capsys.readouterr().err
+    assert rc == cli.EXIT_DIRECTORY_UNUSABLE
+    assert err.startswith(f"chalkdust: directory unusable: --work-dir {work}: ")
+    assert "contains '~'" in err
+    assert not (tmp_path / "my~scratch").exists()
+    assert fake_tts.calls == []

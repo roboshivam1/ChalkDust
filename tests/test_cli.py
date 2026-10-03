@@ -163,3 +163,28 @@ def test_a_spec_with_no_beats_is_refused_at_validation(tmp_path, capsys):
     assert "ok (0 beats)" not in out
     assert err.startswith("chalkdust: spec invalid: ")
     assert "beats: a video needs at least one beat" in err
+
+
+EXAMPLES = sorted(EXAMPLE.parent.glob("*.json"))
+
+
+@pytest.mark.parametrize("path", EXAMPLES, ids=lambda p: p.stem)
+def test_every_example_validates_and_leaves_the_voice_to_the_platform(
+        path, tmp_path, capsys):
+    # An example names no TTS backend or voice: tts.resolve_voice picks the
+    # platform's default backend and that backend's default voice, so the
+    # same file renders on macOS and Windows alike.
+    spec = pipeline.load_spec(path)
+    assert not {"backend", "voice_id"} & spec.voice.model_fields_set
+    assert cli.main(["validate", str(path), "--work-dir", str(tmp_path / "work")]) \
+        == cli.EXIT_OK
+    assert f"ok ({len(spec.beats)} beats)" in capsys.readouterr().out
+
+
+def test_an_example_meets_the_phase_0_exit_shape():
+    # ROADMAP.md Phase 0 exit: a hand-authored 5-beat spec, built from the
+    # Phase 0 components.
+    phase0 = {"TitleCard", "BulletReveal", "EquationDerivation"}
+    shapes = [(len(s.beats), {b.component for b in s.beats})
+              for s in map(pipeline.load_spec, EXAMPLES)]
+    assert (5, phase0) in shapes, shapes

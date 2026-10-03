@@ -8,6 +8,7 @@ behaviour under test is what happens out of process.
 from __future__ import annotations
 
 import json
+import subprocess
 
 import pytest
 
@@ -19,6 +20,7 @@ from chalkdust.scenes.components.raw_scene import (
     RawScene,
     RawSceneError,
     RawSceneParams,
+    _fit_to_duration,
     _user_namespace,
     check_code,
     degrade_spec,
@@ -90,6 +92,24 @@ class TestStaticCheck:
         assert _kind("from manim import *\nos.system('x')") == "forbidden_import"
 
     @pytest.mark.parametrize("code", [
+        # A system module re-exported by an allowed package.
+        "from manim.utils.file_ops import os",
+        "from manim.utils.file_ops import os as o\no.getcwd()",
+        # ...or reached as an attribute of one.
+        "import manim.utils.file_ops as f\nf.os.system('x')",
+        "from manim.utils import file_ops\nfile_ops.shutil.rmtree('x')",
+        # A star from a submodule binds whatever it imported.
+        "from manim.utils.file_ops import *",
+    ])
+    def test_system_module_through_allowed_package(self, code):
+        assert _kind(code) == "forbidden_import"
+
+    def test_allowed_submodules_pass(self):
+        check_code("import numpy.linalg\n"
+                   "from manim.utils.rate_functions import smooth\n"
+                   "x = numpy.linalg.norm([3, 4])\n")
+
+    @pytest.mark.parametrize("code", [
         "eval('1')", "exec('x=1')", "open('f')", "__import__('os')",
         "getattr(x, 'y')", "().__class__.__bases__",
     ])
@@ -113,6 +133,22 @@ class TestRuntimeGuard:
     def test_escape_builtins_absent(self):
         with pytest.raises(NameError):
             exec("open('x')", _user_namespace())
+
+    @pytest.mark.parametrize("code", [
+        "from manim.utils.file_ops import os as o; o.getcwd()",
+        "from manim.utils.file_ops import *",
+    ])
+    def test_system_module_through_allowed_package_at_runtime(self, code):
+        with pytest.raises(RawSceneError) as exc_info:
+            exec(code, _user_namespace())
+        assert exc_info.value.kind == "forbidden_import"
+
+    def test_star_from_top_level_package_at_runtime(self):
+        # `from manim import *` binds a few module objects (typing, np);
+        # the fromlist check must not break the line every scene starts with.
+        ns = _user_namespace()
+        exec("from manim import *\nfrom numpy import *", ns)
+        assert ns["Circle"] is not None
 
 
 class TestDegradationPaths:
@@ -189,6 +225,34 @@ class TestSuccess:
                  (tmp_path / USAGE_LOG_NAME).read_text().splitlines()]
         assert [(e["outcome"], e["cached"]) for e in lines] == \
             [("rendered", False), ("rendered", True)]
+
+
+class TestFitToDuration:
+    def test_long_run_sped_up_to_budget(self, tmp_path):
+        # A 3 s, 45-frame source (the real 2 s-of-play clip shape) into a
+        # 1.8 s budget. Every frame is red except the LAST, which is blue:
+        # truncation would also hit the duration, and a speed-up that drops
+        # the final frame would too -- only the right speed-up ends on blue,
+        # i.e. on the settled state the layout checks passed.
+        src, dst = tmp_path / "src.mp4", tmp_path / "dst.mp4"
+        subprocess.run(
+            ["ffmpeg", "-y", "-loglevel", "error",
+             "-f", "lavfi", "-i", "color=c=red:s=64x64:r=15",
+             "-f", "lavfi", "-i", "color=c=blue:s=64x64:r=15",
+             "-filter_complex", "[0:v]trim=end_frame=44[a];[1:v]trim=end_frame=1[b];"
+                                "[a][b]concat=n=2:v=1",
+             "-pix_fmt", "yuv420p", str(src)], check=True)
+        assert probe_duration(src) == pytest.approx(3.0)
+        _fit_to_duration(src, dst, 1.8, 15)
+
+        assert abs(probe_duration(dst) - 1.8) <= 1 / 15 + 1e-6
+        frames = subprocess.run(
+            ["ffmpeg", "-loglevel", "error", "-i", str(dst),
+             "-f", "rawvideo", "-pix_fmt", "rgb24", "-"],
+            check=True, capture_output=True).stdout
+        last = frames[-64 * 64 * 3:]
+        r, _, b = last[3 * (32 * 64 + 32):][:3]  # its centre pixel
+        assert b > 200 and r < 50
 
 
 class TestComponent:

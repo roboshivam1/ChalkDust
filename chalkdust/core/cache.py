@@ -47,7 +47,7 @@ def tts_key(narration: str, voice: VoiceConfig) -> str:
 
 
 def beat_render_key(spec: BeatSpec, duration: float, ctx: BuildContext,
-                    carried: str | None = None) -> str:
+                    *, carried: str | None = None) -> str:
     """A rendered beat depends on the visual spec, how long it must run, and
     the build context.
 
@@ -69,7 +69,8 @@ def beat_render_key(spec: BeatSpec, duration: float, ctx: BuildContext,
     # this spec alone does not determine the frame: editing the producing beat
     # must re-render every beat that carries its artifact. `carried` is
     # continuity.carry_in_fingerprint(...) of this beat's resolved recipes.
-    # Beats without carry-ins keep their key unchanged.
+    # Beats without carry-ins keep their key unchanged. Keyword-only, so a
+    # key term added positionally later can never land in it by accident.
     if spec.carry_in:
         if carried is None:
             raise ValueError(

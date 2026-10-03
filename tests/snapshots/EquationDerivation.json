@@ -1,0 +1,1412 @@
+{
+ "component": "EquationDerivation",
+ "manim_version": "0.21.0",
+ "reasons": [
+  "EquationDerivation merged"
+ ],
+ "cases": [
+  {
+   "params": {
+    "steps": [
+     "{{ x^2 + 6x }} + 5 = 0",
+     "{{ x^2 + 6x }} + 9 = 4",
+     "{{ (x + 3)^2 }} = 4",
+     "x + 3 = \\pm 2",
+     "x = -1 \\text{ or } x = -5"
+    ],
+    "annotations": [
+     {
+      "step": 1,
+      "text": "add 4 to both sides"
+     },
+     {
+      "step": 2,
+      "text": "factor the perfect square"
+     },
+     {
+      "step": 3,
+      "text": "take square roots"
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "Write"
+      ],
+      "run_time": 0.976
+     },
+     {
+      "op": "settle",
+      "label": "step 0",
+      "mobjects": [
+       {
+        "type": "MathTex",
+        "label": "step[0]",
+        "tex": " x^2 + 6x   + 5 = 0",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.732
+     },
+     {
+      "op": "play",
+      "animations": [
+       "TransformMatchingTex"
+      ],
+      "run_time": 0.976
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.488
+     },
+     {
+      "op": "settle",
+      "label": "step 1",
+      "mobjects": [
+       {
+        "type": "MathTex",
+        "label": "step[0]",
+        "tex": " x^2 + 6x   + 5 = 0",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[1]",
+        "tex": " x^2 + 6x   + 9 = 4",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "annotation[1]",
+        "text": "add 4 to both sides",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.732
+     },
+     {
+      "op": "play",
+      "animations": [
+       "TransformMatchingTex"
+      ],
+      "run_time": 0.976
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.488
+     },
+     {
+      "op": "settle",
+      "label": "step 2",
+      "mobjects": [
+       {
+        "type": "MathTex",
+        "label": "step[0]",
+        "tex": " x^2 + 6x   + 5 = 0",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[1]",
+        "tex": " x^2 + 6x   + 9 = 4",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "annotation[1]",
+        "text": "add 4 to both sides",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[2]",
+        "tex": " (x + 3)^2   = 4",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "annotation[2]",
+        "text": "factor the perfect square",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.732
+     },
+     {
+      "op": "play",
+      "animations": [
+       "TransformMatchingTex"
+      ],
+      "run_time": 0.976
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.488
+     },
+     {
+      "op": "settle",
+      "label": "step 3",
+      "mobjects": [
+       {
+        "type": "MathTex",
+        "label": "step[0]",
+        "tex": " x^2 + 6x   + 5 = 0",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[1]",
+        "tex": " x^2 + 6x   + 9 = 4",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "annotation[1]",
+        "text": "add 4 to both sides",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[2]",
+        "tex": " (x + 3)^2   = 4",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "annotation[2]",
+        "text": "factor the perfect square",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[3]",
+        "tex": "x + 3 = \\pm 2",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "annotation[3]",
+        "text": "take square roots",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.732
+     },
+     {
+      "op": "play",
+      "animations": [
+       "TransformMatchingTex"
+      ],
+      "run_time": 0.976
+     },
+     {
+      "op": "settle",
+      "label": "step 4",
+      "mobjects": [
+       {
+        "type": "MathTex",
+        "label": "step[0]",
+        "tex": " x^2 + 6x   + 5 = 0",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[1]",
+        "tex": " x^2 + 6x   + 9 = 4",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "annotation[1]",
+        "text": "add 4 to both sides",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[2]",
+        "tex": " (x + 3)^2   = 4",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "annotation[2]",
+        "text": "factor the perfect square",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[3]",
+        "tex": "x + 3 = \\pm 2",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "annotation[3]",
+        "text": "take square roots",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[4]",
+        "tex": "x = -1 \\text{ or } x = -5",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.732
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "MathTex",
+        "label": "step[0]",
+        "tex": " x^2 + 6x   + 5 = 0",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[1]",
+        "tex": " x^2 + 6x   + 9 = 4",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "annotation[1]",
+        "text": "add 4 to both sides",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[2]",
+        "tex": " (x + 3)^2   = 4",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "annotation[2]",
+        "text": "factor the perfect square",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[3]",
+        "tex": "x + 3 = \\pm 2",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "annotation[3]",
+        "text": "take square roots",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[4]",
+        "tex": "x = -1 \\text{ or } x = -5",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        -2.795,
+        1.884,
+        3.726,
+        0.526
+       ],
+       "font_size": 44.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -2.795,
+        1.884,
+        3.726,
+        0.526
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -2.795,
+        0.849,
+        3.732,
+        0.526
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        2.011,
+        0.849,
+        3.723,
+        0.323
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -2.795,
+        1.884,
+        3.726,
+        0.526
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -2.795,
+        0.849,
+        3.732,
+        0.526
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        2.011,
+        0.849,
+        3.723,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.795,
+        -0.233,
+        2.863,
+        0.618
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        2.547,
+        -0.233,
+        4.795,
+        0.412
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -2.795,
+        1.884,
+        3.726,
+        0.526
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -2.795,
+        0.849,
+        3.732,
+        0.526
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        2.011,
+        0.849,
+        3.723,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.795,
+        -0.233,
+        2.863,
+        0.618
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        2.547,
+        -0.233,
+        4.795,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.795,
+        -1.256,
+        2.644,
+        0.41
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        1.854,
+        -1.256,
+        3.409,
+        0.406
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -2.795,
+        1.884,
+        3.726,
+        0.526
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -2.795,
+        0.849,
+        3.732,
+        0.526
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        2.011,
+        0.849,
+        3.723,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.795,
+        -0.233,
+        2.863,
+        0.618
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        2.547,
+        -0.233,
+        4.795,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.795,
+        -1.256,
+        2.644,
+        0.41
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        1.854,
+        -1.256,
+        3.409,
+        0.406
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.795,
+        -2.159,
+        4.298,
+        0.377
+       ],
+       "font_size": 44.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -2.795,
+        1.884,
+        3.726,
+        0.526
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -2.795,
+        0.849,
+        3.732,
+        0.526
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        2.011,
+        0.849,
+        3.723,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.795,
+        -0.233,
+        2.863,
+        0.618
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        2.547,
+        -0.233,
+        4.795,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.795,
+        -1.256,
+        2.644,
+        0.41
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        1.854,
+        -1.256,
+        3.409,
+        0.406
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.795,
+        -2.159,
+        4.298,
+        0.377
+       ],
+       "font_size": 44.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "steps": [
+     "v^2 = u^2 + 2as",
+     "2as = v^2 - u^2",
+     "s = \\frac{v^2 - u^2}{2a}"
+    ],
+    "annotations": [
+     {
+      "step": 2,
+      "text": "divide both sides by 2a"
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "Write"
+      ],
+      "run_time": 1.739
+     },
+     {
+      "op": "settle",
+      "label": "step 0",
+      "mobjects": [
+       {
+        "type": "MathTex",
+        "label": "step[0]",
+        "tex": "v^2 = u^2 + 2as",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.304
+     },
+     {
+      "op": "play",
+      "animations": [
+       "TransformMatchingTex"
+      ],
+      "run_time": 1.739
+     },
+     {
+      "op": "settle",
+      "label": "step 1",
+      "mobjects": [
+       {
+        "type": "MathTex",
+        "label": "step[0]",
+        "tex": "v^2 = u^2 + 2as",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[1]",
+        "tex": "2as = v^2 - u^2",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.304
+     },
+     {
+      "op": "play",
+      "animations": [
+       "TransformMatchingTex"
+      ],
+      "run_time": 1.739
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.87
+     },
+     {
+      "op": "settle",
+      "label": "step 2",
+      "mobjects": [
+       {
+        "type": "MathTex",
+        "label": "step[0]",
+        "tex": "v^2 = u^2 + 2as",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[1]",
+        "tex": "2as = v^2 - u^2",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[2]",
+        "tex": "s = \\frac{v^2 - u^2}{2a}",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "annotation[2]",
+        "text": "divide both sides by 2a",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.304
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "MathTex",
+        "label": "step[0]",
+        "tex": "v^2 = u^2 + 2as",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[1]",
+        "tex": "2as = v^2 - u^2",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[2]",
+        "tex": "s = \\frac{v^2 - u^2}{2a}",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "annotation[2]",
+        "text": "divide both sides by 2a",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        -2.641,
+        1.256,
+        3.269,
+        0.526
+       ],
+       "font_size": 44.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -2.641,
+        1.256,
+        3.269,
+        0.526
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -2.641,
+        0.24,
+        3.232,
+        0.487
+       ],
+       "font_size": 44.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -2.641,
+        1.256,
+        3.269,
+        0.526
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -2.641,
+        0.24,
+        3.232,
+        0.487
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -2.641,
+        -1.116,
+        2.785,
+        1.206
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        2.032,
+        -1.116,
+        4.487,
+        0.413
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -2.641,
+        1.256,
+        3.269,
+        0.526
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -2.641,
+        0.24,
+        3.232,
+        0.487
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -2.641,
+        -1.116,
+        2.785,
+        1.206
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        2.032,
+        -1.116,
+        4.487,
+        0.413
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "steps": [
+     "\\sin^2\\theta + \\cos^2\\theta = 1",
+     "\\frac{\\sin^2\\theta}{\\sin^2\\theta} + \\frac{\\cos^2\\theta}{\\sin^2\\theta} = \\frac{1}{\\sin^2\\theta}",
+     "1 + \\cot^2\\theta = \\csc^2\\theta"
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "Write"
+      ],
+      "run_time": 1.905
+     },
+     {
+      "op": "settle",
+      "label": "step 0",
+      "mobjects": [
+       {
+        "type": "MathTex",
+        "label": "step[0]",
+        "tex": "\\sin^2\\theta + \\cos^2\\theta = 1",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.429
+     },
+     {
+      "op": "play",
+      "animations": [
+       "TransformMatchingTex"
+      ],
+      "run_time": 1.905
+     },
+     {
+      "op": "settle",
+      "label": "step 1",
+      "mobjects": [
+       {
+        "type": "MathTex",
+        "label": "step[0]",
+        "tex": "\\sin^2\\theta + \\cos^2\\theta = 1",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[1]",
+        "tex": "\\frac{\\sin^2\\theta}{\\sin^2\\theta} + \\frac{\\cos^2\\theta}{\\sin^2\\theta} = \\frac{1}{\\sin^2\\theta}",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.429
+     },
+     {
+      "op": "play",
+      "animations": [
+       "TransformMatchingTex"
+      ],
+      "run_time": 1.905
+     },
+     {
+      "op": "settle",
+      "label": "step 2",
+      "mobjects": [
+       {
+        "type": "MathTex",
+        "label": "step[0]",
+        "tex": "\\sin^2\\theta + \\cos^2\\theta = 1",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[1]",
+        "tex": "\\frac{\\sin^2\\theta}{\\sin^2\\theta} + \\frac{\\cos^2\\theta}{\\sin^2\\theta} = \\frac{1}{\\sin^2\\theta}",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[2]",
+        "tex": "1 + \\cot^2\\theta = \\csc^2\\theta",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.429
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "MathTex",
+        "label": "step[0]",
+        "tex": "\\sin^2\\theta + \\cos^2\\theta = 1",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[1]",
+        "tex": "\\frac{\\sin^2\\theta}{\\sin^2\\theta} + \\frac{\\cos^2\\theta}{\\sin^2\\theta} = \\frac{1}{\\sin^2\\theta}",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "step[2]",
+        "tex": "1 + \\cot^2\\theta = \\csc^2\\theta",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        1.312,
+        4.237,
+        0.531
+       ],
+       "font_size": 44.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        1.312,
+        4.237,
+        0.531
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.102,
+        5.571,
+        1.279
+       ],
+       "font_size": 44.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        1.312,
+        4.237,
+        0.531
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.102,
+        5.571,
+        1.279
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.514,
+        4.255,
+        0.526
+       ],
+       "font_size": 44.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        1.312,
+        4.237,
+        0.531
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.102,
+        5.571,
+        1.279
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.514,
+        4.255,
+        0.526
+       ],
+       "font_size": 44.0
+      }
+     ]
+    ]
+   }
+  }
+ ]
+}

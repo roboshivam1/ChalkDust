@@ -642,7 +642,10 @@ def _frame_times(scene: ChalkdustScene, weights: list[float]) -> list[float]:
     LayoutError, which the repair loop can act on (split or re-narrate).
     """
     fps = config.frame_rate
-    total = int(round(scene.beat_duration * fps))
+    edges = np.round(np.cumsum(scene.budget(*weights)) * fps)
+    # The total is the one the frames below sum to, so the guard and the
+    # clamp loop can never disagree by a rounding at a half-frame budget.
+    total = int(edges[-1])
     if total < len(weights):
         raise LayoutError(
             f"{scene.beat_duration:.3f} s is {total} frames at {fps:g} fps, fewer "
@@ -650,7 +653,6 @@ def _frame_times(scene: ChalkdustScene, weights: list[float]) -> list[float]:
             "or split this beat.",
             kind="overflow",
         )
-    edges = np.round(np.cumsum(scene.budget(*weights)) * fps)
     frames = np.diff(np.concatenate([[0.0], edges])).astype(int)
     while (frames == 0).any():
         frames[int(np.argmax(frames))] -= 1

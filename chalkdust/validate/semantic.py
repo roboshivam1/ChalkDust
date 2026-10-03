@@ -90,6 +90,26 @@ def check_carry_in(carry_in: Iterable[str],
     ]
 
 
+def check_carried_targets(component: Component,
+                          carry_in: Collection[str]) -> list[Finding]:
+    """Every artifact the component acts on must be carried into its beat.
+
+    A Callout whose `target_id` names something the beat does not carry in
+    would raise CarryInError from inside build(); caught here it is refused
+    by name, as a spec error, before anything is built.
+    """
+    return [
+        Finding(
+            "carry_in",
+            f"{component.name} acts on {name!r}, which this beat does not "
+            f"carry in; carry_in: {sorted(carry_in) or 'none'}. Add it to the "
+            f"beat's carry_in or point at an artifact the beat carries.",
+        )
+        for name in component.carried_targets()
+        if name not in carry_in
+    ]
+
+
 # --- regions ----------------------------------------------------------------
 
 
@@ -233,6 +253,7 @@ def validate_semantic(
     seconds = duration if measured else estimate_seconds(spec.narration)
     report.findings += check_duration(component, seconds, measured=measured)
     report.findings += check_carry_in(spec.carry_in, registered_artifacts)
+    report.findings += check_carried_targets(component, spec.carry_in)
     report.findings += check_region_conflicts(
         {spec.component: component.regions(), **(concurrent or {})}
     )

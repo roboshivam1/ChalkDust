@@ -39,7 +39,8 @@ class Finding:
     kinds, semantic (rung 2, semantic.py):
       duration        -- narration too short for the component's steps, or
                          longer than one beat may run
-      carry_in        -- references an artifact no earlier beat registered
+      carry_in        -- references an artifact no earlier beat registered,
+                         or acts on one the beat does not carry in
       region_conflict -- two simultaneously active claimants share space
       capacity        -- more text than the claimed regions can hold legibly
       latex           -- a LaTeX string does not compile standalone

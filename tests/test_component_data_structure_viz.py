@@ -21,7 +21,11 @@ from chalkdust.continuity import ArtifactRecipe, beat_component, carried, resolv
 from chalkdust.core.models import BeatSpec, Quality, Region, VideoSpec
 from chalkdust.render.worker import TIERS
 from chalkdust.scenes.base import ChalkdustScene
-from chalkdust.scenes.components.data_structure_viz import SWAP_LIFT, DataStructureViz
+from chalkdust.scenes.components.data_structure_viz import (
+    EDGE_CLEAR,
+    SWAP_LIFT,
+    DataStructureViz,
+)
 from chalkdust.scenes.regions import LayoutError, bbox, region_rect, safe_area
 from chalkdust.scenes.theme import get_theme, resolve_fonts
 from chalkdust.validate.geometric import LayoutProbe, validate_beat
@@ -128,6 +132,9 @@ REJECTED = {
     "array-over-cap": {"kind": "array", "initial": list(range(13))},
     "array-null": {"kind": "array", "initial": [1, None]},
     "blank-value": {"kind": "array", "initial": ["  "]},
+    # A value is one line: a box sized for one line cannot hold more.
+    "newline-in-cell": {"kind": "array", "initial": ["a\nb\nc\nd", "x"]},
+    "newline-in-node": {"kind": "tree", "initial": ["top\nmid\nbot", 1, 2]},
     "swap-out-of-range": {"kind": "array", "initial": [1, 2],
                           "operations": [{"op": "swap", "at": [0, 2]}]},
     "swap-with-self": {"kind": "array", "initial": [1, 2],
@@ -233,6 +240,28 @@ def test_long_swap_arc_stays_low_and_in_frame():
     for mob in swap.mobject:
         assert safe_area().contains(bbox(mob))
         assert abs(mob.get_y() - row_y) <= SWAP_LIFT * board.cell_h * 1.05
+
+
+def test_graph_edges_clear_the_nodes_they_skip():
+    # Skip-one edges on a 10-node ring. Unenlarged, each chord passes about
+    # 1.09r from the centre of the node it skips -- grazing its rim, so the
+    # skipped node reads as joined. The ring must grow until every edge clears
+    # every node it does not join by EDGE_CLEAR cap heights beyond the rim.
+    names = [str(i) for i in range(10)]
+    board = DataStructureViz({"kind": "graph", "initial": {
+        "nodes": names, "edges": [[names[i], names[(i + 2) % 10]] for i in range(10)]},
+    }).board(THEME)
+    r = board.nodes["0"][0].width / 2          # radius after fitting to the stage
+    cap = board.cap * r / board.r               # cap height at the same scale
+    for key, edge in board.edges.items():
+        a, b = edge.get_start_and_end()
+        for name, node in board.nodes.items():
+            if name in key:
+                continue
+            p = node.get_center()
+            t = np.clip(np.dot(p - a, b - a) / np.dot(b - a, b - a), 0.0, 1.0)
+            gap = np.linalg.norm(p - (a + t * (b - a))) - r
+            assert gap >= EDGE_CLEAR * cap * 0.99, (sorted(key), name, gap / cap)
 
 
 def test_construction_is_deterministic():

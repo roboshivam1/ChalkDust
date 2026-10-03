@@ -15,6 +15,7 @@ alone, and fitted to the stage as a single group. Two consequences:
 from __future__ import annotations
 
 import math
+import unicodedata
 from dataclasses import dataclass, field
 from typing import Annotated, Literal
 
@@ -34,7 +35,7 @@ from manim import (
     Mobject,
     VMobject,
 )
-from pydantic import Field, StringConstraints, model_validator
+from pydantic import AfterValidator, Field, StringConstraints, model_validator
 
 from chalkdust.continuity import artifact_builder
 from chalkdust.core.models import Region
@@ -67,6 +68,7 @@ NODE_GAP = 1.0        # horizontal gap between bottom-level tree slots
 LEVEL_GAP = 2.0       # vertical gap between tree levels
 GRAPH_GAP = 2.0       # minimum gap between neighbouring graph nodes
 GRAPH_ASPECT = 1.6    # the stage is wide; spread the ring to use it
+EDGE_CLEAR = 1.0      # minimum gap between an edge and the rim of a node it does not join
 STACK_WALL_GAP = 0.4  # air between the stacked cells and the container
 SWAP_LIFT = 0.8       # peak arc height of a swap, in cell heights
 INDEX_GAP = 0.6       # cell bottom to index caption
@@ -106,7 +108,27 @@ KINDS_OPS = {
 # A value shown in a cell or a node. Empty and whitespace-only strings are
 # refused: they have no glyphs, so Manim cannot position them, and a cell that
 # should read "empty" is clearer with an explicit "-" or "null" anyway.
-Key = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)] | int
+# A value is one line. Cells and nodes are sized for one line of text, so a
+# newline (or any other control character, or a Unicode line/paragraph
+# separator) inside a value would render taller than its box and spill over
+# the index caption or the node outline. Ends are stripped first, so only
+# interior breaks reach the check.
+_LINE_BREAKING = {"Cc", "Zl", "Zp"}
+
+
+def _single_line(s: str) -> str:
+    bad = [c for c in s if unicodedata.category(c) in _LINE_BREAKING]
+    if bad:
+        raise ValueError(
+            f"value {s!r} contains control or line-break character(s) "
+            f"{sorted({hex(ord(c)) for c in bad})}; a cell or node holds one line"
+        )
+    return s
+
+
+Key = Annotated[
+    str, StringConstraints(strip_whitespace=True, min_length=1), AfterValidator(_single_line)
+] | int
 
 
 class Highlight(ComponentParams):
@@ -651,14 +673,27 @@ class _TreeBoard(_NodeBoard):
         return self.enter_focused(self.future[i][1][0]) + [FadeIn(self.future[i])]
 
 
+def _segment_distance(p, a, b) -> float:
+    """Distance from point p to the segment a-b."""
+    ab, ap = b - a, p - a
+    t = min(1.0, max(0.0, float(ap @ ab) / float(ab @ ab)))
+    return float(math.hypot(*(ap - t * ab)[:2]))
+
+
 class _GraphBoard(_NodeBoard):
     def __init__(self, theme, plan, ops):
         super().__init__(theme, plan, ops)
         self.r = self._radius()
         n = len(plan.nodes)
-        # Nodes on an ellipse, first node at the top, clockwise. Radius chosen
-        # so neighbours clear each other; every chord of a convex ring misses
-        # the other nodes, so edges never pass through a node.
+        # Nodes on an ellipse, first node at the top, clockwise, sized so ring
+        # neighbours clear each other. A chord of a convex ring misses the
+        # other node CENTRES, but not their circles: an edge skipping one ring
+        # neighbour passes only R(1 - cos(2pi/n)) from it, under r for n >= 8
+        # with short labels. So the ring then grows until every edge clears
+        # every node it does not join by r + EDGE_CLEAR. Distances scale
+        # linearly with the ring while r stays fixed, so one scale factor
+        # settles it; fit_to_region shrinks the whole board back, keeping the
+        # clearance in proportion, or refuses as overflow if it cannot.
         pitch = 2 * self.r + GRAPH_GAP * self.cap
         ry = pitch / (2 * math.sin(math.pi / n)) if n > 1 else 0.0
         rx = GRAPH_ASPECT * ry
@@ -666,6 +701,14 @@ class _GraphBoard(_NodeBoard):
             RIGHT * rx * math.sin(2 * math.pi * k / n) + UP * ry * math.cos(2 * math.pi * k / n)
             for k in range(n)
         ]
+        at = dict(zip(plan.nodes, offsets))
+        need = self.r + EDGE_CLEAR * self.cap
+        grow = max(
+            [need / _segment_distance(at[w], at[u], at[v])
+             for u, v in plan.edges for w in plan.nodes if w not in (u, v)] + [1.0]
+        )
+        offsets = [off * grow for off in offsets]
+        self.grown = grow > 1.0
         nodes = [self._make_node(s) for s in plan.nodes]
         for node, off in zip(nodes[1:], offsets[1:]):
             node.move_to(nodes[0].get_center() + off - offsets[0])
@@ -719,7 +762,17 @@ class DataStructureViz(Component):
         p: DataStructureVizParams = self.params
         board = BOARDS[p.kind](theme, _plan(p), list(p.operations))
         label(board.layout, f"{p.kind}")
-        fit_to_region(board.layout, Region.STAGE)
+        try:
+            fit_to_region(board.layout, Region.STAGE)
+        except LayoutError as e:
+            if not getattr(board, "grown", False):
+                raise
+            raise LayoutError(
+                f"{e} The graph ring was enlarged so that edges clear the nodes "
+                "they skip; list the nodes so that edges join ring neighbours, "
+                "or use fewer nodes.",
+                kind=e.kind,
+            ) from e
         return board
 
     def build(self, scene: ChalkdustScene) -> None:
@@ -823,6 +876,11 @@ class DataStructureViz(Component):
                             {"op": "insert", "parent": 2, "side": "left", "value": 3},
                             {"op": "insert", "parent": 3, "side": "left", "value": 4},
                             {"op": "insert", "parent": 4, "side": "left", "value": 5}]},
+            # Skip-one edges on a 10-node ring: the ring must grow for edges
+            # to clear the nodes they skip, and then cannot fit legibly.
+            {"kind": "graph",
+             "initial": {"nodes": [f"ab{i}" for i in range(10)],
+                         "edges": [[f"ab{i}", f"ab{(i + 2) % 10}"] for i in range(10)]}},
         ]
 
 

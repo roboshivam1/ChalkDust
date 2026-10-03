@@ -148,6 +148,13 @@ Bound = Annotated[float, Field(ge=-1000, le=1000)]
 # stage cannot show at a useful size.
 MIN_ASPECT, MAX_ASPECT = 0.5, 6.0
 
+# Narrowest span a domain axis may have, relative to the size of its bounds.
+# Below this the float grid cannot resolve the domain: a subnormal span blows
+# the plane's scale up to inf (NaN geometry), and a span a few ULPs wide
+# quantises every sample and grid line onto two or three values, so arrows
+# stack on the border and grid lines land outside the plane.
+MIN_REL_SPAN = 1e-6
+
 
 class FieldFn(ComponentParams):
     """F(x, y) = (x_component, y_component), each a whitelisted expression."""
@@ -180,6 +187,12 @@ class VectorFieldParams(ComponentParams):
         for name, (lo, hi) in (("x_range", self.x_range), ("y_range", self.y_range)):
             if not lo < hi:
                 raise ValueError(f"{name} must be increasing, got [{lo}, {hi}]")
+            floor = MIN_REL_SPAN * max(1.0, abs(lo), abs(hi))
+            if not hi - lo >= floor:
+                raise ValueError(
+                    f"{name} [{lo!r}, {hi!r}] is too narrow to draw: its span "
+                    f"must be at least {floor:.3g} (widen the domain)"
+                )
         aspect = _span(self.x_range) / _span(self.y_range)
         if not MIN_ASPECT <= aspect <= MAX_ASPECT:
             raise ValueError(

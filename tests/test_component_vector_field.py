@@ -110,7 +110,7 @@ def test_draft_render_is_exactly_the_beat(tmp_path):
     # The real thing, counted by ffprobe: 5.479 s of audio is 83 frames at
     # 15 fps (82.185 rounded up).
     duration = 5.479
-    assert _render_frames(ROTATION, duration, tmp_path) ==         math.ceil(duration * DRAFT.frame_rate) == 83
+    assert _render_frames(ROTATION, duration, tmp_path) == math.ceil(duration * DRAFT.frame_rate) == 83
 
 
 def test_min_seconds_gives_every_step_its_floor():
@@ -179,6 +179,18 @@ def test_rejects_bad_domain_or_density(overrides):
         VectorField(_field(**overrides))
 
 
+@pytest.mark.parametrize("span", [
+    [0, 1e-310],                    # subnormal: the plane's scale overflows to inf
+    [-1e-310, 1e-310],
+    [0, 5e-324],                    # the smallest float: log10 domain error
+    [1.0, 1.0000000000000002],      # one ULP: samples and grid lines quantise
+    [999.0, 999.0000000000001],
+], ids=str)
+def test_rejects_degenerate_domain_span(span):
+    with pytest.raises(ValidationError, match="too narrow to draw"):
+        VectorField({"field_fn": {"x": "1", "y": "0"}, "x_range": span, "y_range": span})
+
+
 @pytest.mark.parametrize("params", [
     {},                                   # no field at all
     {"field_fn": {}},                     # a field with no components
@@ -221,6 +233,21 @@ def test_arrows_stay_inside_the_plane(params):
     plane = bbox(_labelled(probe, "field plane"))
     for arrow in _labelled(probe, "field arrows").submobjects:
         assert plane.contains(bbox(arrow), tol=1e-6), arrow._chalk_label
+
+
+def test_narrowest_domain_draws_inside_the_plane():
+    # Just above MIN_REL_SPAN at the edge of the bounds: every grid line and
+    # arrow still lands inside the border, nothing stacks on it.
+    span = [999.0, 999.0011]
+    probe = _probe({"field_fn": {"x": "1", "y": "y-999"}, "sample_density": 4,
+                    "x_range": span, "y_range": span})
+    plane = _labelled(probe, "field plane")
+    border, lines = bbox(plane.submobjects[0]), plane.submobjects[1:]
+    arrows = _labelled(probe, "field arrows").submobjects
+    assert lines and len(arrows) == 16
+    for m in [*lines, *arrows]:
+        assert border.contains(bbox(m), tol=1e-6)
+    assert len({tuple(a.get_center().round(6)) for a in arrows}) == 16
 
 
 def test_singular_field_is_clamped_and_skips_undefined_points():

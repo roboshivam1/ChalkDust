@@ -2,7 +2,12 @@
 
 Walks the registry like test_layout.py: every component's examples() must
 match its recorded snapshot in tests/snapshots/. A component without one
-fails -- shipping a snapshot is part of shipping a component (§5).
+fails -- shipping a snapshot is part of shipping a component (§5), so a
+missing file is a missing deliverable, not a reason to skip. Component
+branches written before this harness existed carry none: merging one
+requires recording its snapshot in the same step, from the repo root:
+
+    python -m chalkdust.validate.snapshot --reason "<Name> merged" --component <Name>
 """
 
 from __future__ import annotations
@@ -42,7 +47,8 @@ def _current(name: str) -> list[tuple[dict, list]]:
 def _recorded(name: str) -> dict:
     snap = load(name, SNAPSHOT_DIR)
     if snap is None:
-        pytest.fail(f"{name} has no snapshot. Record one: {_regen(name)}")
+        pytest.fail(f"{name} has no snapshot; shipping one is part of shipping "
+                    f"the component (SCENE_SPEC.md §5). Record it: {_regen(name)}")
     recorded = [case["params"] for case in snap["cases"]]
     if recorded != get_component(name).examples():
         pytest.fail(f"{name}.examples() changed since its snapshot was recorded. "

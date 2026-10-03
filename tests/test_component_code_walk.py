@@ -140,6 +140,29 @@ class TestSchema:
         with pytest.raises(ValidationError):
             CodeWalk(params)
 
+    @pytest.mark.parametrize("source", [
+        "x = 1  # done \u2705",
+        "print('\U0001F680')",
+        "ok = True  # \U0001F44D\U0001F3FD",
+        "s = 'a\u200bb'",
+        "s = 'a\u200db'",
+        "x = 1  \u200f# rtl",
+        "# hyphen\u00adated",
+    ], ids=["emoji-bmp", "emoji-astral", "emoji-skin-tone", "zero-width-space",
+            "zero-width-joiner", "bidi-mark", "soft-hyphen"])
+    def test_rejects_characters_a_listing_cannot_draw(self, source):
+        # Code demands one glyph per non-space character; these never give
+        # one and used to escape build() as a bare ValueError.
+        with pytest.raises(ValidationError, match=r"line 1 contains U\+"):
+            CodeWalk({"language": "python", "source": source})
+
+    def test_decomposed_accent_is_composed_and_draws(self):
+        # "e" + U+0301 is two characters Pango draws as one glyph, which Code
+        # refused; NFC makes it the one character it looks like.
+        comp = CodeWalk({"language": "python", "source": "s = 'cafe\u0301'"})
+        assert comp.params.source == "s = 'caf\u00e9'"
+        assert [getattr(m, "_chalk_label", None) for m in _probe(comp).mobjects] == ["code"]
+
     def test_blank_edges_dropped_so_numbers_match_screen(self):
         # Pygments strips leading newlines before lexing; if the spec kept
         # them, "line 3" in the spec would be line 1 on screen.
@@ -159,6 +182,25 @@ class TestBuild:
             _probe(comp)
         assert info.value.kind == "overflow"
         assert "columns" in str(info.value)
+
+    @pytest.mark.parametrize("source", [
+        "\n".join(f"x{i} = {i}" for i in range(200)),
+        "x = '" + "a" * 3000 + "'",
+    ], ids=["200-lines", "3000-columns"])
+    def test_huge_listing_refuses_overflow_before_code_is_built(self, source):
+        # Past the frame's size Pango silently drops glyphs and Code raised a
+        # bare ValueError; the size check now refuses first.
+        with pytest.raises(LayoutError, match="legibility floor") as info:
+            _probe(CodeWalk({"language": "python", "source": source}))
+        assert info.value.kind == "overflow"
+
+    def test_glyph_the_font_cannot_draw_refuses_illegible(self):
+        # Past the schema's list: a combining grapheme joiner draws nothing,
+        # and Code's glyph-count ValueError is refused as illegible text.
+        comp = CodeWalk({"language": "python", "source": "x = 'a\u034fb'"})
+        with pytest.raises(LayoutError) as info:
+            _probe(comp)
+        assert info.value.kind == "illegible"
 
     def test_minimal_listing_has_no_highlight_bar(self):
         probe = _probe(CodeWalk({"language": "c", "source": "x"}))
@@ -210,6 +252,13 @@ class TestCarryIn:
         pb = [m.points for m in b.family_members_with_points()]
         assert len(pa) == len(pb) > 0
         assert all(np.array_equal(x, y) for x, y in zip(pa, pb))
+
+    def test_artifact_refuses_an_oversized_listing_like_the_beat(self):
+        params = {"language": "python",
+                  "source": "\n".join(f"x{i} = {i}" for i in range(200))}
+        with pytest.raises(LayoutError) as info:
+            self._artifact(params)
+        assert info.value.kind == "overflow"
 
     def test_carried_listing_validates_in_a_later_beat(self):
         video = VideoSpec(video_id="v", beats=(

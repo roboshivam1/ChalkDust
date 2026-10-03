@@ -8,11 +8,13 @@ straight to what the step actually did.
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from functools import lru_cache
 
-from manim import Line, Rectangle, Text, VGroup
+from manim import Line, Mobject, Rectangle, Text, VGroup
 from pydantic import Field, field_validator, model_validator
 
+from chalkdust.continuity import artifact_builder
 from chalkdust.core.models import Region
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import (
@@ -46,8 +48,11 @@ RULE_WIDTH = 2.0
 # Shown for a variable that has no value yet at this frame (a `null` cell).
 UNDEFINED = "—"
 
-# Per-step legibility floors for the semantic rung (SCENE_SPEC.md §8 rung 2).
-# A frame needs long enough for the viewer to find the changed cells.
+# Minimum legible duration of each timed segment, in seconds (SCENE_SPEC.md §8
+# rung 2). These double as the budget weights: build() scales all of them by
+# the same factor, so every segment gets at least its minimum exactly when the
+# narration is at least min_seconds() long. A frame needs long enough for the
+# viewer to find the changed cells.
 HEADER_MIN_SECONDS = 0.5
 FRAME_MIN_SECONDS = 0.8
 HOLD_MIN_SECONDS = 1.0
@@ -140,6 +145,96 @@ def _cell(s: str, theme: Theme, color: str, x: float, baseline: float) -> Text:
     return text
 
 
+@dataclass
+class _Trace:
+    """The table's parts, laid out in the table's own frame, all visible."""
+
+    table: VGroup           # everything below; slots first, so they draw behind
+    header: VGroup
+    rule: Line
+    rows: list[VGroup]      # one per frame
+    slots: list[Rectangle]  # one highlight per frame, transparent
+
+
+def _build_trace(p: StepTraceParams, theme: Theme) -> _Trace:
+    """Lay the whole table out, unplaced.
+
+    A pure function of params and theme: build() animates what it returns,
+    and the continuity builder below rebuilds the same table for a later
+    beat's carry_in (SCENE_SPEC.md §6).
+    """
+    pal = theme.palette
+    cap = _mono_cap_height(theme.type.mono_font, theme.type.mono)
+
+    shown = [[_display(v) for v in frame] for frame in p.frames]
+
+    # Everything below is laid out in the table's own frame, origin at the
+    # header baseline; the caller places the table as a whole with
+    # fit_to_region, so no coordinate here survives into the frame
+    # (SCENE_SPEC.md §4).
+    #
+    # Column widths from the widest thing in each column, measured on
+    # throwaway texts before anything is positioned.
+    widths = []
+    for j, name in enumerate(p.variables):
+        cells = [name] + [row[j] for row in shown]
+        widths.append(max(mono_text(c, theme).width for c in cells))
+    centres, cursor = [], 0.0
+    for w in widths:
+        centres.append(cursor + w / 2)
+        cursor += w + COL_GAP * cap
+    left, right = 0.0, cursor - COL_GAP * cap
+
+    header = label(VGroup(*[
+        _cell(name, theme, pal.accent, x, 0.0)
+        for name, x in zip(p.variables, centres)
+    ]), "header")
+
+    rule_y = -RULE_DROP * cap
+    rule = label(Line(
+        [left - SLOT_PAD * cap, rule_y, 0.0],
+        [right + SLOT_PAD * cap, rule_y, 0.0],
+        color=pal.muted, stroke_width=RULE_WIDTH,
+    ), "rule")
+
+    rows, slots = [], []
+    for i, values in enumerate(shown):
+        baseline = -(HEADER_GAP + i * ROW_PITCH) * cap
+        cells = []
+        for j, (s, x) in enumerate(zip(values, centres)):
+            # Muted: undefined, or unchanged since the previous frame.
+            # Only the cells this step touched keep full contrast.
+            quiet = p.frames[i][j] is None or (
+                i > 0 and s == shown[i - 1][j])
+            cells.append(_cell(s, theme, pal.muted if quiet else pal.fg,
+                               x, baseline))
+        rows.append(label(VGroup(*cells), f"frame[{i}]"))
+
+        # One highlight per row, crossfaded rather than one bar moved:
+        # every position is then fixed at build time and checked by the
+        # probe, which applies a move in one step (validate/geometric.py).
+        slot = Rectangle(
+            width=right - left + 2 * SLOT_PAD * cap,
+            height=ROW_PITCH * cap,
+            stroke_width=0, fill_color=pal.accent, fill_opacity=0,
+        )
+        slot.move_to([(left + right) / 2, baseline + cap / 2, 0.0])
+        slots.append(label(slot, f"highlight[{i}]"))
+
+    table = label(VGroup(*slots, header, rule, *rows), "StepTrace")
+    return _Trace(table, header, rule, rows, slots)
+
+
+@artifact_builder("StepTrace")
+def _artifact(params: StepTraceParams, theme: Theme) -> Mobject:
+    """The settled trace, for a later beat that carries it in: every frame
+    shown and the highlight on the last one -- the picture this beat ends on.
+    Unplaced; continuity.CarryIn fits it to STAGE and dims it."""
+    trace = _build_trace(params, theme)
+    trace.slots[-1].set_fill(opacity=HIGHLIGHT_OPACITY)
+    return trace.table
+
+
 @register
 class StepTrace(Component):
     name = "StepTrace"
@@ -151,98 +246,51 @@ class StepTrace(Component):
         return {Region.STAGE}
 
     def build(self, scene: ChalkdustScene) -> None:
-        p: StepTraceParams = self.params
-        theme = scene.theme
-        pal = theme.palette
-        cap = _mono_cap_height(theme.type.mono_font, theme.type.mono)
-
-        shown = [[_display(v) for v in frame] for frame in p.frames]
-
-        # Everything below is laid out in the table's own frame, origin at the
-        # header baseline; fit_to_region then places the table as a whole, so
-        # no coordinate here survives into the frame (SCENE_SPEC.md §4).
-        #
-        # Column widths from the widest thing in each column, measured on
-        # throwaway texts before anything is positioned.
-        widths = []
-        for j, name in enumerate(p.variables):
-            cells = [name] + [row[j] for row in shown]
-            widths.append(max(mono_text(c, theme).width for c in cells))
-        centres, cursor = [], 0.0
-        for w in widths:
-            centres.append(cursor + w / 2)
-            cursor += w + COL_GAP * cap
-        left, right = 0.0, cursor - COL_GAP * cap
-
-        header = label(VGroup(*[
-            _cell(name, theme, pal.accent, x, 0.0)
-            for name, x in zip(p.variables, centres)
-        ]), "header")
-
-        rule_y = -RULE_DROP * cap
-        rule = label(Line(
-            [left - SLOT_PAD * cap, rule_y, 0.0],
-            [right + SLOT_PAD * cap, rule_y, 0.0],
-            color=pal.muted, stroke_width=RULE_WIDTH,
-        ), "rule")
-
-        rows, slots = [], []
-        for i, values in enumerate(shown):
-            baseline = -(HEADER_GAP + i * ROW_PITCH) * cap
-            cells = []
-            for j, (s, x) in enumerate(zip(values, centres)):
-                # Muted: undefined, or unchanged since the previous frame.
-                # Only the cells this step touched keep full contrast.
-                quiet = p.frames[i][j] is None or (
-                    i > 0 and s == shown[i - 1][j])
-                cells.append(_cell(s, theme, pal.muted if quiet else pal.fg,
-                                   x, baseline))
-            rows.append(label(VGroup(*cells), f"frame[{i}]"))
-
-            # One highlight per row, crossfaded rather than one bar moved:
-            # every position is then fixed at build time and checked by the
-            # probe, which applies a move in one step (validate/geometric.py).
-            slot = Rectangle(
-                width=right - left + 2 * SLOT_PAD * cap,
-                height=ROW_PITCH * cap,
-                stroke_width=0, fill_color=pal.accent, fill_opacity=0,
-            )
-            slot.move_to([(left + right) / 2, baseline + cap / 2, 0.0])
-            slots.append(label(slot, f"highlight[{i}]"))
-
-        # Slots first so they draw behind the text.
-        table = label(VGroup(*slots, header, rule, *rows), "StepTrace")
-        fit_to_region(table, Region.STAGE)
+        trace = _build_trace(self.params, scene.theme)
+        # One fit for the whole table. Raises LayoutError (overflow) when it
+        # cannot stay legible: the fix is splitting the beat.
+        fit_to_region(trace.table, Region.STAGE)
 
         # Add everything up front, hidden, so the scene holds one top-level
         # mobject; reveal by animating opacity (the BulletReveal pattern).
-        for m in (header, rule, *rows):
+        for m in (trace.header, trace.rule, *trace.rows):
             m.set_opacity(0)
-        scene.add(table)
+        scene.add(trace.table)
 
-        times = scene.budget(1, *[2] * len(rows), 2)
-        scene.play(header.animate.set_opacity(1), rule.animate.set_opacity(1),
-                   run_time=times[0])
-        for i, row in enumerate(rows):
+        # Whole-frame run times that sum to exactly the beat (D-002); the
+        # base renders each as exactly that many frames.
+        times = iter(scene.budget(*self._segments()))
+        scene.play(trace.header.animate.set_opacity(1),
+                   trace.rule.animate.set_opacity(1), run_time=next(times))
+        for i, row in enumerate(trace.rows):
             anims = [row.animate.set_opacity(1),
-                     slots[i].animate.set_fill(opacity=HIGHLIGHT_OPACITY)]
+                     trace.slots[i].animate.set_fill(opacity=HIGHLIGHT_OPACITY)]
             if i > 0:
-                anims.append(slots[i - 1].animate.set_fill(opacity=0))
-            scene.play(*anims, run_time=times[1 + i])
+                anims.append(trace.slots[i - 1].animate.set_fill(opacity=0))
+            scene.play(*anims, run_time=next(times))
 
         scene.settle("trace complete")
-        scene.wait(times[-1])
+        scene.wait(next(times))
 
     # --- semantic-rung hooks (SCENE_SPEC.md §8 rung 2) ------------------------
 
     def min_seconds(self) -> float:
-        """Shortest total animation at which every frame can still be read."""
-        return (HEADER_MIN_SECONDS
-                + FRAME_MIN_SECONDS * len(self.params.frames)
-                + HOLD_MIN_SECONDS)
+        """Shortest narration at which every segment still gets its minimum."""
+        return sum(self._segments())
+
+    def _segments(self) -> list[float]:
+        """Minimum duration of every timed segment, in the order build() plays
+        them: header, one per frame, final hold. Shared by build() (as budget
+        weights) and min_seconds() so the two cannot drift apart."""
+        return [HEADER_MIN_SECONDS,
+                *[FRAME_MIN_SECONDS] * len(self.params.frames),
+                HOLD_MIN_SECONDS]
 
     def latex_strings(self) -> list[str]:
-        return []  # all text is mono Text; nothing goes through LaTeX
+        # All text is mono Text drawn verbatim: a value that looks like LaTeX
+        # or markup is shown exactly as typed, never compiled, so there is
+        # nothing here that could refuse as invalid_latex.
+        return []
 
     # --- fixtures -------------------------------------------------------------
 
@@ -279,4 +327,10 @@ class StepTrace(Component):
             {"variables": ["url"], "frames": [[url]]},
             # Minimal: one variable, one frame, and that frame undefined.
             {"variables": ["x"], "frames": [[None]]},
+            # Values that look like LaTeX or Pango markup -- including LaTeX
+            # that would not compile -- are text, drawn verbatim. StepTrace
+            # takes no maths, so this must fit, not refuse as invalid_latex.
+            {"variables": ["expr", "tag"],
+             "frames": [[r"\frac{1}{", "<b>&amp;"],
+                        [r"$x^2$", "</span>"]]},
         ]

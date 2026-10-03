@@ -1,4 +1,4 @@
-"""DataStructureViz: timing, schema refusals, final state, determinism.
+"""DataStructureViz: timing, schema refusals, final state, determinism, carry-in.
 
 Layout safety of examples() and stress() is covered by tests/test_layout.py,
 which walks the registry. This file pins what that walk cannot see.
@@ -6,18 +6,28 @@ which walks the registry. This file pins what that walk cannot see.
 
 from __future__ import annotations
 
+import json
+import math
+import subprocess
+from dataclasses import asdict
+
 import numpy as np
 import pytest
-from manim import CyclicReplace, Text, tempconfig
+from manim import CyclicReplace, ManimColor, Text, VMobject, tempconfig
 from pydantic import ValidationError
 
+from chalkdust import continuity
+from chalkdust.continuity import ArtifactRecipe, beat_component, carried, resolve_carry_in
+from chalkdust.core.models import BeatSpec, Quality, Region, VideoSpec
+from chalkdust.render.worker import TIERS
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.data_structure_viz import SWAP_LIFT, DataStructureViz
-from chalkdust.scenes.regions import LayoutError, bbox, safe_area
+from chalkdust.scenes.regions import LayoutError, bbox, region_rect, safe_area
 from chalkdust.scenes.theme import get_theme, resolve_fonts
-from chalkdust.validate.geometric import LayoutProbe
+from chalkdust.validate.geometric import LayoutProbe, validate_beat
 
-FPS = 15
+DRAFT = TIERS[Quality.DRAFT]
+FPS = DRAFT.frame_rate
 EXAMPLES = DataStructureViz.examples()
 THEME = resolve_fonts(get_theme("default"), warn=False)
 
@@ -43,8 +53,18 @@ def _probe(params: dict) -> LayoutProbe:
 
 def _values(scene, exclude: set[str] = frozenset()) -> list[Text]:
     """Text mobjects on screen at the end of the beat."""
-    return [m for top in scene.mobjects for m in top.get_family()
+    return _texts(scene.mobjects, exclude)
+
+
+def _texts(mobs, exclude: set[str] = frozenset()) -> list[Text]:
+    return [m for top in mobs for m in top.get_family()
             if isinstance(m, Text) and m.text not in exclude]
+
+
+def _frames(scene: ChalkdustScene) -> int:
+    """Frames the renderer wrote: add_frame advances renderer.time by exactly
+    1/fps per frame, for plays and frozen waits alike."""
+    return round(scene.renderer.time * FPS)
 
 
 # --- timing (D-002) -------------------------------------------------------------
@@ -58,14 +78,34 @@ TIMED = [pytest.param(p, id=p["kind"]) for p in EXAMPLES] + [
 
 @pytest.mark.parametrize("factor", [0.5, 3.0])
 @pytest.mark.parametrize("params", TIMED)
-def test_rendered_length_matches_budget(params, factor, tmp_path):
+def test_rendered_frames_equal_the_beat(params, factor, tmp_path):
+    # 0.5x squeezes every step; 3x is past ANIM_STRETCH, so pauses appear.
+    # Either way the clip is exactly ceil(audio * fps) frames (D-002).
     budget = factor * DataStructureViz(params).min_seconds()
     scene = _render(params, budget, tmp_path)
-    assert abs(scene.renderer.time - budget) <= 1 / FPS
+    assert _frames(scene) == scene.beat_frames == math.ceil(round(budget * FPS, 6))
+
+
+def test_draft_render_frame_count_matches_audio(tmp_path):
+    # A real 480p15 encode, counted by ffprobe: 11.27 s of audio is 170 frames.
+    duration = 11.27
+    with tempconfig({**asdict(DRAFT), "media_dir": str(tmp_path),
+                     "disable_caching": True, "progress_bar": "none",
+                     "verbosity": "WARNING", "output_file": "dsv"}):
+        scene = ChalkdustScene(DataStructureViz(EXAMPLES[0]), duration=duration)
+        scene.render()
+        movie = scene.renderer.file_writer.movie_file_path
+    out = subprocess.run(
+        ["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
+         "-show_entries", "stream=nb_read_frames", "-of", "json", str(movie)],
+        capture_output=True, text=True, check=True).stdout
+    frames = int(json.loads(out)["streams"][0]["nb_read_frames"])
+    assert frames == math.ceil(duration * FPS) == 170
 
 
 def test_budget_too_short_for_the_steps_refuses_cleanly(tmp_path):
-    # 13 plays (intro + 12 ops) cannot each get a frame in 0.5s at 15fps.
+    # 14 segments (intro + 12 ops + hold) cannot each get a frame in 0.5 s
+    # (8 frames) at 15 fps.
     with pytest.raises(LayoutError) as exc:
         _render(DataStructureViz.stress()[1], 0.5, tmp_path)
     assert exc.value.kind == "overflow"
@@ -200,4 +240,93 @@ def test_construction_is_deterministic():
     for params in EXAMPLES:
         a = DataStructureViz(params).board(THEME).layout
         b = DataStructureViz(params).board(THEME).layout
+        np.testing.assert_array_equal(a.get_all_points(), b.get_all_points())
+
+
+# --- carry-in (SCENE_SPEC.md §6) ---------------------------------------------------
+
+# The spec's own example: a hash table's buckets, "cat" hashed into bucket 4.
+BUCKETS = {"kind": "array", "initial": ["-"] * 8,
+           "operations": [{"op": "highlight", "at": [4]},
+                          {"op": "set", "at": 4, "value": "cat"}]}
+
+
+def _bucket_video() -> VideoSpec:
+    """b02 registers "bucket_array"; b03 carries it in, as in SCENE_SPEC.md §6."""
+    return VideoSpec(video_id="v", beats=(
+        BeatSpec(id="b01", narration="placeholder narration", component="TitleCard",
+                 params={"title": "Hash tables"}),
+        BeatSpec(id="b02", narration="placeholder narration",
+                 component="DataStructureViz", params=BUCKETS,
+                 registers="bucket_array"),
+        BeatSpec(id="b03", narration="placeholder narration", component="BulletReveal",
+                 params={"items": ["cat hashes to bucket 4"]},
+                 carry_in=["bucket_array"]),
+    ))
+
+
+def _artifact(params: dict):
+    recipe = ArtifactRecipe(name="a", producer="DataStructureViz", params=params)
+    return continuity.build_artifact(recipe, THEME)
+
+
+def test_registered_artifact_is_carried_into_a_later_beat():
+    video = _bucket_video()
+    recipes = resolve_carry_in(video)
+    assert recipes["b03"] == (ArtifactRecipe(name="bucket_array",
+                                             producer="DataStructureViz",
+                                             params=BUCKETS),)
+    assert validate_beat(video.beats[2], duration=4.0, recipes=recipes["b03"]).ok
+
+    probe = LayoutProbe(beat_component(video.beats[2], recipes["b03"]),
+                        duration=4.0)
+    probe.construct()
+    target = carried(probe, "bucket_array")
+    assert target in probe.mobjects
+    assert region_rect(Region.STAGE).contains(bbox(target))
+    # Dimmed: the values (opaque text) are faded by DIM_DARKNESS.
+    assert max(m.get_fill_opacity() for m in _texts([target])) == \
+        pytest.approx(1 - continuity.DIM_DARKNESS)
+
+
+# What each example leaves on screen once its operations have run.
+FINAL = [
+    ["10", "29", "14", "37", "99"],    # swap 0,1 then a[4] = 99
+    ["main", "fib(3)"],                # push, push, pop
+    ["1", "3", "6", "8", "10", "14"],  # 6 inserted
+    ["A", "B", "C", "D", "E"],         # graph ops only change emphasis
+]
+
+
+@pytest.mark.parametrize("params,expected", list(zip(EXAMPLES, FINAL)),
+                         ids=[p["kind"] for p in EXAMPLES])
+def test_artifact_is_the_final_state(params, expected):
+    art = _artifact(params)
+    if params["kind"] == "array":
+        # Index captions are not values; order cells left to right.
+        values = sorted(_texts([art], exclude={str(i) for i in range(5)}),
+                        key=lambda m: m.get_x())
+        assert [m.text for m in values] == expected
+    elif params["kind"] == "stack":
+        values = sorted(_texts([art]), key=lambda m: m.get_y())  # bottom first
+        assert [m.text for m in values] == expected
+    else:
+        assert sorted(m.text for m in _texts([art])) == sorted(expected)
+
+
+def test_artifact_carries_no_focus_styling():
+    # Emphasis belongs to the beat that played the operations, not to the
+    # later beat carrying the structure in.
+    accent = ManimColor(THEME.palette.accent).to_hex()
+    for params in EXAMPLES:
+        shapes = [m for m in _artifact(params).get_family()
+                  if isinstance(m, VMobject) and not isinstance(m, Text)
+                  and m.has_points()]
+        assert shapes
+        assert all(m.get_stroke_color().to_hex() != accent for m in shapes)
+
+
+def test_artifact_rebuild_is_deterministic():
+    for params in EXAMPLES:
+        a, b = _artifact(params), _artifact(params)
         np.testing.assert_array_equal(a.get_all_points(), b.get_all_points())

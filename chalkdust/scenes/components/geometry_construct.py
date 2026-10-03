@@ -471,7 +471,7 @@ class GeometryConstruct(Component):
                  _seg("A", "C"),
                  _seg("B", "C"),
                  {"kind": "polygon", "vertices": ["A", "B", "C"],
-                  "note": "AC and BC are radii, so all three sides equal AB"},
+                  "note": "All three sides equal the radius AB"},
              ]},
             # Perpendicular bisector, ending at the midpoint.
             {"shapes": [_pt("A", -2, 0), _pt("B", 2, 0), _seg("A", "B", "AB")],

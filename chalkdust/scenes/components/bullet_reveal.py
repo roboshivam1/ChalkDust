@@ -2,21 +2,23 @@
 
 from __future__ import annotations
 
-from typing import Literal
+import unicodedata
+from typing import Annotated, Literal
 
-from manim import DOWN, LEFT, ORIGIN, UP, Dot, FadeIn, VGroup
-from pydantic import Field
+from manim import DOWN, LEFT, ORIGIN, UP, Dot, FadeIn, Text, VGroup
+from pydantic import AfterValidator, Field, StringConstraints
 
 from chalkdust.core.models import Region
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import (
+    MIN_STEP_SECONDS,
     Component,
     ComponentParams,
     label,
     register,
     wrap,
 )
-from chalkdust.scenes.regions import fit_to_region
+from chalkdust.scenes.regions import LayoutError, fit_to_region
 from chalkdust.scenes.theme import body_cap_height, body_text, heading_text
 
 WRAP_WIDTH = 46
@@ -26,13 +28,39 @@ LINE_HEIGHT = 1.7   # one line of text, anchor to anchor
 PARA_GAP = 0.9      # additional space between bullets
 DOT_GAP = 0.28      # horizontal space between dot and text (absolute units)
 
+# Blank or invisible text is refused at the schema rung. A blank bullet is a
+# dot with nothing beside it, and a blank heading builds an empty mobject at
+# the origin that "overlaps" the bullets. Leave the heading out instead of passing "".
+def _visible(s: str) -> str:
+    # Whitespace is not the only text that draws nothing: zero-width and
+    # format characters (U+200B, U+2060) and controls are invisible too, and
+    # strip_whitespace keeps them. Require one character outside Z* and C*.
+    if not any(unicodedata.category(c)[0] not in "ZC" for c in s):
+        raise ValueError("text has no visible character")
+    return s
+
+
+NonBlank = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1),
+                     AfterValidator(_visible)]
+
+
+def _drawn(text: Text, part: str) -> Text:
+    """Refuse a text part that builds no glyphs. A visible character the font
+    cannot draw (an emoji-only string) passes the schema yet builds an empty
+    Text -- an empty card or a bare dot that passes every layout check."""
+    if not text.submobjects:
+        raise LayoutError(f"{part} draws no glyphs; the font has none for its "
+                          f"characters -- rewrite it in plain text",
+                          kind="illegible")
+    return text
+
 
 class BulletRevealParams(ComponentParams):
-    heading: str | None = None
+    heading: NonBlank | None = None
     # Capped at 6. A density limit that fires at schema validation -- cheaper
     # than the legibility check, and its error points at the real fix (split
     # the beat) rather than at a font size.
-    items: list[str] = Field(min_length=1, max_length=6)
+    items: list[NonBlank] = Field(min_length=1, max_length=6)
     reveal: Literal["sequential", "all"] = "sequential"
 
 
@@ -47,6 +75,21 @@ class BulletReveal(Component):
             r.add(Region.TITLE_BAR)
         return r
 
+    def _weights(self) -> list[float]:
+        """Budget weights, one per play() plus the closing hold: the heading,
+        then each bullet (or, with reveal="all", every bullet in one play).
+        Shared by build() and min_seconds() so they cannot drift apart."""
+        p: BulletRevealParams = self.params
+        heading = [1] if p.heading else []
+        if p.reveal == "all":
+            return heading + [2 * len(p.items)] + [2]
+        return heading + [2] * len(p.items) + [2]
+
+    def min_seconds(self) -> float:
+        # One step per play() the viewer must register -- the heading, then
+        # each bullet (or the one "all" fade); the closing hold is not a step.
+        return MIN_STEP_SECONDS * (len(self._weights()) - 1)
+
     def build(self, scene: ChalkdustScene) -> None:
         p: BulletRevealParams = self.params
         theme = scene.theme
@@ -54,7 +97,8 @@ class BulletReveal(Component):
 
         heading = None
         if p.heading:
-            heading = label(heading_text(wrap(p.heading, 34), theme), "heading")
+            heading = label(_drawn(heading_text(wrap(p.heading, 34), theme),
+                                   "heading"), "heading")
             fit_to_region(heading, Region.TITLE_BAR)
 
         rows, dots, line_counts = [], [], []
@@ -62,7 +106,7 @@ class BulletReveal(Component):
             wrapped = wrap(item, WRAP_WIDTH)
             line_counts.append(wrapped.count("\n") + 1)
 
-            text = body_text(wrapped, theme)
+            text = _drawn(body_text(wrapped, theme), f"bullet {i}")
             dot = Dot(radius=0.07, color=theme.palette.accent)
             dot.next_to(text, LEFT, buff=DOT_GAP)
             # Sit the dot on the optical centre of the FIRST line, measured
@@ -97,8 +141,7 @@ class BulletReveal(Component):
         if heading is not None:
             scene.exclusive(heading, bullets)
 
-        weights = ([1] if heading is not None else []) + [2] * len(rows) + [2]
-        times = scene.budget(*weights)
+        times = scene.budget(*self._weights())
         idx = 0
 
         if heading is not None:
@@ -106,7 +149,7 @@ class BulletReveal(Component):
             idx += 1
 
         if p.reveal == "all":
-            scene.play(FadeIn(bullets), run_time=sum(times[idx:-1]))
+            scene.play(FadeIn(bullets), run_time=times[idx])
         else:
             for row in rows:
                 scene.play(row.animate.set_opacity(1), run_time=times[idx])
@@ -137,4 +180,14 @@ class BulletReveal(Component):
             # One unwrappable token.
             {"items": ["antidisestablishmentarianism" * 4]},
             {"heading": "Short", "items": ["a"] * 6},  # minimal content
+            {"items": ["a"]},  # minimal: one one-character bullet, no heading
+            {"heading": "H", "items": ["a"], "reveal": "all"},
+            # 3x volume revealed all at once.
+            {"heading": "A heading that runs considerably longer than it should",
+             "items": ["Each of these bullets says far more than a viewer can "
+                       "take in while it fades in"] * 6,
+             "reveal": "all"},
+            # Visible characters the font has no glyph for: refused as
+            # illegible rather than built into a bare dot.
+            {"items": ["\U0001F600" * 80]},
         ]

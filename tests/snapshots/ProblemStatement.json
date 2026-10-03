@@ -3,7 +3,8 @@
  "manim_version": "0.21.0",
  "reasons": [
   "ProblemStatement merged",
-  "ProblemStatement: italic gap between maths and unspaced prose after it"
+  "ProblemStatement: italic gap between maths and unspaced prose after it",
+  "ProblemStatement: prose strut found by shape; Text nodes record the run, not the strut"
  ],
  "cases": [
   {
@@ -91,7 +92,7 @@
           "children": [
            {
             "type": "Text",
-            "text": "HA block of mass",
+            "text": "A block of mass",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -105,7 +106,7 @@
            },
            {
             "type": "Text",
-            "text": "His released from rest at the top of a rough",
+            "text": "is released from rest at the top of a rough",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -118,7 +119,7 @@
           "children": [
            {
             "type": "Text",
-            "text": "Hplane inclined at",
+            "text": "plane inclined at",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -132,7 +133,7 @@
            },
            {
             "type": "Text",
-            "text": "Hto the horizontal. The coefficient of kinetic",
+            "text": "to the horizontal. The coefficient of kinetic",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -145,7 +146,7 @@
           "children": [
            {
             "type": "Text",
-            "text": "Hfriction between the block and the plane is",
+            "text": "friction between the block and the plane is",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -159,7 +160,7 @@
            },
            {
             "type": "Text",
-            "text": "H.",
+            "text": ".",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -280,7 +281,7 @@
             "children": [
              {
               "type": "Text",
-              "text": "Hthe acceleration",
+              "text": "the acceleration",
               "color": "#58A6FF",
               "fill_opacity": 1.0,
               "stroke_opacity": 1.0
@@ -294,7 +295,7 @@
              },
              {
               "type": "Text",
-              "text": "Hof the block",
+              "text": "of the block",
               "color": "#58A6FF",
               "fill_opacity": 1.0,
               "stroke_opacity": 1.0
@@ -306,7 +307,7 @@
             "children": [
              {
               "type": "Text",
-              "text": "Hdown the plane",
+              "text": "down the plane",
               "color": "#58A6FF",
               "fill_opacity": 1.0,
               "stroke_opacity": 1.0
@@ -341,7 +342,7 @@
           "children": [
            {
             "type": "Text",
-            "text": "HA block of mass",
+            "text": "A block of mass",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -355,7 +356,7 @@
            },
            {
             "type": "Text",
-            "text": "His released from rest at the top of a rough",
+            "text": "is released from rest at the top of a rough",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -368,7 +369,7 @@
           "children": [
            {
             "type": "Text",
-            "text": "Hplane inclined at",
+            "text": "plane inclined at",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -382,7 +383,7 @@
            },
            {
             "type": "Text",
-            "text": "Hto the horizontal. The coefficient of kinetic",
+            "text": "to the horizontal. The coefficient of kinetic",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -395,7 +396,7 @@
           "children": [
            {
             "type": "Text",
-            "text": "Hfriction between the block and the plane is",
+            "text": "friction between the block and the plane is",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -409,7 +410,7 @@
            },
            {
             "type": "Text",
-            "text": "H.",
+            "text": ".",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -530,7 +531,7 @@
             "children": [
              {
               "type": "Text",
-              "text": "Hthe acceleration",
+              "text": "the acceleration",
               "color": "#58A6FF",
               "fill_opacity": 1.0,
               "stroke_opacity": 1.0
@@ -544,7 +545,7 @@
              },
              {
               "type": "Text",
-              "text": "Hof the block",
+              "text": "of the block",
               "color": "#58A6FF",
               "fill_opacity": 1.0,
               "stroke_opacity": 1.0
@@ -556,7 +557,7 @@
             "children": [
              {
               "type": "Text",
-              "text": "Hdown the plane",
+              "text": "down the plane",
               "color": "#58A6FF",
               "fill_opacity": 1.0,
               "stroke_opacity": 1.0
@@ -1268,7 +1269,7 @@
           "children": [
            {
             "type": "Text",
-            "text": "HEvaluate the definite integral",
+            "text": "Evaluate the definite integral",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -1282,7 +1283,7 @@
            },
            {
             "type": "Text",
-            "text": "H.",
+            "text": ".",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -1314,7 +1315,7 @@
             "children": [
              {
               "type": "Text",
-              "text": "Hthe value of the integral",
+              "text": "the value of the integral",
               "color": "#58A6FF",
               "fill_opacity": 1.0,
               "stroke_opacity": 1.0
@@ -1355,7 +1356,7 @@
           "children": [
            {
             "type": "Text",
-            "text": "HEvaluate the definite integral",
+            "text": "Evaluate the definite integral",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -1369,7 +1370,7 @@
            },
            {
             "type": "Text",
-            "text": "H.",
+            "text": ".",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -1401,7 +1402,7 @@
             "children": [
              {
               "type": "Text",
-              "text": "Hthe value of the integral",
+              "text": "the value of the integral",
               "color": "#58A6FF",
               "fill_opacity": 1.0,
               "stroke_opacity": 1.0
@@ -1695,7 +1696,7 @@
           "children": [
            {
             "type": "Text",
-            "text": "HA particle moves along the",
+            "text": "A particle moves along the",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -1709,7 +1710,7 @@
            },
            {
             "type": "Text",
-            "text": "H-axis so that its position at time",
+            "text": "-axis so that its position at time",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -1729,7 +1730,7 @@
           "children": [
            {
             "type": "Text",
-            "text": "Hseconds is",
+            "text": "seconds is",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -1743,7 +1744,7 @@
            },
            {
             "type": "Text",
-            "text": "Hmetres.",
+            "text": "metres.",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -1828,7 +1829,7 @@
             "children": [
              {
               "type": "Text",
-              "text": "Hthe times at which the particle",
+              "text": "the times at which the particle",
               "color": "#58A6FF",
               "fill_opacity": 1.0,
               "stroke_opacity": 1.0
@@ -1840,7 +1841,7 @@
             "children": [
              {
               "type": "Text",
-              "text": "His momentarily at rest, and the",
+              "text": "is momentarily at rest, and the",
               "color": "#58A6FF",
               "fill_opacity": 1.0,
               "stroke_opacity": 1.0
@@ -1852,7 +1853,7 @@
             "children": [
              {
               "type": "Text",
-              "text": "Hdistance it travels between",
+              "text": "distance it travels between",
               "color": "#58A6FF",
               "fill_opacity": 1.0,
               "stroke_opacity": 1.0
@@ -1864,7 +1865,7 @@
             "children": [
              {
               "type": "Text",
-              "text": "Hthem",
+              "text": "them",
               "color": "#58A6FF",
               "fill_opacity": 1.0,
               "stroke_opacity": 1.0
@@ -1899,7 +1900,7 @@
           "children": [
            {
             "type": "Text",
-            "text": "HA particle moves along the",
+            "text": "A particle moves along the",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -1913,7 +1914,7 @@
            },
            {
             "type": "Text",
-            "text": "H-axis so that its position at time",
+            "text": "-axis so that its position at time",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -1933,7 +1934,7 @@
           "children": [
            {
             "type": "Text",
-            "text": "Hseconds is",
+            "text": "seconds is",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -1947,7 +1948,7 @@
            },
            {
             "type": "Text",
-            "text": "Hmetres.",
+            "text": "metres.",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
             "stroke_opacity": 1.0
@@ -2032,7 +2033,7 @@
             "children": [
              {
               "type": "Text",
-              "text": "Hthe times at which the particle",
+              "text": "the times at which the particle",
               "color": "#58A6FF",
               "fill_opacity": 1.0,
               "stroke_opacity": 1.0
@@ -2044,7 +2045,7 @@
             "children": [
              {
               "type": "Text",
-              "text": "His momentarily at rest, and the",
+              "text": "is momentarily at rest, and the",
               "color": "#58A6FF",
               "fill_opacity": 1.0,
               "stroke_opacity": 1.0
@@ -2056,7 +2057,7 @@
             "children": [
              {
               "type": "Text",
-              "text": "Hdistance it travels between",
+              "text": "distance it travels between",
               "color": "#58A6FF",
               "fill_opacity": 1.0,
               "stroke_opacity": 1.0
@@ -2068,7 +2069,7 @@
             "children": [
              {
               "type": "Text",
-              "text": "Hthem",
+              "text": "them",
               "color": "#58A6FF",
               "fill_opacity": 1.0,
               "stroke_opacity": 1.0

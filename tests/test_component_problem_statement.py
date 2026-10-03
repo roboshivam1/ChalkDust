@@ -16,7 +16,7 @@ from dataclasses import asdict
 
 import numpy as np
 import pytest
-from manim import tempconfig
+from manim import DL, tempconfig
 from pydantic import ValidationError
 
 from chalkdust.continuity import (
@@ -32,12 +32,22 @@ from chalkdust.render.worker import TIERS, long_path
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.problem_statement import (
     ITALIC_GAP,
+    PROSE_STRUT,
     STRUT,
     WORD_SPACE,
     ProblemStatement,
+    _baselined,
+    _prose_strut,
+    _strut_outline,
 )
-from chalkdust.scenes.regions import INVALID_LATEX, LayoutError, bbox, region_rect
-from chalkdust.scenes.theme import DEFAULT, body_cap_height, resolve_fonts
+from chalkdust.scenes.regions import (
+    INVALID_LATEX,
+    UNRENDERABLE_TEXT,
+    LayoutError,
+    bbox,
+    region_rect,
+)
+from chalkdust.scenes.theme import DEFAULT, body_cap_height, body_text, resolve_fonts
 from chalkdust.validate.geometric import LayoutProbe, validate_beat
 
 INCLINE = ProblemStatement.examples()[0]
@@ -278,20 +288,68 @@ class TestInlineLayout:
         ("given[0]", {"text": "x", "given": ["\U0001F600"], "find": "y"}),
         ("find", {"text": "x", "find": "\U0001F600 \U0001F600"}),
     ], ids=["text", "given", "find"])
-    def test_prose_the_font_cannot_draw_is_illegible(self, field, params):
-        # Pango drops glyphs the font lacks; a field of nothing else draws no
-        # ink and must refuse cleanly, naming the field -- not lay out as an
-        # empty group that "overlaps" its neighbour.
+    def test_prose_the_font_cannot_draw_is_unrenderable_text(self, field, params):
+        # Pango drops glyphs the font lacks; a field of nothing else drew no
+        # ink and was once reported as an "overlap" with its neighbour. The
+        # theme's glyph guard refuses it first, naming the field and quoting
+        # the spec's text -- not the strut-prefixed string typeset for it.
         report = validate_beat(_spec(params))
-        assert report.kinds() == {"illegible"}, f"\n{report}"
-        assert f"{field} draws no glyphs" in report.findings[0].message
+        assert report.kinds() == {UNRENDERABLE_TEXT}, f"\n{report}"
+        message = report.findings[0].message
+        assert f"ProblemStatement {field} " in message
+        assert "'H" not in message
 
-    def test_lines_the_font_cannot_draw_are_dropped(self):
-        # Emoji long enough to hard-break over several lines ahead of real
-        # text: those lines draw nothing, so they are not stacked or revealed.
-        probe = _probe({"text": "\U0001F600" * 200 + " then $x$ rests", "find": "y"})
-        lines = _blocks(probe)["statement"].submobjects
-        assert lines and all(line.family_members_with_points() for line in lines)
+    def test_lines_of_zero_width_characters_are_dropped(self):
+        # Zero-width spaces long enough to hard-break over several lines ahead
+        # of real text: those lines draw nothing, so they are not stacked or
+        # revealed, and the field still validates.
+        params = {"text": "\u200b" * 200 + " then $x$ rests", "find": "y"}
+        lines = _blocks(_probe(params))["statement"].submobjects
+        assert len(lines) == 1 and lines[0].family_members_with_points()
+        assert validate_beat(_spec(params)).ok
+
+    def test_private_use_characters_are_refused_at_rung_one(self):
+        # Symbol-font Greek pasted from a PDF (U+F071 theta, U+F06D mu): Pango
+        # draws each as a missing-glyph box. BeatSpec refuses it before any
+        # component is built.
+        with pytest.raises(ValidationError, match="private-use"):
+            _spec({"text": "inclined at \uf071 with friction \uf06d", "find": "a"})
+
+    def test_private_use_characters_past_rung_one_are_unrenderable_text(self):
+        # Built directly, the theme's glyph guard refuses the run. Before it,
+        # Manim listed a path of the box ahead of the strut, so the strut H
+        # stayed on screen and validated clean (verify-rb2).
+        probe = LayoutProbe(ProblemStatement(
+            {"text": "inclined at \uf071 to the horizontal", "find": "a"}), duration=5.0)
+        with pytest.raises(LayoutError) as exc:
+            probe.construct()
+        assert exc.value.kind == UNRENDERABLE_TEXT
+        assert "ProblemStatement text 'inclined at" in str(exc.value)
+
+    def test_strut_is_found_by_shape_not_submobject_order(self):
+        # Pango's path order is not the string's. Reversed, the strut is still
+        # the leftmost glyph shaped like the H built alone; the run's own H
+        # ("Hence") is kept, and the run sits on y=0.
+        theme = resolve_fonts(DEFAULT)
+        t = body_text(PROSE_STRUT + "Hence", theme)
+        t.submobjects.reverse()
+        strut = _prose_strut(t, theme)
+        assert strut.get_left()[0] == min(g.get_left()[0]
+                                          for g in t.family_members_with_points())
+        run = _baselined(t, strut).family_members_with_points()
+        assert len(run) == 5 and strut not in run
+        ref = _strut_outline(theme)
+        assert sum(g.points.shape == ref.shape
+                   and np.allclose(g.points - g.get_corner(DL), ref, atol=1e-9)
+                   for g in run) == 1
+        assert min(g.get_bottom()[1] for g in run) == pytest.approx(
+            0.0, abs=0.05 * body_cap_height(theme))
+
+    def test_leading_combining_mark_is_not_lost_with_the_strut(self):
+        # "H" + U+0302 shapes as one glyph; without the strut's space the mark
+        # composed onto the H and was removed with it.
+        [line] = _blocks(_probe({"text": "\u0302abc", "find": "y"}))["statement"].submobjects
+        assert len(line.family_members_with_points()) == 4
 
 
 class TestCarryIn:

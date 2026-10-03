@@ -18,7 +18,8 @@ import unicodedata
 from functools import lru_cache
 from typing import Annotated, NamedTuple
 
-from manim import LEFT, RIGHT, UP, Mobject, VGroup
+import numpy as np
+from manim import DL, LEFT, RIGHT, UP, Mobject, Text, VGroup
 from pydantic import AfterValidator, Field
 
 from chalkdust.continuity import artifact_builder
@@ -33,6 +34,7 @@ from chalkdust.scenes.components.base import (
 )
 from chalkdust.scenes.regions import (
     DEFAULT_PADDING,
+    UNRENDERABLE_TEXT,
     LayoutError,
     fit_to_region,
     region_rect,
@@ -42,6 +44,7 @@ from chalkdust.scenes.theme import (
     body_cap_height,
     body_text,
     caption_text,
+    check_renderable,
     emphasize,
     math,
     refuse_invalid_latex,
@@ -69,6 +72,12 @@ COLUMN_GAP = 1.6     # between the given column and the find column
 # us. It is measured, then removed. \textstyle keeps fractions and limits at
 # inline size -- MathTex sets display maths otherwise.
 STRUT = r"\mathrm{H}\textstyle "
+
+# The same idea for prose: each run is typeset as PROSE_STRUT + run, and the
+# H's bottom marks the run's baseline -- Pango's Text has no baseline either.
+# The space keeps the H a glyph of its own: a run that starts with a
+# combining mark would compose onto it ("H" + U+0302 shapes as one glyph).
+PROSE_STRUT = "H "
 
 # Relative weights of each step's share of the beat (D-002), handed to
 # scene.budget(). A weight of 1 -- one given -- is one reveal step, so it needs
@@ -195,6 +204,38 @@ def _baselined(mob: Mobject, strut: Mobject) -> Mobject:
     return mob.shift(UP * -baseline)
 
 
+@lru_cache(maxsize=16)
+def _strut_outline(theme: Theme) -> np.ndarray:
+    """The prose strut's outline, built alone, relative to its lower-left
+    corner -- what _prose_strut() looks for in a run typeset behind it."""
+    [glyph] = body_text(PROSE_STRUT, theme).family_members_with_points()
+    return glyph.points - glyph.get_corner(DL)
+
+
+def _prose_strut(t: Text, theme: Theme) -> Mobject:
+    """The strut glyph in `t` = body_text(PROSE_STRUT + run), found by shape.
+
+    Not t[0]: the order of Text's submobjects is Pango's order of drawn
+    paths, not the string's. A missing-glyph box is several paths, and with
+    one in the run Manim listed a piece of the box first -- the H stayed on
+    screen and the baseline was read off the box (verify-rb2). So: every
+    glyph whose outline is the H built alone (same font and size, so the
+    same points up to translation), and of those the leftmost -- the strut
+    leads the string, and its H sets the line left-to-right. A run's own H
+    ("Hence") matches too, but always to the strut's right.
+    """
+    ref = _strut_outline(theme)
+    tol = 1e-6 * body_cap_height(theme)
+    found = [g for g in t.family_members_with_points()
+             if g.points.shape == ref.shape
+             and np.allclose(g.points - g.get_corner(DL), ref, rtol=0, atol=tol)]
+    if not found:
+        # Unreachable for text the theme's glyph guard lets through: the
+        # strut is set apart by a space and nothing kerns its outline.
+        raise RuntimeError(f"ProblemStatement: no baseline strut in {t.original_text!r}")
+    return min(found, key=lambda g: g.get_left()[0])
+
+
 class _Flow:
     """Lays one InlineText out into lines no wider than `width`."""
 
@@ -247,6 +288,19 @@ class _Flow:
                 out.append(t)
         self.tokens, self.maths = out, maths
 
+    def _prose(self, run: str) -> Mobject:
+        """One run of prose words, baseline at y=0, strut removed."""
+        # The theme's glyph guard, on exactly the run and naming the field:
+        # body_text() below would refuse the same characters, but quoting
+        # the strut-prefixed string the spec never contained.
+        check_renderable(run, self.theme.type.body_font,
+                         what=f"ProblemStatement {self.what}")
+        t = body_text(PROSE_STRUT + run, self.theme)
+        out = _baselined(t, _prose_strut(t, self.theme))
+        # What the mobject now draws -- the snapshot records this string.
+        out.original_text = run
+        return out
+
     def _line(self, idx: list[int]) -> VGroup:
         """Build one line, baseline at y=0, left edge at x=0."""
         pieces: list[tuple[Mobject, bool]] = []
@@ -256,8 +310,11 @@ class _Flow:
 
         def flush() -> None:
             if run:
-                t = body_text("H" + "".join(run), self.theme)
-                pieces.append((_baselined(t, t[0]), run_space))
+                piece = self._prose("".join(run))
+                # A run of zero-width characters alone draws nothing; it
+                # takes no place on the line (and no word space).
+                if piece.family_members_with_points():
+                    pieces.append((piece, run_space))
                 run.clear()
 
         for n, i in enumerate(idx):
@@ -313,18 +370,20 @@ class _Flow:
                 line = self._line(plan[k])
             built.append(line)
             k += 1
-        # Characters the theme font has no glyph for (emoji, say) are
-        # dropped by Pango without a word. A line of nothing but those draws
-        # no ink: dropped, rather than leaving a blank line and an empty
-        # reveal step. A field with no ink at all would lay out as an empty
-        # group at the origin, under whatever sits there, so it is refused --
-        # the fix is the spec's text, not the layout.
+        # Characters the theme font cannot draw never get here: the theme's
+        # glyph guard refuses them in _prose() as unrenderable_text. Zero-width
+        # characters do, and draw nothing; a line of nothing but those is
+        # dropped, rather than stacked as a blank line with an empty reveal
+        # step. The schema guarantees each field a visible character, so a
+        # field left with no line at all would be a gap in that chain; it is
+        # refused with the guard's kind rather than laid out as an empty group
+        # at the origin (which the settle check reported as an overlap).
         built = [line for line in built if line.family_members_with_points()]
         if not built:
             raise LayoutError(
-                f"ProblemStatement {self.what} draws no glyphs: the theme font "
-                f"has none of its characters: {self.source!r}",
-                kind="illegible")
+                f"ProblemStatement {self.what} {self.source!r} draws nothing in "
+                f"font {self.theme.type.body_font!r}. Write the text the viewer "
+                f"should read.", kind=UNRENDERABLE_TEXT)
         return built
 
 
@@ -527,7 +586,20 @@ class ProblemStatement(Component):
             {"text": incline["text"], "given": [r"$\mu = \frac{1}{2$"],
              "find": incline["find"]},
             {"text": "x", "find": r"the value of $\quad$"},
-            # Prose the theme font has no glyph for draws no ink: refused as
-            # illegible, not laid out as an empty group at the origin.
+            # Glyph-less prose: emoji and right-to-left letters the theme font
+            # draws as nothing. The theme's glyph guard refuses each as
+            # unrenderable_text, naming the field -- not laid out as an empty
+            # group at the origin, and not silently missing a word.
             {"text": "\U0001F600" * 10, "find": "y"},
+            {"text": "The block \u05d0\u05d1 rests on the plane.", "find": "y"},
+            # Text that draws but is hostile to the baseline strut: zero-width
+            # spaces long enough to hard-break into lines of their own (dropped:
+            # they draw nothing), and words opening with a combining mark (which
+            # must not compose onto the strut and vanish with it).
+            {"text": "\u200b" * 200 + " then $x$ rests",
+             "given": ["\u0302a = 1"], "find": "\u0301y"},
+            # Private-use characters (Symbol-font Greek pasted from a PDF) are
+            # refused at rung 1 by BeatSpec before any component is built, so
+            # they cannot be a case here; the component's tests pin that, and
+            # the theme's guard beneath it.
         ]

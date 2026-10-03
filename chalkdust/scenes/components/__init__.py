@@ -21,6 +21,7 @@ from chalkdust.scenes.components import equation_derivation  # noqa: F401,E402
 from chalkdust.scenes.components import free_body_diagram  # noqa: F401,E402
 from chalkdust.scenes.components import raw_scene  # noqa: F401,E402
 from chalkdust.scenes.components import solution_step  # noqa: F401,E402
+from chalkdust.scenes.components import step_trace  # noqa: F401,E402
 from chalkdust.scenes.components import title_card  # noqa: F401,E402
 
 __all__ = [

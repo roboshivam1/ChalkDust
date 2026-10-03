@@ -330,3 +330,37 @@ def test_dirs_handed_to_manim_are_long_paths(tmp_path, fake_tts, monkeypatch):
     assert len(handed) >= 5
     assert [d for d in handed if "~" in d] == []
     assert all(Path(d).is_relative_to(Path(os.path.realpath(long_dir))) for d in handed)
+
+
+class TestCarryInEndToEnd:
+    """Register N-4: a spec file whose b02 carries in the artifact b01
+    registers goes through validate, speech and render, and b02's key holds
+    b01's construction params (SCENE_SPEC.md §6, D-004). The carry_in_video
+    fixture lends TitleCard an artifact builder and registers _Highlight,
+    whose build() raises unless the carried artifact is on screen -- so a
+    rendered b02 proves the render was built with its recipes."""
+
+    def _render(self, root: Path, spec: dict, out: str) -> pipeline.RunResult:
+        path = write_spec(root / "spec.json", spec)
+        return pipeline.render(path, Quality.DRAFT, root / out,
+                               cache_dir=root / "cache", work_dir=root / "work")
+
+    def test_editing_the_producer_rerenders_the_carrying_beat(
+            self, tmp_path, carry_in_video, fake_tts):
+        spec = carry_in_video("Bucket array").model_dump(mode="json")
+        first = self._render(tmp_path, spec, "first.mp4")
+        assert first.rebuilt == ["b01", "b02"]
+        assert sorted(_streams(first.output)) == ["audio", "video"]
+
+        # b01's narration only: b01 re-times (FakeTTS: 0.02 s a character,
+        # 1 s floor) and re-renders, but its params -- what b02 rebuilds the
+        # artifact from -- are unchanged, so b02 stays cached.
+        spec["beats"][0]["narration"] += " It holds every key the table has seen so far."
+        assert self._render(tmp_path, spec, "narration.mp4").rebuilt == ["b01"]
+
+        # b01's params: the carried artifact changes, so b02 must re-render
+        # although nothing in b02's own spec or audio changed.
+        spec["beats"][0]["params"]["title"] = "Bucket list"
+        edited = self._render(tmp_path, spec, "params.mp4")
+        assert edited.rebuilt == ["b01", "b02"]
+        assert all(b.speech_cached for b in edited.beats)

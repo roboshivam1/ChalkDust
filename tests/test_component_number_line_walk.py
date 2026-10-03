@@ -25,6 +25,7 @@ MIXED = {
         {"at": -3, "label": "start"},
         {"to": 2},
         {"to": -1},
+        {"at": 4, "label": "reset"},   # second mark: walker slides, no new walker
         {"interval": [0, None], "closed": [True, False], "label": "x ≥ 0"},
     ],
 }
@@ -59,8 +60,8 @@ class TestTiming:
 
 class TestSemanticHooks:
     def test_min_seconds_is_sum_of_phase_minimums(self):
-        # intro 0.75 + mark 0.5 + 2 jumps 2.0 + interval 1.0 + hold 1.0
-        assert NumberLineWalk(MIXED).min_seconds() == pytest.approx(5.25)
+        # intro 0.75 + 2 marks 1.0 + 2 jumps 2.0 + interval 1.0 + hold 1.0
+        assert NumberLineWalk(MIXED).min_seconds() == pytest.approx(5.75)
 
     def test_no_latex(self):
         assert NumberLineWalk(MIXED).latex_strings() == []

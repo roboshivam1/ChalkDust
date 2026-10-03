@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import pytest
 from manim import tempconfig
+from manim.animation.animation import prepare_animation
 from pydantic import ValidationError
 
 from chalkdust.core.models import BeatSpec
@@ -66,8 +67,11 @@ class _Clock(LayoutProbe):
         self.elapsed = 0.0
 
     def play(self, *animations, **kwargs) -> None:  # type: ignore[override]
-        self.elapsed += kwargs.get("run_time", max(a.run_time for a in animations
-                                                   if hasattr(a, "run_time")))
+        run_time = kwargs.get("run_time")
+        if run_time is None:
+            # prepare_animation turns `.animate` builders into Animations.
+            run_time = max(prepare_animation(a).run_time for a in animations)
+        self.elapsed += run_time
         super().play(*animations, **kwargs)
 
     def wait(self, duration: float = 1.0, *args, **kwargs) -> None:  # type: ignore[override]

@@ -1,0 +1,1233 @@
+{
+ "component": "BulletReveal",
+ "manim_version": "0.21.0",
+ "reasons": [
+  "initial snapshot: seeded with the f4-layout-safety harness"
+ ],
+ "cases": [
+  {
+   "params": {
+    "items": [
+     "One jump becomes a walk"
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "run_time": 5.0
+     },
+     {
+      "op": "settle",
+      "label": "bullets revealed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "bullets",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "One jump becomes a walk",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 5.0
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "bullets",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "One jump becomes a walk",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.634,
+        0.417
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.634,
+        0.417
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.747,
+        -0.05,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        -0.1,
+        5.214,
+        0.417
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.634,
+        0.417
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.634,
+        0.417
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.747,
+        -0.05,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        -0.1,
+        5.214,
+        0.417
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "heading": "Three causes",
+    "items": [
+     "A weak hash function",
+     "A load factor left too high",
+     "Adversarial keys chosen to collide"
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.111
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "run_time": 2.222
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "run_time": 2.222
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "run_time": 2.222
+     },
+     {
+      "op": "settle",
+      "label": "bullets revealed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "bullets",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "A weak hash function",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "A load factor left too high",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Adversarial keys chosen to collide",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "heading",
+        "text": "Three causes",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "title_bar"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.222
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "bullets",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "A weak hash function",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "A load factor left too high",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Adversarial keys chosen to collide",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "heading",
+        "text": "Three causes",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "title_bar"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        7.097,
+        2.066
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.253,
+        0.769,
+        4.59,
+        0.329
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.478,
+        0.774,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.043,
+        0.769,
+        4.17,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.907,
+        -0.103,
+        5.282,
+        0.417
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.478,
+        -0.053,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.697,
+        -0.103,
+        4.862,
+        0.417
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.927,
+        7.097,
+        0.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.478,
+        -0.88,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        -0.927,
+        6.677,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        3.0,
+        3.864,
+        0.445
+       ],
+       "font_size": 44.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        7.097,
+        2.066
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.253,
+        0.769,
+        4.59,
+        0.329
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.478,
+        0.774,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.043,
+        0.769,
+        4.17,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.907,
+        -0.103,
+        5.282,
+        0.417
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.478,
+        -0.053,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.697,
+        -0.103,
+        4.862,
+        0.417
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.927,
+        7.097,
+        0.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.478,
+        -0.88,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        -0.927,
+        6.677,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        3.0,
+        3.864,
+        0.445
+       ],
+       "font_size": 44.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "items": [
+     "Point number 0",
+     "Point number 1",
+     "Point number 2",
+     "Point number 3",
+     "Point number 4",
+     "Point number 5"
+    ],
+    "reveal": "all"
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 8.571
+     },
+     {
+      "op": "settle",
+      "label": "bullets revealed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "bullets",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 0",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 1",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 2",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[3]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 3",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[4]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 4",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[5]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 5",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.429
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "bullets",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 0",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 1",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 2",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[3]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 3",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[4]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 4",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[5]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 5",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.382,
+        4.46
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.002,
+        1.967,
+        3.378,
+        0.325
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.621,
+        1.971,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.208,
+        1.967,
+        2.958,
+        0.325
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.032,
+        1.14,
+        3.318,
+        0.325
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.621,
+        1.144,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.178,
+        1.14,
+        2.898,
+        0.325
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.313,
+        3.376,
+        0.325
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.621,
+        0.316,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.207,
+        0.313,
+        2.956,
+        0.325
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.001,
+        -0.514,
+        3.379,
+        0.325
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.621,
+        -0.511,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.209,
+        -0.514,
+        2.959,
+        0.325
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.002,
+        -1.341,
+        3.378,
+        0.323
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.621,
+        -1.338,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.208,
+        -1.341,
+        2.958,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -2.168,
+        3.382,
+        0.324
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.621,
+        -2.165,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        -2.168,
+        2.962,
+        0.324
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.382,
+        4.46
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.002,
+        1.967,
+        3.378,
+        0.325
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.621,
+        1.971,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.208,
+        1.967,
+        2.958,
+        0.325
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.032,
+        1.14,
+        3.318,
+        0.325
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.621,
+        1.144,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.178,
+        1.14,
+        2.898,
+        0.325
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.313,
+        3.376,
+        0.325
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.621,
+        0.316,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.207,
+        0.313,
+        2.956,
+        0.325
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.001,
+        -0.514,
+        3.379,
+        0.325
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.621,
+        -0.511,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.209,
+        -0.514,
+        2.959,
+        0.325
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.002,
+        -1.341,
+        3.378,
+        0.323
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.621,
+        -1.338,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.208,
+        -1.341,
+        2.958,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -2.168,
+        3.382,
+        0.324
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.621,
+        -2.165,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        -2.168,
+        2.962,
+        0.324
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ]
+   }
+  }
+ ]
+}

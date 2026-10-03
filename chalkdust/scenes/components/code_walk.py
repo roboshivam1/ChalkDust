@@ -17,13 +17,23 @@ from __future__ import annotations
 
 from functools import lru_cache
 
-from manim import Code, FadeIn, ManimColor, Rectangle, Transform, VGroup, interpolate_color
+from manim import (
+    Code,
+    FadeIn,
+    ManimColor,
+    Rectangle,
+    Transform,
+    VGroup,
+    VMobject,
+    interpolate_color,
+)
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 from pygments.lexers import get_lexer_by_name
 from pygments.style import Style
 from pygments.token import Comment, Error, Keyword, Number, String, Token
 from pygments.util import ClassNotFound
 
+from chalkdust.continuity import artifact_builder
 from chalkdust.core.models import Region
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import (
@@ -33,7 +43,7 @@ from chalkdust.scenes.components.base import (
     register,
 )
 from chalkdust.scenes.regions import LayoutError, fit_to_region, tag_font_size
-from chalkdust.scenes.theme import Palette
+from chalkdust.scenes.theme import Palette, Theme
 
 # Schema-level density limit, like BulletReveal's six items: past eight stops
 # the beat is a lecture, and the error points at the real fix (split the beat).
@@ -151,30 +161,7 @@ class CodeWalk(Component):
         p: CodeWalkParams = self.params
         theme = scene.theme
 
-        code = label(
-            Code(
-                code_string=p.source,
-                language=p.language,
-                formatter_style=_code_style(theme.palette),
-                add_line_numbers=True,
-                background="rectangle",
-                background_config={"stroke_color": theme.palette.muted},
-                paragraph_config={
-                    "font": theme.type.mono_font,
-                    "font_size": theme.type.mono,
-                },
-            ),
-            "code",
-        )
-        # Code builds its Paragraphs itself, bypassing theme.mono_text, so tag
-        # them here or the legibility floor never sees this text.
-        tag_font_size(code.code_lines, theme.type.mono)
-        tag_font_size(code.line_numbers, theme.type.mono)
-        # Text above the highlight bar; the bar is added later and would
-        # otherwise draw over the glyphs it is meant to sit behind.
-        code.code_lines.set_z_index(1)
-        code.line_numbers.set_z_index(1)
-
+        code = _listing(p, theme)
         try:
             fit_to_region(code, Region.STAGE)
         except LayoutError as exc:
@@ -186,10 +173,8 @@ class CodeWalk(Component):
                 kind=exc.kind,
             ) from exc
 
-        # One row per source line: the code glyphs plus their line number, so
-        # an empty source line still has something to dim.
-        rows = [VGroup(line, num) for line, num in zip(code.code_lines, code.line_numbers)]
-        opacity = [1.0] * len(rows)
+        # What each source line's glyphs and number currently show at.
+        opacity = [1.0] * len(code.line_numbers)
 
         times = scene.budget(*self._weights())
         scene.play(FadeIn(code), run_time=times[0])
@@ -207,10 +192,13 @@ class CodeWalk(Component):
             else:
                 anims = [Transform(bar, target)]
 
-            for i, row in enumerate(rows):
-                want = 1.0 if span.start <= i + 1 <= span.last else DIM_OPACITY
+            # Animate the listing's own parts, never a wrapper group: Manim
+            # adds any animated mobject that is not already on screen to the
+            # scene, so a fresh VGroup per row would become a stray top-level
+            # mobject on top of the listing.
+            for i, want in enumerate(_row_opacities(code, span)):
                 if want != opacity[i]:
-                    anims.append(row.animate.set_opacity(want))
+                    anims += [m.animate.set_opacity(want) for m in _row(code, i)]
                     opacity[i] = want
 
             scene.play(*anims, run_time=move)
@@ -309,6 +297,69 @@ def _code_style(palette: Palette) -> type[Style]:
             },
         },
     )
+
+
+def _listing(p: CodeWalkParams, theme: Theme) -> Code:
+    """The listing at its natural size, unplaced: shared by build() and the
+    carry-in artifact so the two cannot drift apart."""
+    code = label(
+        Code(
+            code_string=p.source,
+            language=p.language,
+            formatter_style=_code_style(theme.palette),
+            add_line_numbers=True,
+            background="rectangle",
+            background_config={"stroke_color": theme.palette.muted},
+            paragraph_config={
+                "font": theme.type.mono_font,
+                "font_size": theme.type.mono,
+            },
+        ),
+        "code",
+    )
+    # Code builds its Paragraphs itself, bypassing theme.mono_text, so tag
+    # them here or the legibility floor never sees this text.
+    tag_font_size(code.code_lines, theme.type.mono)
+    tag_font_size(code.line_numbers, theme.type.mono)
+    # Text above the highlight bar; the bar is added later and would
+    # otherwise draw over the glyphs it is meant to sit behind.
+    code.code_lines.set_z_index(1)
+    code.line_numbers.set_z_index(1)
+    return code
+
+
+def _row(code: Code, i: int) -> list[VMobject]:
+    """Source line i's glyphs and its line number. An empty source line is an
+    empty group with no points; it has nothing to dim, so it is left out."""
+    return [m for m in (code.code_lines[i], code.line_numbers[i])
+            if m.has_points() or m.family_members_with_points()]
+
+
+def _row_opacities(code: Code, span: LineSpan) -> list[float]:
+    """Per source line: full strength inside `span`, dimmed outside."""
+    return [1.0 if span.start <= i + 1 <= span.last else DIM_OPACITY
+            for i in range(len(code.line_numbers))]
+
+
+@artifact_builder("CodeWalk")
+def _artifact(p: CodeWalkParams, theme: Theme) -> Code:
+    """The settled last frame, for a later beat to carry in (SCENE_SPEC.md §6):
+    the listing, and when the walk had highlights, its last span lit and the
+    other lines dimmed -- the picture the viewer was left with.
+
+    Returned as the Code mobject itself (unplaced), so a consumer acting on a
+    carried listing (ZoomHighlight, Callout) can reach `code_lines[i]` and
+    `line_numbers[i]` for line i + 1. The bar, when present, is the last
+    submobject, labelled "highlight".
+    """
+    code = _listing(p, theme)
+    if p.highlights:
+        span = p.highlights[-1]
+        code.add(label(_bar(code, span, theme.palette.accent), "highlight"))
+        for i, want in enumerate(_row_opacities(code, span)):
+            for m in _row(code, i):
+                m.set_opacity(want)
+    return code
 
 
 def _bar(code: Code, span: LineSpan, color: str) -> Rectangle:

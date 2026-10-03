@@ -28,11 +28,14 @@ class FakeTTS:
     would measure ~0s. Length follows characters, not words, so any narration
     edit moves the duration and therefore the beat's render key.
 
-    ffmpeg writes to the exact path tts.py hands over (.aiff today) and picks
+    ffmpeg writes to the exact path tts.py hands over -- named with this
+    backend's `raw_format`, as the TTSBackend protocol requires -- and picks
     the container from its extension.
     """
 
     name = "fake"
+    raw_format = "wav"
+    default_voice = "tone"
 
     def __init__(self, seconds_per_char: float = 0.02) -> None:
         self.seconds_per_char = seconds_per_char
@@ -106,8 +109,12 @@ class TestRender:
         root, _, _ = rendered
         assert not (root / "media").exists(), "Manim wrote into cwd"
         # Partial movie files are removed once each beat is in the cache, and
-        # assembly intermediates once the MP4 exists.
-        assert not any((root / "work" / "manim" / "beats").iterdir())
+        # assembly intermediates once the MP4 exists. The worker owns the
+        # Manim scratch layout: per-beat video dirs under work/manim/videos.
+        videos = root / "work" / "manim" / "videos"
+        assert videos.is_dir()
+        assert not list(videos.glob("beat_*"))
+        assert not [p for p in videos.rglob("*") if p.is_file()]
         assert not any((root / "work" / "assemble").iterdir())
 
     def test_narration_edit_rebuilds_only_that_beat(self, rendered, fake_tts):

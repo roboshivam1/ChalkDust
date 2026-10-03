@@ -26,14 +26,16 @@ from pathlib import Path
 from manim import tempconfig
 from pydantic import ValidationError
 
-from chalkdust.core.cache import Cache, beat_render_key, tts_key
-from chalkdust.core.models import BuildContext, Quality, Video, VideoSpec
+from chalkdust.continuity import ArtifactRecipe, resolve_carry_in
+from chalkdust.core.cache import Cache, tts_key
+from chalkdust.core.models import BuildContext, CarryInError, Quality, Video, VideoSpec
 from chalkdust.render.assemble import assemble
 from chalkdust.render.worker import render_beat
 from chalkdust.scenes.components import get_component
 from chalkdust.scenes.theme import get_theme
-from chalkdust.speech.tts import synthesize_beat
-from chalkdust.validate.geometric import Report, validate_beat
+from chalkdust.speech.base import TTSError
+from chalkdust.speech.tts import resolve_voice, synthesize_beat
+from chalkdust.validate.geometric import Report, validate_specs
 
 DEFAULT_CACHE_DIR = Path(".cache")
 # Manim scratch, assembly intermediates. Git-ignored; never cwd/media.
@@ -138,10 +140,22 @@ def load_spec(path: Path) -> VideoSpec:
     return spec
 
 
+def carry_in_recipes(spec: VideoSpec) -> dict[str, tuple[ArtifactRecipe, ...]]:
+    """Each beat's carried artifacts (SCENE_SPEC.md §6), as the probe and the
+    render both need them. A carry-in the producing component cannot rebuild
+    is a spec error (CarryInError), not a layout one."""
+    try:
+        return resolve_carry_in(spec)
+    except CarryInError as exc:
+        raise SpecInvalid(f"carry_in: {exc}") from exc
+
+
 def check_layout(spec: VideoSpec) -> list[Report]:
     """Rung 3 (geometric). Runs before speech, so the probe uses the
-    validator's placeholder duration: geometry does not depend on run time."""
-    reports = [validate_beat(b, theme=spec.theme) for b in spec.beats]
+    validator's placeholder duration: geometry does not depend on run time.
+    Beats are probed with their carried artifacts on screen, as rendered."""
+    reports = validate_specs(list(spec.beats), theme=spec.theme,
+                             recipes=carry_in_recipes(spec))
     failed = [r for r in reports if not r.ok]
     if failed:
         raise LayoutRefused("\n".join(str(r) for r in failed))
@@ -154,8 +168,10 @@ def manim_scratch(work_dir: Path, verbose: bool = False) -> Iterator[None]:
 
     Scoped with tempconfig rather than set globally; worker.render_beat opens
     its own tempconfig inside this one, which copies -- and so inherits --
-    these settings. Covers validation too: building Text writes Pango SVGs
-    to `{media_dir}/texts`.
+    the logging settings. The worker sets media_dir and video_dir itself, from
+    the work dir it is handed (`{work_dir}/manim`, the same media_dir as here,
+    so Manim's text and LaTeX caches are shared with validation). Covers
+    validation too: building Text writes Pango SVGs to `{media_dir}/texts`.
     """
     with tempconfig({
         "media_dir": str(Path(work_dir) / "manim"),
@@ -191,7 +207,13 @@ def render(
     cache = Cache(cache_dir)
     ctx = BuildContext(quality=quality)
     video = Video.from_spec(spec)
-    voice = spec.voice
+    recipes = carry_in_recipes(spec)
+    # The resolved voice (platform default backend, backend default voice) is
+    # what tts.synthesize hashes, so the cached/synth report must use it too.
+    try:
+        voice = resolve_voice(spec.voice)
+    except TTSError as exc:
+        raise SpeechFailed(str(exc)) from exc
 
     # Speech for every beat before any render: render keys need durations.
     speech_cached = {}
@@ -204,19 +226,21 @@ def render(
             raise SpeechFailed(f"{beat.id}: {exc}") from exc
 
     result = RunResult(output=out)
+    # The worker owns Manim scratch under this dir: one video dir per beat,
+    # removed once the clip is committed to the cache.
+    manim_dir = work_dir / "manim"
+    beats_dir = cache.root / "beats"
     with manim_scratch(work_dir, verbose):
         for beat in video.beats:
-            key = beat_render_key(beat.spec, beat.duration, ctx)  # type: ignore[arg-type]
-            cached = cache.slot("beats", key, ".mp4").exists
-            # One scratch dir per beat, so its partial movie files can be
-            # removed as soon as the beat is committed to the cache.
-            scratch = work_dir / "manim" / "beats" / key
+            # The render key (font-resolved theme, tier, repair plan, carried
+            # artifacts) is the worker's to build; a beat was cached iff the
+            # clip the worker recorded on it was in the cache before the call.
+            before = set(beats_dir.glob("*.mp4"))
             try:
-                with tempconfig({"video_dir": str(scratch)}):
-                    render_beat(beat, spec.theme, ctx, cache)
+                render_beat(beat, spec.theme, ctx, cache, manim_dir, recipes[beat.id])
             except Exception as exc:
                 raise RenderFailed(f"{beat.id} ({beat.spec.component}): {exc}") from exc
-            shutil.rmtree(scratch, ignore_errors=True)
+            cached = beat.render_path in before
 
             outcome = BeatOutcome(beat.id, speech_cached[beat.id], cached,
                                   beat.duration)  # type: ignore[arg-type]

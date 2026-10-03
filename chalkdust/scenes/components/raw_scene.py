@@ -97,6 +97,10 @@ class RawSceneError(Exception):
       timeout          -- did not finish within the time limit
       crash            -- raised, or the subprocess died
       layout           -- failed a layout assertion
+
+    Plus one routing error that is not a degradation reason:
+
+      out_of_process   -- build() called from a host scene
     """
 
     def __init__(self, message: str, kind: str) -> None:
@@ -124,7 +128,7 @@ class RawScene(Component):
         raise RawSceneError(
             "RawScene renders out of process; route the beat through "
             "raw_scene.render_raw_beat, not a host ChalkdustScene",
-            kind="crash",
+            kind="out_of_process",
         )
 
 

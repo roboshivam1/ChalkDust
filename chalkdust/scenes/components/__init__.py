@@ -16,6 +16,7 @@ from chalkdust.scenes.components.base import (  # noqa: F401
 # Import for side effect: each module calls @register at import time.
 from chalkdust.scenes.components import bullet_reveal, title_card  # noqa: F401,E402
 from chalkdust.scenes.components import raw_scene  # noqa: F401,E402
+from chalkdust.scenes.components import callout  # noqa: F401,E402
 
 __all__ = [
     "Component",

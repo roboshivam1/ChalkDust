@@ -16,17 +16,22 @@ from pydantic import ValidationError
 
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.graph_plot import (
+    INK_CLEARANCE,
     MIN_AXES,
     MIN_CURVE,
     MIN_HOLD,
     MIN_LABEL,
     MIN_TRACE,
     GraphPlot,
+    _ink,
+    _inked,
     evaluate,
     legend_tex,
     plan_for,
     tick_label,
 )
+from chalkdust.scenes.regions import Rect, bbox
+from chalkdust.validate.geometric import LayoutProbe
 
 
 def _params(**overrides) -> dict:
@@ -154,6 +159,33 @@ class TestTicks:
         assert tick_label(-8e5, 2e5, 1e6) == (r"-8 \times 10^{5}", True)
         assert tick_label(2e-7, 1e-7, 1e-6) == (r"2 \times 10^{-7}", True)
         assert tick_label(0.0, 1e-7, 1e-6) == ("0", True)
+
+    def test_ink_catches_a_steep_segment_between_samples(self):
+        # Near an asymptote two neighbouring samples can straddle a label with
+        # neither endpoint inside it; the densified ink still hits.
+        segment = np.array([[0.0, -2.0, 0.0], [0.0, 2.0, 0.0]])
+        box = Rect(0.0, 0.0, 0.3, 0.2)
+        assert not _inked(segment, box)
+        assert _inked(_ink([segment]), box)
+
+    # Stress 0-1 are clean overflow refusals (pinned by test_layout.py); every
+    # case that builds is checked.
+    @pytest.mark.parametrize("params", GraphPlot.examples() + GraphPlot.stress()[2:])
+    def test_no_curve_runs_through_a_tick_label(self, params, tmp_path):
+        # A curve stroke over muted caption text hides glyphs: "-2" with its
+        # minus covered reads as "2". Ink is taken from the built curves, not
+        # from the plan the component used.
+        with tempconfig({"media_dir": str(tmp_path), "verbosity": "WARNING"}):
+            scene = LayoutProbe(GraphPlot(params), duration=8.0)
+            scene.construct()
+        mobs = {getattr(m, "_chalk_label", ""): m for m in scene.mobjects}
+        paths = [np.vstack([sp[::4], sp[-1:]])
+                 for name, curve in mobs.items() if name.startswith("curve")
+                 for sp in curve.get_subpaths()]
+        ink = _ink(paths)
+        labels = [m for m in mobs["axes"].submobjects if getattr(m, "_chalk_font_size", None)]
+        assert labels
+        assert not [m for m in labels if _inked(ink, bbox(m), INK_CLEARANCE)]
 
     def test_latex_strings_include_scientific_ticks(self):
         tex = GraphPlot(_params(functions=[{"expr": "x^3"}], x_range=[-1e6, 1e6])).latex_strings()

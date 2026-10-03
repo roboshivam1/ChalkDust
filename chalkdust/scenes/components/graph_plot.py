@@ -9,7 +9,8 @@ the LLM does not write code, including inside a parameter (SCENE_SPEC.md §1).
 Everything the viewer reads is generated from the parsed tree. The legend's
 LaTeX is printed from the AST, so it is valid by construction and the spec has
 no LaTeX surface to break (SCENE_SPEC.md §3: what the model cannot set, it
-cannot break). Tick labels are plain theme text, so axes never touch LaTeX.
+cannot break). Tick labels are theme text, except m x 10^n labels on huge or
+tiny axes, which are LaTeX generated from the tick value (see tick_label).
 
 Sampling, the visible y-window and discontinuity detection are pure numpy and
 run at schema validation, so "undefined everywhere on x_range" or "marker sits
@@ -580,7 +581,8 @@ TICK_LEN = 0.12
 LABEL_GAP = 0.1             # tick to tick label
 LABEL_SEP = 0.2             # minimum clear space between neighbouring tick labels
 MARKER_BUFF = 0.12
-INK_CLEARANCE = 0.05       # marker labels prefer this much space from any line
+INK_CLEARANCE = 0.05       # clear space a label wants from any drawn line
+INK_STEP = 0.02            # max spacing of the points that stand in for curve ink
 MIN_PLOT_SIZE = 1.5         # smaller than this is not a graph, it is a doodle
 AXIS_STROKE = 2.0
 CURVE_STROKE = 4.0
@@ -589,6 +591,29 @@ DOT_RADIUS = 0.08
 # Timing weights (relative) and per-step legibility minimums (seconds).
 W_AXES, W_CURVE, W_TRACE, W_LABEL, W_HOLD = 1.0, 2.5, 1.5, 0.75, 2.0
 MIN_AXES, MIN_CURVE, MIN_TRACE, MIN_LABEL, MIN_HOLD = 0.4, 0.8, 0.5, 0.3, 0.5
+
+
+def _ink(paths: list[np.ndarray]) -> np.ndarray:
+    """Points along polylines, at most INK_STEP apart.
+
+    Sample points alone under-report: a steep run near an asymptote can cross
+    a whole label between two samples. Each path is densified on its own, so
+    nothing is ever bridged across a pole.
+    """
+    out = []
+    for pts in paths:
+        seg = np.diff(pts, axis=0)
+        n = np.maximum(np.ceil(np.linalg.norm(seg, axis=1) / INK_STEP), 1).astype(int)
+        idx = np.repeat(np.arange(len(seg)), n)
+        frac = (np.arange(n.sum()) - np.repeat(np.cumsum(n) - n, n)) / np.repeat(n, n)
+        out += [pts[idx] + seg[idx] * frac[:, None], pts[-1:]]
+    return np.vstack(out)
+
+
+def _inked(ink: np.ndarray, box: Rect, pad: float = INK_CLEARANCE) -> bool:
+    """True if any ink point falls inside `box` grown by `pad`."""
+    return bool(((ink[:, 0] > box.left - pad) & (ink[:, 0] < box.right + pad)
+                 & (ink[:, 1] > box.bottom - pad) & (ink[:, 1] < box.top + pad)).any())
 
 
 def _curve_colours(theme: Theme) -> tuple[str, str, str]:
@@ -642,7 +667,8 @@ class GraphPlot(Component):
         fit_to_region(legend, Rect(stage.right - col_w / 2, stage.y, col_w, stage.height),
                       padding=0, align=UP)
 
-        axes, plot, to_point = self._axes(plan, theme, stage, stage.right - col_w - LEGEND_GAP)
+        axes, plot, to_point, curve_ink = self._axes(plan, theme, stage,
+                                                     stage.right - col_w - LEGEND_GAP)
         axes = label(axes, "axes")
 
         curves = []
@@ -656,7 +682,7 @@ class GraphPlot(Component):
 
         # Where marker labels would rather not sit: on a curve or an axis line.
         x_axis, y_axis = axes.submobjects[:2]
-        ink = np.vstack([c.points for c in curves] + [
+        ink = np.vstack([curve_ink] + [
             np.linspace(line.get_start(), line.get_end(), 200) for line in (x_axis, y_axis)])
         markers = self._markers(plan, theme, plot, to_point, ink, obstacles=[
             bbox(m) for m in axes.submobjects if getattr(m, "_chalk_font_size", None)])
@@ -695,6 +721,12 @@ class GraphPlot(Component):
         Built at final size rather than built large and fitted down: tick
         labels are caption text, only a hair above the legibility floor, so
         they cannot survive any real downscale.
+
+        The plot rect depends only on label *sizes*, so the curves' ink is
+        known before any label is kept, and a label a curve runs through is
+        dropped exactly like one the other axis runs through: muted caption
+        text under a curve stroke reads wrong ("-2" with its minus hidden is
+        "2"). Also returns that ink, for marker-label placement.
         """
         def tick_mob(s: str, tex: bool):
             if tex:
@@ -737,6 +769,9 @@ class GraphPlot(Component):
         ax_y = min(max(0.0, plan.y0), plan.y1)
         ax_x = min(max(0.0, plan.x0), plan.x1)
         stroke = dict(color=theme.palette.muted, stroke_width=AXIS_STROKE)
+        # Curve ink in scene units: a tick label it runs through is dropped.
+        ink = _ink([to_point(r[:, 0], r[:, 1]) for runs in plan.runs for r in runs])
+
         x_axis = Line(to_point(plan.x0, ax_y)[0], to_point(plan.x1, ax_y)[0], **stroke)
         y_axis = Line(to_point(ax_x, plan.y0)[0], to_point(ax_x, plan.y1)[0], **stroke)
         parts = [x_axis, y_axis]
@@ -754,7 +789,8 @@ class GraphPlot(Component):
             parts.append(Line(at + LEFT * TICK_LEN / 2, at + RIGHT * TICK_LEN / 2, **stroke))
             text.next_to(at, LEFT, buff=TICK_LEN / 2 + LABEL_GAP)
             # A label the x-axis runs through is unreadable; the origin gets none.
-            if k % ys == 0 and not bbox(text).intersects(bbox(x_axis)):
+            box = bbox(text)
+            if k % ys == 0 and not box.intersects(bbox(x_axis)) and not _inked(ink, box):
                 kept_y.append(text)
         kept_x = []
         for k, v, text in xticks:
@@ -762,10 +798,10 @@ class GraphPlot(Component):
             parts.append(Line(at + DOWN * TICK_LEN / 2, at + UP * TICK_LEN / 2, **stroke))
             text.next_to(at, DOWN, buff=TICK_LEN / 2 + LABEL_GAP)
             box = bbox(text)
-            if (k % xs == 0 and not box.intersects(bbox(y_axis))
+            if (k % xs == 0 and not box.intersects(bbox(y_axis)) and not _inked(ink, box)
                     and not any(box.intersects(bbox(t)) for t in kept_y)):
                 kept_x.append(text)
-        return VGroup(*parts, *kept_y, *kept_x), plot, to_point
+        return VGroup(*parts, *kept_y, *kept_x), plot, to_point, ink
 
     def _markers(self, plan: _Plan, theme: Theme, plot: Rect, to_point, ink: np.ndarray,
                  obstacles: list[Rect]):
@@ -831,10 +867,7 @@ class GraphPlot(Component):
             box = bbox(text)
             if not plot.contains(box) or any(box.intersects(t) for t in taken):
                 continue
-            pad = INK_CLEARANCE
-            covered = ((ink[:, 0] > box.left - pad) & (ink[:, 0] < box.right + pad)
-                       & (ink[:, 1] > box.bottom - pad) & (ink[:, 1] < box.top + pad))
-            if not covered.any():
+            if not _inked(ink, box):
                 return text
             if fallback is None:
                 fallback = d

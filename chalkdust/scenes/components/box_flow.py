@@ -37,6 +37,7 @@ from manim import (
     ShowPassingFlash,
     VGroup,
     VMobject,
+    config,
     smooth,
 )
 from pydantic import Field, field_validator, model_validator
@@ -96,6 +97,11 @@ EDGES_WEIGHT = 1.0
 EXTRA_WEIGHT = 1.5
 FLOW_WEIGHT = 1.0
 HOLD_WEIGHT = 3.0
+
+# How far, as a fraction of one frame, each run_time is pushed off its exact
+# frame boundary so Manim's float frame count cannot tick past it. See
+# _frame_times; float error at realistic frame counts is around 1e-12 frames.
+FRAME_NUDGE = 1e-6
 
 
 class BoxFlowNode(ComponentParams):
@@ -324,6 +330,49 @@ def _steps(g: _Graph, animate_flow: bool) -> list[_Step]:
     return steps
 
 
+def _frame_times(scene: ChalkdustScene, steps: list[_Step]) -> list[float]:
+    """scene.budget() shares, snapped to whole frames so the RENDERED video
+    lasts the beat's audio duration, not just Manim's clock (D-002, PRD G2).
+
+    Manim writes an animated play as len(np.arange(0, run_time, 1/fps))
+    frames (Scene.get_time_progression) -- a ceiling -- and a frozen wait as
+    int(run_time / (1/fps)) frames (CairoRenderer.freeze_current_frame) -- a
+    floor. Raw budget() shares therefore overrun by up to one frame per play:
+    17 plays at 15 fps rendered a 10 s beat as 10.867 s.
+
+    Frames are allotted by cumulative rounding -- step i ends on frame
+    round(fps * sum of shares up to i), the last on round(fps * duration) --
+    so rounding error never accumulates. A step always gets at least one
+    frame; only a budget shorter than one frame per step can then overrun,
+    and the semantic rung flags such narration against min_seconds() first.
+
+    Exactly n/fps is not safe either: in floats (31/15) / (1/15) lands just
+    above or below 31 depending on n, so a ceiling or floor could still add or
+    drop a frame. Each run_time is therefore nudged FRAME_NUDGE of a frame
+    INTO its frame count -- below n for plays (ceiling), above n for the
+    hold, which build() issues as an explicit frozen wait (floor). A
+    one-frame play stays at exactly 1/fps, which is exact in floats.
+
+    Nothing here is BoxFlow-specific: this is what ChalkdustScene.budget()
+    could return for every component, given each step's path.
+    """
+    fps = config.frame_rate
+    shares = scene.budget(*[s.weight for s in steps])
+    last = round(fps * scene.beat_duration)
+    times, end, elapsed = [], 0, 0.0
+    for i, (step, share) in enumerate(zip(steps, shares)):
+        elapsed += share
+        boundary = last if i == len(steps) - 1 else round(fps * elapsed)
+        boundary = max(end + 1, boundary)
+        frames, end = boundary - end, boundary
+        if step.kind == "hold":
+            times.append((frames + FRAME_NUDGE) / fps)
+        else:
+            # Never below one frame: Manim would bump it back up, warning.
+            times.append(max(frames - FRAME_NUDGE, 1) / fps)
+    return times
+
+
 # --- drawing helpers --------------------------------------------------------
 
 
@@ -533,7 +582,7 @@ class BoxFlow(Component):
                        for i in reached])
 
         steps = _steps(g, p.animate_flow)
-        times = scene.budget(*[s.weight for s in steps])
+        times = _frame_times(scene, steps)
         for step, t in zip(steps, times):
             if step.kind == "nodes":
                 scene.play(*[FadeIn(nodes[i]) for i in in_column(step.column)],
@@ -546,7 +595,10 @@ class BoxFlow(Component):
                 scene.play(*flow(step.column), run_time=t)
             else:  # hold
                 scene.settle("diagram built")
-                scene.wait(t)
+                # Frozen explicitly: _frame_times counts the hold on Manim's
+                # freeze path (a floor), so it must not depend on Manim
+                # deciding for itself whether anything still moves.
+                scene.wait(t, frozen_frame=True)
 
     # --- semantic-rung hooks (SCENE_SPEC.md §8 rung 2) ----------------------
 

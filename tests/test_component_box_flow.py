@@ -36,13 +36,30 @@ TWO_WAY = {"nodes": [_node("a"), _node("b")],
 
 
 class _Clocked(ChalkdustScene):
-    """Records every run_time the component asks for."""
+    """Records every run_time the component asks for, and what Manim then
+    plays: the run_time it settled on and whether it froze the frame."""
 
     def play(self, *animations, **kwargs):  # type: ignore[override]
         # wait() reaches here too, carrying its duration on a Wait animation
         # rather than as run_time.
         self.asked.append(kwargs.get("run_time", animations[0].run_time))
         super().play(*animations, **kwargs)
+        # Both are set by compile_animation_data / begin_animations, which
+        # run under skip_animations too.
+        self.played.append((self.duration,
+                            self.is_current_animation_frozen_frame()))
+
+
+def _frames(run_time: float, frozen: bool) -> int:
+    """Frames Manim writes for one play, by its own arithmetic: a frozen wait
+    is int(run_time / dt) frames (CairoRenderer.freeze_current_frame), any
+    other play one frame per np.arange(0, run_time, dt) step
+    (Scene.get_time_progression). Mirrored exactly rather than as
+    ceil(run_time * fps), which would read a frozen hold one frame high."""
+    dt = 1 / FPS
+    if frozen:
+        return int(run_time / dt)
+    return len(np.arange(0, run_time, dt))
 
 
 def _run(params: dict, budget: float, tmp_path) -> _Clocked:
@@ -53,7 +70,7 @@ def _run(params: dict, budget: float, tmp_path) -> _Clocked:
                 "disable_caching": True, "verbosity": "WARNING"}
     with tempconfig(settings):
         scene = _Clocked(BoxFlow(params), duration=budget, skip_animations=True)
-        scene.asked = []
+        scene.asked, scene.played = [], []
         scene.setup()
         scene.construct()
     return scene
@@ -76,6 +93,18 @@ class TestTiming:
         budget = factor * BoxFlow(params).min_seconds()
         scene = _run(params, budget, tmp_path)
         assert scene.renderer.time == pytest.approx(budget, abs=1 / FPS)
+
+    @pytest.mark.parametrize("params", [PIPELINE, FAN, LOOP, AT_CAPS],
+                             ids=["pipeline", "fan", "loop", "at-caps"])
+    @pytest.mark.parametrize("factor", [0.5, 3.0], ids=["short", "long"])
+    def test_renders_exactly_the_budget_in_frames(self, params, factor,
+                                                  tmp_path):
+        # The clock above sums float run_times and so matches by
+        # construction; the video is whole frames per play. This is the
+        # number the audio is muxed against (PRD G2).
+        budget = factor * BoxFlow(params).min_seconds()
+        played = _run(params, budget, tmp_path).played
+        assert sum(_frames(t, frozen) for t, frozen in played)             == round(budget * FPS)
 
     def test_no_step_shorter_than_a_frame_at_half_budget(self, tmp_path):
         # The most step-heavy fixture (caps, flow on) at half its minimum:

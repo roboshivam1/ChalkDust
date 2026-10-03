@@ -1,0 +1,681 @@
+{
+ "component": "UnitBreakdown",
+ "manim_version": "0.21.0",
+ "reasons": [
+  "UnitBreakdown merged",
+  "UnitBreakdown rb2: labels hang from a first-line baseline measured on the line alone; re-recorded on the integration head"
+ ],
+ "cases": [
+  {
+   "params": {
+    "quantity": {
+     "unit": "\\mathrm{N}",
+     "label": "force"
+    },
+    "decomposition": [
+     {
+      "unit": "\\mathrm{kg}",
+      "label": "mass"
+     },
+     {
+      "unit": "\\mathrm{m}",
+      "label": "length"
+     },
+     {
+      "unit": "\\mathrm{s}^{-2}",
+      "label": "per second squared"
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate"
+      ],
+      "run_time": 1.817
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "run_time": 1.817
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "run_time": 1.817
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "run_time": 1.817
+     },
+     {
+      "op": "settle",
+      "label": "units decomposed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "UnitBreakdown",
+        "children": [
+         {
+          "type": "MathTex",
+          "label": "units",
+          "tex": " \\mathrm{N}   =   \\mathrm{kg}   \\cdot   \\mathrm{m}   \\cdot   \\mathrm{s}^{-2} ",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "label[0]",
+          "text": "force",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "label[1]",
+          "text": "mass",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "label[2]",
+          "text": "length",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "label[3]",
+          "text": "per second\nsquared",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.733
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "UnitBreakdown",
+        "children": [
+         {
+          "type": "MathTex",
+          "label": "units",
+          "tex": " \\mathrm{N}   =   \\mathrm{kg}   \\cdot   \\mathrm{m}   \\cdot   \\mathrm{s}^{-2} ",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "label[0]",
+          "text": "force",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "label[1]",
+          "text": "mass",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "label[2]",
+          "text": "length",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "label[3]",
+          "text": "per second\nsquared",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        7.485,
+        1.81
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.207,
+        0.508,
+        6.48,
+        0.594
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -3.26,
+        -0.324,
+        0.965,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.332,
+        -0.368,
+        1.015,
+        0.241
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.382,
+        -0.376,
+        1.152,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.666,
+        -0.585,
+        2.153,
+        0.84
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        7.485,
+        1.81
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.207,
+        0.508,
+        6.48,
+        0.594
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -3.26,
+        -0.324,
+        0.965,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.332,
+        -0.368,
+        1.015,
+        0.241
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.382,
+        -0.376,
+        1.152,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.666,
+        -0.585,
+        2.153,
+        0.84
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "quantity": {
+     "unit": "\\mathrm{J}",
+     "label": "energy"
+    },
+    "decomposition": [
+     {
+      "unit": "\\mathrm{N}",
+      "label": "force"
+     },
+     {
+      "unit": "\\mathrm{m}",
+      "label": "distance"
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate"
+      ],
+      "run_time": 2.233
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "run_time": 2.217
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "run_time": 2.217
+     },
+     {
+      "op": "settle",
+      "label": "units decomposed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "UnitBreakdown",
+        "children": [
+         {
+          "type": "MathTex",
+          "label": "units",
+          "tex": " \\mathrm{J}   =   \\mathrm{N}   \\cdot   \\mathrm{m} ",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "label[0]",
+          "text": "energy",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "label[1]",
+          "text": "force",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "label[2]",
+          "text": "distance",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 3.333
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "UnitBreakdown",
+        "children": [
+         {
+          "type": "MathTex",
+          "label": "units",
+          "tex": " \\mathrm{J}   =   \\mathrm{N}   \\cdot   \\mathrm{m} ",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "label[0]",
+          "text": "energy",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "label[1]",
+          "text": "force",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "label[2]",
+          "text": "distance",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.494,
+        1.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.022,
+        0.294,
+        4.344,
+        0.386
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -2.077,
+        -0.523,
+        1.339,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.012,
+        -0.435,
+        0.965,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.936,
+        -0.437,
+        1.622,
+        0.323
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.494,
+        1.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.022,
+        0.294,
+        4.344,
+        0.386
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -2.077,
+        -0.523,
+        1.339,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.012,
+        -0.435,
+        0.965,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.936,
+        -0.437,
+        1.622,
+        0.323
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "quantity": {
+     "unit": "\\mathrm{W}"
+    },
+    "decomposition": [
+     {
+      "unit": "\\mathrm{J}"
+     },
+     {
+      "unit": "\\mathrm{s}^{-1}"
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "run_time": 2.233
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate"
+      ],
+      "run_time": 2.217
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate"
+      ],
+      "run_time": 2.217
+     },
+     {
+      "op": "settle",
+      "label": "units decomposed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "UnitBreakdown",
+        "children": [
+         {
+          "type": "MathTex",
+          "label": "units",
+          "tex": " \\mathrm{W}   =   \\mathrm{J}   \\cdot   \\mathrm{s}^{-1} ",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 3.333
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "UnitBreakdown",
+        "children": [
+         {
+          "type": "MathTex",
+          "label": "units",
+          "tex": " \\mathrm{W}   =   \\mathrm{J}   \\cdot   \\mathrm{s}^{-1} ",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.065,
+        0.493
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.065,
+        0.493
+       ],
+       "font_size": 44.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.065,
+        0.493
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.065,
+        0.493
+       ],
+       "font_size": 44.0
+      }
+     ]
+    ]
+   }
+  }
+ ]
+}

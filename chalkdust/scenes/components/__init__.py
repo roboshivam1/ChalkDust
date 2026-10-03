@@ -28,6 +28,7 @@ from chalkdust.scenes.components import solution_step  # noqa: F401,E402
 from chalkdust.scenes.components import split_compare  # noqa: F401,E402
 from chalkdust.scenes.components import step_trace  # noqa: F401,E402
 from chalkdust.scenes.components import title_card  # noqa: F401,E402
+from chalkdust.scenes.components import unit_breakdown  # noqa: F401,E402
 from chalkdust.scenes.components import vector_field  # noqa: F401,E402
 
 __all__ = [

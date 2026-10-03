@@ -163,6 +163,8 @@ Operation = Annotated[
 
 
 class GraphInitial(ComponentParams):
+    # Nodes sit on a ring in list order, clockwise from the top. Listing them
+    # so that most edges join ring neighbours keeps edges from crossing.
     nodes: list[Key] = Field(min_length=1, max_length=MAX_GRAPH_NODES)
     # Undirected. Traversal order is carried by the operations, not the edges.
     edges: list[tuple[Key, Key]] = Field(default_factory=list,
@@ -764,8 +766,9 @@ class DataStructureViz(Component):
              "operations": [{"op": "insert", "parent": 3, "side": "right", "value": 6},
                             {"op": "traverse", "edge": [8, 3]},
                             {"op": "traverse", "edge": [3, 6]}]},
+            # Ring order A, B, D, E, C: no two edges cross.
             {"kind": "graph",
-             "initial": {"nodes": ["A", "B", "C", "D", "E"],
+             "initial": {"nodes": ["A", "B", "D", "E", "C"],
                          "edges": [["A", "B"], ["A", "C"], ["B", "D"],
                                    ["C", "D"], ["D", "E"]]},
              "operations": [{"op": "highlight", "at": ["A"]},

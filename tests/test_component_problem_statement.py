@@ -36,7 +36,9 @@ from chalkdust.scenes.components.problem_statement import (
     STRUT,
     WORD_SPACE,
     ProblemStatement,
+    _Flow,
     _baselined,
+    _char_width,
     _prose_strut,
     _strut_outline,
 )
@@ -350,6 +352,46 @@ class TestInlineLayout:
         # composed onto the H and was removed with it.
         [line] = _blocks(_probe({"text": "\u0302abc", "find": "y"}))["statement"].submobjects
         assert len(line.family_members_with_points()) == 4
+
+
+class TestVolume:
+    """Line breaking costs about one typeset per line, however far the text's
+    real width is from the estimate, and a field too long for the stage is
+    refused once that is certain -- not after typesetting all of it."""
+
+    @staticmethod
+    def _count_lines(monkeypatch) -> list[int]:
+        calls = [0]
+        build = _Flow._line
+
+        def counted(self, idx):
+            calls[0] += 1
+            return build(self, idx)
+
+        monkeypatch.setattr(_Flow, "_line", counted)
+        return calls
+
+    def test_wide_prose_is_not_rebuilt_line_after_line(self, monkeypatch):
+        # Capitals are wider than the pangram average the planner estimates
+        # with. Correcting a fixed plan by handing each overlong line's last
+        # token down cascaded: 520 builds for 20 lines of "WWWW", and
+        # minutes for a few hundred words (verify-w4-1).
+        calls = self._count_lines(monkeypatch)
+        theme = resolve_fonts(DEFAULT)
+        width = 64 * _char_width(theme)
+        lines = _Flow("WWWW " * 100, theme, width, "text").lines()
+        assert all(line.width <= width for line in lines)
+        assert len(lines) > 10
+        assert calls[0] <= 2 * len(lines)
+
+    def test_huge_statement_refuses_as_overflow_early(self, monkeypatch):
+        # 100k characters: refused once its lines pass what STAGE could hold
+        # at the legibility floor, after a dozen or so lines -- this took
+        # over half an hour before, with no build timeout in the pipeline.
+        calls = self._count_lines(monkeypatch)
+        report = validate_beat(_spec({"text": "word " * 20000, "find": "y"}))
+        assert report.kinds() == {"overflow"}, f"\n{report}"
+        assert calls[0] < 40
 
 
 class TestCarryIn:

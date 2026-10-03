@@ -34,6 +34,7 @@ from chalkdust.scenes.components.base import (
 )
 from chalkdust.scenes.regions import (
     DEFAULT_PADDING,
+    MIN_FONT_SIZE,
     UNRENDERABLE_TEXT,
     LayoutError,
     fit_to_region,
@@ -239,10 +240,16 @@ def _prose_strut(t: Text, theme: Theme) -> Mobject:
 class _Flow:
     """Lays one InlineText out into lines no wider than `width`."""
 
-    def __init__(self, s: str, theme: Theme, width: float, what: str) -> None:
+    def __init__(self, s: str, theme: Theme, width: float, what: str,
+                 max_height: float = float("inf")) -> None:
         # `what` names the spec field ("text", "given[1]", "find") in a
         # refusal, so the repair loop knows which one to regenerate.
+        # `max_height` is the tallest stack of lines that could still fit
+        # STAGE at the legibility floor (see _layout); past it, lines()
+        # refuses rather than typesetting the rest of a paragraph that can
+        # only be refused once fit_to_region sees it.
         self.source, self.theme, self.width, self.what = s, theme, width, what
+        self.max_height = max_height
         self.cap = body_cap_height(theme)
         self.tokens = _tokens(s)
         self.maths = {i: self._compile(t.text)
@@ -265,11 +272,45 @@ class _Flow:
             raise refuse_invalid_latex(what, chunk, "renders nothing")
         return _baselined(m, glyphs[0])
 
-    def _estimate(self, i: int) -> float:
+    def _estimate(self, i: int, scale: float = 1.0) -> float:
+        """Token i's width: maths is built, so exact; prose is the pangram
+        average times `scale`, the ratio real prose has shown so far."""
         t = self.tokens[i]
         if t.is_math:
             return self.maths[i].width
-        return len(t.text) * _char_width(self.theme)
+        return len(t.text) * _char_width(self.theme) * scale
+
+    def _fill(self, start: int, scale: float) -> list[int]:
+        """Greedy: the tokens from `start` that fit one line on estimated
+        widths -- always at least one, so a token wider than the measure
+        gets a line of its own and fit_to_region scales it or refuses."""
+        space = WORD_SPACE * self.cap
+        idx: list[int] = []
+        x = 0.0
+        for i in range(start, len(self.tokens)):
+            gap = space if idx and self.tokens[i].space_before else 0.0
+            w = self._estimate(i, scale)
+            if idx and x + gap + w > self.width:
+                break
+            idx.append(i)
+            x += gap + w
+        return idx
+
+    def _prose_widths(self, idx: list[int], line: VGroup) -> tuple[float, float] | None:
+        """(real, estimated at scale 1) width of the prose in a built line:
+        the line's width less what the estimate already has exactly (maths)
+        or fixes (word spaces). None for a line with no prose to measure."""
+        space = WORD_SPACE * self.cap
+        est = fixed = 0.0
+        for n, i in enumerate(idx):
+            if n and self.tokens[i].space_before:
+                fixed += space
+            if self.tokens[i].is_math:
+                fixed += self.maths[i].width
+            else:
+                est += self._estimate(i)
+        real = line.width - fixed
+        return (real, est) if est > 0 and real > 0 else None
 
     def _split_long_words(self) -> None:
         """Hard-break prose words wider than a line, as wrap() does for the
@@ -344,41 +385,59 @@ class _Flow:
     def lines(self) -> list[VGroup]:
         """The lines, each with its baseline at y=0, for _stack()."""
         self._split_long_words()
-        space = WORD_SPACE * self.cap
-        # Greedy fill on estimated widths...
-        plan: list[list[int]] = [[]]
-        x = 0.0
-        for i in range(len(self.tokens)):
-            w = self._estimate(i)
-            gap = space if plan[-1] and self.tokens[i].space_before else 0.0
-            if plan[-1] and x + gap + w > self.width:
-                plan.append([])
-                x, gap = 0.0, 0.0
-            plan[-1].append(i)
-            x += gap + w
-        # ...then corrected against real ones: an overlong line hands its last
-        # token down until it fits. A lone token wider than the measure stays;
-        # fit_to_region scales it or refuses.
+        # Line by line: fill greedily on estimated widths, build, and if the
+        # line is still too wide, re-fill it from the width it really set.
+        # The rest of the paragraph is planned from the next unplaced token
+        # each time, never from an up-front plan: correcting a fixed plan by
+        # handing each overlong line's last token down pushed the excess onto
+        # every later line, which then rebuilt once per token it handed on --
+        # quadratic in the text, so an all-caps or wide-lettered statement
+        # took minutes to build and a huge one hours to refuse (verify-w4-1).
+        # The pangram average underestimates such text, so the ratio real
+        # prose has shown so far scales the estimate for every later line:
+        # wide text then costs about one build per line, and ordinary prose
+        # (ratio at or under 1) breaks where it always did.
+        pitch = LINE_PITCH * self.cap
         built: list[VGroup] = []
-        k = 0
-        while k < len(plan):
-            line = self._line(plan[k])
-            while line.width > self.width and len(plan[k]) > 1:
-                if k + 1 == len(plan):
-                    plan.append([])
-                plan[k + 1].insert(0, plan[k].pop())
-                line = self._line(plan[k])
+        start, scale = 0, 1.0
+        seen_real = seen_est = 0.0
+        while start < len(self.tokens):
+            idx = self._fill(start, scale)
+            line = self._line(idx)
+            while line.width > self.width and len(idx) > 1:
+                widths = self._prose_widths(idx, line)
+                shorter = (self._fill(start, max(scale, widths[0] / widths[1]))
+                           if widths else idx)
+                # Never the same line twice: if the re-fill cannot shorten
+                # it (a ratio from very little prose), drop the last token.
+                idx = shorter if len(shorter) < len(idx) else idx[:-1]
+                line = self._line(idx)
+            start = idx[-1] + 1
+            widths = self._prose_widths(idx, line)
+            if widths:
+                seen_real, seen_est = seen_real + widths[0], seen_est + widths[1]
+                scale = max(1.0, seen_real / seen_est)
+            if not line.family_members_with_points():
+                continue
             built.append(line)
-            k += 1
+            if (len(built) - 1) * pitch > self.max_height:
+                # Baselines are at least LINE_PITCH apart (_stack), so these
+                # lines alone are taller than anything fit_to_region could
+                # shrink to legibility: refuse now, with the kind it would
+                # use, rather than build the rest only to be refused.
+                raise LayoutError(
+                    f"ProblemStatement {self.what} needs more than {len(built) - 1} "
+                    f"lines, which cannot fit the stage at a legible size. "
+                    f"Shorten it or split the problem over beats.",
+                    kind="overflow")
         # Characters the theme font cannot draw never get here: the theme's
         # glyph guard refuses them in _prose() as unrenderable_text. Zero-width
-        # characters do, and draw nothing; a line of nothing but those is
-        # dropped, rather than stacked as a blank line with an empty reveal
-        # step. The schema guarantees each field a visible character, so a
-        # field left with no line at all would be a gap in that chain; it is
+        # characters do, and draw nothing; a line of nothing but those was
+        # dropped above, rather than stacked as a blank line with an empty
+        # reveal step. The schema guarantees each field a visible character,
+        # so a field left with no line at all would be a gap in that chain; it is
         # refused with the guard's kind rather than laid out as an empty group
         # at the origin (which the settle check reported as an overlap).
-        built = [line for line in built if line.family_members_with_points()]
         if not built:
             raise LayoutError(
                 f"ProblemStatement {self.what} {self.source!r} draws nothing in "
@@ -426,8 +485,13 @@ def _layout(p: ProblemStatementParams, theme: Theme) -> _Layout:
     measure = min(stage.width, MEASURE_CHARS * _char_width(theme))
     # GIVEN and FIND share the measure as two columns.
     column = (measure - COLUMN_GAP * cap) / 2
+    # The tallest any one field's lines could be and still fit. FIND's
+    # caption is always in the layout, so fit_to_region can shrink it at most
+    # to MIN_FONT_SIZE / caption before the legibility floor refuses it;
+    # STAGE's height over that is a bound no field may pass (_Flow.lines).
+    tallest = stage.height * theme.type.caption / MIN_FONT_SIZE
 
-    lines = _Flow(p.text, theme, measure, "text").lines()
+    lines = _Flow(p.text, theme, measure, "text", tallest).lines()
     [statement] = _stack([lines], cap)
     label(statement, "statement")
     for i, line in enumerate(lines):
@@ -448,7 +512,7 @@ def _layout(p: ProblemStatementParams, theme: Theme) -> _Layout:
     left = statement.get_left()[0]
     top = statement.get_bottom()[1] - SECTION_GAP * cap
     blocks = [statement]
-    given_items = _stack([_Flow(g, theme, column, f"given[{i}]").lines()
+    given_items = _stack([_Flow(g, theme, column, f"given[{i}]", tallest).lines()
                           for i, g in enumerate(p.given)], cap)
     for i, item in enumerate(given_items):
         label(item, f"given[{i}]")
@@ -466,7 +530,8 @@ def _layout(p: ProblemStatementParams, theme: Theme) -> _Layout:
             find_x, find_width = left + column + COLUMN_GAP * cap, column
         else:
             find_top = given_block.get_bottom()[1] - SECTION_GAP * cap
-    [find_item] = _stack([_Flow(p.find, theme, find_width, "find").lines()], cap)
+    [find_item] = _stack([_Flow(p.find, theme, find_width, "find", tallest).lines()],
+                         cap)
     label(find_item, "find value")
     emphasize(find_item, theme)
     find_block, find_head = section("FIND", [find_item], find_x, find_top)

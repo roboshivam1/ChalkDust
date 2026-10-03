@@ -37,11 +37,11 @@ from manim import (
     ShowPassingFlash,
     VGroup,
     VMobject,
-    config,
     smooth,
 )
 from pydantic import Field, field_validator, model_validator
 
+from chalkdust.continuity import artifact_builder
 from chalkdust.core.models import Region
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import (
@@ -51,7 +51,7 @@ from chalkdust.scenes.components.base import (
     register,
     wrap,
 )
-from chalkdust.scenes.regions import fit_to_region, region_rect
+from chalkdust.scenes.regions import fit_to_region
 from chalkdust.scenes.theme import Theme, body_text
 
 # Density caps that fire at schema validation, before anything is built. Ten
@@ -97,12 +97,6 @@ EDGES_WEIGHT = 1.0
 EXTRA_WEIGHT = 1.5
 FLOW_WEIGHT = 1.0
 HOLD_WEIGHT = 3.0
-
-# How far, as a fraction of one frame, each run_time is pushed off its exact
-# frame boundary so Manim's float frame count cannot tick past it. See
-# _frame_times; float error at realistic frame counts is around 1e-12 frames.
-FRAME_NUDGE = 1e-6
-
 
 class BoxFlowNode(ComponentParams):
     # `id` is only for edges to refer to; `label` is what is shown.
@@ -330,49 +324,6 @@ def _steps(g: _Graph, animate_flow: bool) -> list[_Step]:
     return steps
 
 
-def _frame_times(scene: ChalkdustScene, steps: list[_Step]) -> list[float]:
-    """scene.budget() shares, snapped to whole frames so the RENDERED video
-    lasts the beat's audio duration, not just Manim's clock (D-002, PRD G2).
-
-    Manim writes an animated play as len(np.arange(0, run_time, 1/fps))
-    frames (Scene.get_time_progression) -- a ceiling -- and a frozen wait as
-    int(run_time / (1/fps)) frames (CairoRenderer.freeze_current_frame) -- a
-    floor. Raw budget() shares therefore overrun by up to one frame per play:
-    17 plays at 15 fps rendered a 10 s beat as 10.867 s.
-
-    Frames are allotted by cumulative rounding -- step i ends on frame
-    round(fps * sum of shares up to i), the last on round(fps * duration) --
-    so rounding error never accumulates. A step always gets at least one
-    frame; only a budget shorter than one frame per step can then overrun,
-    and the semantic rung flags such narration against min_seconds() first.
-
-    Exactly n/fps is not safe either: in floats (31/15) / (1/15) lands just
-    above or below 31 depending on n, so a ceiling or floor could still add or
-    drop a frame. Each run_time is therefore nudged FRAME_NUDGE of a frame
-    INTO its frame count -- below n for plays (ceiling), above n for the
-    hold, which build() issues as an explicit frozen wait (floor). A
-    one-frame play stays at exactly 1/fps, which is exact in floats.
-
-    Nothing here is BoxFlow-specific: this is what ChalkdustScene.budget()
-    could return for every component, given each step's path.
-    """
-    fps = config.frame_rate
-    shares = scene.budget(*[s.weight for s in steps])
-    last = round(fps * scene.beat_duration)
-    times, end, elapsed = [], 0, 0.0
-    for i, (step, share) in enumerate(zip(steps, shares)):
-        elapsed += share
-        boundary = last if i == len(steps) - 1 else round(fps * elapsed)
-        boundary = max(end + 1, boundary)
-        frames, end = boundary - end, boundary
-        if step.kind == "hold":
-            times.append((frames + FRAME_NUDGE) / fps)
-        else:
-            # Never below one frame: Manim would bump it back up, warning.
-            times.append(max(frames - FRAME_NUDGE, 1) / fps)
-    return times
-
-
 # --- drawing helpers --------------------------------------------------------
 
 
@@ -424,6 +375,138 @@ def _flash(path: VMobject, theme: Theme, first_half: bool) -> ShowPassingFlash:
     return ShowPassingFlash(copy, time_width=0.6, rate_func=rate)
 
 
+@dataclass(frozen=True)
+class _Diagram:
+    """The settled picture, built but neither placed nor animated."""
+
+    graph: _Graph
+    nodes: list[VGroup]   # per node, declaration order: VGroup(box, text)
+    edges: list[VGroup]   # per edge, declaration order: VGroup(path, tip)
+    group: VGroup         # every node then every edge, labelled "BoxFlow"
+
+
+def _diagram(p: BoxFlowParams, theme: Theme) -> _Diagram:
+    """Lay out and draw the whole diagram at natural size about the origin.
+
+    A pure function of params and theme: build() animates what it returns,
+    and the carry-in builder (SCENE_SPEC.md §6) returns its group, so a
+    carried BoxFlow is the very picture its own beat settled on.
+    """
+    g = _layout_graph(p)
+    n = g.n_nodes
+
+    wrapped =[wrap(node.label, LABEL_WRAP) for node in p.nodes]
+    texts = [body_text(s, theme) for s in wrapped]
+    # A box's height comes from its line count, not its ink: measured
+    # against a block with full ascent and descent ("Hg"), so "Lexer" and
+    # "Parser" get the same box even though one has a descender.
+    ref_h: dict[int, float] = {}
+    for s in wrapped:
+        lines = s.count("\n") + 1
+        if lines not in ref_h:
+            ref_h[lines] = body_text("\n".join(["Hg"] * lines), theme).height
+    box_h = [ref_h[s.count("\n") + 1] + 2 * PAD_Y for s in wrapped]
+    has_loop = [False] * n
+    for k, loop in enumerate(g.self_loop):
+        if loop:
+            has_loop[g.target[k]] = True
+
+    # --- geometry, relative to the stage rect's centre ------------------
+    # Every box in a column takes the column's width; see the module
+    # docstring for why that is what keeps edges off the labels.
+    col_w = [max(texts[i].width for i in col if i < n) + 2 * PAD_X
+             for col in g.columns]
+
+    def item_h(item: int) -> float:
+        if item >= n:
+            return SLOT_H
+        return box_h[item] + (LOOP_H if has_loop[item] else 0.0)
+
+    col_x = [0.0]
+    for c in range(1, g.n_columns):
+        col_x.append(col_x[-1] + col_w[c - 1] / 2 + GAP_X + col_w[c] / 2)
+    mid = (col_x[0] - col_w[0] / 2 + col_x[-1] + col_w[-1] / 2) / 2
+
+    # Each column is stacked top to bottom and centred vertically.
+    item_y = [0.0] * len(g.item_column)
+    for col in g.columns:
+        top = (sum(item_h(i) for i in col) + GAP_Y * (len(col) - 1)) / 2
+        for item in col:
+            if item < n:
+                # A loop's headroom sits above the box, not around it.
+                loop = LOOP_H if has_loop[item] else 0.0
+                item_y[item] = top - loop - box_h[item] / 2
+            else:
+                item_y[item] = top - SLOT_H / 2
+            top -= item_h(item) + GAP_Y
+
+    # Placement is fit_to_region's job (build() and CarryIn both call
+    # it); here the diagram is only drawn about the origin.
+    def at(x: float, y: float) -> np.ndarray:
+        return np.array([x - mid, y, 0.0])
+
+    def left(c: int) -> float:
+        return col_x[c] - col_w[c] / 2
+
+    def right(c: int) -> float:
+        return col_x[c] + col_w[c] / 2
+
+    nodes: list[VGroup] = []
+    for i, node in enumerate(p.nodes):
+        c = g.item_column[i]
+        box = RoundedRectangle(width=col_w[c], height=box_h[i],
+                               corner_radius=CORNER,
+                               stroke_color=theme.palette.muted,
+                               stroke_width=STROKE)
+        box.move_to(at(col_x[c], item_y[i]))
+        # Pin the text's top (its cap line, as BulletReveal assumes), not
+        # its centre: centring by bounding box lifts any label with a
+        # descender, and a row of boxes would not share a baseline.
+        texts[i].move_to(box.get_center())
+        texts[i].align_to(box, UP).shift(DOWN * PAD_Y)
+        nodes.append(label(VGroup(box, texts[i]), f"node[{node.id}]"))
+
+    # --- ports: spread several edge ends along one box side -------------
+    # Sorted by the y of the ADJACENT item in the chain (not the far end),
+    # so first and last segments fan out without crossing. Ties break by
+    # edge index identically on both ends, so a two-way pair runs parallel.
+    sides: dict[tuple[int, str], list[tuple[float, int]]] = {}
+    for k, chain in enumerate(g.chains):
+        if chain:
+            sides.setdefault((chain[0], "R"), []).append(
+                (-item_y[chain[1]], k))
+            sides.setdefault((chain[-1], "L"), []).append(
+                (-item_y[chain[-2]], k))
+    port: dict[tuple[int, str, int], float] = {}
+    for (i, side), ends in sides.items():
+        ends.sort()
+        m = len(ends)
+        gap = (min(PORT_GAP, (box_h[i] - 2 * PORT_MARGIN) / (m - 1))
+               if m > 1 else 0.0)
+        for j, (_, k) in enumerate(ends):
+            port[(i, side, k)] = item_y[i] + ((m - 1) / 2 - j) * gap
+
+    edges: list[VGroup] = []
+    for k, chain in enumerate(g.chains):
+        if not chain:
+            edge = _loop(nodes[g.target[k]][0], theme)
+        else:
+            a, b = chain[0], chain[-1]
+            pts = [at(right(g.item_column[a]), port[(a, "R", k)])]
+            for slot in chain[1:-1]:
+                c = g.item_column[slot]
+                pts += [at(left(c), item_y[slot]),
+                        at(right(c), item_y[slot])]
+            pts.append(at(left(g.item_column[b]), port[(b, "L", k)]))
+            if g.reversed[k]:
+                pts.reverse()
+            edge = _arrow(pts, theme)
+        edges.append(label(edge, f"edge[{k}]"))
+
+    group = label(VGroup(*nodes, *edges), "BoxFlow")
+    return _Diagram(graph=g, nodes=nodes, edges=edges, group=group)
+
+
 @register
 class BoxFlow(Component):
     name = "BoxFlow"
@@ -436,119 +519,9 @@ class BoxFlow(Component):
     def build(self, scene: ChalkdustScene) -> None:
         p: BoxFlowParams = self.params
         theme = scene.theme
-        g = _layout_graph(p)
-        n = g.n_nodes
-
-        wrapped = [wrap(node.label, LABEL_WRAP) for node in p.nodes]
-        texts = [body_text(s, theme) for s in wrapped]
-        # A box's height comes from its line count, not its ink: measured
-        # against a block with full ascent and descent ("Hg"), so "Lexer" and
-        # "Parser" get the same box even though one has a descender.
-        ref_h: dict[int, float] = {}
-        for s in wrapped:
-            lines = s.count("\n") + 1
-            if lines not in ref_h:
-                ref_h[lines] = body_text("\n".join(["Hg"] * lines), theme).height
-        box_h = [ref_h[s.count("\n") + 1] + 2 * PAD_Y for s in wrapped]
-        has_loop = [False] * n
-        for k, loop in enumerate(g.self_loop):
-            if loop:
-                has_loop[g.target[k]] = True
-
-        # --- geometry, relative to the stage rect's centre ------------------
-        # Every box in a column takes the column's width; see the module
-        # docstring for why that is what keeps edges off the labels.
-        col_w = [max(texts[i].width for i in col if i < n) + 2 * PAD_X
-                 for col in g.columns]
-
-        def item_h(item: int) -> float:
-            if item >= n:
-                return SLOT_H
-            return box_h[item] + (LOOP_H if has_loop[item] else 0.0)
-
-        col_x = [0.0]
-        for c in range(1, g.n_columns):
-            col_x.append(col_x[-1] + col_w[c - 1] / 2 + GAP_X + col_w[c] / 2)
-        mid = (col_x[0] - col_w[0] / 2 + col_x[-1] + col_w[-1] / 2) / 2
-
-        # Each column is stacked top to bottom and centred vertically.
-        item_y = [0.0] * len(g.item_column)
-        for col in g.columns:
-            top = (sum(item_h(i) for i in col) + GAP_Y * (len(col) - 1)) / 2
-            for item in col:
-                if item < n:
-                    # A loop's headroom sits above the box, not around it.
-                    loop = LOOP_H if has_loop[item] else 0.0
-                    item_y[item] = top - loop - box_h[item] / 2
-                else:
-                    item_y[item] = top - SLOT_H / 2
-                top -= item_h(item) + GAP_Y
-
-        anchor = region_rect(Region.STAGE).center
-
-        def at(x: float, y: float) -> np.ndarray:
-            return anchor + np.array([x - mid, y, 0.0])
-
-        def left(c: int) -> float:
-            return col_x[c] - col_w[c] / 2
-
-        def right(c: int) -> float:
-            return col_x[c] + col_w[c] / 2
-
-        nodes: list[VGroup] = []
-        for i, node in enumerate(p.nodes):
-            c = g.item_column[i]
-            box = RoundedRectangle(width=col_w[c], height=box_h[i],
-                                   corner_radius=CORNER,
-                                   stroke_color=theme.palette.muted,
-                                   stroke_width=STROKE)
-            box.move_to(at(col_x[c], item_y[i]))
-            # Pin the text's top (its cap line, as BulletReveal assumes), not
-            # its centre: centring by bounding box lifts any label with a
-            # descender, and a row of boxes would not share a baseline.
-            texts[i].move_to(box.get_center())
-            texts[i].align_to(box, UP).shift(DOWN * PAD_Y)
-            nodes.append(label(VGroup(box, texts[i]), f"node[{node.id}]"))
-
-        # --- ports: spread several edge ends along one box side -------------
-        # Sorted by the y of the ADJACENT item in the chain (not the far end),
-        # so first and last segments fan out without crossing. Ties break by
-        # edge index identically on both ends, so a two-way pair runs parallel.
-        sides: dict[tuple[int, str], list[tuple[float, int]]] = {}
-        for k, chain in enumerate(g.chains):
-            if chain:
-                sides.setdefault((chain[0], "R"), []).append(
-                    (-item_y[chain[1]], k))
-                sides.setdefault((chain[-1], "L"), []).append(
-                    (-item_y[chain[-2]], k))
-        port: dict[tuple[int, str, int], float] = {}
-        for (i, side), ends in sides.items():
-            ends.sort()
-            m = len(ends)
-            gap = (min(PORT_GAP, (box_h[i] - 2 * PORT_MARGIN) / (m - 1))
-                   if m > 1 else 0.0)
-            for j, (_, k) in enumerate(ends):
-                port[(i, side, k)] = item_y[i] + ((m - 1) / 2 - j) * gap
-
-        edges: list[VGroup] = []
-        for k, chain in enumerate(g.chains):
-            if not chain:
-                edge = _loop(nodes[g.target[k]][0], theme)
-            else:
-                a, b = chain[0], chain[-1]
-                pts = [at(right(g.item_column[a]), port[(a, "R", k)])]
-                for slot in chain[1:-1]:
-                    c = g.item_column[slot]
-                    pts += [at(left(c), item_y[slot]),
-                            at(right(c), item_y[slot])]
-                pts.append(at(left(g.item_column[b]), port[(b, "L", k)]))
-                if g.reversed[k]:
-                    pts.reverse()
-                edge = _arrow(pts, theme)
-            edges.append(label(edge, f"edge[{k}]"))
-
-        diagram = label(VGroup(*nodes, *edges), "BoxFlow")
-        fit_to_region(diagram, Region.STAGE)
+        d = _diagram(p, theme)
+        g, nodes, edges, n = d.graph, d.nodes, d.edges, d.graph.n_nodes
+        fit_to_region(d.group, Region.STAGE)
         scene.exclusive(*nodes)
 
         # --- animation ------------------------------------------------------
@@ -581,8 +554,11 @@ class BoxFlow(Component):
                     + [_flash(nodes[i][0], theme, first_half=False)
                        for i in reached])
 
+        # Whole-frame run times summing to exactly scene.beat_frames (D-002);
+        # the base scene renders each as exactly that many frames, so nothing
+        # here rounds or snaps on its own.
         steps = _steps(g, p.animate_flow)
-        times = _frame_times(scene, steps)
+        times = scene.budget(*[s.weight for s in steps])
         for step, t in zip(steps, times):
             if step.kind == "nodes":
                 scene.play(*[FadeIn(nodes[i]) for i in in_column(step.column)],
@@ -595,10 +571,7 @@ class BoxFlow(Component):
                 scene.play(*flow(step.column), run_time=t)
             else:  # hold
                 scene.settle("diagram built")
-                # Frozen explicitly: _frame_times counts the hold on Manim's
-                # freeze path (a floor), so it must not depend on Manim
-                # deciding for itself whether anything still moves.
-                scene.wait(t, frozen_frame=True)
+                scene.wait(t)
 
     # --- semantic-rung hooks (SCENE_SPEC.md §8 rung 2) ----------------------
 
@@ -692,3 +665,11 @@ class BoxFlow(Component):
             # Minimal: one box, nothing flowing.
             {"nodes": [{"id": "x", "label": "x"}], "animate_flow": True},
         ]
+
+
+@artifact_builder("BoxFlow")
+def _artifact(params: BoxFlowParams, theme: Theme) -> VGroup:
+    """Carry-in (SCENE_SPEC.md §6): the settled diagram -- every box and
+    arrow at full strength, unplaced. CarryIn fits it to STAGE as build()
+    does, so a later beat sees the picture this beat ended on."""
+    return _diagram(params, theme).group

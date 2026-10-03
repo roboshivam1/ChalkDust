@@ -1,26 +1,43 @@
 """BoxFlow: behaviour the registry-wide layout tests do not pin.
 
 test_layout.py already proves examples() validate clean and stress() fits or
-refuses cleanly. This file pins timing against the audio budget, the schema's
-refusals, the typed overflow path, and the routing guarantee that is the point
-of the component: no edge ever runs through a box.
+refuses cleanly. This file pins timing against the audio budget (clocked and
+in a real draft render), the schema's refusals, the typed overflow path, the
+routing guarantee that is the point of the component -- no edge ever runs
+through a box -- and the carry-in artifact (SCENE_SPEC.md §6).
 """
 
 from __future__ import annotations
+
+import json
+import math
+import subprocess
+from dataclasses import asdict
 
 import numpy as np
 import pytest
 from manim import tempconfig
 from pydantic import ValidationError
 
+from chalkdust.continuity import (
+    ArtifactRecipe,
+    beat_component,
+    build_artifact,
+    carried,
+    resolve_carry_in,
+)
+from chalkdust.core.models import BeatSpec, Quality, VideoSpec
+from chalkdust.render.worker import TIERS
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.box_flow import MAX_EDGES, MAX_NODES, BoxFlow
 from chalkdust.scenes.regions import LayoutError, bbox
-from chalkdust.validate.geometric import LayoutProbe
+from chalkdust.scenes.theme import DEFAULT
+from chalkdust.validate.geometric import LayoutProbe, validate_beat
 
 PIPELINE, FAN, LOOP = BoxFlow.examples()
 AT_CAPS, OVERLOADED, LONG_EDGES = BoxFlow.stress()[:3]
-FPS = 15  # draft (D-006); the coarsest frame grid we render at
+DRAFT = TIERS[Quality.DRAFT]
+FPS = DRAFT.frame_rate  # 15 (D-006): the coarsest frame grid we render at
 
 
 def _node(i: str, lab: str | None = None) -> dict:
@@ -36,41 +53,27 @@ TWO_WAY = {"nodes": [_node("a"), _node("b")],
 
 
 class _Clocked(ChalkdustScene):
-    """Records every run_time the component asks for, and what Manim then
-    plays: the run_time it settled on and whether it froze the frame."""
+    """Records the run_time the component asks for on every play() and
+    wait(), and the run_time Manim then clocks for it."""
 
     def play(self, *animations, **kwargs):  # type: ignore[override]
         # wait() reaches here too, carrying its duration on a Wait animation
         # rather than as run_time.
         self.asked.append(kwargs.get("run_time", animations[0].run_time))
         super().play(*animations, **kwargs)
-        # Both are set by compile_animation_data / begin_animations, which
-        # run under skip_animations too.
-        self.played.append((self.duration,
-                            self.is_current_animation_frozen_frame()))
-
-
-def _frames(run_time: float, frozen: bool) -> int:
-    """Frames Manim writes for one play, by its own arithmetic: a frozen wait
-    is int(run_time / dt) frames (CairoRenderer.freeze_current_frame), any
-    other play one frame per np.arange(0, run_time, dt) step
-    (Scene.get_time_progression). Mirrored exactly rather than as
-    ceil(run_time * fps), which would read a frozen hold one frame high."""
-    dt = 1 / FPS
-    if frozen:
-        return int(run_time / dt)
-    return len(np.arange(0, run_time, dt))
+        # Set by ChalkdustScene.get_run_time, which runs under
+        # skip_animations too: (n + 0.5) / fps for a play of n frames.
+        self.clocked.append(self.duration)
 
 
 def _run(params: dict, budget: float, tmp_path) -> _Clocked:
-    """Build with skip_animations: Manim then advances its clock by each
-    play's run_time exactly -- after bumping any run_time shorter than one
-    frame up to one frame, which is precisely the overrun to catch."""
+    """Build at draft fps with skip_animations: every play() and wait() goes
+    through the same run-time arithmetic as a render, minus the encoding."""
     settings = {"media_dir": str(tmp_path), "frame_rate": FPS,
                 "disable_caching": True, "verbosity": "WARNING"}
     with tempconfig(settings):
         scene = _Clocked(BoxFlow(params), duration=budget, skip_animations=True)
-        scene.asked, scene.played = [], []
+        scene.asked, scene.clocked = [], []
         scene.setup()
         scene.construct()
     return scene
@@ -83,34 +86,59 @@ def _probe(params: dict, tmp_path) -> LayoutProbe:
     return probe
 
 
-class TestTiming:
-    """Animation consumes exactly the beat's audio budget (D-002)."""
+TIMED = pytest.mark.parametrize("params", [PIPELINE, FAN, LOOP, AT_CAPS],
+                                ids=["pipeline", "fan", "loop", "at-caps"])
+# Narration far shorter and far longer than the animation wants.
+FACTORS = pytest.mark.parametrize("factor", [0.5, 3.0], ids=["short", "long"])
 
-    @pytest.mark.parametrize("params", [PIPELINE, FAN, LOOP, AT_CAPS],
-                             ids=["pipeline", "fan", "loop", "at-caps"])
-    @pytest.mark.parametrize("factor", [0.5, 3.0], ids=["short", "long"])
-    def test_consumes_budget_exactly(self, params, factor, tmp_path):
+
+class TestTiming:
+    """Animation lasts exactly the beat's audio, in whole frames (D-002)."""
+
+    @TIMED
+    @FACTORS
+    def test_asks_whole_frames_summing_to_the_beat(self, params, factor,
+                                                   tmp_path):
+        # Every run time is a scene.budget() share as given: whole frames,
+        # together exactly beat_frames. A private rounding or snapping step
+        # in the component would show here as fractional frames.
+        scene = _run(params, factor * BoxFlow(params).min_seconds(), tmp_path)
+        frames = [t * FPS for t in scene.asked]
+        assert all(f == pytest.approx(round(f), abs=1e-9) for f in frames)
+        assert sum(round(f) for f in frames) == scene.beat_frames
+
+    @TIMED
+    @FACTORS
+    def test_clocks_exactly_the_beats_frames(self, params, factor, tmp_path):
+        # What Manim plays: the base scene renders a clocked run time of
+        # (n + 0.5) / fps as exactly n frames (get_time_progression).
         budget = factor * BoxFlow(params).min_seconds()
         scene = _run(params, budget, tmp_path)
-        assert scene.renderer.time == pytest.approx(budget, abs=1 / FPS)
-
-    @pytest.mark.parametrize("params", [PIPELINE, FAN, LOOP, AT_CAPS],
-                             ids=["pipeline", "fan", "loop", "at-caps"])
-    @pytest.mark.parametrize("factor", [0.5, 3.0], ids=["short", "long"])
-    def test_renders_exactly_the_budget_in_frames(self, params, factor,
-                                                  tmp_path):
-        # The clock above sums float run_times and so matches by
-        # construction; the video is whole frames per play. This is the
-        # number the audio is muxed against (PRD G2).
-        budget = factor * BoxFlow(params).min_seconds()
-        played = _run(params, budget, tmp_path).played
-        assert sum(_frames(t, frozen) for t, frozen in played)             == round(budget * FPS)
+        assert sum(int(t * FPS) for t in scene.clocked) == scene.beat_frames
+        assert scene.beat_frames == math.ceil(round(budget * FPS, 6))
 
     def test_no_step_shorter_than_a_frame_at_half_budget(self, tmp_path):
         # The most step-heavy fixture (caps, flow on) at half its minimum:
         # if any step fell below a frame, Manim would silently lengthen it.
         budget = 0.5 * BoxFlow(AT_CAPS).min_seconds()
         assert min(_run(AT_CAPS, budget, tmp_path).asked) >= 1 / FPS
+
+    def test_draft_render_is_exactly_the_beat(self, tmp_path):
+        # A real 480p15 encode, frames counted by ffprobe: 3.879 s of audio
+        # is ceil(3.879 * 15) = 59 frames, across AT_CAPS's 17 plays (the
+        # most of any fixture, so the most chances to drift).
+        with tempconfig({**asdict(DRAFT), "media_dir": str(tmp_path),
+                         "disable_caching": True, "progress_bar": "none",
+                         "verbosity": "WARNING", "output_file": "frames"}):
+            scene = ChalkdustScene(BoxFlow(AT_CAPS), duration=3.879)
+            scene.render()
+            movie = scene.renderer.file_writer.movie_file_path
+        out = subprocess.run(
+            ["ffprobe", "-v", "error", "-count_frames", "-select_streams",
+             "v:0", "-show_entries", "stream=nb_read_frames", "-of", "json",
+             str(movie)], capture_output=True, text=True, check=True).stdout
+        frames = int(json.loads(out)["streams"][0]["nb_read_frames"])
+        assert frames == math.ceil(3.879 * FPS) == 59
 
     def test_flow_adds_time(self):
         still = BoxFlow({**FAN, "animate_flow": False}).min_seconds()
@@ -206,3 +234,52 @@ class TestRouting:
         ab_y = {round(p[1], 6) for p in ab[0].get_anchors()}
         ba_y = {round(p[1], 6) for p in ba[0].get_anchors()}
         assert not ab_y & ba_y
+
+
+def _carry_video(params: dict) -> VideoSpec:
+    """b01 draws `params` and registers it; b02 carries it in."""
+    return VideoSpec(video_id="v", beats=(
+        BeatSpec(id="b01", narration="placeholder narration",
+                 component="BoxFlow", params=params, registers="system"),
+        BeatSpec(id="b02", narration="placeholder narration",
+                 component="BulletReveal", params={"items": ["one point"]},
+                 carry_in=["system"]),
+    ))
+
+
+class TestCarryIn:
+    """A later beat can carry the diagram in (SCENE_SPEC.md §6)."""
+
+    def test_carried_diagram_is_the_picture_its_beat_settled_on(self,
+                                                                tmp_path):
+        video = _carry_video(FAN)
+        recipes = resolve_carry_in(video)["b02"]
+        with tempconfig({"media_dir": str(tmp_path)}):
+            consumer = LayoutProbe(beat_component(video.beats[1], recipes),
+                                   duration=4.0)
+            consumer.construct()
+        art = carried(consumer, "system")
+        settled = {getattr(m, "_chalk_label", ""): m
+                   for m in _probe(FAN, tmp_path).mobjects}
+        parts = {getattr(m, "_chalk_label", ""): m for m in art.submobjects}
+        names = [f"node[{n['id']}]" for n in FAN["nodes"]] + [
+            f"edge[{k}]" for k in range(len(FAN["edges"]))]
+        assert sorted(parts) == sorted(names)
+        for name in names:
+            a, b = bbox(parts[name]), bbox(settled[name])
+            assert (a.x, a.y, a.width, a.height) == pytest.approx(
+                (b.x, b.y, b.width, b.height), abs=1e-6), name
+
+    def test_rebuild_is_deterministic(self):
+        recipe = ArtifactRecipe(name="system", producer="BoxFlow", params=LOOP)
+        a, b = build_artifact(recipe, DEFAULT), build_artifact(recipe, DEFAULT)
+        pa = [m.points for m in a.family_members_with_points()]
+        pb = [m.points for m in b.family_members_with_points()]
+        assert len(pa) == len(pb) > 0
+        assert all(np.array_equal(x, y) for x, y in zip(pa, pb))
+
+    def test_carry_in_beat_validates_clean(self):
+        video = _carry_video(LOOP)
+        report = validate_beat(video.beats[1], duration=4.0,
+                               recipes=resolve_carry_in(video)["b02"])
+        assert report.ok, f"\n{report}"

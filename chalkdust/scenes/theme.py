@@ -88,11 +88,8 @@ def check_fonts(theme: Theme) -> list[str]:
     Call this once at startup. A missing font does not raise -- Pango falls
     back -- so this is the only way to notice before the render looks wrong.
     """
-    try:
-        import manimpango
-
-        available = set(manimpango.list_fonts())
-    except Exception:
+    available = _installed_fonts()
+    if not available:
         return []  # can't check; don't block the render
     wanted = {theme.type.heading_font, theme.type.body_font, theme.type.mono_font}
     return sorted(f for f in wanted if f not in available)
@@ -157,21 +154,36 @@ FALLBACKS = {
 }
 
 
-def _installed_fonts() -> set[str]:
+# Substitutions already announced in this process: (role, wanted, used).
+_WARNED: set[tuple[str, str, str]] = set()
+
+
+@lru_cache(maxsize=1)
+def _installed_fonts() -> frozenset[str]:
+    """The system's font families, enumerated once per process.
+
+    resolve_fonts runs on every scene construction -- the validation probe,
+    the repair probe and the render of every beat -- and enumerating fonts
+    costs ~0.3 s a call on Windows. Fonts installed mid-run are not seen;
+    a run is minutes long and the render key would not notice them anyway
+    until the next process.
+    """
     try:
         import manimpango
 
-        return set(manimpango.list_fonts())
+        return frozenset(manimpango.list_fonts())
     except Exception:
-        return set()
+        return frozenset()
 
 
 def resolve_fonts(theme: Theme, warn: bool = True) -> Theme:
     """Return a copy of `theme` with any missing font swapped for a fallback.
 
-    Called once per scene construction. If nothing in the fallback chain is
-    installed we leave the original name and let Pango decide -- but by then
-    the warning has already been printed.
+    Called once per scene construction. Each substitution is announced once
+    per process, not once per scene: a 40-beat video builds well over 100
+    scenes, and the same three lines each time drown the per-beat report.
+    If nothing in the fallback chain is installed we leave the original name
+    and let Pango decide -- but by then the warning has already been printed.
     """
     available = _installed_fonts()
     if not available:
@@ -182,7 +194,8 @@ def resolve_fonts(theme: Theme, warn: bool = True) -> Theme:
             return wanted
         for candidate in FALLBACKS[role]:
             if candidate in available:
-                if warn:
+                if warn and (role, wanted, candidate) not in _WARNED:
+                    _WARNED.add((role, wanted, candidate))
                     print(f"[theme] {wanted!r} missing, using {candidate!r} for {role}")
                 return candidate
         return wanted

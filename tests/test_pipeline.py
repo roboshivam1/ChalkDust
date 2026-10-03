@@ -157,6 +157,62 @@ class TestValidation:
         assert fake_tts.calls == []
 
 
+    def test_semantic_refusal_happens_before_layout_and_speech(
+            self, tmp_path, fake_tts):
+        # Rung 2 (SCENE_SPEC.md §8): 70 words passes the schema's 80-word
+        # bound but runs ~26s at the estimated pace -- more than one beat may
+        # carry. No layout fixes that, so it is refused before rung 3.
+        spec = example_spec()
+        spec["beats"][1]["narration"] = " ".join(["word"] * 70) + "."
+        path = write_spec(tmp_path / "spec.json", spec)
+
+        with pytest.raises(pipeline.SemanticRefused,
+                           match=r"b02: 1 finding\(s\)\n  \[duration\]"):
+            pipeline.render(path, cache_dir=tmp_path / "cache",
+                            work_dir=tmp_path / "work")
+        assert fake_tts.calls == []
+
+
+RAW_CODE = """
+from manim import *
+
+class Sweep(Scene):
+    def construct(self):
+        sq = Square()
+        self.play(Create(sq), run_time=1)
+        self.play(sq.animate.rotate(PI / 4), run_time=1)
+"""
+
+
+class TestRawSceneRouting:
+    """Validation routes a RawScene beat as the worker does: never through
+    the host-scene probe, where RawScene.build() raises (SCENE_SPEC.md §7)."""
+
+    def test_raw_scene_beat_is_not_probed_in_a_host_scene(self, tmp_path, capsys):
+        spec = example_spec()
+        spec["beats"][1] = {**spec["beats"][1], "component": "RawScene",
+                            "params": {"rationale": "a rotation the library lacks",
+                                       "code": RAW_CODE}}
+        path = write_spec(tmp_path / "spec.json", spec)
+
+        assert len(pipeline.validate(path, work_dir=tmp_path / "work").beats) == 4
+        assert "b02  RawScene: layout is asserted in its own render" in \
+            capsys.readouterr().out
+
+    def test_raw_scene_certain_to_degrade_is_checked_as_its_fallback(
+            self, tmp_path, capsys):
+        spec = example_spec()
+        spec["beats"][1] = {**spec["beats"][1], "component": "RawScene",
+                            "params": {"rationale": "needs the OS", "code": "import os"}}
+        path = write_spec(tmp_path / "spec.json", spec)
+
+        checked = pipeline.checked_beats(pipeline.load_spec(path))
+        assert checked[1].spec.component == "BulletReveal" and checked[1].geometric
+        pipeline.validate(path, work_dir=tmp_path / "work")
+        assert "b02  RawScene will degrade to BulletReveal (forbidden_import:" in \
+            capsys.readouterr().out
+
+
 class TestFailureTyping:
     """Failures are typed by the stage they happen in, not by exception class."""
 

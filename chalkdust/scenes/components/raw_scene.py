@@ -4,10 +4,12 @@ Some beats need a visual the library does not have. RawScene carries Manim
 code -- the one place generated code runs -- under four constraints:
 
   1. Constrained imports. A static AST pass rejects any import outside
-     ALLOWED_MODULES, any reference to a system module name, and the builtins
-     and dunder attributes that reach around an import. At runtime the code's
-     namespace gets builtins with those names removed and an `__import__`
-     that enforces the same allowlist. This keeps an LLM from reaching for
+     ALLOWED_MODULES, any reference to a system module name (as a name, an
+     attribute, or an import re-exported by an allowed package), and the
+     builtins and dunder attributes that reach around an import. At runtime
+     the code's namespace gets builtins with those names removed and an
+     `__import__` that enforces the same allowlist, including on the names
+     a `from` import binds. This keeps an LLM from reaching for
      the filesystem, shell, or network; it is NOT a security boundary against
      a hostile author. The subprocess and the timeout bound the damage.
   2. A subprocess with a timeout. The code renders out of process, so a hang
@@ -46,6 +48,7 @@ import tempfile
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+from types import ModuleType
 from typing import Any
 
 from manim import Scene, ValueTracker, tempconfig
@@ -143,28 +146,54 @@ def check_code(code: str) -> None:
         raise RawSceneError(f"line {exc.lineno}: {exc.msg}", kind="syntax") from None
 
     for node in ast.walk(tree):
-        if isinstance(node, ast.Import):
-            roots = [alias.name.split(".")[0] for alias in node.names]
-        elif isinstance(node, ast.ImportFrom):
-            roots = [(node.module or "").split(".")[0]] if not node.level else ["."]
-        else:
-            roots = []
-        for root in roots:
-            if root not in ALLOWED_MODULES:
-                raise RawSceneError(
-                    f"line {node.lineno}: import of {root!r}; allowed: "
-                    f"{sorted(ALLOWED_MODULES)}", kind="forbidden_import")
-
-        if isinstance(node, ast.Name):
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            _check_import(node)
+        elif isinstance(node, ast.Name):
             if node.id in FORBIDDEN_MODULES:
                 raise RawSceneError(f"line {node.lineno}: reference to module "
                                     f"{node.id!r}", kind="forbidden_import")
             if node.id in FORBIDDEN_NAMES:
                 raise RawSceneError(f"line {node.lineno}: use of {node.id!r}",
                                     kind="forbidden_name")
-        elif isinstance(node, ast.Attribute) and node.attr.startswith("__"):
-            raise RawSceneError(f"line {node.lineno}: dunder attribute "
-                                f"{node.attr!r}", kind="forbidden_name")
+        elif isinstance(node, ast.Attribute):
+            # `f.os.system(...)` after `import manim.utils.file_ops as f`: a
+            # system module reached as an attribute of an allowed one. The
+            # runtime import guard never sees attribute access, so this is
+            # the only check covering that route.
+            if node.attr in FORBIDDEN_MODULES:
+                raise RawSceneError(f"line {node.lineno}: attribute reaching "
+                                    f"module {node.attr!r}", kind="forbidden_import")
+            if node.attr.startswith("__"):
+                raise RawSceneError(f"line {node.lineno}: dunder attribute "
+                                    f"{node.attr!r}", kind="forbidden_name")
+
+
+def _check_import(node: ast.Import | ast.ImportFrom) -> None:
+    """The allowlist, plus the routes around it: a system module re-exported
+    by an allowed one (`from manim.utils.file_ops import os`), and a star
+    import that would bind such re-exports wholesale."""
+    if isinstance(node, ast.ImportFrom) and node.level:
+        raise RawSceneError(f"line {node.lineno}: relative import",
+                            kind="forbidden_import")
+    if isinstance(node, ast.Import):
+        dotted, names = [alias.name for alias in node.names], []
+    else:
+        dotted, names = [node.module or ""], [alias.name for alias in node.names]
+
+    for path in dotted:
+        root = path.split(".")[0]
+        if root not in ALLOWED_MODULES:
+            raise RawSceneError(f"line {node.lineno}: import of {root!r}; allowed: "
+                                f"{sorted(ALLOWED_MODULES)}", kind="forbidden_import")
+    for part in [p for path in dotted for p in path.split(".")[1:]] + names:
+        if part in FORBIDDEN_MODULES:
+            raise RawSceneError(f"line {node.lineno}: import of module {part!r} "
+                                "through an allowed package", kind="forbidden_import")
+    # `from manim import *` is how every scene starts; a star from a
+    # submodule binds whatever that module happened to import.
+    if names == ["*"] and dotted[0] not in ALLOWED_MODULES:
+        raise RawSceneError(f"line {node.lineno}: star import from submodule "
+                            f"{dotted[0]!r}", kind="forbidden_import")
 
 
 # --- child process ----------------------------------------------------------
@@ -174,12 +203,33 @@ def check_code(code: str) -> None:
 def _guarded_import(name: str, globals: Any = None, locals: Any = None,
                     fromlist: Any = (), level: int = 0) -> Any:
     """`__import__` for generated code only. Manim's own lazy imports go
-    through the real builtins of Manim's modules and are unaffected."""
+    through the real builtins of Manim's modules and are unaffected.
+
+    `from X import y` arrives here with y in `fromlist`, so a module y that
+    an allowed X merely re-exports (`from manim.utils.file_ops import os`) is
+    refused. `import X.Y as f` then `f.os` is attribute access, which never
+    comes through here; check_code's attribute rule covers that route.
+    """
     root = name.split(".")[0]
     if level or root not in ALLOWED_MODULES:
         raise RawSceneError(f"runtime import of {name!r}; allowed: "
                             f"{sorted(ALLOWED_MODULES)}", kind="forbidden_import")
-    return builtins.__import__(name, globals, locals, fromlist, level)
+    module = builtins.__import__(name, globals, locals, fromlist, level)
+    for item in fromlist or ():
+        if item == "*":
+            # A star import cannot be filtered after the fact. From the
+            # top-level packages it is expected (and binds only harmless
+            # modules like typing); from a submodule it is refused outright.
+            if name not in ALLOWED_MODULES:
+                raise RawSceneError(f"runtime star import from submodule {name!r}",
+                                    kind="forbidden_import")
+            continue
+        value = getattr(module, item, None)
+        if isinstance(value, ModuleType) and \
+                value.__name__.split(".")[0] not in ALLOWED_MODULES:
+            raise RawSceneError(f"runtime import of module {value.__name__!r} "
+                                f"via {name!r}", kind="forbidden_import")
+    return module
 
 
 def _user_namespace() -> dict[str, Any]:
@@ -349,9 +399,16 @@ def _fit_to_duration(src: Path, dst: Path, duration: float, fps: int) -> None:
     if natural <= duration:
         vf = f"tpad=stop_mode=clone:stop_duration={duration - natural:.6f}"
     else:
-        vf = f"setpts=PTS*{duration / natural:.6f}"
+        # Scale frame START times so the source's last frame starts exactly
+        # one frame before the end: the clip must finish on the settled state
+        # the layout checks passed. Scaling by duration/natural can push that
+        # frame past the cut.
+        frame = 1 / fps
+        vf = f"setpts=PTS*{(duration - frame) / (natural - frame):.6f}"
+    # The fps filter, not -r: output-side -r resampling dropped the final
+    # frame of a sped-up clip (seen at 3 s -> 1.8 s, 15 fps).
     run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(src),
-         "-vf", vf, "-r", str(fps), "-t", f"{duration:.6f}", "-an",
+         "-vf", f"{vf},fps={fps}", "-t", f"{duration:.6f}", "-an",
          *VCODEC, str(dst)])
 
 

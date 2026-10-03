@@ -152,8 +152,16 @@ class Callout(Component):
         plan.shift(offset)
         text.shift(offset)
 
-        start = text.get_edge_center(-direction)
         end = pointed.get_edge_center(direction)
+        # Leave the label from the point on its facing edge nearest the part,
+        # so the arrow runs straight across the gap even when the label had
+        # to be clamped off-level to stay inside the stage.
+        start = text.get_edge_center(-direction)
+        span = bbox(text)
+        if beside:
+            start[1] = float(np.clip(end[1], span.bottom, span.top))
+        else:
+            start[0] = float(np.clip(end[0], span.left, span.right))
         if p.part is not None:
             # A straight arrow to an inner part can run through its siblings
             # (side="below" on the first bullet of a list). That is a broken

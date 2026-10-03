@@ -226,6 +226,16 @@ def test_pointed_part_restored_rest_stays_dim():
     assert full[0] == full[2] == pytest.approx(1 - continuity.DIM_DARKNESS)
 
 
+def test_clamped_label_still_gets_a_straight_arrow():
+    # Stress 0: a nine-line label beside the LAST of six rows is clamped up to
+    # stay in the stage, so it is not level with its part. The arrow must
+    # still run straight across the gap, not slant off the label's middle.
+    probe = _probe(STRESS[0])
+    arrow = next(m for m in probe.mobjects
+                 if getattr(m, "_chalk_label", None) == "callout arrow")
+    assert bbox(arrow).height < 0.3  # tip width only; a slant is ~1 unit
+
+
 def test_arrow_through_sibling_parts_refuses():
     # Below a three-row list, an arrow up to the FIRST row crosses rows 1-2.
     with pytest.raises(LayoutError) as exc_info:

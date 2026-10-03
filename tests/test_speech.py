@@ -10,6 +10,7 @@ from __future__ import annotations
 import importlib.util
 import subprocess
 import sys
+import wave
 from pathlib import Path
 
 import pytest
@@ -19,7 +20,7 @@ from chalkdust.core.models import VoiceConfig
 from chalkdust.speech import tts
 from chalkdust.speech.backends.kokoro import Kokoro
 from chalkdust.speech.backends.windows_sapi import sapi_rate
-from chalkdust.speech.base import CHANNELS, SAMPLE_RATE, TTSError, run
+from chalkdust.speech.base import CHANNELS, SAMPLE_RATE, TTSError, probe_duration, run
 
 HAS_KOKORO = importlib.util.find_spec("kokoro") is not None
 TEXT = "Two different keys can land in the same bucket. That is a collision."
@@ -79,6 +80,23 @@ def test_backends_declare_their_native_format():
     assert {n: b.raw_format for n, b in tts.BACKENDS.items()} == {
         "macos_say": "aiff", "windows_sapi": "wav", "kokoro": "wav",
     }
+
+
+# --- duration probe (D-002) ----------------------------------------------------
+
+
+def test_audio_with_no_sound_is_a_readable_speech_error(tmp_path):
+    # Register N-9: a voice given nothing it can pronounce (SAPI on ".")
+    # writes a header-only WAV. ffprobe reports its duration as "N/A", which
+    # reached the operator as "could not convert string to float: 'N/A'".
+    empty = tmp_path / "empty.wav"
+    with wave.open(str(empty), "wb") as w:
+        w.setnchannels(CHANNELS)
+        w.setsampwidth(2)
+        w.setframerate(SAMPLE_RATE)
+    with pytest.raises(TTSError, match=r"no measurable duration \(ffprobe reports 'N/A'\)"
+                                       r": the voice produced no sound"):
+        probe_duration(empty)
 
 
 # --- resolution (docs/VOICE.md) -----------------------------------------------

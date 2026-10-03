@@ -11,7 +11,7 @@ from dataclasses import asdict
 
 import numpy as np
 import pytest
-from manim import VGroup
+from manim import VGroup, tempconfig
 from pydantic import ValidationError
 
 from chalkdust import continuity
@@ -37,6 +37,16 @@ _TERMS = (asdict(DEFAULT), asdict(TIERS[Quality.DRAFT]), RepairPlan().key_data()
 
 def _title_artifact(params, theme):
     return VGroup(title_text(params.title, theme))
+
+
+@pytest.fixture(autouse=True)
+def _manim_scratch_in_tmp(tmp_path):
+    """Every file Manim writes here goes to tmp_path, never the cwd: the
+    probes respect a caller's media_dir (geometric.probe_media), and an
+    artifact rebuilt outside a probe (build_artifact) writes its Text SVGs
+    under it too."""
+    with tempconfig({"media_dir": str(tmp_path / "manim")}):
+        yield
 
 
 @pytest.fixture

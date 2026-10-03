@@ -121,6 +121,16 @@ class BeatSpec(BaseModel, frozen=True):
         v = v.strip()
         if not v:
             raise ValueError("narration cannot be empty")
+        if not any(c.isalnum() for c in v):
+            # Every beat's timing is its measured audio (D-002). Punctuation
+            # alone gives a voice nothing to say: SAPI writes a header-only
+            # file for ".", which no duration can be measured from. Letters
+            # and digits in any script count; a lone symbol a voice might
+            # name ("=", "%") is not a narration either.
+            raise ValueError(
+                f"narration has nothing to speak: {v!r} contains no letter or "
+                "digit. A beat is timed by its spoken narration; write the "
+                "sentence the viewer should hear.")
         if len(v.split()) > MAX_NARRATION_WORDS:
             raise ValueError(
                 f"narration is {len(v.split())} words (max {MAX_NARRATION_WORDS}). "

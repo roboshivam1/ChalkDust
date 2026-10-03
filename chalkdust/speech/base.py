@@ -7,6 +7,7 @@ stay small and interchangeable.
 
 from __future__ import annotations
 
+import math
 import shutil
 import subprocess
 from pathlib import Path
@@ -76,6 +77,11 @@ def probe_duration(path: Path) -> float:
 
     This number drives every animation run time in the beat (D-002), so it must
     come from the file itself -- never from a words-per-minute estimate.
+
+    A file with no audio in it is a speech failure, said in words: ffprobe
+    reports its duration as "N/A" (a voice given nothing it can pronounce,
+    e.g. SAPI on the narration ".", writes a header-only WAV), and a
+    zero-length clip would give the beat no frames to animate in.
     """
     require("ffprobe")
     proc = subprocess.run(
@@ -83,9 +89,19 @@ def probe_duration(path: Path) -> float:
          "-of", "default=noprint_wrappers=1:nokey=1", str(path)],
         capture_output=True, text=True,
     )
-    if proc.returncode != 0 or not proc.stdout.strip():
+    reported = proc.stdout.strip()
+    if proc.returncode != 0 or not reported:
         raise TTSError(f"could not probe duration of {path}")
-    return float(proc.stdout.strip())
+    try:
+        seconds = float(reported)
+    except ValueError:
+        seconds = math.nan
+    if not math.isfinite(seconds) or seconds <= 0:
+        raise TTSError(
+            f"the synthesised audio {path} has no measurable duration (ffprobe "
+            f"reports {reported!r}): the voice produced no sound. Check that "
+            "the narration has words the voice can speak.")
+    return seconds
 
 
 def normalize_audio(src: Path, dst: Path, trim_silence: bool = True) -> None:

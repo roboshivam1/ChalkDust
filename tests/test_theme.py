@@ -46,19 +46,6 @@ def test_font_substitution_is_announced_once_per_process(capsys):
     assert first == second
 
 
-def test_substitution_warned_once_per_process(monkeypatch, capsys):
-    monkeypatch.setattr(theme_mod, "_installed_fonts",
-                        lambda: frozenset({"Arial", "Courier New"}))
-    monkeypatch.setattr(theme_mod, "_WARNED", set())
-
-    for _ in range(3):  # three scenes, e.g. probe, repair probe, render
-        resolve_fonts(get_theme("default"))
-
-    lines = capsys.readouterr().out.splitlines()
-    assert len(lines) == 3, lines  # heading, body, mono -- once each
-    assert all(line.startswith("[theme] ") for line in lines)
-
-
 def test_fonts_enumerated_once_per_process(monkeypatch):
     calls = []
 

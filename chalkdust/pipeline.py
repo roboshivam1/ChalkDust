@@ -120,7 +120,8 @@ class AssemblyFailed(PipelineError):
 
 class DirectoryUnusable(PipelineError):
     """--work-dir or --cache-dir cannot be used as a directory (it is a file,
-    or cannot be created). Checked before validation spends anything."""
+    or cannot be created), or the work dir's full path holds a '~' LaTeX
+    cannot compile under. Checked before validation spends anything."""
 
 
 # --- results ----------------------------------------------------------------
@@ -197,6 +198,27 @@ def ensure_dir(path: Path, option: str) -> Path:
             reason = f"cannot create it ({exc.strerror or exc})"
         raise DirectoryUnusable(f"{option} {path}: {reason}") from exc
     return path
+
+
+def refuse_tilde_work_dir(work_dir: Path) -> Path:
+    """The work dir as Manim will get it (worker.long_path), or a
+    DirectoryUnusable if TeX cannot work under it.
+
+    TeX gives '~' a meaning of its own, and Manim hands it paths under the
+    work dir: with a '~' anywhere in that path every compile fails ("latex
+    failed but did not produce a log file"), which rung 2 reports as one
+    LaTeX finding per expression -- the spec blamed for a command-line
+    problem (register N-10). An 8.3 short name's '~' is fine: long_path
+    expands it (N-3). Only a '~' still in the expanded path is refused, and
+    before anything is created or spent.
+    """
+    resolved = long_path(work_dir)
+    if "~" in str(resolved):
+        raise DirectoryUnusable(
+            f"--work-dir {work_dir}: its full path {resolved} contains '~', "
+            "and LaTeX cannot compile under a path with '~' in it. Use a "
+            "work dir whose full path has no '~'.")
+    return resolved
 
 
 # video_id names files and directories (out/<id>-<quality>.mp4, the assembly
@@ -432,6 +454,7 @@ def manim_scratch(work_dir: Path, verbose: bool = False) -> Iterator[None]:
 def validate(spec_path: Path, work_dir: Path = DEFAULT_WORK_DIR,
              verbose: bool = False) -> VideoSpec:
     """Rungs 1, 2 and 3, with no speech and no render."""
+    refuse_tilde_work_dir(work_dir)  # a command-line problem, before the spec
     spec = load_spec(spec_path)
     carry_in_recipes(spec)  # an unrebuildable carry-in is a spec error
     # Manim writes here from the first semantic check on.
@@ -471,6 +494,7 @@ def render(
     work_dir = Path(work_dir)
     # Before validation spends anything: a cache dir that cannot be one would
     # otherwise surface only after the probe, as a traceback.
+    refuse_tilde_work_dir(work_dir)  # validate checks again; this is before mkdir
     ensure_dir(cache_dir, "--cache-dir")
     spec = validate(spec_path, work_dir, verbose)
     work_dir = long_path(work_dir)  # ensure_dir'd by validate; see there

@@ -38,7 +38,7 @@ from chalkdust.core.models import (
     VideoSpec,
 )
 from chalkdust.render.assemble import assemble
-from chalkdust.render.worker import render_beat
+from chalkdust.render.worker import long_path, render_beat
 from chalkdust.scenes.components import get_component
 from chalkdust.scenes.components.raw_scene import (
     USAGE_LOG_NAME,
@@ -384,9 +384,10 @@ def manim_scratch(work_dir: Path, verbose: bool = False) -> Iterator[None]:
     the work dir it is handed (`{work_dir}/manim`, the same media_dir as here,
     so Manim's text and LaTeX caches are shared with validation). Covers
     validation too: building Text writes Pango SVGs to `{media_dir}/texts`.
+    The dir is a long path (worker.long_path): LaTeX fails under an 8.3 one.
     """
     with tempconfig({
-        "media_dir": str(Path(work_dir) / "manim"),
+        "media_dir": str(long_path(work_dir) / "manim"),
         "verbosity": "INFO" if verbose else "WARNING",
         "progress_bar": "display" if verbose else "none",
     }):
@@ -401,6 +402,9 @@ def validate(spec_path: Path, work_dir: Path = DEFAULT_WORK_DIR,
     # Manim writes here from the first semantic check on.
     ensure_dir(work_dir, "--work-dir")
     ensure_dir(Path(work_dir) / "manim", "--work-dir")
+    # Checked under the name the operator gave; used as a long path from here
+    # on, since Manim hands it to LaTeX (register N-3).
+    work_dir = long_path(work_dir)
     checked = checked_beats(spec)
     for check in checked:
         if check.note:
@@ -434,6 +438,7 @@ def render(
     # otherwise surface only after the probe, as a traceback.
     ensure_dir(cache_dir, "--cache-dir")
     spec = validate(spec_path, work_dir, verbose)
+    work_dir = long_path(work_dir)  # ensure_dir'd by validate; see there
     out = Path(out) if out else Path("out") / f"{spec.video_id}-{quality.value}.mp4"
 
     cache = Cache(cache_dir)

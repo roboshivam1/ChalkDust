@@ -196,6 +196,16 @@ def test_blank_note_is_no_note():
     ({"shapes": [_pt("A", 0, 0), _pt("B", 1, 0), _pt("C", 0, 1), _pt("D", 0, 0),
                  {"kind": "polygon", "vertices": ["A", "B", "C", "D"]}]},
      "polygon side DA has zero length"),
+    # (d) Notes are plain text and nothing here compiles maths: TeX in a
+    # caption would draw as its source, so it is refused, malformed or not.
+    ({"shapes": [_pt("A", 0, 0), _pt("B", 1, 0)],
+      "construction": [{"kind": "circle", "center": "A", "through": "B",
+                        "note": r"Radius $\frac{AB}{2}$ \unknown{"}]},
+     "contains LaTeX markup"),
+    ({"shapes": [_pt("A", 0, 0), _pt("B", 1, 0)],
+      "construction": [{"kind": "segment", "ends": ["A", "B"],
+                        "note": r"AB = \sqrt{2}"}]},
+     "contains LaTeX markup"),
     ({"shapes": [_pt("A", 0, 0, note="given")]}, "notes belong to construction"),
     ({"shapes": [_pt("A", 0, 0)],
       "construction": [{"kind": "intersect", "of": ["x", "y"], "names": ["P"]}]},

@@ -18,6 +18,7 @@ at build time, like every other component (SCENE_SPEC.md §11 rule 1).
 
 from __future__ import annotations
 
+import re
 from typing import Annotated, Literal, Union
 
 import numpy as np
@@ -97,6 +98,9 @@ _DIRECTIONS = (UR, UL, DR, DL, UP, RIGHT, DOWN, LEFT)
 # also the label drawn on screen, so it is short by construction.
 PointName = Annotated[str, Field(pattern=r"^[A-Za-z][A-Za-z0-9']{0,3}$")]
 Coord = Annotated[float, Field(allow_inf_nan=False)]
+# A TeX control word (\frac, \sqrt) or an inline $...$ span: maths source that
+# a plain-text caption would draw literally.
+_TEX_MARKUP = re.compile(r"\\[A-Za-z]+|\$[^$]+\$")
 
 
 # --- params -----------------------------------------------------------------
@@ -114,7 +118,19 @@ class _Element(ComponentParams):
         # the timing weights and build() cannot disagree about whether a step
         # has one -- wrap() would strip it to an empty Text sitting on the
         # figure.
-        return (v.strip() or None) if v is not None else None
+        if v is None or not v.strip():
+            return None
+        if _TEX_MARKUP.search(v):
+            # Captions are plain Text: TeX here would reach the screen as its
+            # source, '$\frac{AB}{2}$' and all. Nothing in this component
+            # compiles maths (latex_strings() is empty), so refuse at rung 1
+            # rather than render it broken.
+            raise ValueError(
+                f"note {v!r} contains LaTeX markup, but notes are plain text "
+                "and GeometryConstruct compiles no maths; say it in words "
+                "('half of AB') or show the formula in an EquationDerivation beat"
+            )
+        return v.strip()
 
 
 class PointElement(_Element):
@@ -529,12 +545,12 @@ class GeometryConstruct(Component):
             {"shapes": [_pt("A", 0, 0), _pt("B", 1e-6, 0), _pt("C", 1, 0),
                         _pt("D", 0, 1),
                         {"kind": "polygon", "vertices": ["A", "B", "C", "D"]}]},
-            # (d) Maths-looking input. GeometryConstruct compiles no LaTeX
-            # (latex_strings() is empty): a caption full of TeX source, even
-            # malformed, is plain text and draws as typed.
+            # (d) Invalid LaTeX has no stress case: this component compiles no
+            # maths, and a caption carrying TeX markup is refused at rung 1
+            # (tests pin it). Symbols that are plain text draw as typed.
             {"shapes": [_pt("A", 0, 0), _pt("B", 1, 0)],
              "construction": [_circ("A", "B", "cA",
-                                    note=r"Radius $\frac{AB}{2}$ \unknown{")]},
+                                    note="r = |AB|, angle BAC = 60°, {} $ ^ _")]},
         ]
 
 

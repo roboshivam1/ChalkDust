@@ -246,3 +246,40 @@ class TestFailureTyping:
         with pytest.raises(pipeline.AssemblyFailed, match="ffmpeg failed: concat"):
             pipeline.render(path, cache_dir=tmp_path / "cache",
                             work_dir=tmp_path / "work")
+
+
+def _one_beat_spec(component: str, params: dict, **beat) -> dict:
+    return {"video_id": "one-beat", "beats": [
+        {"id": "b01", "component": component, "params": params,
+         "narration": "A short line of narration for a one beat video.", **beat}]}
+
+
+class TestValidateLadder:
+    """Rungs 1-3 in order, rung 3 with the render's own mechanical repair
+    (SCENE_SPEC.md §8, §9 step 1), all before speech."""
+
+    def test_mechanically_repairable_beat_passes_validation(
+            self, tmp_path, off_edge_beat, capsys):
+        # _OffEdge (conftest) draws its text 8 units right of centre: the
+        # geometric probe says out_of_bounds, and a nudge fixes it. The
+        # worker renders it repaired, so validation must not refuse it.
+        path = write_spec(tmp_path / "spec.json", _one_beat_spec(
+            off_edge_beat.spec.component, {"text": "Off the edge", "dx": 8.0}))
+
+        assert len(pipeline.validate(path, work_dir=tmp_path / "work").beats) == 1
+        assert "b01  repaired mechanically (out_of_bounds): mobject #0 " \
+            "nudged (" in capsys.readouterr().out
+
+    def test_refusal_carries_typed_findings_per_rung(self, tmp_path, fake_tts):
+        spec = example_spec()
+        spec["beats"][0]["params"]["title"] = "Supercalifragilisticexpialidocious " * 14
+        path = write_spec(tmp_path / "spec.json", spec)
+
+        with pytest.raises(pipeline.LayoutRefused) as exc:
+            pipeline.render(path, cache_dir=tmp_path / "cache",
+                            work_dir=tmp_path / "work")
+        assert [(r.beat_id, sorted(r.kinds())) for r in exc.value.reports] == \
+            [("b01", ["overflow"])]
+        assert str(exc.value).startswith(
+            "rung 3 (geometric, after mechanical repair) refused 1 beat(s): b01\n")
+        assert fake_tts.calls == []

@@ -51,7 +51,8 @@ from chalkdust.scenes.components.raw_scene import (
 from chalkdust.scenes.theme import get_theme
 from chalkdust.speech.base import TTSError
 from chalkdust.speech.tts import resolve_voice, synthesize_beat
-from chalkdust.validate.geometric import Report, validate_specs
+from chalkdust.validate.geometric import Report
+from chalkdust.validate.repair import RepairPlan, RepairResult, repair_beat
 from chalkdust.validate.semantic import validate_semantic
 
 DEFAULT_CACHE_DIR = Path(".cache")
@@ -70,14 +71,38 @@ class SpecInvalid(PipelineError):
     """Rung 1: the file is not a valid spec. Nothing ran."""
 
 
-class SemanticRefused(PipelineError):
+class RungRefused(PipelineError):
+    """A validation rung refused one or more beats.
+
+    Carries the typed findings, not just their text: `reports` holds one
+    Report per refused beat, each finding with the `kind` the repair loop
+    dispatches on (SCENE_SPEC.md §9). The message is the same reports,
+    printed one finding per line under a header naming the rung.
+    """
+
+    rung = ""
+
+    def __init__(self, reports: list[Report]) -> None:
+        self.reports = reports
+        beats = ", ".join(r.beat_id for r in reports)
+        header = f"rung {self.rung} refused {len(reports)} beat(s): {beats}"
+        super().__init__("\n".join([header, *(str(r) for r in reports)]))
+
+
+class SemanticRefused(RungRefused):
     """Rung 2: content no layout can carry -- narration too short for the
     animation or too long for one beat, more text than the regions hold, LaTeX
     that does not compile. Nothing was synthesised."""
 
+    rung = "2 (semantic)"
 
-class LayoutRefused(PipelineError):
-    """Rung 3: a component refused its content. Nothing was synthesised."""
+
+class LayoutRefused(RungRefused):
+    """Rung 3: a component refused its content, and bounded mechanical repair
+    (SCENE_SPEC.md §9 step 1) could not fix it. Nothing was synthesised. The
+    findings are the UNREPAIRED ones: a failed repair changes nothing."""
+
+    rung = "3 (geometric, after mechanical repair)"
 
 
 class SpeechFailed(PipelineError):
@@ -298,27 +323,55 @@ def check_semantics(spec: VideoSpec,
             registered.add(beat.registers)
     failed = [r for r in reports if not r.ok]
     if failed:
-        raise SemanticRefused("\n".join(str(r) for r in failed))
+        raise SemanticRefused(failed)
     return reports
 
 
+# Run time the geometric probe builds with before speech has run. Geometry
+# does not depend on run time; the render recomputes the plan at the measured
+# duration (worker.plan_repair), and that plan is the one in the key.
+PROBE_SECONDS = 8.0
+
+
+def describe_plan(plan: RepairPlan) -> str:
+    """A repair plan in words, for the operator: what the render will change."""
+    parts = []
+    if plan.wrap_scale != 1.0:
+        parts.append(f"text wrap width x{plan.wrap_scale:g}")
+    for index, fix in sorted(plan.fixes.items()):
+        moves = []
+        if fix.scale != 1.0:
+            moves.append(f"scaled x{fix.scale:.3f}")
+        if fix.dx or fix.dy:
+            moves.append(f"nudged ({fix.dx:+.2f}, {fix.dy:+.2f})")
+        parts.append(f"mobject #{index} {' and '.join(moves) or 'unchanged'}")
+    return "; ".join(parts)
+
+
 def check_layout(spec: VideoSpec,
-                 checked: list[CheckedBeat] | None = None) -> list[Report]:
-    """Rung 3 (geometric). Runs before speech, so the probe uses the
-    validator's placeholder duration: geometry does not depend on run time.
-    Beats are probed with their carried artifacts on screen, as rendered;
-    a RawScene beat is probed only as its fallback (CheckedBeat)."""
+                 checked: list[CheckedBeat] | None = None) -> list[RepairResult]:
+    """Rung 3 (geometric), with bounded mechanical repair (SCENE_SPEC.md §9
+    step 1) -- the same repair_beat the render worker applies, so a beat the
+    render would fix is not refused here, and a beat refused here is one the
+    render could not draw either.
+
+    Runs before speech, at PROBE_SECONDS. Beats are probed with their carried
+    artifacts on screen, as rendered; a RawScene beat is probed only as its
+    fallback (CheckedBeat). Only beats still failing after repair are refused,
+    with their unrepaired findings."""
     checked = checked if checked is not None else checked_beats(spec)
     probed = [c.spec for c in checked if c.geometric]
     # A degraded fallback drops its carry_in, so it is probed carrying nothing.
     recipes = carry_in_recipes(spec)
-    reports = validate_specs(
-        probed, theme=spec.theme,
-        recipes={s.id: recipes.get(s.id, ()) for s in probed if s.carry_in})
-    failed = [r for r in reports if not r.ok]
+    results = [
+        repair_beat(s, spec.theme, PROBE_SECONDS,
+                    recipes=recipes.get(s.id, ()) if s.carry_in else ())
+        for s in probed
+    ]
+    failed = [r.report for r in results if not r.ok]
     if failed:
-        raise LayoutRefused("\n".join(str(r) for r in failed))
-    return reports
+        raise LayoutRefused(failed)
+    return results
 
 
 @contextmanager
@@ -355,7 +408,14 @@ def validate(spec_path: Path, work_dir: Path = DEFAULT_WORK_DIR,
     # The semantic rung compiles LaTeX, which writes under Manim's media dir.
     with manim_scratch(work_dir, verbose):
         check_semantics(spec, checked)
-        check_layout(spec, checked)
+        for result in check_layout(spec, checked):
+            if result.repaired:
+                # Not a refusal, but the frame will differ from what the
+                # component drew: say what the render will change.
+                first = result.history[0]
+                print(f"  {result.beat_id}  repaired mechanically "
+                      f"({', '.join(sorted(first.kinds()))}): "
+                      f"{describe_plan(result.plan)}")
     return spec
 
 

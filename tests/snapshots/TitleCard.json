@@ -1,0 +1,257 @@
+{
+ "component": "TitleCard",
+ "manim_version": "0.21.0",
+ "reasons": [
+  "initial snapshot: seeded with the f4-layout-safety harness"
+ ],
+ "cases": [
+  {
+   "params": {
+    "title": "Why Hash Maps Degrade"
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "title card revealed",
+      "mobjects": [
+       {
+        "type": "Text",
+        "text": "Why Hash Maps Degrade",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 7.5
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "Text",
+        "text": "Why Hash Maps Degrade",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        9.919,
+        0.772
+       ],
+       "font_size": 60.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        9.919,
+        0.772
+       ],
+       "font_size": 60.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "kicker": "CS Fundamentals",
+    "title": "Binary Search",
+    "subtitle": "Halving the problem, every step"
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.667
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.667
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.667
+     },
+     {
+      "op": "settle",
+      "label": "title card revealed",
+      "mobjects": [
+       {
+        "type": "Text",
+        "text": "CS FUNDAMENTALS",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "Binary Search",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "Halving the problem, every step",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 5.0
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "Text",
+        "text": "CS FUNDAMENTALS",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "Binary Search",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "Halving the problem, every step",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        0.847,
+        3.219,
+        0.247
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.017,
+        5.487,
+        0.782
+       ],
+       "font_size": 60.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.964,
+        6.197,
+        0.412
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        0.847,
+        3.219,
+        0.247
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.017,
+        5.487,
+        0.782
+       ],
+       "font_size": 60.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.964,
+        6.197,
+        0.412
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ]
+   }
+  }
+ ]
+}

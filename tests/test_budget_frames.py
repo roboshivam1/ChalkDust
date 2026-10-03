@@ -46,9 +46,9 @@ class _PlayThenWait(Component):
         scene.wait(hold)
 
 
-def _scene(duration: float, fps: int) -> ChalkdustScene:
+def _scene(duration: float, fps: int, media_dir) -> ChalkdustScene:
     # The scene keeps the frame rate it was built under, as its camera does.
-    with tempconfig({"frame_rate": fps}):
+    with tempconfig({"frame_rate": fps, "media_dir": str(media_dir)}):
         return ChalkdustScene(_PlayThenWait({}), duration=duration)
 
 
@@ -102,17 +102,17 @@ def test_split_frames_gives_every_segment_a_frame():
 
 
 @pytest.mark.parametrize("fps", [DRAFT.frame_rate, FINAL.frame_rate])
-def test_budget_is_whole_frames_summing_to_the_beat(fps):
-    scene = _scene(3.879, fps)
+def test_budget_is_whole_frames_summing_to_the_beat(fps, tmp_path):
+    scene = _scene(3.879, fps, tmp_path)
     times = scene.budget(1, 0.75, 1, 0.5, 0.75)
     frames = [t * fps for t in times]
     assert all(f == pytest.approx(round(f), abs=1e-9) for f in frames)
     assert sum(round(f) for f in frames) == math.ceil(3.879 * fps)
 
 
-def test_budget_rejects_negative_weights():
+def test_budget_rejects_negative_weights(tmp_path):
     with pytest.raises(ValueError):
-        _scene(4.0, 15).budget(1, -1, 2)
+        _scene(4.0, 15, tmp_path).budget(1, -1, 2)
 
 
 # --- real renders -------------------------------------------------------------

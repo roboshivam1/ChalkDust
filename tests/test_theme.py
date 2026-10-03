@@ -8,6 +8,7 @@ from __future__ import annotations
 import dataclasses
 
 import pytest
+from manim import tempconfig
 
 from chalkdust.scenes import theme as theme_mod
 from chalkdust.scenes.regions import INVALID_LATEX, LayoutError
@@ -16,10 +17,10 @@ from chalkdust.scenes.theme import DEFAULT, math, resolve_fonts
 
 @pytest.mark.parametrize("bad", [r"\notacommand{x} = 1", r"\quad"],
                          ids=["compile-error", "renders-nothing"])
-def test_math_refuses_invalid_latex_as_one_kind(bad):
+def test_math_refuses_invalid_latex_as_one_kind(bad, tmp_path):
     # Every maths constructor refuses through refuse_invalid_latex, so the
     # repair loop sees one kind whichever component built the maths.
-    with pytest.raises(LayoutError) as exc:
+    with tempconfig({"media_dir": str(tmp_path)}), pytest.raises(LayoutError) as exc:
         math(bad, DEFAULT, what="label[7]")
     assert exc.value.kind == INVALID_LATEX
     assert "label[7]" in str(exc.value)

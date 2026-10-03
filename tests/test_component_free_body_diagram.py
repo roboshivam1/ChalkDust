@@ -2,20 +2,32 @@
 
 tests/test_layout.py already proves examples() validate clean and stress()
 fits or refuses cleanly. This file pins what is specific to this component:
-timing against a real renderer clock, the schema's refusals, the typed LaTeX
-failure, the magnitude clamp, side-by-side clustering, and the promise that a
-label never touches another force's arrow.
+timing in whole frames, the schema's refusals, the typed LaTeX failure, the
+magnitude clamp, side-by-side clustering, the promise that a label never
+touches another force's arrow, and the carry-in artifact.
 
 These tests compile LaTeX, so `latex` and `dvisvgm` must be on PATH.
 """
 
 from __future__ import annotations
 
+import json
+import math
+import subprocess
+
+import numpy as np
 import pytest
 from manim import Arrow, MathTex, tempconfig
 from pydantic import ValidationError
 
-from chalkdust.core.models import BeatSpec
+from chalkdust.continuity import (
+    ArtifactRecipe,
+    beat_component,
+    build_artifact,
+    carried,
+    resolve_carry_in,
+)
+from chalkdust.core.models import BeatSpec, Region, VideoSpec
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components import make_component
 from chalkdust.scenes.components.free_body_diagram import (
@@ -26,12 +38,21 @@ from chalkdust.scenes.components.free_body_diagram import (
     FreeBodyDiagram,
     _segment_hits_rect,
 )
-from chalkdust.scenes.regions import LayoutError, bbox
+from chalkdust.scenes.regions import LayoutError, bbox, region_rect
+from chalkdust.scenes.theme import DEFAULT
 from chalkdust.validate.geometric import LayoutProbe, validate_beat
 
 NAME = "FreeBodyDiagram"
 EXAMPLES = FreeBodyDiagram.examples()
 DRAFT_FPS = 15
+
+# The invalid-LaTeX labels stress() carries (as forces[1]); they refuse rather
+# than draw, so the drawing tests below leave those cases out.
+BAD_LATEX = (r"\frac{m", r"\notacommand{g}", r"\,")
+
+
+def _is_bad_latex(params: dict) -> bool:
+    return any(f["label"] in BAD_LATEX for f in params["forces"])
 
 
 def _spec(params: dict) -> BeatSpec:
@@ -55,23 +76,40 @@ def _parts(scene) -> tuple[list[Arrow], list[MathTex]]:
 # --- timing (D-002) -----------------------------------------------------------
 
 
+def _draft(tmp_path, **extra) -> dict:
+    return {"pixel_width": 854, "pixel_height": 480, "frame_rate": DRAFT_FPS,
+            "media_dir": str(tmp_path), "disable_caching": True,
+            "verbosity": "WARNING", "progress_bar": "none", **extra}
+
+
 @pytest.mark.parametrize("factor", [0.5, 3.0], ids=["short", "long"])
 @pytest.mark.parametrize("params", EXAMPLES, ids=[f"ex{i}" for i in range(len(EXAMPLES))])
-def test_timing_consumes_budget_exactly(params, factor, tmp_path):
+def test_timing_renders_exactly_the_beats_frames(params, factor, tmp_path):
     # Narration far shorter and far longer than the animation wants: either
-    # way the beat must last exactly as long as its audio. Measured on the
-    # renderer's own clock at draft frame rate, because Manim rounds every
-    # segment to whole frames and that rounding is what drifts.
+    # way the beat lasts exactly ceil(audio * fps) frames (D-002). Counted on
+    # the renderer's own clock, which advances one frame time per frame it
+    # renders, at draft frame rate (dry run: nothing is encoded).
     budget = make_component(NAME, params).min_seconds() * factor
-    settings = {"dry_run": True, "pixel_width": 160, "pixel_height": 90,
-                "frame_rate": DRAFT_FPS, "media_dir": str(tmp_path),
-                "disable_caching": True, "verbosity": "WARNING",
-                "progress_bar": "none"}
-    with tempconfig(settings):
+    with tempconfig(_draft(tmp_path, dry_run=True)):
         scene = ChalkdustScene(make_component(NAME, params), duration=budget)
         scene.render()
-        elapsed = scene.renderer.time
-    assert elapsed == pytest.approx(budget, abs=1 / DRAFT_FPS)
+    frames = scene.renderer.time * DRAFT_FPS
+    assert frames == pytest.approx(round(frames), abs=1e-6)
+    assert round(frames) == scene.beat_frames == math.ceil(round(budget * DRAFT_FPS, 6))
+
+
+def test_draft_render_has_exactly_the_beats_frames(tmp_path):
+    # One real encode, counted by ffprobe: 5.03 s of audio at 15 fps is
+    # ceil(75.45) = 76 frames, however the six segments split them.
+    with tempconfig(_draft(tmp_path, output_file="fbd_frames")):
+        scene = ChalkdustScene(make_component(NAME, EXAMPLES[0]), duration=5.03)
+        scene.render()
+        movie = scene.renderer.file_writer.movie_file_path
+    out = subprocess.run(
+        ["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
+         "-show_entries", "stream=nb_read_frames", "-of", "json", str(movie)],
+        capture_output=True, text=True, check=True).stdout
+    assert int(json.loads(out)["streams"][0]["nb_read_frames"]) == 76
 
 
 def test_min_seconds_is_sum_of_segment_minimums():
@@ -122,15 +160,16 @@ def test_magnitude_defaults_to_equal_arrows():
 # --- typed LaTeX failure -----------------------------------------------------------
 
 
-@pytest.mark.parametrize("bad", [r"\frac{m", r"\notacommand{g}", r"\,"],
-                         ids=["unclosed-brace", "undefined-command", "draws-nothing"])
-def test_invalid_latex_is_a_typed_refusal(bad):
-    params = {"body": "m", "forces": [{"label": "N", "angle": 90},
-                                      {"label": bad, "angle": 270}]}
+@pytest.mark.parametrize(
+    "params", [p for p in FreeBodyDiagram.stress() if _is_bad_latex(p)],
+    ids=["unclosed-brace", "undefined-command", "draws-nothing"])
+def test_invalid_latex_is_a_typed_refusal(params):
+    # theme.math is the one LaTeX path: a label that does not compile, or
+    # compiles to nothing, refuses as invalid_latex naming its spec field.
     with pytest.raises(LayoutError) as exc:
         _probe(params)
     assert exc.value.kind == "invalid_latex"
-    assert "forces[1]" in str(exc.value)
+    assert "forces[1].label" in str(exc.value)
     # And the probe reports it as that kind, not as a crash.
     assert validate_beat(_spec(params)).kinds() == {"invalid_latex"}
 
@@ -195,7 +234,8 @@ def test_directions_either_side_of_zero_cluster_together():
 def _fixtures_that_fit():
     out = [pytest.param(p, id=f"ex{i}") for i, p in enumerate(EXAMPLES)]
     for i, p in enumerate(FreeBodyDiagram.stress()):
-        out.append(pytest.param(p, id=f"stress{i}"))
+        if not _is_bad_latex(p):
+            out.append(pytest.param(p, id=f"stress{i}"))
     return out
 
 
@@ -224,3 +264,51 @@ def test_triple_volume_refuses_as_overflow():
     with pytest.raises(LayoutError) as exc:
         _probe(FreeBodyDiagram.stress()[0])
     assert exc.value.kind == "overflow"
+
+
+# --- carry-in artifact (SCENE_SPEC.md §6) ---------------------------------------------
+
+
+def _recipe(params: dict) -> ArtifactRecipe:
+    return ArtifactRecipe(name="fbd", producer=NAME, params=params)
+
+
+def test_artifact_rebuild_is_deterministic():
+    a, b = (build_artifact(_recipe(EXAMPLES[0]), DEFAULT) for _ in range(2))
+    pa = [m.points for m in a.family_members_with_points()]
+    pb = [m.points for m in b.family_members_with_points()]
+    assert len(pa) == len(pb) > 0
+    assert all(np.array_equal(x, y) for x, y in zip(pa, pb))
+
+
+def test_carried_artifact_is_the_settled_diagram():
+    # A later beat carrying the diagram in sees the picture this beat ended
+    # on: the same body, arrows and labels, in the same place on the stage.
+    params = EXAMPLES[2]
+    video = VideoSpec(video_id="v", beats=(
+        BeatSpec(id="b01", narration="placeholder narration", component=NAME,
+                 params=params, registers="fbd"),
+        BeatSpec(id="b02", narration="placeholder narration",
+                 component="BulletReveal", params={"items": ["one point"]},
+                 carry_in=["fbd"]),
+    ))
+    recipes = resolve_carry_in(video)["b02"]
+    assert recipes == (_recipe(params),)
+
+    consumer = LayoutProbe(beat_component(video.beats[1], recipes), duration=4.0)
+    consumer.construct()
+    artifact = carried(consumer, "fbd")
+    assert region_rect(Region.STAGE).contains(bbox(artifact))
+
+    settled = {m._chalk_label: m for m in _probe(params).mobjects
+               if any(sm.has_points() for sm in m.get_family())}
+    parts = {m._chalk_label: m for m in artifact.submobjects}
+    assert parts.keys() == settled.keys()
+    for name, want in settled.items():
+        g, w = bbox(parts[name]), bbox(want)
+        assert (g.x, g.y, g.width, g.height) == pytest.approx(
+            (w.x, w.y, w.width, w.height), abs=1e-6), name
+
+    # And the consuming beat validates clean with it on screen.
+    report = validate_beat(video.beats[1], duration=4.0, recipes=recipes)
+    assert report.ok, f"\n{report}"

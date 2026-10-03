@@ -33,10 +33,11 @@ import math as pymath
 from typing import Annotated
 
 import numpy as np
-from manim import FadeIn, GrowArrow, MathTex, Rectangle, VGroup
+from manim import FadeIn, GrowArrow, MathTex, Mobject, Rectangle, VGroup
 from manim import Arrow as ManimArrow
 from pydantic import Field, StringConstraints
 
+from chalkdust.continuity import artifact_builder
 from chalkdust.core.models import Region
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import (
@@ -136,55 +137,7 @@ class FreeBodyDiagram(Component):
     # --- build ---------------------------------------------------------------
 
     def build(self, scene: ChalkdustScene) -> None:
-        p: FreeBodyDiagramParams = self.params
-        theme = scene.theme
-        cap = body_cap_height(theme)
-
-        dirs = [_unit(f.angle) for f in p.forces]
-        bases = _cluster_bases([f.angle for f in p.forces], cap * PARALLEL_GAP)
-
-        # The box: big enough for its name, and large enough on each axis that
-        # every clustered arrow's base sits on the face.
-        name = body_text(wrap(p.body, NAME_WRAP), theme)
-        reach_x = 2 * max(abs(b[0]) for b in bases) / FACE_USE
-        reach_y = 2 * max(abs(b[1]) for b in bases) / FACE_USE
-        box = Rectangle(
-            width=max(cap * BODY_MIN_SIDE, reach_x, name.width + 2 * cap * BODY_PAD),
-            height=max(cap * BODY_MIN_SIDE, reach_y, name.height + 2 * cap * BODY_PAD),
-            color=theme.palette.fg,
-            fill_color=theme.palette.muted,
-            fill_opacity=0.2,
-        )
-        name.move_to(box)
-        body = label(VGroup(box, name), "body")
-
-        # Arrows: base on the box edge, length from magnitude with the clamp.
-        centre = box.get_center()
-        half = np.array([box.width / 2, box.height / 2, 0.0])
-        biggest = max(f.magnitude for f in p.forces)
-        arrows, segments = [], []
-        for i, (f, d, base) in enumerate(zip(p.forces, dirs, bases)):
-            length = cap * ARROW_MAX * max(ARROW_MIN_FRACTION, f.magnitude / biggest)
-            start = centre + base + d * _exit_distance(base, d, half)
-            end = start + d * length
-            arrows.append(label(
-                ManimArrow(start, end, buff=0, color=theme.palette.accent,
-                           tip_length=cap * TIP_LENGTH,
-                           max_tip_length_to_length_ratio=TIP_RATIO_CAP,
-                           max_stroke_width_to_length_ratio=NO_THINNING),
-                f"force[{i}]"))
-            segments.append((start, end))
-
-        # Labels, placed after every arrow exists so no later arrow can cross
-        # an already-placed label.
-        obstacles = [bbox(body)]
-        labels = []
-        for i, (f, d) in enumerate(zip(p.forces, dirs)):
-            tex = _label_tex(i, f.label, theme)
-            others = [s for j, s in enumerate(segments) if j != i]
-            _place_label(tex, segments[i][1], d, cap, obstacles, others)
-            obstacles.append(bbox(tex))
-            labels.append(tex)
+        body, arrows, labels = _diagram(self.params, scene.theme)
 
         # One fit for everything, so arrows, labels and body scale together and
         # keep their relationships. Raises LayoutError (overflow) when the
@@ -198,13 +151,14 @@ class FreeBodyDiagram(Component):
         # spans space its line never touches.
         scene.exclusive(body, *labels)
 
-        ends = iter(np.cumsum(scene.budget(*self._segments())))
-        scene.play(FadeIn(body), run_time=_until(scene, next(ends)))
+        # budget() hands out whole frames summing exactly to the beat (D-002).
+        times = iter(scene.budget(*self._segments()))
+        scene.play(FadeIn(body), run_time=next(times))
         scene.settle("body")
         for i, (arrow, tex) in enumerate(zip(arrows, labels)):
-            scene.play(GrowArrow(arrow), FadeIn(tex), run_time=_until(scene, next(ends)))
+            scene.play(GrowArrow(arrow), FadeIn(tex), run_time=next(times))
             scene.settle(f"force {i}")
-        scene.wait(_until(scene, next(ends)))
+        scene.wait(next(times))
 
     # --- fixtures ------------------------------------------------------------
 
@@ -234,9 +188,6 @@ class FreeBodyDiagram(Component):
 
     @classmethod
     def stress(cls):
-        # Invalid LaTeX is pinned in tests/test_component_free_body_diagram.py
-        # rather than here: it refuses with kind "invalid_latex", which the
-        # registry-wide stress test does not (yet) count as a clean refusal.
         return [
             # 3x realistic volume: the schema maximum of forces with long
             # labels, several crowded into near-identical directions, and a
@@ -269,28 +220,86 @@ class FreeBodyDiagram(Component):
              "forces": [{"label": "F_a", "angle": 355},
                         {"label": "F_b", "angle": 5},
                         {"label": "F_c", "angle": -360}]},
+            # Invalid LaTeX in the second label -- an unclosed brace, an
+            # undefined command, and LaTeX that compiles but draws nothing.
+            # Each refuses as "invalid_latex" naming forces[1].label.
+            *({"body": "m",
+               "forces": [{"label": "N", "angle": 90},
+                          {"label": bad, "angle": 270}]}
+              for bad in (r"\frac{m", r"\notacommand{g}", r"\,")),
         ]
 
 
-# --- timing helper ------------------------------------------------------------
+# --- the settled visual -----------------------------------------------------------
 
 
-def _until(scene: ChalkdustScene, end: float) -> float:
-    """Run time that brings the scene's clock to `end` seconds into the beat.
+def _diagram(p: FreeBodyDiagramParams, theme: Theme
+             ) -> tuple[Mobject, list[ManimArrow], list[MathTex]]:
+    """The finished diagram's parts -- body, one arrow per force, one label per
+    force -- laid out relative to each other but not yet fitted or placed.
 
-    Manim renders whole frames: each play() rounds its run time UP to a frame
-    and each wait() rounds DOWN, so passing budget() times straight through
-    drifts by up to a frame per segment -- several frames over a beat with
-    many forces, enough to put the cut out of step with the audio (D-002).
-    Aiming every segment at its cumulative end time, measured against the
-    renderer's own clock, keeps the error to the last frame alone. (The layout
-    probe never advances that clock and ignores run times, so there the values
-    are cumulative and harmless.)
-
-    The floor only matters for narration so short that a segment is under a
-    frame; the beat then runs long by those frames rather than crashing.
+    A pure function of params and theme, shared by build() and the carry-in
+    artifact builder, so a later beat's carried copy is the very picture this
+    beat settled on (SCENE_SPEC.md §6).
     """
-    return max(end - scene.renderer.time, 1e-3)
+    cap = body_cap_height(theme)
+
+    dirs = [_unit(f.angle) for f in p.forces]
+    bases = _cluster_bases([f.angle for f in p.forces], cap * PARALLEL_GAP)
+
+    # The box: big enough for its name, and large enough on each axis that
+    # every clustered arrow's base sits on the face.
+    name = body_text(wrap(p.body, NAME_WRAP), theme)
+    reach_x = 2 * max(abs(b[0]) for b in bases) / FACE_USE
+    reach_y = 2 * max(abs(b[1]) for b in bases) / FACE_USE
+    box = Rectangle(
+        width=max(cap * BODY_MIN_SIDE, reach_x, name.width + 2 * cap * BODY_PAD),
+        height=max(cap * BODY_MIN_SIDE, reach_y, name.height + 2 * cap * BODY_PAD),
+        color=theme.palette.fg,
+        fill_color=theme.palette.muted,
+        fill_opacity=0.2,
+    )
+    name.move_to(box)
+    body = label(VGroup(box, name), "body")
+
+    # Arrows: base on the box edge, length from magnitude with the clamp.
+    centre = box.get_center()
+    half = np.array([box.width / 2, box.height / 2, 0.0])
+    biggest = max(f.magnitude for f in p.forces)
+    arrows, segments = [], []
+    for i, (f, d, base) in enumerate(zip(p.forces, dirs, bases)):
+        length = cap * ARROW_MAX * max(ARROW_MIN_FRACTION, f.magnitude / biggest)
+        start = centre + base + d * _exit_distance(base, d, half)
+        end = start + d * length
+        arrows.append(label(
+            ManimArrow(start, end, buff=0, color=theme.palette.accent,
+                       tip_length=cap * TIP_LENGTH,
+                       max_tip_length_to_length_ratio=TIP_RATIO_CAP,
+                       max_stroke_width_to_length_ratio=NO_THINNING),
+            f"force[{i}]"))
+        segments.append((start, end))
+
+    # Labels, placed after every arrow exists so no later arrow can cross an
+    # already-placed label. theme.math refuses bad LaTeX (or LaTeX that draws
+    # nothing) as LayoutError kind "invalid_latex", naming the force.
+    obstacles = [bbox(body)]
+    labels = []
+    for i, (f, d) in enumerate(zip(p.forces, dirs)):
+        tex = label(math(f.label, theme, size=theme.type.body,
+                         what=f"forces[{i}].label"), f"label[{i}]")
+        others = [s for j, s in enumerate(segments) if j != i]
+        _place_label(tex, segments[i][1], d, cap, obstacles, others)
+        obstacles.append(bbox(tex))
+        labels.append(tex)
+    return body, arrows, labels
+
+
+@artifact_builder("FreeBodyDiagram")
+def _artifact(params: FreeBodyDiagramParams, theme: Theme) -> Mobject:
+    """The settled diagram for a later beat's carry_in (SCENE_SPEC.md §6):
+    body, every arrow and every label, unplaced -- CarryIn fits and dims it."""
+    body, arrows, labels = _diagram(params, theme)
+    return VGroup(body, *arrows, *labels)
 
 
 # --- geometry helpers -----------------------------------------------------------
@@ -352,30 +361,6 @@ def _exit_distance(inside: np.ndarray, d: np.ndarray, half: np.ndarray) -> float
     ts = [(np.sign(d[k]) * half[k] - inside[k]) / d[k]
           for k in (0, 1) if abs(d[k]) > 1e-9]
     return min(ts)
-
-
-def _label_tex(i: int, source: str, theme: Theme) -> MathTex:
-    """Compile one force label through the theme's maths constructor.
-
-    Manim reports a LaTeX failure as a bare ValueError from deep inside its
-    compile step. Converting it here gives the repair loop a typed refusal it
-    can dispatch on (regenerate the spec) instead of a crash -- the same kind
-    EquationDerivation raises.
-    """
-    try:
-        tex = math(source, theme, size=theme.type.body)
-    except ValueError as exc:
-        raise LayoutError(
-            f"forces[{i}].label is not valid LaTeX: {source!r} ({exc})",
-            kind="invalid_latex",
-        ) from exc
-    if tex.width == 0 and tex.height == 0:
-        # Compiles, draws nothing (e.g. only spacing commands): an unlabelled
-        # arrow the narration cannot point at.
-        raise LayoutError(
-            f"forces[{i}].label renders nothing: {source!r}", kind="invalid_latex"
-        )
-    return label(tex, f"label[{i}]")
 
 
 def _place_label(tex: MathTex, tip: np.ndarray, d: np.ndarray, cap: float,

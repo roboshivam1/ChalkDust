@@ -7,7 +7,6 @@ probe; these pin the behaviour specific to this component.
 from __future__ import annotations
 
 import json
-import math
 import re
 import subprocess
 from dataclasses import asdict
@@ -26,7 +25,7 @@ from chalkdust.continuity import (
 )
 from chalkdust.core.models import BeatSpec, Quality, Region, VideoSpec
 from chalkdust.render.worker import TIERS
-from chalkdust.scenes.base import ChalkdustScene
+from chalkdust.scenes.base import ChalkdustScene, frames_covering
 from chalkdust.scenes.components.geometry_construct import (
     HOLD_MIN,
     INTRO_MIN,
@@ -97,17 +96,18 @@ def _clocked(params, duration, tmp_path) -> _FrameClock:
 @pytest.mark.parametrize("index", range(len(GeometryConstruct.examples())))
 def test_frames_equal_beat_frames(index, factor, tmp_path):
     # Narration far shorter and far longer than the build wants: either way
-    # the beat lasts exactly ceil(audio * fps) frames, every one from budget().
+    # the beat lasts exactly ceil(audio * fps) frames (frames_covering: float
+    # noise like 33.8 * 15 = 507.00000000000006 is not a frame), all budget()ed.
     params = GeometryConstruct.examples()[index]
     budget = GeometryConstruct(params).min_seconds() * factor
     scene = _clocked(params, budget, tmp_path)
-    assert scene.frames == scene.beat_frames == math.ceil(budget * FPS)
+    assert scene.frames == scene.beat_frames == frames_covering(budget, FPS)
 
 
 def test_frames_equal_beat_frames_for_a_lone_point(tmp_path):
     # Minimal input: no given figure, one step -- no intro play.
     scene = _clocked({"construction": [_pt("A", 0, 0)]}, 0.4, tmp_path)
-    assert scene.frames == scene.beat_frames == math.ceil(0.4 * FPS)
+    assert scene.frames == scene.beat_frames == frames_covering(0.4, FPS)
 
 
 def test_draft_render_is_exactly_the_beat(tmp_path):
@@ -126,7 +126,7 @@ def test_draft_render_is_exactly_the_beat(tmp_path):
          "-show_entries", "stream=nb_read_frames", "-of", "json", str(movie)],
         capture_output=True, text=True, check=True).stdout
     frames = int(json.loads(out)["streams"][0]["nb_read_frames"])
-    assert frames == math.ceil(audio * FPS)
+    assert frames == frames_covering(audio, FPS)
 
 
 def test_min_seconds_is_sum_of_step_minimums():

@@ -218,9 +218,28 @@ def test_probe_matches_real_draft_render(tmp_path):
         assert getattr(real_by_name[name], "_chalk_font_size", None) == pytest.approx(
             getattr(probed, "_chalk_font_size", None)), name
 
-    # Manim quantises every play()/wait() to whole frames, so a real render can
-    # differ from the budget by up to one frame per timed segment. Closing that
-    # gap is the mux stage's job; bound it here so it can never grow beyond
-    # quantisation.
-    segments = len(make_component(NAME, params)._segments())
-    assert scene.renderer.time == pytest.approx(duration, abs=segments / DRAFT_FPS)
+    # Same one-frame bound as test_real_render_consumes_budget_within_one_frame.
+    assert abs(scene.renderer.time - duration) <= 1 / DRAFT_FPS
+
+
+@pytest.mark.parametrize("factor", [0.5, 3.0], ids=["short", "long"])
+def test_real_render_consumes_budget_within_one_frame(tmp_path, factor):
+    """_Clock sums the run times build() asks for, which equal the budget by
+    construction. This renders for real at 480p15 and reads the elapsed time
+    Manim actually wrote, at narration far shorter and far longer than the
+    answer wants.
+
+    Manim quantises each play() up and a frozen wait() down to whole frames,
+    so for an arbitrary budget the total can drift by more than a frame. That
+    is scene.budget's concern, shared by every component, not this one's. At
+    these budgets it lands within one.
+    """
+    params = EXAMPLES[0]
+    budget = make_component(NAME, params).min_seconds() * factor
+    with tempconfig({"media_dir": str(tmp_path), "pixel_width": 854,
+                     "pixel_height": 480, "frame_rate": DRAFT_FPS,
+                     "disable_caching": True, "progress_bar": "none",
+                     "verbosity": "WARNING", "output_file": f"budget_{factor}"}):
+        scene = ChalkdustScene(make_component(NAME, params), duration=budget)
+        scene.render()
+    assert abs(scene.renderer.time - budget) <= 1 / DRAFT_FPS

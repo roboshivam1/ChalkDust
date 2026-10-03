@@ -17,12 +17,18 @@ refuses (SCENE_SPEC.md §11.1).
 All text is Pango (theme constructors), never LaTeX. Number-line labels are
 short ("+3", "x < 5", "start") and Unicode covers them, so this component has
 no LaTeX compile cost and no invalid-LaTeX failure mode.
+
+Timing comes from scene.budget() alone: one whole-frame run time per phase,
+summing to exactly the beat's frames (base.py). The settled picture is also
+rebuilt for a later beat's carry_in (SCENE_SPEC.md §6) by the artifact
+builder at the bottom of this module, from the same composition build() uses.
 """
 
 from __future__ import annotations
 
 import math
-from typing import Literal
+from dataclasses import dataclass
+from typing import Annotated, Literal
 
 import numpy as np
 from manim import (
@@ -40,10 +46,10 @@ from manim import (
     NumberLine,
     VGroup,
     VMobject,
-    config,
 )
-from pydantic import Field, model_validator
+from pydantic import Field, FiniteFloat, StringConstraints, model_validator
 
+from chalkdust.continuity import artifact_builder
 from chalkdust.core.models import Region
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import (
@@ -61,12 +67,24 @@ from chalkdust.scenes.regions import (
     fit_to_region,
     region_rect,
 )
-from chalkdust.scenes.theme import body_text, caption_text
+from chalkdust.scenes.theme import Theme, body_text, caption_text
 
 # Density limits that fire at schema validation, where the error points at
 # the real fix (split the beat) rather than at a font size.
 MAX_STEPS = 8
 MAX_TICKS = 40
+# Numbers a tick label can show and Manim can place. Past about 1e15 Manim's
+# NumberLine collapses to a point (unit size 0.0 at 1e20), and long before
+# that a tick number stops being something a viewer reads; a walk among
+# billions is told in scaled units ("3" with the label "3 million").
+MAX_MAGNITUDE = 1e9
+# Tick numbers are written with at most this many decimals, so a finer tick
+# step would print neighbouring ticks identically.
+MAX_DECIMALS = 6
+MIN_TICK_STEP = 10.0 ** -MAX_DECIMALS
+# The tick step must also be a resolvable fraction of the numbers it labels,
+# or [1e9, 1e9 + 1e-3] would ask floats for digits they do not carry.
+MIN_TICK_RESOLUTION = 1e-9
 # Auto tick spacing. A walk over an integer range of up to UNIT_TICK_SPAN
 # gets unit ticks -- discrete stepping is counted in ones, [-10, 10] included.
 # Anything else gets a 1/2/5 step aiming at about TARGET_TICKS intervals.
@@ -108,28 +126,33 @@ ENDPOINT_RADIUS = 0.09
 INTERVAL_STROKE = 8
 
 
+# A label is optional, but a present one must say something: a blank label
+# is a text mobject with no glyphs, which nothing downstream can measure.
+NonBlank = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+
+
 class MarkStep(ComponentParams):
     """Place the walker on a value. A walk must begin with one."""
 
-    at: float
-    label: str | None = None
+    at: FiniteFloat
+    label: NonBlank | None = None
 
 
 class JumpStep(ComponentParams):
     """Jump from the walker's position to `to`. The label defaults to the
     signed distance ("+5", "−2"), which is what a stepping beat narrates."""
 
-    to: float
-    label: str | None = None
+    to: FiniteFloat
+    label: NonBlank | None = None
 
 
 class IntervalStep(ComponentParams):
     """Highlight a span. A null end is unbounded (drawn to the line's end with
     an arrow); `closed` defaults to closed at every finite end."""
 
-    interval: tuple[float | None, float | None]
+    interval: tuple[FiniteFloat | None, FiniteFloat | None]
     closed: tuple[bool, bool] | None = None
-    label: str | None = None
+    label: NonBlank | None = None
 
     def is_closed(self) -> tuple[bool, bool]:
         if self.closed is not None:
@@ -145,7 +168,9 @@ class NumberLineWalkParams(ComponentParams):
     # [min, max] or [min, max, tick]. Ticks sit at multiples of the tick step;
     # omitted, a 1/2/5 step is chosen. Never a coordinate: these are values
     # on the line, the component decides where the line goes.
-    range: tuple[float, float] | tuple[float, float, float]
+    # FiniteFloat: inf and nan are refused here, never handed to log10.
+    range: (tuple[FiniteFloat, FiniteFloat]
+            | tuple[FiniteFloat, FiniteFloat, FiniteFloat])
     steps: list[Step] = Field(min_length=1, max_length=MAX_STEPS)
 
     @model_validator(mode="after")
@@ -153,12 +178,36 @@ class NumberLineWalkParams(ComponentParams):
         lo, hi = self.range[0], self.range[1]
         if not lo < hi:
             raise ValueError(f"range min {lo} must be below max {hi}")
-        ticks = tick_values(self.range)
-        if len(ticks) < 2:
-            raise ValueError("the tick step leaves fewer than two ticks on the line")
-        if len(ticks) > MAX_TICKS + 1:
+        if max(abs(lo), abs(hi)) > MAX_MAGNITUDE:
             raise ValueError(
-                f"{len(ticks)} ticks (max {MAX_TICKS + 1}); use a larger tick step"
+                f"range [{lo}, {hi}] reaches past ±{MAX_MAGNITUDE:g}; draw the "
+                "walk in scaled units and name the unit in a label"
+            )
+        # Never true inside MAX_MAGNITUDE; kept so the span is checked on its
+        # own terms (it is what every later division is by).
+        if not math.isfinite(hi - lo):
+            raise ValueError(f"range [{lo}, {hi}] spans more than a float holds")
+        step = tick_step(self.range)
+        if not step > 0:
+            raise ValueError(f"tick step {step:g} must be positive")
+        if step < MIN_TICK_STEP:
+            raise ValueError(
+                f"tick step {step:g} is finer than {MIN_TICK_STEP:g}; tick "
+                f"numbers are written to {MAX_DECIMALS} decimals"
+            )
+        # Counted arithmetically, before any list is built: a tiny explicit
+        # step must be refused here, not by allocating its ticks.
+        count = tick_count(self.range)
+        if count < 2:
+            raise ValueError("the tick step leaves fewer than two ticks on the line")
+        if count > MAX_TICKS + 1:
+            raise ValueError(
+                f"{count} ticks (max {MAX_TICKS + 1}); use a larger tick step"
+            )
+        if step < MIN_TICK_RESOLUTION * max(abs(lo), abs(hi)):
+            raise ValueError(
+                f"tick step {step:g} is too fine for numbers as large as "
+                f"{max(abs(lo), abs(hi)):g}; shift the range to start near zero"
             )
 
         def inside(v: float, what: str) -> None:
@@ -195,14 +244,36 @@ class NumberLineWalkParams(ComponentParams):
         return self
 
 
-def tick_values(rng: tuple[float, ...]) -> list[float]:
-    """Tick positions: multiples of the tick step inside [min, max]."""
+def tick_step(rng: tuple[float, ...]) -> float:
+    """The explicit tick step, or the automatic one for [min, max]."""
+    return rng[2] if len(rng) == 3 else _auto_step(rng[0], rng[1])
+
+
+def _tick_bounds(rng: tuple[float, ...]) -> tuple[float, int, int]:
+    """(step, first, last): the ticks are k * step for k in first..last."""
     lo, hi = rng[0], rng[1]
-    step = rng[2] if len(rng) == 3 else _auto_step(lo, hi)
-    if step <= 0:
-        return []
+    step = tick_step(rng)
+    if not step > 0:
+        return step, 0, -1
     first = math.ceil(lo / step - 1e-9)
     last = math.floor(hi / step + 1e-9)
+    return step, first, last
+
+
+def tick_count(rng: tuple[float, ...]) -> int:
+    """How many ticks tick_values() would return, without building them.
+
+    Only for a step the params model has bounded (MIN_TICK_STEP and
+    MIN_TICK_RESOLUTION), which keeps min/step and max/step finite."""
+    _, first, last = _tick_bounds(rng)
+    return max(0, last - first + 1)
+
+
+def tick_values(rng: tuple[float, ...]) -> list[float]:
+    """Tick positions: multiples of the tick step inside [min, max].
+
+    Only for a range the params model accepted, so the count is bounded."""
+    step, first, last = _tick_bounds(rng)
     return [k * step for k in range(first, last + 1)]
 
 
@@ -215,6 +286,10 @@ def _auto_step(lo: float, hi: float) -> float:
 
 
 def _nice_step(raw: float) -> float:
+    if not raw > 0:
+        # A span so small it underflows (e.g. [0, 5e-324]); the params model
+        # refuses any step below MIN_TICK_STEP.
+        return 0.0
     mag = 10 ** math.floor(math.log10(raw))
     for m in (1, 2, 5, 10):
         if m * mag >= raw - 1e-12:
@@ -223,13 +298,37 @@ def _nice_step(raw: float) -> float:
 
 
 def _fmt(v: float) -> str:
-    """A tick number as a reader writes it: no '.0', a true minus sign."""
-    s = str(int(round(v))) if abs(v - round(v)) < 1e-9 else f"{v:.6g}"
+    """A number as a reader writes it: positional (never "1e+09"), no '.0',
+    the fewest decimals (at most MAX_DECIMALS) that write it, a true minus.
+
+    `%g` wrote neighbouring ticks of a large range identically ("1e+09" for
+    both 1000000000 and 1000000000.1)."""
+    tol = 1e-12 * max(1.0, abs(v))   # float error from k * step, not content
+    for d in range(MAX_DECIMALS + 1):
+        if abs(round(v, d) - v) <= tol:
+            break
+    s = f"{v:.{d}f}"
+    if float(s) == 0:
+        s = "0"                      # never "-0" or "-0.000000"
     return s.replace("-", "−")
 
 
 def _signed(delta: float) -> str:
     return ("+" if delta > 0 else "−") + _fmt(abs(delta))
+
+
+@dataclass
+class _Composition:
+    """The laid-out walk: what build() animates and settled() returns."""
+
+    line: NumberLine
+    axis: VGroup
+    tick_labels: VGroup
+    arcs: dict[int, VMobject]
+    paths: dict[int, VMobject]     # the bare arcs the walker rides; never drawn
+    labels: dict[int, VMobject]
+    visuals: dict[int, list[VMobject]]
+    walker: Dot | None
 
 
 @register
@@ -258,7 +357,50 @@ class NumberLineWalk(Component):
 
     def build(self, scene: ChalkdustScene) -> None:
         p: NumberLineWalkParams = self.params
-        theme = scene.theme
+        weights = self._weights()
+        if scene.beat_frames < len(weights):
+            # budget() gives every phase at least one frame, so a beat with
+            # fewer frames than phases would overrun its audio. The semantic
+            # rung refuses such narration first (min_seconds); this keeps the
+            # component honest if it is ever handed one directly.
+            raise LayoutError(
+                f"{scene.beat_duration:.3f} s is {scene.beat_frames} frames at "
+                f"{scene.fps:g} fps, fewer than the walk's {len(weights)} "
+                "phases; lengthen the narration or split this beat.",
+                kind="overflow",
+            )
+        c = self._compose(scene.theme)
+        scene.exclusive(c.tick_labels, *c.labels.values())
+        times = scene.budget(*weights)
+
+        scene.play(Create(c.axis), FadeIn(c.tick_labels), run_time=times[0])
+        walker_shown = False
+        for i, (step, t) in enumerate(zip(p.steps, times[1:-1])):
+            anims = []
+            if isinstance(step, MarkStep):
+                if walker_shown:
+                    anims.append(c.walker.animate.move_to(c.line.n2p(step.at)))
+                else:
+                    anims.append(FadeIn(c.walker, scale=0.5))
+                    walker_shown = True
+            elif isinstance(step, JumpStep):
+                anims += [Create(c.arcs[i]), MoveAlongPath(c.walker, c.paths[i])]
+            else:
+                anims += [Create(c.visuals[i][0]),
+                          *(FadeIn(m) for m in c.visuals[i][1:])]
+            if i in c.labels:
+                anims.append(FadeIn(c.labels[i]))
+            scene.play(*anims, run_time=t)
+
+        scene.settle("walk complete")
+        scene.wait(times[-1])
+
+    def _compose(self, theme: Theme) -> _Composition:
+        """Lay out the whole walk, settled, fitted to STAGE, on no scene.
+
+        A pure function of the params and the theme: build() animates it, and
+        the carry-in builder rebuilds the same picture for a later beat."""
+        p: NumberLineWalkParams = self.params
         lo, hi = p.range[0], p.range[1]
 
         inner = region_rect(Region.STAGE).inset(DEFAULT_PADDING)
@@ -337,30 +479,26 @@ class NumberLineWalk(Component):
             everything.add(walker)
             walker.set_z_index(1)  # rides on top of arcs and intervals
         fit_to_region(everything, Region.STAGE)
+        return _Composition(line, axis, tick_labels, arcs, paths, labels,
+                            visuals, walker)
 
-        scene.exclusive(tick_labels, *labels.values())
-        times = _frame_times(scene, self._weights())
-
-        scene.play(Create(axis), FadeIn(tick_labels), run_time=times[0])
-        walker_shown = False
-        for i, (step, t) in enumerate(zip(p.steps, times[1:-1])):
-            anims = []
-            if isinstance(step, MarkStep):
-                if walker_shown:
-                    anims.append(walker.animate.move_to(line.n2p(step.at)))
-                else:
-                    anims.append(FadeIn(walker, scale=0.5))
-                    walker_shown = True
-            elif isinstance(step, JumpStep):
-                anims += [Create(arcs[i]), MoveAlongPath(walker, paths[i])]
-            else:
-                anims += [Create(visuals[i][0]), *(FadeIn(m) for m in visuals[i][1:])]
-            if i in labels:
-                anims.append(FadeIn(labels[i]))
-            scene.play(*anims, run_time=t)
-
-        scene.settle("walk complete")
-        scene.wait(times[-1])
+    def settled(self, theme: Theme) -> VGroup:
+        """The walk as it stands after its last step, unanimated: every arc,
+        interval and label drawn, the walker where the walk ends. What a later
+        beat sees when it carries this one in (SCENE_SPEC.md §6)."""
+        c = self._compose(theme)
+        group = VGroup(c.axis, c.tick_labels, *c.arcs.values(),
+                       *(m for ms in c.visuals.values() for m in ms),
+                       *c.labels.values())
+        if c.walker is not None:
+            end = None
+            for step in self.params.steps:
+                if isinstance(step, MarkStep):
+                    end = step.at
+                elif isinstance(step, JumpStep):
+                    end = step.to
+            group.add(c.walker.move_to(c.line.n2p(end)))
+        return group
 
     # --- pieces -------------------------------------------------------------
 
@@ -371,8 +509,16 @@ class NumberLineWalk(Component):
         texts = [caption_text(_fmt(v), theme) for v in values]
         spacing = line.get_unit_size() * (values[1] - values[0])
         widest = max(t.width for t in texts)
-        stride = next(s for s in (1, 2, 4, 5, 10, 20, 40, 50)
-                      if widest + 2 * LABEL_PAD <= s * spacing)
+        stride = next((s for s in (1, 2, 4, 5, 10, 20, 40, 50)
+                       if widest + 2 * LABEL_PAD <= s * spacing), None)
+        if stride is None:
+            # Unreachable inside MAX_TICKS and MAX_MAGNITUDE (stride 50 is wider
+            # than the line), but a refusal beats a bare StopIteration.
+            raise LayoutError(
+                f"tick numbers up to {widest:.2f} units wide cannot be spaced "
+                "apart on this line; use fewer, rounder ticks.",
+                kind="illegible",
+            )
         base = min(range(len(values)), key=lambda k: abs(values[k]))
         shown = VGroup()
         for k, (v, t) in enumerate(zip(values, texts)):
@@ -626,38 +772,11 @@ def _place(mob: VMobject, placed: list[Rect], obstacles: np.ndarray,
     )
 
 
-def _frame_times(scene: ChalkdustScene, weights: list[float]) -> list[float]:
-    """scene.budget(), snapped to whole frames.
 
-    Manim renders a play() as ceil(run_time * fps) frames and a wait() as
-    floor(...), so un-snapped run times drift by up to a frame per call and a
-    multi-step beat ends audibly off its audio. Rounding the cumulative
-    boundaries keeps the total within half a frame of the budget. The
-    epsilons land each call on exactly its frame count despite float error.
+# --- continuity (SCENE_SPEC.md §6) ------------------------------------------
 
-    Every phase gets at least one frame: Manim refuses a zero run_time with a
-    bare ValueError, and wait() is a play() underneath. A phase that rounds
-    to nothing borrows its frame from the longest phase. A budget with fewer
-    frames than phases cannot show the walk at all and refuses as a typed
-    LayoutError, which the repair loop can act on (split or re-narrate).
-    """
-    fps = config.frame_rate
-    edges = np.round(np.cumsum(scene.budget(*weights)) * fps)
-    # The total is the one the frames below sum to, so the guard and the
-    # clamp loop can never disagree by a rounding at a half-frame budget.
-    total = int(edges[-1])
-    if total < len(weights):
-        raise LayoutError(
-            f"{scene.beat_duration:.3f} s is {total} frames at {fps:g} fps, fewer "
-            f"than the walk's {len(weights)} phases; lengthen the narration "
-            "or split this beat.",
-            kind="overflow",
-        )
-    frames = np.diff(np.concatenate([[0.0], edges])).astype(int)
-    while (frames == 0).any():
-        frames[int(np.argmax(frames))] -= 1
-        frames[int(np.argmin(frames))] += 1
-    eps = 1e-6
-    out = [(f - eps) / fps for f in frames[:-1]]   # play(): ceil
-    out.append((frames[-1] + eps) / fps)            # wait(): floor
-    return out
+
+@artifact_builder("NumberLineWalk")
+def _artifact(params: NumberLineWalkParams, theme: Theme) -> VMobject:
+    """A later beat's carry_in of this walk: the settled number line."""
+    return NumberLineWalk(params).settled(theme)

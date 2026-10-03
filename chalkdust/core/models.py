@@ -62,6 +62,20 @@ class Quality(str, Enum):
         return {"draft": "-ql", "final": "-qh"}[self.value]
 
 
+class CarryInError(ValueError):
+    """A carry-in that cannot be resolved (SCENE_SPEC.md §6).
+
+    Typed so callers can tell a continuity failure from any other spec error:
+    an unknown name is a script bug to send back to the spec stage, not
+    something the layout repair loop can fix.
+    """
+
+    def __init__(self, message: str, beat_id: str | None, name: str) -> None:
+        super().__init__(message)
+        self.beat_id = beat_id
+        self.name = name
+
+
 class VoiceConfig(BaseModel, frozen=True):
     """Frozen because it feeds the TTS cache key."""
 
@@ -93,6 +107,11 @@ class BeatSpec(BaseModel, frozen=True):
     narration: str
     component: str
     params: dict[str, Any] = Field(default_factory=dict)
+    # Continuity (SCENE_SPEC.md §6). `registers` names the artifact this beat's
+    # visual becomes for later beats; `carry_in` requests artifacts registered
+    # by EARLIER beats. Both are names, never mobjects -- the compiler rebuilds
+    # a carried artifact from the producing beat's component + params.
+    registers: str | None = None
     carry_in: list[str] = Field(default_factory=list)
     transition: Transition = Transition.CUT
 
@@ -125,6 +144,34 @@ class VideoSpec(BaseModel, frozen=True):
         dupes = {i for i in ids if ids.count(i) > 1}
         if dupes:
             raise ValueError(f"duplicate beat ids: {sorted(dupes)}")
+        return self
+
+    @model_validator(mode="after")
+    def _carry_ins_resolve(self) -> VideoSpec:
+        """Every carry-in must name an artifact registered by an earlier beat.
+
+        Semantic rung (SCENE_SPEC.md §8) but structural enough to live here: a
+        dangling name can never render, so it should never construct. Pydantic
+        wraps the CarryInError in a ValidationError; the original is on
+        `exc.errors()[0]["ctx"]["error"]`.
+        """
+        registered: dict[str, str] = {}  # artifact name -> producing beat id
+        for beat in self.beats:
+            for name in beat.carry_in:
+                if name not in registered:
+                    raise CarryInError(
+                        f"{beat.id} carries in {name!r}, which no earlier beat "
+                        f"registers; registered so far: {sorted(registered)}",
+                        beat_id=beat.id, name=name,
+                    )
+            if beat.registers is not None:
+                if beat.registers in registered:
+                    raise CarryInError(
+                        f"{beat.id} registers {beat.registers!r}, already "
+                        f"registered by {registered[beat.registers]}",
+                        beat_id=beat.id, name=beat.registers,
+                    )
+                registered[beat.registers] = beat.id
         return self
 
 

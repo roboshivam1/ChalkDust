@@ -46,7 +46,8 @@ def tts_key(narration: str, voice: VoiceConfig) -> str:
     return content_hash("tts", narration.strip(), voice.model_dump(mode="json"))
 
 
-def beat_render_key(spec: BeatSpec, duration: float, ctx: BuildContext) -> str:
+def beat_render_key(spec: BeatSpec, duration: float, ctx: BuildContext,
+                    carried: str | None = None) -> str:
     """A rendered beat depends on the visual spec, how long it must run, and
     the build context.
 
@@ -54,7 +55,7 @@ def beat_render_key(spec: BeatSpec, duration: float, ctx: BuildContext) -> str:
       - narration text: only affects the render via `duration`, already here
       - transition: applied at ffmpeg assembly, not baked into the clip
     """
-    return content_hash(
+    key = content_hash(
         "beat",
         spec.component,
         spec.params,
@@ -62,6 +63,22 @@ def beat_render_key(spec: BeatSpec, duration: float, ctx: BuildContext) -> str:
         round(duration, 3),  # avoid float noise producing spurious misses
         ctx.model_dump(mode="json"),
     )
+
+    # --- carry-in term (SCENE_SPEC.md §6) -----------------------------------
+    # A carried artifact is rebuilt from ANOTHER beat's component + params, so
+    # this spec alone does not determine the frame: editing the producing beat
+    # must re-render every beat that carries its artifact. `carried` is
+    # continuity.carry_in_fingerprint(...) of this beat's resolved recipes.
+    # Beats without carry-ins keep their key unchanged.
+    if spec.carry_in:
+        if carried is None:
+            raise ValueError(
+                f"{spec.id} carries in {spec.carry_in}; its render key needs "
+                "carried=continuity.carry_in_fingerprint(recipes), or a change "
+                "to the producing beat would serve a stale render"
+            )
+        key = content_hash(key, "carry_in", carried)
+    return key
 
 
 # --- store ------------------------------------------------------------------

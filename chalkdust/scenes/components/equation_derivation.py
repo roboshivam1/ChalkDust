@@ -19,7 +19,7 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from manim import DOWN, LEFT, RIGHT, FadeIn, MathTex, TransformMatchingTex, VGroup, Write
+from manim import DOWN, LEFT, RIGHT, FadeIn, TransformMatchingTex, VGroup, Write
 from pydantic import Field, StringConstraints, model_validator
 
 from chalkdust.core.models import Region
@@ -31,8 +31,8 @@ from chalkdust.scenes.components.base import (
     register,
     wrap,
 )
-from chalkdust.scenes.regions import LayoutError, fit_to_region
-from chalkdust.scenes.theme import Theme, body_cap_height, body_text, math
+from chalkdust.scenes.regions import fit_to_region
+from chalkdust.scenes.theme import body_cap_height, body_text, math
 
 # Blank strings are rejected at the schema rung: an empty step compiles to
 # nothing, and an empty annotation is a margin note that says nothing.
@@ -130,7 +130,10 @@ class EquationDerivation(Component):
         theme = scene.theme
         cap = body_cap_height(theme)
 
-        eqs = [_step_tex(i, s, theme) for i, s in enumerate(p.steps)]
+        # theme.math refuses bad LaTeX (or LaTeX that draws nothing) as
+        # LayoutError kind "invalid_latex", naming the step.
+        eqs = [label(math(s, theme, what=f"step[{i}]"), f"step[{i}]")
+               for i, s in enumerate(p.steps)]
         notes = {
             a.step: label(body_text(wrap(a.text, NOTE_WRAP), theme, theme.palette.muted),
                           f"annotation[{a.step}]")
@@ -213,9 +216,6 @@ class EquationDerivation(Component):
 
     @classmethod
     def stress(cls):
-        # Invalid LaTeX is pinned in tests/test_component_equation_derivation.py
-        # rather than here: it refuses with kind "invalid_latex", which the
-        # registry-wide stress test does not (yet) count as a clean refusal.
         long_step = r"\frac{a_1 x^2 + b_1 x + c_1}{d_1} + \frac{a_2 x^2 + b_2 x + c_2}{d_2} = 0"
         return [
             # 3x realistic volume: the schema maximum of steps, each long and
@@ -233,28 +233,8 @@ class EquationDerivation(Component):
             {"steps": ["x"]},
             # Minimal with a note: one step, one short note.
             {"steps": ["x = 1"], "annotations": [{"step": 0, "text": "a"}]},
+            # Invalid LaTeX mid-derivation: refuses as "invalid_latex".
+            {"steps": ["x = 1", r"\notacommand{x} = 1"]},
+            # LaTeX that compiles to nothing: also "invalid_latex".
+            {"steps": ["x = 1", r"\quad"]},
         ]
-
-
-def _step_tex(i: int, source: str, theme: Theme) -> MathTex:
-    """Compile one step through the theme's maths constructor.
-
-    Manim reports a LaTeX failure as a bare ValueError from deep inside its
-    compile step. Converting it here gives the repair loop a typed refusal it
-    can dispatch on (regenerate the spec) instead of a crash, and the probe
-    reports it as a finding of that kind.
-    """
-    try:
-        eq = math(source, theme)
-    except ValueError as exc:
-        raise LayoutError(
-            f"step[{i}] is not valid LaTeX: {source!r} ({exc})",
-            kind="invalid_latex",
-        ) from exc
-    if eq.width == 0 and eq.height == 0:
-        # Compiles, draws nothing (e.g. only spacing commands). Placing it would
-        # leave a silent gap in the derivation.
-        raise LayoutError(
-            f"step[{i}] renders nothing: {source!r}", kind="invalid_latex"
-        )
-    return label(eq, f"step[{i}]")

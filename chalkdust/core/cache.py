@@ -46,9 +46,32 @@ def tts_key(narration: str, voice: VoiceConfig) -> str:
     return content_hash("tts", narration.strip(), voice.model_dump(mode="json"))
 
 
-def beat_render_key(spec: BeatSpec, duration: float, ctx: BuildContext) -> str:
-    """A rendered beat depends on the visual spec, how long it must run, and
-    the build context.
+def beat_render_key(
+    spec: BeatSpec,
+    duration: float,
+    ctx: BuildContext,
+    theme: dict[str, Any],
+    tier: dict[str, Any],
+) -> str:
+    """A rendered beat depends on the visual spec, how long it must run, the
+    build context, the theme it is drawn in, and the render tier.
+
+    This is the ONLY place a render key is built. A new determining input
+    (e.g. carried-in artifacts' construction params) is one more term here.
+
+    `theme` is the theme's full content AFTER font resolution, not its name.
+    Two failure modes this closes (D-004):
+      - same beat under two themes would otherwise share one cached file;
+      - a theme font missing on this machine makes Pango substitute, so the
+        pixels change while the name stays the same. The resolved font is
+        what actually renders, so that is what goes in the key.
+
+    `tier` is the tier's concrete settings (resolution, frame rate), not just
+    the "draft"/"final" label in `ctx`: retuning a tier must not serve clips
+    rendered at the old settings (D-006).
+
+    Both arrive as plain data so this module stays below the scenes/render
+    boundary (ARCHITECTURE.md §5); the render worker does the resolving.
 
     Deliberately excluded:
       - narration text: only affects the render via `duration`, already here
@@ -61,6 +84,8 @@ def beat_render_key(spec: BeatSpec, duration: float, ctx: BuildContext) -> str:
         sorted(spec.carry_in),
         round(duration, 3),  # avoid float noise producing spurious misses
         ctx.model_dump(mode="json"),
+        theme,
+        tier,
     )
 
 

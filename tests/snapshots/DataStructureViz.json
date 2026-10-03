@@ -1,0 +1,7329 @@
+{
+ "component": "DataStructureViz",
+ "manim_version": "0.21.0",
+ "reasons": [
+  "DataStructureViz merged"
+ ],
+ "cases": [
+  {
+   "params": {
+    "kind": "array",
+    "initial": [
+     29,
+     10,
+     14,
+     37,
+     13
+    ],
+    "operations": [
+     {
+      "op": "highlight",
+      "at": [
+       0,
+       1
+      ]
+     },
+     {
+      "op": "swap",
+      "at": [
+       0,
+       1
+      ]
+     },
+     {
+      "op": "highlight",
+      "at": [
+       2
+      ]
+     },
+     {
+      "op": "set",
+      "at": 4,
+      "value": 99
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 2.0
+     },
+     {
+      "op": "settle",
+      "label": "array shown",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "array",
+        "children": [
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Rectangle",
+            "label": "cell[0]",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Rectangle",
+            "label": "cell[1]",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Rectangle",
+            "label": "cell[2]",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Rectangle",
+            "label": "cell[3]",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Rectangle",
+            "label": "cell[4]",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Text",
+          "label": "value '29'",
+          "text": "29",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "value '10'",
+          "text": "10",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "value '14'",
+          "text": "14",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "value '37'",
+          "text": "37",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "value '13'",
+          "text": "13",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "0",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.217
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate"
+      ],
+      "run_time": 1.2
+     },
+     {
+      "op": "settle",
+      "label": "operations[0] highlight",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "array",
+        "children": [
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Rectangle",
+            "label": "cell[0]",
+            "color": "#58A6FF",
+            "fill_opacity": 0.25,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Rectangle",
+            "label": "cell[1]",
+            "color": "#58A6FF",
+            "fill_opacity": 0.25,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Rectangle",
+            "label": "cell[2]",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Rectangle",
+            "label": "cell[3]",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Rectangle",
+            "label": "cell[4]",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Text",
+          "label": "value '29'",
+          "text": "29",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "value '10'",
+          "text": "10",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "value '14'",
+          "text": "14",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "value '37'",
+          "text": "37",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "value '13'",
+          "text": "13",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "0",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.133
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate",
+       "CyclicReplace"
+      ],
+      "run_time": 2.0
+     },
+     {
+      "op": "settle",
+      "label": "operations[1] swap",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "children": [
+         {
+          "type": "Rectangle",
+          "label": "cell[0]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.25,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Rectangle",
+          "label": "cell[1]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.25,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Rectangle",
+          "label": "cell[2]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Rectangle",
+          "label": "cell[3]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Rectangle",
+          "label": "cell[4]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "value '14'",
+        "text": "14",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "value '37'",
+        "text": "37",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "value '13'",
+        "text": "13",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "0",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "1",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "2",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "3",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "4",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Group",
+        "children": [
+         {
+          "type": "Text",
+          "label": "value '29'",
+          "text": "29",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "value '10'",
+          "text": "10",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.217
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "run_time": 1.2
+     },
+     {
+      "op": "settle",
+      "label": "operations[2] highlight",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "children": [
+         {
+          "type": "Rectangle",
+          "label": "cell[0]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Rectangle",
+          "label": "cell[1]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Rectangle",
+          "label": "cell[2]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.25,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Rectangle",
+          "label": "cell[3]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Rectangle",
+          "label": "cell[4]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "value '14'",
+        "text": "14",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "value '37'",
+        "text": "37",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "value '13'",
+        "text": "13",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "0",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "1",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "2",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "3",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "4",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Group",
+        "children": [
+         {
+          "type": "Text",
+          "label": "value '29'",
+          "text": "29",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "value '10'",
+          "text": "10",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.133
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate",
+       "FadeOut",
+       "FadeIn"
+      ],
+      "run_time": 1.6
+     },
+     {
+      "op": "settle",
+      "label": "operations[3] set",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "children": [
+         {
+          "type": "Rectangle",
+          "label": "cell[0]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Rectangle",
+          "label": "cell[1]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Rectangle",
+          "label": "cell[2]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Rectangle",
+          "label": "cell[3]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Rectangle",
+          "label": "cell[4]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.25,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "value '14'",
+        "text": "14",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "value '37'",
+        "text": "37",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "0",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "1",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "2",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "3",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "4",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Group",
+        "children": [
+         {
+          "type": "Text",
+          "label": "value '29'",
+          "text": "29",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "value '10'",
+          "text": "10",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "value '99'",
+        "text": "99",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.183
+     },
+     {
+      "op": "wait",
+      "duration": 1.117
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "children": [
+         {
+          "type": "Rectangle",
+          "label": "cell[0]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Rectangle",
+          "label": "cell[1]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Rectangle",
+          "label": "cell[2]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Rectangle",
+          "label": "cell[3]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Rectangle",
+          "label": "cell[4]",
+          "color": "#58A6FF",
+          "fill_opacity": 0.25,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "value '14'",
+        "text": "14",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "value '37'",
+        "text": "37",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "0",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "1",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "2",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "3",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "4",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Group",
+        "children": [
+         {
+          "type": "Text",
+          "label": "value '29'",
+          "text": "29",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "value '10'",
+          "text": "10",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "value '99'",
+        "text": "99",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.775,
+        0.955
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.089,
+        3.775,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.51,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.755,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.755,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.51,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.51,
+        0.089,
+        0.4,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.755,
+        0.089,
+        0.38,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.0,
+        0.089,
+        0.377,
+        0.242
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.755,
+        0.089,
+        0.383,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        1.51,
+        0.089,
+        0.385,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.51,
+        -0.455,
+        0.155,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.755,
+        -0.453,
+        0.088,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.0,
+        -0.453,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.755,
+        -0.455,
+        0.156,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.51,
+        -0.453,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.775,
+        0.955
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.089,
+        3.775,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.51,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.755,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.755,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.51,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.51,
+        0.089,
+        0.4,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.755,
+        0.089,
+        0.38,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.0,
+        0.089,
+        0.377,
+        0.242
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.755,
+        0.089,
+        0.383,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        1.51,
+        0.089,
+        0.385,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.51,
+        -0.455,
+        0.155,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.755,
+        -0.453,
+        0.088,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.0,
+        -0.453,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.755,
+        -0.455,
+        0.156,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.51,
+        -0.453,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        0.089,
+        3.775,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.51,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.755,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.755,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.51,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        0.089,
+        0.377,
+        0.242
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.755,
+        0.089,
+        0.383,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        1.51,
+        0.089,
+        0.385,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.51,
+        -0.455,
+        0.155,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.755,
+        -0.453,
+        0.088,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.0,
+        -0.453,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.755,
+        -0.455,
+        0.156,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.51,
+        -0.453,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.128,
+        0.089,
+        1.145,
+        0.25
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.755,
+        0.089,
+        0.4,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.51,
+        0.089,
+        0.38,
+        0.25
+       ],
+       "font_size": 28.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        0.089,
+        3.775,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.51,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.755,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.755,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.51,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        0.089,
+        0.377,
+        0.242
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.755,
+        0.089,
+        0.383,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        1.51,
+        0.089,
+        0.385,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.51,
+        -0.455,
+        0.155,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.755,
+        -0.453,
+        0.088,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.0,
+        -0.453,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.755,
+        -0.455,
+        0.156,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.51,
+        -0.453,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.128,
+        0.089,
+        1.145,
+        0.25
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.755,
+        0.089,
+        0.4,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.51,
+        0.089,
+        0.38,
+        0.25
+       ],
+       "font_size": 28.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        0.089,
+        3.775,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.51,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.755,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.755,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.51,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        0.089,
+        0.377,
+        0.242
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.755,
+        0.089,
+        0.383,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.51,
+        -0.455,
+        0.155,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.755,
+        -0.453,
+        0.088,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.0,
+        -0.453,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.755,
+        -0.455,
+        0.156,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.51,
+        -0.453,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.128,
+        0.089,
+        1.145,
+        0.25
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.755,
+        0.089,
+        0.4,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.51,
+        0.089,
+        0.38,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        1.51,
+        0.089,
+        0.38,
+        0.25
+       ],
+       "font_size": 28.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        0.089,
+        3.775,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.51,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.755,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.755,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.51,
+        0.089,
+        0.755,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        0.089,
+        0.377,
+        0.242
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.755,
+        0.089,
+        0.383,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.51,
+        -0.455,
+        0.155,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.755,
+        -0.453,
+        0.088,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.0,
+        -0.453,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.755,
+        -0.455,
+        0.156,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.51,
+        -0.453,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.128,
+        0.089,
+        1.145,
+        0.25
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.755,
+        0.089,
+        0.4,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.51,
+        0.089,
+        0.38,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        1.51,
+        0.089,
+        0.38,
+        0.25
+       ],
+       "font_size": 28.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "kind": "stack",
+    "initial": [
+     "main"
+    ],
+    "operations": [
+     {
+      "op": "push",
+      "value": "fib(3)"
+     },
+     {
+      "op": "push",
+      "value": "fib(2)"
+     },
+     {
+      "op": "pop"
+     },
+     {
+      "op": "highlight",
+      "at": [
+       1
+      ]
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 2.0
+     },
+     {
+      "op": "settle",
+      "label": "stack shown",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "stack",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "stack container",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#FFFFFF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#FFFFFF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#FFFFFF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "stack[0]",
+          "children": [
+           {
+            "type": "Rectangle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'main'",
+            "text": "main",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.217
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.6
+     },
+     {
+      "op": "settle",
+      "label": "operations[0] push",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "stack",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "stack container",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#FFFFFF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#FFFFFF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#FFFFFF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "stack[0]",
+          "children": [
+           {
+            "type": "Rectangle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'main'",
+            "text": "main",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "stack[1]",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#58A6FF",
+          "fill_opacity": 0.25,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "value 'fib(3)'",
+          "text": "fib(3)",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.183
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "FadeIn"
+      ],
+      "run_time": 1.6
+     },
+     {
+      "op": "settle",
+      "label": "operations[1] push",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "stack",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "stack container",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#FFFFFF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#FFFFFF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#FFFFFF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "stack[0]",
+          "children": [
+           {
+            "type": "Rectangle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'main'",
+            "text": "main",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "stack[1]",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "value 'fib(3)'",
+          "text": "fib(3)",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "stack[2]",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#58A6FF",
+          "fill_opacity": 0.25,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "value 'fib(2)'",
+          "text": "fib(2)",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.183
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeOut"
+      ],
+      "run_time": 1.6
+     },
+     {
+      "op": "settle",
+      "label": "operations[2] pop",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "stack",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "stack container",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#FFFFFF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#FFFFFF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#FFFFFF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "stack[0]",
+          "children": [
+           {
+            "type": "Rectangle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'main'",
+            "text": "main",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "stack[1]",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "value 'fib(3)'",
+          "text": "fib(3)",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.183
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "run_time": 1.2
+     },
+     {
+      "op": "settle",
+      "label": "operations[3] highlight",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "stack",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "stack container",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#FFFFFF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#FFFFFF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#FFFFFF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "stack[0]",
+          "children": [
+           {
+            "type": "Rectangle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'main'",
+            "text": "main",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "stack[1]",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#58A6FF",
+          "fill_opacity": 0.25,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "value 'fib(3)'",
+          "text": "fib(3)",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.133
+     },
+     {
+      "op": "wait",
+      "duration": 1.1
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "stack",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "stack container",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#FFFFFF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#FFFFFF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#FFFFFF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "stack[0]",
+          "children": [
+           {
+            "type": "Rectangle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'main'",
+            "text": "main",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "stack[1]",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#58A6FF",
+          "fill_opacity": 0.25,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "value 'fib(3)'",
+          "text": "fib(3)",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        1.78,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        1.78,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.89,
+        -0.1,
+        0.0,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.01,
+        1.78,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.89,
+        -0.1,
+        0.0,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.633,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.633,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.633,
+        0.907,
+        0.253
+       ],
+       "font_size": 28.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        1.78,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        1.78,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.89,
+        -0.1,
+        0.0,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.01,
+        1.78,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.89,
+        -0.1,
+        0.0,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.633,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.633,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.633,
+        0.907,
+        0.253
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.056,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.056,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.056,
+        1.247,
+        0.296
+       ],
+       "font_size": 28.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        1.78,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        1.78,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.89,
+        -0.1,
+        0.0,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.01,
+        1.78,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.89,
+        -0.1,
+        0.0,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.633,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.633,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.633,
+        0.907,
+        0.253
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.056,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.056,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.056,
+        1.247,
+        0.296
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.0,
+        0.522,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.522,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.522,
+        1.247,
+        0.296
+       ],
+       "font_size": 28.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        1.78,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        1.78,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.89,
+        -0.1,
+        0.0,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.01,
+        1.78,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.89,
+        -0.1,
+        0.0,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.633,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.633,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.633,
+        0.907,
+        0.253
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.056,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.056,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.056,
+        1.247,
+        0.296
+       ],
+       "font_size": 28.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        1.78,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        1.78,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.89,
+        -0.1,
+        0.0,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.01,
+        1.78,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.89,
+        -0.1,
+        0.0,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.633,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.633,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.633,
+        0.907,
+        0.253
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.056,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.056,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.056,
+        1.247,
+        0.296
+       ],
+       "font_size": 28.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        1.78,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        1.78,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.89,
+        -0.1,
+        0.0,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.01,
+        1.78,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.89,
+        -0.1,
+        0.0,
+        1.821
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.633,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.633,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.633,
+        0.907,
+        0.253
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.056,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.056,
+        1.603,
+        0.577
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.056,
+        1.247,
+        0.296
+       ],
+       "font_size": 28.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "kind": "tree",
+    "initial": [
+     8,
+     3,
+     10,
+     1,
+     null,
+     null,
+     14
+    ],
+    "operations": [
+     {
+      "op": "insert",
+      "parent": 3,
+      "side": "right",
+      "value": 6
+     },
+     {
+      "op": "traverse",
+      "edge": [
+       8,
+       3
+      ]
+     },
+     {
+      "op": "traverse",
+      "edge": [
+       3,
+       6
+      ]
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 2.0
+     },
+     {
+      "op": "settle",
+      "label": "tree shown",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "tree",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "node '8'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '8'",
+            "text": "8",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '3'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '3'",
+            "text": "3",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '10'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '10'",
+            "text": "10",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '1'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '1'",
+            "text": "1",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '14'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '14'",
+            "text": "14",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.45
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 2.0
+     },
+     {
+      "op": "settle",
+      "label": "operations[0] insert",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "tree",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "node '8'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '8'",
+            "text": "8",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '3'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '3'",
+            "text": "3",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '10'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '10'",
+            "text": "10",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '1'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '1'",
+            "text": "1",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '14'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '14'",
+            "text": "14",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "node '6'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.25,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '6'",
+            "text": "6",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.433
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "run_time": 1.6
+     },
+     {
+      "op": "settle",
+      "label": "operations[1] traverse",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "tree",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "node '8'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '8'",
+            "text": "8",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '3'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.25,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '3'",
+            "text": "3",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '10'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '10'",
+            "text": "10",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '1'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '1'",
+            "text": "1",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '14'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '14'",
+            "text": "14",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "node '6'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '6'",
+            "text": "6",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.35
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "run_time": 1.6
+     },
+     {
+      "op": "settle",
+      "label": "operations[2] traverse",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "tree",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "node '8'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '8'",
+            "text": "8",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '3'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '3'",
+            "text": "3",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '10'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '10'",
+            "text": "10",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '1'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '1'",
+            "text": "1",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '14'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '14'",
+            "text": "14",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "node '6'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.25,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '6'",
+            "text": "6",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.35
+     },
+     {
+      "op": "wait",
+      "duration": 1.217
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "tree",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "node '8'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '8'",
+            "text": "8",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '3'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '3'",
+            "text": "3",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '10'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '10'",
+            "text": "10",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '1'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '1'",
+            "text": "1",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node '14'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '14'",
+            "text": "14",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "node '6'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.25,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value '6'",
+            "text": "6",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.607,
+        3.094
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.479,
+        0.49,
+        0.494,
+        0.609
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.479,
+        0.49,
+        0.494,
+        0.609
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.197,
+        -0.69,
+        0.202,
+        0.498
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.197,
+        -0.69,
+        0.202,
+        0.498
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.079,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.079,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.079,
+        0.146,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.957,
+        -0.1,
+        0.157,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.957,
+        -0.1,
+        0.38,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.436,
+        -1.279,
+        0.146,
+        0.242
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.436,
+        -1.279,
+        0.377,
+        0.242
+       ],
+       "font_size": 28.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.607,
+        3.094
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.479,
+        0.49,
+        0.494,
+        0.609
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.479,
+        0.49,
+        0.494,
+        0.609
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.197,
+        -0.69,
+        0.202,
+        0.498
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.197,
+        -0.69,
+        0.202,
+        0.498
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.079,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.079,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.079,
+        0.146,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.957,
+        -0.1,
+        0.157,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.957,
+        -0.1,
+        0.38,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.436,
+        -1.279,
+        0.146,
+        0.242
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.436,
+        -1.279,
+        0.377,
+        0.242
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.479,
+        -1.044,
+        0.735,
+        1.206
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.718,
+        -0.69,
+        0.202,
+        0.498
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.479,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.479,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.479,
+        -1.279,
+        0.147,
+        0.25
+       ],
+       "font_size": 28.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.607,
+        3.094
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.479,
+        0.49,
+        0.494,
+        0.609
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.479,
+        0.49,
+        0.494,
+        0.609
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.197,
+        -0.69,
+        0.202,
+        0.498
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.197,
+        -0.69,
+        0.202,
+        0.498
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.079,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.079,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.079,
+        0.146,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.957,
+        -0.1,
+        0.157,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.957,
+        -0.1,
+        0.38,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.436,
+        -1.279,
+        0.146,
+        0.242
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.436,
+        -1.279,
+        0.377,
+        0.242
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.479,
+        -1.044,
+        0.735,
+        1.206
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.718,
+        -0.69,
+        0.202,
+        0.498
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.479,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.479,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.479,
+        -1.279,
+        0.147,
+        0.25
+       ],
+       "font_size": 28.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.607,
+        3.094
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.479,
+        0.49,
+        0.494,
+        0.609
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.479,
+        0.49,
+        0.494,
+        0.609
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.197,
+        -0.69,
+        0.202,
+        0.498
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.197,
+        -0.69,
+        0.202,
+        0.498
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.079,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.079,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.079,
+        0.146,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.957,
+        -0.1,
+        0.157,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.957,
+        -0.1,
+        0.38,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.436,
+        -1.279,
+        0.146,
+        0.242
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.436,
+        -1.279,
+        0.377,
+        0.242
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.479,
+        -1.044,
+        0.735,
+        1.206
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.718,
+        -0.69,
+        0.202,
+        0.498
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.479,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.479,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.479,
+        -1.279,
+        0.147,
+        0.25
+       ],
+       "font_size": 28.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.607,
+        3.094
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.479,
+        0.49,
+        0.494,
+        0.609
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.479,
+        0.49,
+        0.494,
+        0.609
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.197,
+        -0.69,
+        0.202,
+        0.498
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.197,
+        -0.69,
+        0.202,
+        0.498
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.079,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.079,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.079,
+        0.146,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.957,
+        -0.1,
+        0.157,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.957,
+        -0.1,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.957,
+        -0.1,
+        0.38,
+        0.25
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.436,
+        -1.279,
+        0.146,
+        0.242
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.436,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.436,
+        -1.279,
+        0.377,
+        0.242
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.479,
+        -1.044,
+        0.735,
+        1.206
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.718,
+        -0.69,
+        0.202,
+        0.498
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.479,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.479,
+        -1.279,
+        0.735,
+        0.735
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.479,
+        -1.279,
+        0.147,
+        0.25
+       ],
+       "font_size": 28.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "kind": "graph",
+    "initial": {
+     "nodes": [
+      "A",
+      "B",
+      "D",
+      "E",
+      "C"
+     ],
+     "edges": [
+      [
+       "A",
+       "B"
+      ],
+      [
+       "A",
+       "C"
+      ],
+      [
+       "B",
+       "D"
+      ],
+      [
+       "C",
+       "D"
+      ],
+      [
+       "D",
+       "E"
+      ]
+     ]
+    },
+    "operations": [
+     {
+      "op": "highlight",
+      "at": [
+       "A"
+      ]
+     },
+     {
+      "op": "traverse",
+      "edge": [
+       "A",
+       "B"
+      ]
+     },
+     {
+      "op": "traverse",
+      "edge": [
+       "A",
+       "C"
+      ]
+     },
+     {
+      "op": "traverse",
+      "edge": [
+       "B",
+       "D"
+      ]
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 2.0
+     },
+     {
+      "op": "settle",
+      "label": "graph shown",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "graph",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'A'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'A'",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'B'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'B'",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'D'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'D'",
+            "text": "D",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'E'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'E'",
+            "text": "E",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'C'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'C'",
+            "text": "C",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.217
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "run_time": 1.2
+     },
+     {
+      "op": "settle",
+      "label": "operations[0] highlight",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "graph",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'A'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.25,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'A'",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'B'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'B'",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'D'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'D'",
+            "text": "D",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'E'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'E'",
+            "text": "E",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'C'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'C'",
+            "text": "C",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.133
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "run_time": 1.6
+     },
+     {
+      "op": "settle",
+      "label": "operations[1] traverse",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "graph",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'A'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'A'",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'B'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.25,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'B'",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'D'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'D'",
+            "text": "D",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'E'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'E'",
+            "text": "E",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'C'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'C'",
+            "text": "C",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.183
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "run_time": 1.6
+     },
+     {
+      "op": "settle",
+      "label": "operations[2] traverse",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "graph",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'A'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'A'",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'B'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'B'",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'D'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'D'",
+            "text": "D",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'E'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'E'",
+            "text": "E",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'C'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.25,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'C'",
+            "text": "C",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.183
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "run_time": 1.6
+     },
+     {
+      "op": "settle",
+      "label": "operations[3] traverse",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "graph",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'A'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'A'",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'B'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'B'",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'D'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.25,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'D'",
+            "text": "D",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'E'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'E'",
+            "text": "E",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'C'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'C'",
+            "text": "C",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.183
+     },
+     {
+      "op": "wait",
+      "duration": 1.1
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "graph",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'A'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'A'",
+            "text": "A",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'B'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'B'",
+            "text": "B",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'D'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.25,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'D'",
+            "text": "D",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'E'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'E'",
+            "text": "E",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "node 'C'",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "label": "value 'C'",
+            "text": "C",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.241,
+        2.163
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.665,
+        0.388,
+        0.799,
+        0.363
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.665,
+        0.388,
+        0.799,
+        0.363
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.075,
+        -0.402,
+        0.239,
+        0.46
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.254,
+        -0.402,
+        1.62,
+        0.736
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.89,
+        1.06,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.69,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.69,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.69,
+        0.227,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.329,
+        0.087,
+        0.195,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.821,
+        -0.89,
+        0.187,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.821,
+        -0.89,
+        0.187,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.329,
+        0.087,
+        0.185,
+        0.234
+       ],
+       "font_size": 28.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.241,
+        2.163
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.665,
+        0.388,
+        0.799,
+        0.363
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.665,
+        0.388,
+        0.799,
+        0.363
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.075,
+        -0.402,
+        0.239,
+        0.46
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.254,
+        -0.402,
+        1.62,
+        0.736
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.89,
+        1.06,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.69,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.69,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.69,
+        0.227,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.329,
+        0.087,
+        0.195,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.821,
+        -0.89,
+        0.187,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.821,
+        -0.89,
+        0.187,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.329,
+        0.087,
+        0.185,
+        0.234
+       ],
+       "font_size": 28.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.241,
+        2.163
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.665,
+        0.388,
+        0.799,
+        0.363
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.665,
+        0.388,
+        0.799,
+        0.363
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.075,
+        -0.402,
+        0.239,
+        0.46
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.254,
+        -0.402,
+        1.62,
+        0.736
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.89,
+        1.06,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.69,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.69,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.69,
+        0.227,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.329,
+        0.087,
+        0.195,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.821,
+        -0.89,
+        0.187,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.821,
+        -0.89,
+        0.187,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.329,
+        0.087,
+        0.185,
+        0.234
+       ],
+       "font_size": 28.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.241,
+        2.163
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.665,
+        0.388,
+        0.799,
+        0.363
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.665,
+        0.388,
+        0.799,
+        0.363
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.075,
+        -0.402,
+        0.239,
+        0.46
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.254,
+        -0.402,
+        1.62,
+        0.736
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.89,
+        1.06,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.69,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.69,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.69,
+        0.227,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.329,
+        0.087,
+        0.195,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.821,
+        -0.89,
+        0.187,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.821,
+        -0.89,
+        0.187,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.329,
+        0.087,
+        0.185,
+        0.234
+       ],
+       "font_size": 28.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.241,
+        2.163
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.665,
+        0.388,
+        0.799,
+        0.363
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.665,
+        0.388,
+        0.799,
+        0.363
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.075,
+        -0.402,
+        0.239,
+        0.46
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.254,
+        -0.402,
+        1.62,
+        0.736
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.89,
+        1.06,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.69,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.69,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.69,
+        0.227,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.329,
+        0.087,
+        0.195,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.821,
+        -0.89,
+        0.187,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.821,
+        -0.89,
+        0.187,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.329,
+        0.087,
+        0.185,
+        0.234
+       ],
+       "font_size": 28.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.241,
+        2.163
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.665,
+        0.388,
+        0.799,
+        0.363
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.665,
+        0.388,
+        0.799,
+        0.363
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.075,
+        -0.402,
+        0.239,
+        0.46
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.254,
+        -0.402,
+        1.62,
+        0.736
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.89,
+        1.06,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.69,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.69,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.69,
+        0.227,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.329,
+        0.087,
+        0.195,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.821,
+        -0.89,
+        0.187,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.821,
+        -0.89,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.821,
+        -0.89,
+        0.187,
+        0.222
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.329,
+        0.087,
+        0.583,
+        0.583
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.329,
+        0.087,
+        0.185,
+        0.234
+       ],
+       "font_size": 28.0
+      }
+     ]
+    ]
+   }
+  }
+ ]
+}

@@ -14,6 +14,7 @@ both are measured rather than assumed.
 
 from __future__ import annotations
 
+import unicodedata
 from functools import lru_cache
 from typing import Annotated, NamedTuple
 
@@ -30,7 +31,12 @@ from chalkdust.scenes.components.base import (
     label,
     register,
 )
-from chalkdust.scenes.regions import DEFAULT_PADDING, fit_to_region, region_rect
+from chalkdust.scenes.regions import (
+    DEFAULT_PADDING,
+    LayoutError,
+    fit_to_region,
+    region_rect,
+)
 from chalkdust.scenes.theme import (
     Theme,
     body_cap_height,
@@ -76,12 +82,21 @@ FIND_WEIGHT = 2
 HOLD_WEIGHT = 3
 
 
+def _blank(c: str) -> bool:
+    """A character that never draws ink: whitespace, a separator, or a format
+    character such as a zero-width space or joiner -- which str.strip()
+    keeps, so a field of them alone would otherwise pass as text."""
+    return c.isspace() or unicodedata.category(c) in {"Cf", "Zs", "Zl", "Zp"}
+
+
 def _inline(v: str) -> str:
     """Prose with $...$ maths. Rejected here rather than at build time,
     because an unbalanced $ would silently swap which parts are maths."""
     v = v.strip()
-    if not v:
-        raise ValueError("cannot be blank")
+    if all(_blank(c) for c in v):
+        raise ValueError("cannot be blank: it has no visible character")
+    if any(unicodedata.category(c) == "Cc" and not c.isspace() for c in v):
+        raise ValueError("contains a control character")
     if v.count("$") % 2:
         raise ValueError(
             "unbalanced $: inline maths is written $...$ and a literal "
@@ -186,7 +201,7 @@ class _Flow:
     def __init__(self, s: str, theme: Theme, width: float, what: str) -> None:
         # `what` names the spec field ("text", "given[1]", "find") in a
         # refusal, so the repair loop knows which one to regenerate.
-        self.theme, self.width, self.what = theme, width, what
+        self.source, self.theme, self.width, self.what = s, theme, width, what
         self.cap = body_cap_height(theme)
         self.tokens = _tokens(s)
         self.maths = {i: self._compile(t.text)
@@ -298,6 +313,18 @@ class _Flow:
                 line = self._line(plan[k])
             built.append(line)
             k += 1
+        # Characters the theme font has no glyph for (emoji, say) are
+        # dropped by Pango without a word. A line of nothing but those draws
+        # no ink: dropped, rather than leaving a blank line and an empty
+        # reveal step. A field with no ink at all would lay out as an empty
+        # group at the origin, under whatever sits there, so it is refused --
+        # the fix is the spec's text, not the layout.
+        built = [line for line in built if line.family_members_with_points()]
+        if not built:
+            raise LayoutError(
+                f"ProblemStatement {self.what} draws no glyphs: the theme font "
+                f"has none of its characters: {self.source!r}",
+                kind="illegible")
         return built
 
 
@@ -500,4 +527,7 @@ class ProblemStatement(Component):
             {"text": incline["text"], "given": [r"$\mu = \frac{1}{2$"],
              "find": incline["find"]},
             {"text": "x", "find": r"the value of $\quad$"},
+            # Prose the theme font has no glyph for draws no ink: refused as
+            # illegible, not laid out as an empty group at the origin.
+            {"text": "\U0001F600" * 10, "find": "y"},
         ]

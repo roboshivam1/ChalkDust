@@ -147,10 +147,22 @@ class TestSchema:
         {"text": "costs $5 more", "find": "y"},
         {"text": "x", "find": "the value $ $"},
         {"text": "x", "find": "y", "colour": "red"},
+        {"text": "a\x00b", "find": "y"},
     ], ids=["blank-text", "blank-find", "no-find", "blank-given", "too-many-givens",
-            "unbalanced-dollar", "empty-maths", "unknown-field"])
+            "unbalanced-dollar", "empty-maths", "unknown-field", "control-character"])
     def test_rejects(self, params):
         with pytest.raises(ValidationError):
+            ProblemStatement(params)
+
+    @pytest.mark.parametrize("params", [
+        {"text": "\u200b", "find": "y"},
+        {"text": "x", "find": "\u2060\u200d\u00ad"},
+        {"text": "x", "given": ["\u00a0\u200b\ufeff"], "find": "y"},
+    ], ids=["zero-width-space", "format-characters", "nbsp-and-bom"])
+    def test_rejects_prose_with_no_visible_character(self, params):
+        # str.strip() keeps format characters; such a field drew nothing and
+        # was misreported as an overlap with whatever sat at the origin.
+        with pytest.raises(ValidationError, match="no visible character"):
             ProblemStatement(params)
 
     def test_givens_are_optional(self):
@@ -260,6 +272,26 @@ class TestInlineLayout:
 
     def test_no_givens_means_no_given_column(self):
         assert set(_blocks(_probe(MINIMAL))) == {"statement", "find"}
+
+    @pytest.mark.parametrize("field,params", [
+        ("text", {"text": "\U0001F600" * 10, "find": "y"}),
+        ("given[0]", {"text": "x", "given": ["\U0001F600"], "find": "y"}),
+        ("find", {"text": "x", "find": "\U0001F600 \U0001F600"}),
+    ], ids=["text", "given", "find"])
+    def test_prose_the_font_cannot_draw_is_illegible(self, field, params):
+        # Pango drops glyphs the font lacks; a field of nothing else draws no
+        # ink and must refuse cleanly, naming the field -- not lay out as an
+        # empty group that "overlaps" its neighbour.
+        report = validate_beat(_spec(params))
+        assert report.kinds() == {"illegible"}, f"\n{report}"
+        assert f"{field} draws no glyphs" in report.findings[0].message
+
+    def test_lines_the_font_cannot_draw_are_dropped(self):
+        # Emoji long enough to hard-break over several lines ahead of real
+        # text: those lines draw nothing, so they are not stacked or revealed.
+        probe = _probe({"text": "\U0001F600" * 200 + " then $x$ rests", "find": "y"})
+        lines = _blocks(probe)["statement"].submobjects
+        assert lines and all(line.family_members_with_points() for line in lines)
 
 
 class TestCarryIn:

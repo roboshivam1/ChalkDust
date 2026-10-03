@@ -17,9 +17,19 @@ from chalkdust.validate.geometric import validate_beat
 CLEAN_REFUSALS = {"overflow", "illegible", "invalid_latex", "unrenderable_text"}
 
 
-def _spec(component: str, params: dict, bid: str = "b01") -> BeatSpec:
+def _spec(component: str, params: dict, bid: str = "b01",
+          carry_in: list[str] | None = None) -> BeatSpec:
     return BeatSpec(id=bid, narration="placeholder narration", 
-                    component=component, params=params)
+                    component=component, params=params, carry_in=carry_in or [])
+
+
+def _validate(component: str, params: dict):
+    """validate_beat with the case's carried artifacts on screen, as the
+    pipeline builds a carry-in beat (Component.fixture_carry_in; empty for a
+    component that carries nothing in)."""
+    recipes = get_component(component).fixture_carry_in(params)
+    spec = _spec(component, params, carry_in=[r.name for r in recipes])
+    return validate_beat(spec, recipes=recipes)
 
 
 def _cases(kind: str):
@@ -37,7 +47,7 @@ class TestExamples:
 
     @pytest.mark.parametrize("name,params", _cases("examples"))
     def test_validates_clean(self, name, params):
-        report = validate_beat(_spec(name, params))
+        report = _validate(name, params)
         assert report.ok, f"\n{report}"
 
 
@@ -47,7 +57,7 @@ class TestStress:
 
     @pytest.mark.parametrize("name,params", _cases("stress"))
     def test_fits_or_refuses_cleanly(self, name, params):
-        report = validate_beat(_spec(name, params))
+        report = _validate(name, params)
         if report.ok:
             return  # handled it; fine
         bad = report.kinds() - CLEAN_REFUSALS
@@ -60,7 +70,7 @@ class TestStress:
     def test_no_crash(self, name, params):
         # build_error means an exception that is not a LayoutError escaped --
         # an IndexError or TypeError from unhandled content volume.
-        report = validate_beat(_spec(name, params))
+        report = _validate(name, params)
         crashes = [f for f in report.findings if f.kind == "build_error"]
         assert not crashes, f"\n{report}"
 

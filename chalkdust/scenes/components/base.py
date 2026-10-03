@@ -21,6 +21,7 @@ from pydantic import BaseModel, ConfigDict
 from chalkdust.core.models import Region
 
 if TYPE_CHECKING:
+    from chalkdust.continuity import ArtifactRecipe
     from chalkdust.scenes.base import ChalkdustScene
 
 # Shortest time one reveal step can take and still register with a viewer --
@@ -107,6 +108,16 @@ class Component(ABC):
         """
         return []
 
+    def carried_targets(self) -> list[str]:
+        """Every carry-in name build() will fetch with continuity.carried().
+
+        For components that act on an artifact already on screen (Callout,
+        ZoomHighlight: their `target_id`). The semantic rung refuses a beat
+        whose carry_in does not list each one, as kind "carry_in" -- before
+        anything is built, rather than as a CarryInError from inside build().
+        """
+        return []
+
     # --- test fixtures ------------------------------------------------------
     # Each component declares its own cases so the shared test suite covers
     # every component automatically as the library grows (SCENE_SPEC.md §11).
@@ -123,6 +134,17 @@ class Component(ABC):
         These must either validate clean or fail with a LayoutError. What they
         must never do is render something broken, or raise an unrelated
         exception like IndexError.
+        """
+        return []
+
+    @classmethod
+    def fixture_carry_in(cls, params: dict[str, Any]) -> list[ArtifactRecipe]:
+        """The carried artifacts one examples()/stress() case is built with.
+
+        A carry-in consumer (SCENE_SPEC.md §6) cannot build without its target
+        on screen, so the registry walks (test_layout, test_snapshots, the
+        semantic TestLibrary) build each case with these recipes carried in,
+        exactly as the pipeline would. Empty for every other component.
         """
         return []
 

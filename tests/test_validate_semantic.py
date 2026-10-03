@@ -185,7 +185,12 @@ class TestLibrary:
 
     @pytest.mark.parametrize("name", registered_names())
     def test_examples_validate_clean(self, name, tmp_path):
-        for params in get_component(name).examples():
-            report = validate_semantic(_spec(name, params), duration=12.0,
+        cls = get_component(name)
+        for params in cls.examples():
+            # A carry-in consumer's case carries its fixture artifacts in,
+            # registered by an earlier beat, as a real spec would.
+            carried = [r.name for r in cls.fixture_carry_in(params)]
+            report = validate_semantic(_spec(name, params, carry_in=carried),
+                                       registered_artifacts=carried, duration=12.0,
                                        media_dir=tmp_path)
             assert report.ok, f"\n{report}"

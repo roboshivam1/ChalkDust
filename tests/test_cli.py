@@ -188,3 +188,47 @@ def test_an_example_meets_the_phase_0_exit_shape():
     shapes = [(len(s.beats), {b.component for b in s.beats})
               for s in map(pipeline.load_spec, EXAMPLES)]
     assert (5, phase0) in shapes, shapes
+
+
+def _hostile_video_ids(root):
+    # Each would have named a directory outside the work dir, which render
+    # deletes and recreates for assembly (f1 rb3 verifier repros).
+    return {"relative": "../../victim/precious",
+            "absolute": (root / "victim" / "precious").as_posix(),
+            "illegal": "a:b?c*"}
+
+
+@pytest.mark.parametrize("kind", ["relative", "absolute", "illegal"])
+def test_a_video_id_that_is_not_a_slug_is_refused_and_touches_nothing(
+        kind, tmp_path, capsys, fake_tts):
+    victim = tmp_path / "victim" / "precious-draft"
+    victim.mkdir(parents=True)
+    (victim / "keep.txt").write_text("not the pipeline's", encoding="utf-8")
+    spec = example_spec()
+    spec["video_id"] = _hostile_video_ids(tmp_path)[kind]
+    path = write_spec(tmp_path / "spec.json", spec)
+
+    # --out given, so only the assembly dir could escape: the relative id
+    # resolves to work/assemble/../../victim/precious-draft, i.e. `victim`.
+    rc = cli.main(["render", str(path), "--cache-dir", str(tmp_path / "cache"),
+                   "--work-dir", str(tmp_path / "work"),
+                   "--out", str(tmp_path / "video.mp4")])
+
+    assert rc == cli.EXIT_SPEC_INVALID
+    assert "video_id: " in capsys.readouterr().err
+    assert (victim / "keep.txt").exists()
+    assert fake_tts.calls == []
+
+
+def test_a_control_character_in_text_is_refused_every_time(tmp_path, capsys):
+    # A NUL in a title: Pango refused it as a 'colour' build_error, and the
+    # text cache that refusal left behind let a second validate pass and
+    # render the title blank. Rung 1 now refuses it, run after run.
+    spec = example_spec()
+    spec["beats"][0]["params"]["title"] = "Bin" + chr(0) + "ary"
+    path = write_spec(tmp_path / "spec.json", spec)
+    argv = ["validate", str(path), "--work-dir", str(tmp_path / "work")]
+
+    assert [cli.main(argv), cli.main(argv)] == [cli.EXIT_SPEC_INVALID] * 2
+    assert "b01.params.title: control character U+0000 at offset 3" in \
+        capsys.readouterr().err

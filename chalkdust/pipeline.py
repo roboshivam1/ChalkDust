@@ -41,7 +41,7 @@ from chalkdust.core.models import (
     VideoSpec,
 )
 from chalkdust.render.assemble import assemble
-from chalkdust.render.pool import BeatFailed, can_ship, default_jobs, render_pool
+from chalkdust.render.pool import BeatFailed, WorkerDied, can_ship, default_jobs, render_pool
 from chalkdust.render.worker import long_path, plan_repair, render_beat, render_key
 from chalkdust.scenes.components import get_component
 from chalkdust.scenes.components.raw_scene import (
@@ -594,7 +594,9 @@ def render_stage_pooled(video: Video, ctx: BuildContext, cache: Cache, work_dir:
 
     Beats are reported in beat order, each once it and every beat before it
     are done. A failure is typed as it is sequentially (ToolchainFailed or
-    RenderFailed, same message), for the earliest failing beat. With a single
+    RenderFailed, same message), for the earliest failing beat. A worker
+    process that dies is RenderFailed naming every beat that was in flight,
+    not any one of them: which one it was rendering is unknown. With a single
     worker's worth of misses, or a render function that cannot reach another
     process (pool.can_ship), the misses render here, in order: the same
     worker, no pool to start.
@@ -679,6 +681,19 @@ def render_stage_pooled(video: Video, ctx: BuildContext, cache: Cache, work_dir:
         error = ToolchainFailed if exc.kind == "toolchain" else RenderFailed
         cause = RuntimeError(f"in worker process:\n{exc.trace}") if exc.trace else None
         raise error(f"{beat.id} ({beat.spec.component}): {exc.message}") from cause
+    except WorkerDied as exc:
+        # No beat reported this, so none is named as the failure: the dead
+        # process was rendering one of the beats in flight (pool.WorkerDied).
+        def names(indices: tuple[int, ...]) -> str:
+            return ", ".join(f"{beats[i].id} ({beats[i].spec.component})" for i in indices)
+        if len(exc.in_flight) == 1:
+            where = f"while rendering {names(exc.in_flight)}, the only beat in flight"
+        elif exc.in_flight:
+            where = (f"while rendering one of {names(exc.in_flight)} "
+                     "(which one crashed is unknown; the others were stopped with it)")
+        else:
+            where = f"before reporting any of {names(exc.unfinished)}"
+        raise RenderFailed(f"a worker process died {where}: {exc.message}") from exc
 
 
 def render(

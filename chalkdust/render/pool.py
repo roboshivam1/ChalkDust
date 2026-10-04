@@ -41,6 +41,14 @@ a failure that cannot be reported is worse than the failure. The worker
 returns the failure's kind ("toolchain" for theme.LatexToolchainError,
 "render" for anything else), its message and its traceback; the caller turns
 that into the same typed error a sequential render raises.
+
+A worker process that dies (a crash in native code, out of memory, killed
+from outside) reports nothing. The executor then fails every unfinished beat
+with BrokenProcessPool and stops the other workers, so which beat killed it
+cannot be told from the results: the dead one and the ones stopped with it
+look the same. Each worker therefore marks a beat as started before rendering
+it, and render_pool raises WorkerDied naming every beat that had started and
+not finished -- the crashed one is among them -- rather than blaming one.
 """
 
 from __future__ import annotations
@@ -80,6 +88,13 @@ PRIVATE_CACHES = {"text_dir": "texts", "tex_dir": "Tex"}
 # Set once in each worker process by _start_worker: its own text_dir and
 # tex_dir. A per-process global, never shared: it lives in the worker.
 _own_dirs: dict[str, str] = {}
+
+# Where render_one marks a beat as started (one empty file per beat index),
+# so the caller can say which beats were in flight when a worker died. Set
+# per worker process by _start_worker; in {media_dir}/pool/, which the caller
+# reads and removes.
+STARTED = "started"
+_started_dir: list[Path] = []
 
 
 def available_cpus() -> int:
@@ -139,6 +154,21 @@ class BeatDone:
     trace: str = ""
 
 
+class WorkerDied(Exception):
+    """A worker process died, so the pool broke and no beat it was running
+    reported back. Not attributed to one beat: `in_flight` holds the indices
+    of every beat that had started and not finished (the dead process was
+    rendering one of them; the rest were stopped with it), in beat order, and
+    `unfinished` every beat the pool did not finish, started or not."""
+
+    def __init__(self, in_flight: Sequence[int], unfinished: Sequence[int],
+                 message: str) -> None:
+        super().__init__(message)
+        self.in_flight = tuple(in_flight)
+        self.unfinished = tuple(unfinished)
+        self.message = message
+
+
 class BeatFailed(Exception):
     """A pooled beat failed. `kind` is "render" or "toolchain"; the caller
     raises its own typed error from it (pipeline.RenderFailed/ToolchainFailed),
@@ -166,6 +196,13 @@ def _start_worker(media_dir: Path, pool_dir: Path) -> None:
                 if f.is_file() and f.stat().st_size > 0:
                     shutil.copyfile(f, target / f.name)
         _own_dirs[key] = str(target)
+    started = pool_dir / STARTED
+    started.mkdir(parents=True, exist_ok=True)
+    _started_dir[:] = [started]
+
+
+def _nothing() -> None:
+    """The job render_pool submits last, only for its wake-up (see there)."""
 
 
 def render_one(index: int, beat: Beat, recipes: Sequence[ArtifactRecipe],
@@ -173,7 +210,11 @@ def render_one(index: int, beat: Beat, recipes: Sequence[ArtifactRecipe],
     """Runs in a worker process: render one beat under this process's own
     Manim config -- the caller's scratch settings, then this process's own
     text and LaTeX dirs, which the worker's media_dir does not override (they
-    are absolute) -- and report the result as plain data."""
+    are absolute) -- and report the result as plain data. The beat is marked
+    as started first, so a process that dies mid-render is traced to the
+    beats that were running (see WorkerDied)."""
+    for started in _started_dir:
+        (started / str(index)).touch()
     try:
         with scratch(), tempconfig(dict(_own_dirs)):
             render(beat, recipes=recipes)
@@ -200,9 +241,17 @@ def render_pool(work: Sequence[tuple[int, Beat, Sequence[ArtifactRecipe]]],
     clips commit to the cache, so a re-run reuses them), and BeatFailed is
     raised for the failed beat with the lowest index -- the one a sequential
     render would have stopped at, among those that ran.
+
+    If a worker process died, its beat sent no report and the pool stopped
+    every other running beat with it, so no single beat can be blamed:
+    WorkerDied is raised naming every beat in flight. A beat that reported its
+    own failure is still raised as BeatFailed first -- that attribution is
+    certain.
     """
     beats = {index: beat for index, beat, _ in work}
     failures: list[BeatFailed] = []
+    died: list[int] = []  # beats lost to a dead worker (BrokenProcessPool)
+    broken = ""
     context = multiprocessing.get_context("spawn")
     workers = max(1, min(workers, len(work)))
     if os.name == "nt":
@@ -216,6 +265,15 @@ def render_pool(work: Sequence[tuple[int, Beat, Sequence[ArtifactRecipe]]],
             executor.submit(render_one, index, beat, tuple(recipes), render, scratch): index
             for index, beat, recipes in work
         }
+        # ProcessPoolExecutor.submit (CPython 3.13) wakes the executor's
+        # manager thread *before* it spawns the worker the job may need, so
+        # the manager can go back to waiting on the processes it knew of,
+        # without the newest one. If that one then dies, nothing notices until
+        # another beat reports: measured here, a worker that died at once went
+        # unseen for two minutes while the others rendered. One more submit,
+        # once every worker exists, wakes the manager to watch them all. The
+        # job does nothing and its result is not waited on.
+        executor.submit(_nothing)
         while running:
             finished, _ = wait(running, return_when=FIRST_COMPLETED)
             for future in finished:
@@ -223,9 +281,12 @@ def render_pool(work: Sequence[tuple[int, Beat, Sequence[ArtifactRecipe]]],
                 try:
                     done = future.result()
                 except BrokenProcessPool as exc:
-                    # The process died (crash, out of memory): no report came back.
-                    done = BeatDone(index, failure="render",
-                                    message=f"worker process died: {exc}")
+                    # A process died (crash, out of memory, killed): no report
+                    # came back, and every unfinished beat fails the same way,
+                    # the dead process's and the ones stopped with it alike.
+                    died.append(index)
+                    broken = str(exc)
+                    continue
                 except Exception as exc:  # e.g. the job could not be sent
                     done = BeatDone(index, failure="render",
                                     message=f"{type(exc).__name__}: {exc}",
@@ -242,8 +303,19 @@ def render_pool(work: Sequence[tuple[int, Beat, Sequence[ArtifactRecipe]]],
                 beats[index].degraded = done.degraded
                 on_done(index)
             running = {f: i for f, i in running.items() if not f.cancelled()}
+        if died and not failures:
+            raise _worker_died(pool_dir / STARTED, sorted(died), broken)
     finally:
         executor.shutdown(wait=True, cancel_futures=True)
         shutil.rmtree(pool_dir, ignore_errors=True)
     if failures:
         raise min(failures, key=lambda f: f.index)
+
+
+def _worker_died(started_dir: Path, unfinished: list[int], reason: str) -> WorkerDied:
+    """The pool broke: name the beats that had started and not finished -- the
+    one whose process died is among them -- rather than any single beat."""
+    marked = ({int(p.name) for p in started_dir.iterdir() if p.name.isdigit()}
+              if started_dir.is_dir() else set())
+    in_flight = [i for i in unfinished if i in marked]
+    return WorkerDied(in_flight, unfinished, reason)

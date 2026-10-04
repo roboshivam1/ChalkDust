@@ -5,7 +5,8 @@ registry; this file pins what that walk cannot see: the timing contract
 (clocked frames and one real draft render counted with ffprobe), the schema's
 refusals, the glyph guard's refusals (text the resolved mono font cannot draw
 one glyph per character, kind "unrenderable_text"), where the highlight
-actually lands, and the carry-in artifact.
+actually lands, the carry-in artifact, and that a consumer naming part k of
+a carried listing (ZoomHighlight, Callout) lands on source line k + 1.
 
 CodeWalk compiles no LaTeX (latex_strings() is empty), so there is no
 invalid-LaTeX case here or in stress(); nothing on PATH beyond ffmpeg/ffprobe.
@@ -22,20 +23,27 @@ from dataclasses import asdict
 
 import numpy as np
 import pytest
-from manim import Code, tempconfig
+from manim import Code, Group, tempconfig
 from manim.animation.animation import prepare_animation
 from pydantic import ValidationError
 
-from chalkdust.continuity import ArtifactRecipe, build_artifact, resolve_carry_in
+from chalkdust.continuity import (
+    ArtifactRecipe,
+    beat_component,
+    build_artifact,
+    part_range_problems,
+    resolve_carry_in,
+)
 from chalkdust.core.models import BeatSpec, Quality, Region, VideoSpec
 from chalkdust.render.worker import TIERS
 from chalkdust.scenes.base import ChalkdustScene
-from chalkdust.scenes.components import code_walk
+from chalkdust.scenes.components import code_walk, make_component
 from chalkdust.scenes.components.code_walk import (
     DIM_OPACITY,
     MAX_HIGHLIGHTS,
     CodeWalk,
 )
+from chalkdust.scenes.components.zoom_highlight import FRAME_BUFF, MIN_ZOOM
 from chalkdust.scenes.regions import UNRENDERABLE_TEXT, LayoutError, bbox, fit_to_region
 from chalkdust.scenes.theme import DEFAULT, resolve_fonts
 from chalkdust.validate.geometric import LayoutProbe, validate_beat
@@ -466,21 +474,67 @@ class TestCarryIn:
         return build_artifact(recipe, resolve_fonts(DEFAULT, warn=False))
 
     def test_artifact_is_the_settled_last_frame(self):
-        # Same listing, same bar on the last span, same dimming as the frame
-        # the producing beat ended on -- the picture persists across the cut.
+        # Same panel, same wash on the last span, same dimming, every line
+        # where it was -- the frame the producing beat ended on, so the
+        # picture persists across the cut.
         params = EXAMPLES[1]
         code, bar = _probe(CodeWalk(params)).mobjects
         art = self._artifact(params)
         fit_to_region(art, Region.STAGE)
-        art_bar = art.submobjects[-1]
-        assert getattr(art_bar, "_chalk_label") == "highlight"
-        for got, want in ((art.background, code.background), (art_bar, bar)):
-            g, w = bbox(got), bbox(want)
-            assert (g.x, g.y, g.width, g.height) == pytest.approx(
-                (w.x, w.y, w.width, w.height), abs=1e-6)
-        opacity = [n.get_fill_opacity() for n in art.line_numbers]
-        assert opacity == pytest.approx([n.get_fill_opacity() for n in code.line_numbers])
-        assert art_bar.z_index < art.code_lines.z_index
+        washes = [m for m in art.get_family() if getattr(m, "_chalk_label", None) == "highlight"]
+        assert len(washes) == 1  # EXAMPLES[1] ends on line 9 alone
+        for got, want in ((_panel(art), code.background),
+                          (Group(*washes), bar)):
+            _same_box(got, want)
+        for k, row in enumerate(art):
+            _same_box(_ink(row), _beat_line(code, k))
+            assert row[-2].get_fill_opacity() == pytest.approx(
+                code.line_numbers[k].get_fill_opacity())
+        # Behind the text, by draw order: no z-index survives (it is global to
+        # a scene, so carried glyphs at z 1 would draw over a consumer's lens
+        # card), and each wash comes before its line's number and glyphs.
+        assert {m.z_index for m in art.get_family()} == {0}
+        family = art.get_family()
+        lit = next(row for row in art if row[0] in washes)
+        assert family.index(lit[0]) < family.index(lit[-2]) < family.index(lit[-1])
+
+    def test_wash_over_a_span_tiles_the_beats_bar(self):
+        # The bar is cut into one wash per lit line so that no part spans
+        # lines. Together they are the beat's bar exactly: edge to edge, no
+        # gap and no overlap to show as a seam in the translucent wash.
+        params = {"language": "python", "source": SOURCE,
+                  "highlights": [{"start": 1}, {"start": 2, "end": 4}]}
+        _code, bar = _probe(CodeWalk(params)).mobjects
+        art = self._artifact(params)
+        fit_to_region(art, Region.STAGE)
+        lit = [k for k, row in enumerate(art)
+               if getattr(row[0], "_chalk_label", None) == "highlight"]
+        assert lit == [1, 2, 3]
+        washes = [art[k][0] for k in lit]
+        _same_box(Group(*washes), bar)
+        for upper, lower in zip(washes, washes[1:]):
+            assert upper.get_bottom()[1] == pytest.approx(lower.get_top()[1], abs=1e-9)
+
+    def test_parts_are_the_source_lines_in_order(self):
+        # Callout's `part` and ZoomHighlight's `parts` index the carried
+        # artifact's top-level parts. On Code's own structure those were the
+        # background, the whole number column and the whole code block; they
+        # must be the lines, part k = line k + 1, and nothing else.
+        params = EXAMPLES[1]
+        art = self._artifact(params)
+        lines = params["source"].split("\n")
+        assert len(art.submobjects) == len(lines)
+        for k, (row, line) in enumerate(zip(art, lines)):
+            assert getattr(row, "_chalk_label") == f"line {k + 1}"
+            *_, number, glyphs = row
+            assert len(number) == len(str(k + 1))
+            assert len(glyphs) == sum(not c.isspace() for c in line)
+        # The parts' count is what the semantic rung checks indices against.
+        recipe = ArtifactRecipe(name="listing", producer="CodeWalk", params=params)
+        zoom = make_component("ZoomHighlight", {"target_id": "listing", "parts": [10],
+                                                "callout": "past the end"})
+        (problem,) = part_range_problems(zoom, [recipe], THEME)
+        assert "builds with 10 part(s)" in problem
 
     def test_rebuild_is_deterministic(self):
         a, b = self._artifact(EXAMPLES[0]), self._artifact(EXAMPLES[0])
@@ -516,3 +570,88 @@ class TestCarryIn:
         assert recipes[0].producer == "CodeWalk"
         report = validate_beat(video.beats[1], duration=4.0, recipes=recipes)
         assert report.ok, f"\n{report}"
+
+
+class TestConsumers:
+    """A later beat acting on a carried listing lands on the line it names
+    (SCENE_SPEC.md §6): source line n is part n - 1."""
+
+    PARAMS = EXAMPLES[1]  # ten lines, the walk ending on line 9 alone
+
+    def _consumer(self, component: str, params: dict) -> LayoutProbe:
+        recipe = ArtifactRecipe(name="listing", producer="CodeWalk", params=self.PARAMS)
+        spec = BeatSpec(id="b02", narration="placeholder narration", component=component,
+                        params={"target_id": "listing", **params}, carry_in=["listing"])
+        probe = LayoutProbe(beat_component(spec, (recipe,)), duration=8.0, strict=False)
+        probe.construct()
+        assert probe.layout_warnings == []
+        return probe
+
+    @pytest.mark.parametrize("k,marker", [
+        (1, "focus frame"),  # line 2, a long dimmed line: too wide to magnify
+        (8, "focus frame"),  # line 9, the lit line: its wash is part of it
+        (9, "zoom lens"),    # line 10, "}": short enough to magnify
+    ], ids=["line2-dim", "line9-lit", "line10-short"])
+    def test_zoom_highlight_part_k_frames_exactly_line_k(self, k, marker):
+        mobs = {getattr(m, "_chalk_label", None): m
+                for m in self._consumer("ZoomHighlight",
+                                        {"parts": [k], "callout": "this line"}).mobjects}
+        target, shown = mobs["carried[listing]"], mobs[marker]
+        row = target[k]
+        # The focus is the whole line -- its number and every glyph -- where
+        # the producing beat left it (CarryIn fits the listing to STAGE as
+        # the beat did).
+        code, _bar = _probe(CodeWalk(self.PARAMS)).mobjects
+        _same_box(_ink(row), _beat_line(code, k))
+        numbers = [r[-2].get_y() for r in target]
+        if marker == "focus frame":
+            # Framed around exactly that line: its box, FRAME_BUFF out, holds
+            # line k's number and none of its neighbours'.
+            want, got = bbox(row), bbox(shown)
+            assert (got.x, got.y) == pytest.approx((want.x, want.y), abs=1e-6)
+            assert (got.width, got.height) == pytest.approx(
+                (want.width + 2 * FRAME_BUFF, want.height + 2 * FRAME_BUFF), abs=0.02)
+            assert [i for i, y in enumerate(numbers) if got.bottom < y < got.top] == [k]
+        else:
+            # Magnified: the lens shows line k and only line k, scaled as a
+            # whole -- same glyphs, same shape, zoom times the size.
+            (mag,) = shown[1]
+            zoom = mag.height / row.height
+            assert zoom >= MIN_ZOOM
+            a = [m.points for m in row.family_members_with_points()]
+            b = [m.points for m in mag.family_members_with_points()]
+            assert len(a) == len(b) > 0
+            for pa, pb in zip(a, b):
+                np.testing.assert_allclose(
+                    (pb - mag.get_center()) / zoom, pa - row.get_center(), atol=1e-6)
+
+    def test_callout_part_k_points_at_line_k(self):
+        probe = self._consumer("Callout", {"part": 4, "text": "found it", "side": "right"})
+        mobs = {getattr(m, "_chalk_label", None): m for m in probe.mobjects}
+        row, arrow = mobs["carried[listing]"][4], mobs["callout arrow"]
+        # The arrow ends at line 5, level with it, just off its right edge.
+        assert arrow.get_end()[1] == pytest.approx(row.get_y(), abs=0.05)
+        assert 0 < arrow.get_end()[0] - row.get_right()[0] < 0.3
+
+
+def _same_box(got, want) -> None:
+    g, w = bbox(got), bbox(want)
+    assert (g.x, g.y, g.width, g.height) == pytest.approx((w.x, w.y, w.width, w.height),
+                                                          abs=1e-6)
+
+
+def _panel(art):
+    """The carried listing's panel alone: the artifact's own points."""
+    panel = art.copy()
+    panel.submobjects = []
+    return panel
+
+
+def _ink(row) -> Group:
+    """A carried line's number and glyphs, without its wash."""
+    return Group(*row[-2:])
+
+
+def _beat_line(code: Code, k: int) -> Group:
+    """Line k + 1 of the producing beat's listing: its number and glyphs."""
+    return Group(code.line_numbers[k], code.code_lines[k])

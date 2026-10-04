@@ -775,24 +775,90 @@ def _row_opacities(code: Code, span: LineSpan) -> list[float]:
 
 
 @artifact_builder("CodeWalk")
-def _artifact(p: CodeWalkParams, theme: Theme) -> Code:
+def _artifact(p: CodeWalkParams, theme: Theme) -> _Listing:
     """The settled last frame, for a later beat to carry in (SCENE_SPEC.md §6):
     the listing, and when the walk had highlights, its last span lit and the
     other lines dimmed -- the picture the viewer was left with.
 
-    Returned as the Code mobject itself (unplaced), so a consumer acting on a
-    carried listing (ZoomHighlight, Callout) can reach `code_lines[i]` and
-    `line_numbers[i]` for line i + 1. The bar, when present, is the last
-    submobject, labelled "highlight".
+    Parts are the source lines, in order: submobjects[i] is line i + 1 as the
+    listing numbers it, a VGroup of [wash,] line number, glyphs -- the wash
+    only on the lines of the last span. That is what Callout's `part` and
+    ZoomHighlight's `parts` index (SCENE_SPEC.md §6). Code's own top-level
+    parts are the background, the whole number column and the whole code
+    block, so indexing those focused a column, never a line.
+
+    Nothing else may be a part: the consumers treat every other part as a
+    sibling to recede or keep clear of, so a panel or bar spanning the lines
+    would make each line's arrow "cross" it. The panel is therefore the
+    artifact itself -- its own points draw it, under every line -- and the
+    beat's bar is cut at the midpoints between line numbers into one wash per
+    lit line, which tile it exactly.
+
+    No z-index survives: z-index is global to a scene, so carried glyphs at
+    z 1 would draw over a consumer's lens card. Family order keeps the
+    layering instead (panel, then each line's wash under its glyphs).
     """
     code = _listing(p, theme)
-    if p.highlights:
-        span = p.highlights[-1]
-        code.add(label(_bar(code, span, theme.palette.accent), "highlight"))
-        for i, want in enumerate(_row_opacities(code, span)):
-            for m in _row(code, i):
-                m.set_opacity(want)
-    return code
+    nums, lines = code.line_numbers, code.code_lines
+    span = p.highlights[-1] if p.highlights else None
+    washes = (_wash(code, span, theme.palette.accent) if span is not None else {})
+    want = _row_opacities(code, span) if span is not None else [1.0] * len(nums)
+
+    rows = []
+    for i in range(len(nums)):
+        for m in _row(code, i):
+            m.set_opacity(want[i])
+        number, glyphs = nums[i], lines[i]
+        tag_font_size(number, theme.type.mono)
+        tag_font_size(glyphs, theme.type.mono)
+        parts = [washes[i]] if i in washes else []
+        rows.append(label(VGroup(*parts, number, glyphs), f"line {i + 1}"))
+
+    panel = _Listing()
+    panel.set_points(code.background.points)
+    panel.match_style(code.background)
+    panel.add(*rows)
+    panel.set_z_index(0)  # whole family
+    return label(panel, "code")
+
+
+class _Listing(VMobject):
+    """A carried listing: its own points draw the panel, its submobjects are
+    the lines. Manim counts a mobject with points as its own first element
+    when indexing, iterating or measuring it (Mobject.__getitem__, __iter__,
+    __len__), so listing[4] would be line 4, not line 5 -- and Callout points
+    at plan[part]. Here those go over the lines alone, as on a VGroup."""
+
+    def __getitem__(self, value):
+        if isinstance(value, slice):
+            return VGroup(*self.submobjects[value])
+        return self.submobjects[value]
+
+    def __iter__(self):
+        return iter(self.submobjects)
+
+    def __len__(self) -> int:
+        return len(self.submobjects)
+
+
+def _wash(code: Code, span: LineSpan, color: str) -> dict[int, Rectangle]:
+    """_bar() behind `span`, cut into one rectangle per line (by 0-based line
+    index). Each runs from the midpoint to the line number above to the
+    midpoint to the one below, the span's ends half a pitch out as _bar's
+    are, so together they cover exactly _bar's rectangle, without a gap or
+    an overlap to show as a seam in the translucent wash."""
+    bar = _bar(code, span, color)
+    ys = [code.line_numbers[i].get_y() for i in range(span.start - 1, span.last)]
+    cuts = [bar.get_top()[1],
+            *((a + b) / 2 for a, b in zip(ys, ys[1:])),
+            bar.get_bottom()[1]]
+    washes = {}
+    for k, (top, bottom) in enumerate(zip(cuts, cuts[1:])):
+        piece = Rectangle(width=bar.width, height=top - bottom, fill_color=color,
+                          fill_opacity=HIGHLIGHT_OPACITY, stroke_width=0)
+        piece.move_to(bar).set_y((top + bottom) / 2)
+        washes[span.start - 1 + k] = label(piece, "highlight")
+    return washes
 
 
 def _bar(code: Code, span: LineSpan, color: str) -> Rectangle:

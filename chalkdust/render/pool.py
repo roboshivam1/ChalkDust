@@ -97,12 +97,15 @@ def default_jobs(pending: int, cpus: int | None = None) -> int:
     `pending` either: an idle worker still pays its spawn and Manim's import.
     At most one pending beat means no pool at all.
 
-    Measured on a 24-core Windows machine: at 1080p60 one process per beat
-    cut the render stage 1.6-3.2x. At 480p15 a beat renders in about two
-    seconds, so the pool's fixed cost (the cache check here, about 0.3 s a
-    beat, and 4-5 s to start the workers) about cancels the gain for four or
-    five beats -- a few seconds either way, slower on a loaded machine -- and
-    wins from nine (17.1 s -> 9.8 s). `--jobs 1` keeps the sequential path.
+    Measured on a 24-core Windows machine (8 P + 16 E cores, shared with
+    other work): at 1080p60 one process per beat cut the render stage
+    1.6-1.9x for 4-9 beats, well short of the beat count (the longest beat
+    bounds it, and concurrent renders contend; not profiled further). At
+    480p15 a beat renders in about two seconds, so the pool's fixed cost (the
+    cache check here, about 0.3 s a beat, and 4-5 s to start the workers)
+    about cancels the gain for four or five beats -- a few seconds either
+    way, slower on a loaded machine -- and wins from nine (17.1 s -> 9.8 s).
+    `--jobs 1` keeps the sequential path.
     """
     cpus = available_cpus() if cpus is None else max(1, cpus)
     limit = MAX_WORKERS_WINDOWS if os.name == "nt" else cpus

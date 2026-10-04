@@ -527,16 +527,26 @@ def _merge(children: list[dict], a: int, b: int) -> None:
 
 
 class TestHiddenFonts:
-    def test_hiding_the_resolved_fonts_changes_the_fingerprint_and_restores(self):
+    def test_hiding_the_resolved_fonts_changes_the_fingerprint_and_restores(self, monkeypatch):
         # --hide-font records the baseline of a machine without those fonts:
         # the fingerprint must follow, and nothing may leak past the block.
+        # Pinned on a controlled font set -- the theme fonts plus the Windows
+        # fallbacks -- not on whatever this box has installed: on a box with
+        # only the fallbacks, hiding what it resolves (Arial, Courier New)
+        # leaves no role a font and is rightly refused (see
+        # test_hiding_the_last_fallback_is_refused).
+        installed = frozenset({"Archivo", "Inter", "JetBrains Mono", "Arial", "Courier New"})
+        monkeypatch.setattr(theme_mod, "_installed_fonts", lambda: installed)
         before = fingerprint()
+        assert before == f"{sys.platform}|Archivo|Inter|JetBrains Mono"
         _, heading, body, mono = before.split("|")
         with fonts_hidden({heading, body, mono}):
             hidden = fingerprint()
         assert hidden != before
         assert not {heading, body, mono} & set(hidden.split("|")[1:])
+        assert hidden == f"{sys.platform}|Arial|Arial|Courier New"
         assert fingerprint() == before
+        assert theme_mod._installed_fonts() == installed
 
     def test_hiding_a_font_that_is_not_installed_is_refused(self, tmp_path):
         missing = "No Such Font Family 9f3c"

@@ -2,9 +2,14 @@
 
 from __future__ import annotations
 
+import subprocess
+import uuid
+
 import pytest
 
 from chalkdust import cli, pipeline
+from chalkdust.scenes import theme as theme_mod
+from chalkdust.scenes.theme import LatexToolchainError
 from chalkdust.speech.base import TTSError
 from test_pipeline import EXAMPLE, example_spec, fake_tts, write_spec  # noqa: F401
 
@@ -41,7 +46,9 @@ def _broken(exc):
      cli.EXIT_RENDER_FAILED, "render failed"),
     (None, "fake", ("assemble", TTSError("ffmpeg failed")),
      cli.EXIT_ASSEMBLY_FAILED, "assembly failed"),
-], ids=["spec", "semantic", "layout", "speech", "render", "assembly"])
+    (None, "fake", ("render_beat", LatexToolchainError("TeX is slow or hung")),
+     cli.EXIT_TOOLCHAIN_FAILED, "toolchain failed"),
+], ids=["spec", "semantic", "layout", "speech", "render", "assembly", "toolchain"])
 def test_known_failures_have_distinct_exit_codes(
         edit, backend, patch, code, label, tmp_path, monkeypatch, capsys, fake_tts):
     spec = example_spec()
@@ -274,3 +281,84 @@ def test_a_work_dir_whose_full_path_has_a_tilde_is_refused_up_front(
     assert "contains '~'" in err
     assert not (tmp_path / "my~scratch").exists()
     assert fake_tts.calls == []
+
+
+# --- carry-in references (register D-G4b-1) ----------------------------------
+
+_LIST = {"id": "b01", "narration": "Three things make a hash table chain grow long.",
+         "component": "BulletReveal", "registers": "tgt",
+         "params": {"items": ["A weak hash function", "A load factor left too high",
+                              "Adversarial keys chosen to collide"]}}
+_FLOW = {**_LIST, "component": "BoxFlow", "params": {
+    "nodes": [{"id": "a", "label": "A"}, {"id": "b", "label": "B"}],
+    "edges": [{"source": "a", "target": "b"}]}}
+_LOOK = "Look again at that one: it is the reason most of these chains grow long."
+
+
+def _consumer(component, params, carry_in, beat_id="b02"):
+    return {"id": beat_id, "narration": _LOOK, "component": component,
+            "params": params, "carry_in": carry_in}
+
+
+# The gate-4/5 battery's shapes (.run/evidence/gate-45b/specs3): each was a
+# build_error (exit 4) or a rung-2 refusal (exit 8).
+_BROKEN_REFERENCES = {
+    "zh-part-oor": [_LIST, _consumer("ZoomHighlight", {
+        "target_id": "tgt", "parts": [9], "callout": "x"}, ["tgt"])],
+    "co-part-oor": [_LIST, _consumer("Callout", {
+        "target_id": "tgt", "part": 7, "text": "x"}, ["tgt"])],
+    "zh-on-boxflow-oor": [_FLOW, _consumer("ZoomHighlight", {
+        "target_id": "tgt", "parts": [40], "callout": "x"}, ["tgt"])],
+    "zh-not-carried": [_LIST, _consumer("ZoomHighlight", {
+        "target_id": "tgt", "parts": [0], "callout": "x"}, [])],
+    "zh-wrong-target": [_LIST, _consumer("ZoomHighlight", {
+        "target_id": "other", "parts": [0], "callout": "x"}, ["tgt"])],
+    "zh-alone": [_consumer("ZoomHighlight", {
+        "target_id": "tgt", "callout": "x"}, [], beat_id="b01")],
+    "co-not-carried": [_LIST, _consumer("Callout", {
+        "target_id": "tgt", "text": "x"}, [])],
+}
+
+
+@pytest.mark.parametrize("beats", _BROKEN_REFERENCES.values(),
+                         ids=_BROKEN_REFERENCES.keys())
+def test_a_broken_carry_in_reference_is_spec_invalid(beats, tmp_path, capsys):
+    # A part the target does not have, or a target the beat does not carry:
+    # a spec error, refused before build as a typed carry_in finding.
+    path = write_spec(tmp_path / "spec.json", {"video_id": "v", "beats": beats})
+
+    rc = cli.main(["validate", str(path), "--work-dir", str(tmp_path / "work")])
+
+    err = capsys.readouterr().err
+    assert rc == cli.EXIT_SPEC_INVALID
+    assert err.startswith("chalkdust: spec invalid: ")
+    assert "[carry_in]" in err and "build_error" not in err
+
+
+# --- a slow TeX toolchain (register G4b-N6) ----------------------------------
+
+
+def test_a_latex_timeout_is_a_toolchain_failure_not_a_spec_verdict(
+        tmp_path, monkeypatch, capsys):
+    calls = []
+
+    def hung(command):
+        calls.append(command)
+        raise subprocess.TimeoutExpired(command, theme_mod.LATEX_CHECK_TIMEOUT)
+
+    monkeypatch.setattr(theme_mod, "_compile", hung)
+    monkeypatch.setattr(theme_mod, "_latex_verdicts", {})
+    maths = f"F_{{7}} = {uuid.uuid4().int}"  # never seen: no cached verdict
+    path = write_spec(tmp_path / "spec.json", {"video_id": "v", "beats": [{
+        "id": "b01", "component": "EquationDerivation",
+        "narration": "Add the two forces, then simplify to find the net force.",
+        "params": {"steps": [maths]}}]})
+
+    rc = cli.main(["validate", str(path), "--work-dir", str(tmp_path / "work")])
+
+    err = capsys.readouterr().err
+    assert rc == cli.EXIT_TOOLCHAIN_FAILED
+    assert err.startswith("chalkdust: toolchain failed: b01: ")
+    assert repr(maths) in err and "slow or hung" in err
+    assert "invalid_latex" not in err
+    assert len(calls) == theme_mod.LATEX_CHECK_ATTEMPTS

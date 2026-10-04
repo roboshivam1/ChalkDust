@@ -14,16 +14,24 @@ dispatches on one vocabulary across rungs.
 
 from __future__ import annotations
 
-from collections.abc import Collection, Iterable, Mapping
+from collections.abc import Collection, Iterable, Mapping, Sequence
 from itertools import combinations
 from pathlib import Path
 from typing import Any
 
+from chalkdust.continuity import ArtifactRecipe, part_range_problems
 from chalkdust.core.models import BeatSpec, Region
 from chalkdust.scenes.components import Component, make_component
 from chalkdust.scenes.components.raw_scene import RawScene
 from chalkdust.scenes.regions import MIN_FONT_SIZE, LayoutError, region_rect
-from chalkdust.scenes.theme import DEFAULT, check_latex_source, math
+from chalkdust.scenes.theme import (
+    DEFAULT,
+    LatexToolchainError,
+    check_latex_source,
+    get_theme,
+    math,
+    resolve_fonts,
+)
 from chalkdust.validate.geometric import Finding, Report, probe_media
 
 # --- duration ---------------------------------------------------------------
@@ -108,6 +116,29 @@ def check_carried_targets(component: Component,
         for name in component.carried_targets()
         if name not in carry_in
     ]
+
+
+def check_carried_parts(component: Component,
+                        recipes: Sequence[ArtifactRecipe],
+                        theme: str = "default",
+                        media_dir: Path | str | None = None) -> list[Finding]:
+    """Every part a consumer points at must exist in its carried target.
+
+    The part count belongs to the producer's artifact, so it is rebuilt from
+    the recipe the render would carry in and counted
+    (continuity.part_range_problems). Without this an out-of-range `part`
+    or `parts` index surfaced only inside build(), as a CarryInError the
+    geometric and repair rungs reported as build_error (register D-G4b-1):
+    a spec bug blamed on the component. Building the artifact writes Text
+    SVGs, so it runs under probe_media like the LaTeX check, and with the
+    fonts resolved as every scene resolves them (ChalkdustScene).
+    """
+    if not recipes:
+        return []
+    with probe_media(media_dir):
+        resolved = resolve_fonts(get_theme(theme))
+        return [Finding("carry_in", message)
+                for message in part_range_problems(component, recipes, resolved)]
 
 
 # --- regions ----------------------------------------------------------------
@@ -223,9 +254,12 @@ def check_latex(component: Component,
     else a caller's own redirect (the pipeline's work dir), else
     work/manim -- never ./media in the cwd.
 
-    A failure that is not the expression's fault (the TeX toolchain itself
-    failing) is a build_error, not invalid_latex: regenerating the spec
-    cannot fix it.
+    A failure that is not the expression's fault is not invalid_latex:
+    regenerating the spec cannot fix it. LaTeX still running after its
+    timeout, twice, is kind "toolchain" (theme.LatexToolchainError): a slow
+    or hung TeX, which the pipeline reports as a toolchain failure with its
+    own exit code (register G4b-N6). Any other toolchain failure is a
+    build_error.
     """
     findings = []
     with probe_media(media_dir):
@@ -236,6 +270,8 @@ def check_latex(component: Component,
                 math(source, DEFAULT, what=what)
             except LayoutError as exc:
                 findings.append(Finding(exc.kind, str(exc)))
+            except LatexToolchainError as exc:
+                findings.append(Finding("toolchain", str(exc)))
             except Exception as exc:
                 first_line = (str(exc).strip().splitlines() or [""])[0]
                 findings.append(Finding(
@@ -255,6 +291,8 @@ def validate_semantic(
     duration: float | None = None,
     concurrent: Mapping[str, Iterable[Region]] | None = None,
     media_dir: Path | str | None = None,
+    recipes: Sequence[ArtifactRecipe] = (),
+    theme: str = "default",
 ) -> Report:
     """Run every rung-2 check on one beat. Never raises.
 
@@ -267,6 +305,10 @@ def validate_semantic(
                             something over it.
     media_dir            -- where compiling LaTeX writes its scratch (see
                             check_latex); never the cwd.
+    recipes              -- the beat's carried artifacts
+                            (continuity.resolve_carry_in), so a part index
+                            into one is checked against the artifact the
+                            render will build; `theme` builds them.
     """
     report = Report(beat_id=spec.id)
     try:
@@ -280,6 +322,7 @@ def validate_semantic(
     report.findings += check_duration(component, seconds, measured=measured)
     report.findings += check_carry_in(spec.carry_in, registered_artifacts)
     report.findings += check_carried_targets(component, spec.carry_in)
+    report.findings += check_carried_parts(component, recipes, theme, media_dir)
     report.findings += check_region_conflicts(
         {spec.component: component.regions(), **(concurrent or {})}
     )

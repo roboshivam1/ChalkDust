@@ -2,12 +2,19 @@
 
 from __future__ import annotations
 
+import subprocess
+import uuid
+
+import pytest
 from manim import RIGHT, tempconfig
 
+from chalkdust.continuity import ArtifactRecipe
 from chalkdust.core.models import BeatSpec, Region
+from chalkdust.scenes import theme as theme_mod
 from chalkdust.scenes.components import Component, ComponentParams
 from chalkdust.scenes.theme import body_text
 from chalkdust.validate.geometric import LayoutProbe, run_probe, validate_beat
+from chalkdust.validate.repair import repair_beat
 
 
 class _AnimatesWithoutAdding(Component):
@@ -58,3 +65,45 @@ def test_probe_keeps_a_callers_media_dir(tmp_path, monkeypatch):
         assert validate_beat(_title_beat("Caller scratch")).ok
     assert any((tmp_path / "callers" / "texts").iterdir())
     assert not (tmp_path / "work").exists()
+
+
+# --- typed failures from inside build() (register D-G4b-1, G4b-N6) ----------
+
+_THREE_ROWS = ArtifactRecipe(name="causes", producer="BulletReveal",
+                             params={"items": ["A weak hash", "A high load",
+                                               "Chosen keys"]})
+
+
+@pytest.mark.parametrize("rung", [validate_beat, repair_beat],
+                         ids=["geometric", "repair"])
+@pytest.mark.parametrize("name,params", [
+    ("Callout", {"target_id": "causes", "text": "note", "part": 7}),
+    ("ZoomHighlight", {"target_id": "causes", "callout": "note", "parts": [9]}),
+])
+def test_a_carry_in_error_in_build_is_a_carry_in_finding(rung, name, params,
+                                                         tmp_path):
+    # A part the carried artifact does not have raises CarryInError inside
+    # build(). It is the spec's fault, typed as rung 2 types it -- never a
+    # build_error (a crash) the repair loop would misread.
+    spec = BeatSpec(id="b02", narration="placeholder narration", component=name,
+                    params=params, carry_in=["causes"])
+    with tempconfig({"media_dir": str(tmp_path)}):
+        result = rung(spec, recipes=[_THREE_ROWS])
+    report = getattr(result, "report", result)
+    assert report.kinds() == {"carry_in"}, report
+    assert "'causes'" in str(report)
+
+
+def test_a_latex_timeout_in_build_is_a_toolchain_finding(tmp_path, monkeypatch):
+    # TeX still running after its timeout, twice, is the machine's fault:
+    # kind "toolchain", never invalid_latex or build_error.
+    def hung(command):
+        raise subprocess.TimeoutExpired(command, theme_mod.LATEX_CHECK_TIMEOUT)
+
+    monkeypatch.setattr(theme_mod, "_compile", hung)
+    monkeypatch.setattr(theme_mod, "_latex_verdicts", {})
+    spec = BeatSpec(id="b01", narration="placeholder narration",
+                    component="EquationDerivation",
+                    params={"steps": ["x = 1", f"x = {uuid.uuid4().int}"]})
+    report = validate_beat(spec, media_dir=tmp_path)
+    assert report.kinds() == {"toolchain"}, report

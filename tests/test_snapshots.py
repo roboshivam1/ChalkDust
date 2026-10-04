@@ -548,3 +548,15 @@ class TestHiddenFonts:
             main(["--reason", "x", "--component", "TitleCard", "--hide-font", missing,
                   "--dir", str(tmp_path)])
         assert not snapshot_path("TitleCard", tmp_path).exists()
+
+    def test_hiding_the_last_fallback_is_refused(self, monkeypatch):
+        # On a box with only the fallbacks, hiding Arial leaves heading and
+        # body with nothing installed: resolve_fonts would keep the theme's
+        # names, and the baseline would be filed under "Archivo|Inter" on a
+        # box that does not have them.
+        fallbacks = frozenset({"Arial", "Courier New"})
+        monkeypatch.setattr(theme_mod, "_installed_fonts", lambda: fallbacks)
+        with pytest.raises(ValueError, match="no installed fallback"):
+            with fonts_hidden({"Arial"}):
+                pass
+        assert theme_mod._installed_fonts() == fallbacks

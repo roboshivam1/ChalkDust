@@ -152,7 +152,12 @@ LAYOUT_CHOICES: dict[str, dict[str, Choice]] = {
     # value take, and which words each line holds, depends on the font (seen:
     # example 0's "kinetic" moves down a line in Inter; example 2 re-splits).
     # The labelled items themselves -- the statement, given[i], find value --
-    # and their order are the spec's, and stay structure.
+    # and their order are the spec's, and stay structure. The statement is
+    # revealed one play per line, so its line count also sets how many plays
+    # the timeline has; it was the same (3, 1 and 2 lines) under every font
+    # tried, so the timeline stays structure, and a font that re-counts the
+    # statement's lines fails test_structure_unchanged rather than passing
+    # unnoticed.
     "ProblemStatement": {
         "statement": Choice("lines", "statement lines"),
         r"given\[\d+\]": Choice("lines", "given lines"),
@@ -222,6 +227,15 @@ def fonts_hidden(names: Iterable[str]) -> Iterator[None]:
     if absent:
         raise ValueError(f"not installed, so cannot be hidden: {absent}")
     theme_mod._installed_fonts = lambda: available - hide  # type: ignore[assignment]
+    # With no installed fallback left for a role, resolve_fonts keeps the
+    # theme's own name and lets Pango substitute: the fingerprint would then
+    # name a font this box does not draw with (hiding Arial on a box that
+    # has only the fallbacks would record "Archivo|Inter").
+    unbacked = sorted(set(fingerprint().split("|")[1:]) - (available - hide))
+    if unbacked:
+        theme_mod._installed_fonts = real
+        raise ValueError(f"hiding {sorted(hide)} leaves no installed fallback for "
+                         f"{unbacked}, so the fingerprint would be mislabelled")
     try:
         yield
     finally:

@@ -265,3 +265,19 @@ def test_raw_scenes_degrading_to_one_fallback_match_sequential(
     pooled = tmp_path / "pooled"
     assert not list((pooled / "cache" / "beats").glob(".tmp-*"))
     assert not (pooled / "work" / "manim" / "pool").exists()
+
+
+def test_small_draft_render_with_default_jobs_takes_the_sequential_path(
+        tmp_path, monkeypatch, fake_tts):
+    """Fewer than DRAFT_MIN_POOLED beats at draft, jobs not given: not even
+    render_stage_pooled's up-front cache check runs (measured, it alone made
+    binary_search's 4 draft beats slower than --jobs 1)."""
+    def no_pool(*args, **kwargs):
+        raise AssertionError("render_stage_pooled ran for a 4-beat draft")
+    monkeypatch.setattr(pipeline, "render_stage_pooled", no_pool)
+    spec = example_spec()
+    assert len(spec["beats"]) == 4 < pool.DRAFT_MIN_POOLED
+    result = pipeline.render(write_spec(tmp_path / "spec.json", spec), Quality.DRAFT,
+                             tmp_path / "out.mp4", cache_dir=tmp_path / "cache",
+                             work_dir=tmp_path / "work", jobs=None)
+    assert result.rebuilt == ["b01", "b02", "b03", "b04"]

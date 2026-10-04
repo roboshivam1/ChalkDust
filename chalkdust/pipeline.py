@@ -41,7 +41,14 @@ from chalkdust.core.models import (
     VideoSpec,
 )
 from chalkdust.render.assemble import assemble
-from chalkdust.render.pool import BeatFailed, WorkerDied, can_ship, default_jobs, render_pool
+from chalkdust.render.pool import (
+    DRAFT_MIN_POOLED,
+    BeatFailed,
+    WorkerDied,
+    can_ship,
+    default_jobs,
+    render_pool,
+)
 from chalkdust.render.worker import long_path, plan_repair, render_beat, render_key
 from chalkdust.scenes.components import get_component
 from chalkdust.scenes.components.raw_scene import (
@@ -801,8 +808,15 @@ def render(
               f"  render {'cached ' if cached else 'rebuilt'}"
               f"  {outcome.duration:6.2f}s  {shown}")
 
+    # A draft render of fewer beats than a pool pays off for (whatever is
+    # cached) goes straight to the sequential path: render_stage_pooled's
+    # up-front cache check builds each beat's repair plan once more, and
+    # measured, that alone made binary_search's 4 draft beats ~0.8 s slower
+    # even with no pool started (pool.DRAFT_MIN_POOLED).
+    sequential = jobs == 1 or (jobs is None and ctx.quality is Quality.DRAFT
+                                and len(video.beats) < DRAFT_MIN_POOLED)
     with manim_scratch(work_dir, verbose):
-        if jobs == 1:
+        if sequential:
             for beat in video.beats:
                 # The render key (font-resolved theme, tier, repair plan,
                 # carried artifacts) is the worker's to build; a beat was

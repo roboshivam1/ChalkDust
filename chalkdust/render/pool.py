@@ -112,7 +112,12 @@ def available_cpus() -> int:
 # Measured on a quiet 24-core Windows machine (cold caches, 2 runs each; see
 # default_jobs): with 2 beats the pool lost ~1 s every time, with 3 it was a
 # wash, with 4 it lost 0.7 s on binary_search and won ~1 s on others, and from
-# 5 it won every time (1.5-2 s at 5, 7 s at 9-10).
+# 5 it won every time (1.5-2 s at 5, 7 s at 9-10). Part of the cost is not
+# the pool's: the caller's up-front cache check (pipeline.cached_clip builds
+# each beat's repair plan, which the render then builds again) cost
+# binary_search ~0.8 s even with no pool started. So a draft spec with fewer
+# beats than this skips that check too (pipeline.render), and default_jobs
+# returns 1 when fewer than this many beats miss.
 DRAFT_MIN_POOLED = 5
 
 

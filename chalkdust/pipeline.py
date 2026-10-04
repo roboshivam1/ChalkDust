@@ -101,7 +101,9 @@ class SemanticRefused(RungRefused):
 class CarryInRefused(SemanticRefused):
     """A beat's carry-in references are broken: it acts on an artifact it does
     not carry in, or points at a part that artifact does not have
-    (SCENE_SPEC.md §6). Found as kind "carry_in" findings, but the same family
+    (SCENE_SPEC.md §6), or carries one in that its component neither acts on
+    nor leaves a STAGE region free for (kind "region_conflict", register
+    D-G4c-1). Found as rung-2 findings, but the same family
     of spec error as an unregistered name, which rung 1 refuses: no layout
     repair or rewording of the beat's content can fix a reference, so the CLI
     reports it as spec invalid (register D-G4b-1). A SemanticRefused, so
@@ -386,6 +388,10 @@ def checked_beats(spec: VideoSpec) -> list[CheckedBeat]:
     return checked
 
 
+# Finding kinds that put a beat's carry_in at fault (refuse_unfit).
+CARRY_IN_KINDS = frozenset({"carry_in", "region_conflict"})
+
+
 def refuse_unfit(failed: list[Report], refusal: type[RungRefused],
                  carry_in_rung: str | None = None) -> None:
     """Raise for a rung's failed reports, typed by what failed.
@@ -395,14 +401,19 @@ def refuse_unfit(failed: list[Report], refusal: type[RungRefused],
     code, the spec not blamed (register G4b-N6). Then a "carry_in" finding
     is a broken reference, a spec error whichever rung found it:
     CarryInRefused, its header naming `carry_in_rung` when given (register
-    D-G4b-1). Only then the rung's own refusal."""
+    D-G4b-1). So is a "region_conflict": the pipeline layers nothing over a
+    beat's component, so its only source is a carried artifact the
+    component does not act on and leaves no STAGE region free for
+    (continuity.carry_region_problems, register D-G4c-1) -- fixed by the
+    beat's carry_in, never by its content. Only then the rung's own
+    refusal."""
     if not failed:
         return
     slow = [f"{r.beat_id}: {f.message}" for r in failed for f in r.findings
             if f.kind == "toolchain"]
     if slow:
         raise ToolchainFailed("\n".join(slow))
-    if any(f.kind == "carry_in" for r in failed for f in r.findings):
+    if any(f.kind in CARRY_IN_KINDS for r in failed for f in r.findings):
         raise CarryInRefused(failed, rung=carry_in_rung)
     raise refusal(failed)
 

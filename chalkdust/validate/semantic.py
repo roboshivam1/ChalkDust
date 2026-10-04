@@ -19,7 +19,11 @@ from itertools import combinations
 from pathlib import Path
 from typing import Any
 
-from chalkdust.continuity import ArtifactRecipe, part_range_problems
+from chalkdust.continuity import (
+    ArtifactRecipe,
+    carry_region_problems,
+    part_range_problems,
+)
 from chalkdust.core.models import BeatSpec, Region
 from chalkdust.scenes.components import Component, make_component
 from chalkdust.scenes.components.raw_scene import RawScene
@@ -167,6 +171,24 @@ def check_region_conflicts(
                 f"{', '.join(clashes)}",
             ))
     return findings
+
+
+def check_carry_placement(component: Component,
+                          carry_in: Sequence[str]) -> list[Finding]:
+    """Every carried artifact the component does not act on needs a STAGE
+    region the component leaves free (register D-G4c-1).
+
+    Such an artifact is drawn dimmed beside the component, in the half of
+    STAGE it does not claim (continuity.carry_region). A component claiming
+    STAGE, or both halves, leaves no half: the artifact could only sit under
+    it, overlapping its text or hidden behind its panels -- two claimants of
+    one region (SCENE_SPEC.md §4), a broken frame (§11 rule 1). Refused
+    here, as a region_conflict, before any speech or render. Consumers
+    (Callout, ZoomHighlight) lay their carried artifacts out themselves and
+    are not checked.
+    """
+    return [Finding("region_conflict", message)
+            for message in carry_region_problems(component, carry_in)]
 
 
 # --- text volume ------------------------------------------------------------
@@ -323,6 +345,7 @@ def validate_semantic(
     report.findings += check_carry_in(spec.carry_in, registered_artifacts)
     report.findings += check_carried_targets(component, spec.carry_in)
     report.findings += check_carried_parts(component, recipes, theme, media_dir)
+    report.findings += check_carry_placement(component, spec.carry_in)
     report.findings += check_region_conflicts(
         {spec.component: component.regions(), **(concurrent or {})}
     )

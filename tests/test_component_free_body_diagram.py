@@ -281,15 +281,17 @@ def test_artifact_rebuild_is_deterministic():
     assert all(np.array_equal(x, y) for x, y in zip(pa, pb))
 
 
-def test_carried_artifact_is_the_settled_diagram():
+def test_carried_artifact_is_the_settled_diagram(hold_consumer):
     # A later beat carrying the diagram in sees the picture this beat ended
     # on: the same body, arrows and labels, in the same place on the stage.
+    # Carried into _Hold, a consumer: a beat that carries an artifact in
+    # without acting on it must leave it a free STAGE region (D-G4c-1).
     params = EXAMPLES[2]
     video = VideoSpec(video_id="v", beats=(
         BeatSpec(id="b01", narration="placeholder narration", component=NAME,
                  params=params, registers="fbd"),
         BeatSpec(id="b02", narration="placeholder narration",
-                 component="BulletReveal", params={"items": ["one point"]},
+                 component=hold_consumer, params={"target_id": "fbd"},
                  carry_in=["fbd"]),
     ))
     recipes = resolve_carry_in(video)["b02"]

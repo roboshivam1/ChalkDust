@@ -26,7 +26,7 @@ from manim.animation.animation import prepare_animation
 from chalkdust.continuity import ArtifactRecipe, beat_component
 from chalkdust.core.models import BeatSpec, CarryInError
 from chalkdust.scenes.base import ChalkdustScene
-from chalkdust.scenes.regions import LayoutError
+from chalkdust.scenes.regions import LayoutError, bbox
 from chalkdust.scenes.theme import LatexToolchainError
 
 
@@ -37,6 +37,11 @@ class Finding:
     kinds, geometric (rung 3, this module):
       out_of_bounds | overlap | illegible | overflow | invalid_latex |
       build_error
+      overlap         -- includes the component drawing over a carried
+                         artifact it does not act on (LayoutProbe.settle)
+      region_conflict -- as at rung 2, for a caller that skipped it: no
+                         STAGE region left free for such an artifact
+                         (continuity.CarryIn)
       carry_in        -- build() hit a bad reference into a carried artifact
                          (a CarryInError): a spec error, as at rung 2
       toolchain       -- LaTeX still running after its timeout, every
@@ -48,7 +53,9 @@ class Finding:
       carry_in        -- references an artifact no earlier beat registered,
                          acts on one the beat does not carry in, or points
                          at a part that artifact does not have
-      region_conflict -- two simultaneously active claimants share space
+      region_conflict -- two simultaneously active claimants share space,
+                         or a carried artifact the component does not act
+                         on has no STAGE region left free for it
       capacity        -- more text than the claimed regions can hold legibly
       invalid_latex   -- a LaTeX string does not compile standalone
       toolchain       -- as above: compiling it timed out, every attempt
@@ -139,6 +146,43 @@ class LayoutProbe(ChalkdustScene):
 
     def wait(self, *args, **kwargs) -> None:  # type: ignore[override]
         return None
+
+    def settle(self, label: str = "settle point") -> None:
+        super().settle(label)
+        self._check_carried_clear(label)
+
+    def _check_carried_clear(self, label: str) -> None:
+        """Nothing of the component's may be drawn over a carried artifact it
+        does not act on (register D-G4c-1).
+
+        CarryIn fits such an artifact into the STAGE region the component
+        leaves free and tags it `_chalk_carry_clear`. The component does not
+        know it is there, so it cannot mark it exclusive() the way it marks
+        its own parts: every other top-level mobject is checked against it,
+        as overlap, at every settle point. A hit means the component drew
+        outside the regions it claims. Inkless placeholders (zero area) are
+        skipped; they draw nothing to overlap.
+        """
+        clear = [m for m in self.mobjects if getattr(m, "_chalk_carry_clear", False)]
+        if not clear:
+            return
+        drawn = [m for m in self.mobjects
+                 if not getattr(m, "_chalk_carry_clear", False)
+                 and bbox(m).area > 0]
+        for art in clear:
+            box = bbox(art)
+            for mob in drawn:
+                if box.intersects(bbox(mob)):
+                    msg = (f"{label}: {_label(mob)} is drawn over "
+                           f"{_label(art)}, a carried artifact this beat's "
+                           f"component does not act on")
+                    if self.strict:
+                        raise LayoutError(msg, kind="overlap")
+                    self.layout_warnings.append(("overlap", msg))
+
+
+def _label(mob) -> str:
+    return getattr(mob, "_chalk_label", type(mob).__name__)
 
 
 def validate_beat(spec: BeatSpec, theme: str = "default",

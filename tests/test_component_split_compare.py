@@ -259,12 +259,18 @@ class TestContinuity:
         assert len(pa) == len(pb) > 0
         assert all(np.array_equal(x, y) for x, y in zip(pa, pb))
 
-    def test_carried_comparison_validates_in_a_later_beat(self):
-        # b01 registers the comparison; b02 (another SplitCompare, as in the
-        # §6 example) carries it in, dimmed in STAGE beneath its own cards.
+    def test_carried_comparison_validates_in_a_later_beat(self, hold_consumer):
+        # b01 registers the comparison; b02 carries it in. Not another
+        # SplitCompare, as in the §6 example: that claims both halves of
+        # STAGE and does not act on the comparison, so no region is free to
+        # draw it in and rung 2 refuses the beat (D-G4c-1,
+        # tests/test_carry_placement.py). _Hold, a consumer, holds it dimmed
+        # in STAGE.
         video = VideoSpec(video_id="v", beats=(
             _spec(EXAMPLES[1], "b01", registers="comparison"),
-            _spec(_spec_example(), "b02", carry_in=["comparison"]),
+            BeatSpec(id="b02", narration="placeholder narration",
+                     component=hold_consumer, params={"target_id": "comparison"},
+                     carry_in=["comparison"]),
         ))
         recipes = resolve_carry_in(video)["b02"]
         assert recipes == (self._recipe(EXAMPLES[1]),)

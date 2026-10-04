@@ -58,7 +58,10 @@ def test_carried_list_sits_exactly_where_its_beat_left_it():
     shown = _by_label(produced, "bullets")
 
     recipe = ArtifactRecipe(name="causes", producer="BulletReveal", params=PARAMS)
-    consumer = CarryIn(make_component("TitleCard", {"title": "Next"}), [recipe])
+    # Into a consumer: a component that does not act on the list would get
+    # it placed in a free STAGE region, or refused (D-G4c-1). _Lift changes
+    # a row's opacity, never its place.
+    consumer = CarryIn(_Lift({"target_id": "causes", "part": 0}), [recipe])
     consumed = LayoutProbe(consumer, duration=8.0, strict=False)
     consumed.construct()
     carried = _by_label(consumed, "carried[causes]")

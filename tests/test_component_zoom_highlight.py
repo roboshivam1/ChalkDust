@@ -24,7 +24,7 @@ from manim.animation.animation import prepare_animation
 from pydantic import ValidationError
 
 from chalkdust import continuity, pipeline
-from chalkdust.continuity import beat_component, resolve_carry_in
+from chalkdust.continuity import ArtifactRecipe, beat_component, resolve_carry_in
 from chalkdust.core.models import BeatSpec, CarryInError, Quality, Region, VideoSpec, VoiceConfig
 from chalkdust.render.worker import TIERS
 from chalkdust.scenes.base import ChalkdustScene, frames_covering
@@ -32,6 +32,7 @@ from chalkdust.scenes.components import get_component, make_component
 from chalkdust.scenes.components.zoom_highlight import (
     MAX_ZOOM,
     MIN_ZOOM,
+    _FIXTURE_LISTS,
     ZoomHighlight,
     _zoom_factor,
 )
@@ -214,6 +215,63 @@ def test_whole_target_is_restored_and_framed():
     assert bbox(mobs["focus frame"]).contains(bbox(target))
     assert max(x.get_fill_opacity() for x in target.family_members_with_points()) \
         == pytest.approx(1.0)
+
+
+# --- more than the target carried in (SCENE_SPEC.md §6) -------------------------
+
+# The second artifact of the gate repro g3-zh-two-carried: b01's list, b02's
+# answer, b03 zooming into the list with both carried in.
+ANSWER = ArtifactRecipe(name="answer", producer="AnswerBox", params={"value": "4"})
+
+
+def _probe_with(case: dict, *also: ArtifactRecipe) -> LayoutProbe:
+    """The case's beat carrying `also` in after its target, built as the
+    compiler builds a beat with carry_in=[target, *also]."""
+    (recipe,) = ZoomHighlight.fixture_carry_in(case)
+    recipes = (recipe, *also)
+    spec = BeatSpec(id="b02", narration="placeholder narration", component=NAME,
+                    params=case, carry_in=[r.name for r in recipes])
+    probe = LayoutProbe(beat_component(spec, recipes), duration=8.0, strict=False)
+    probe.construct()
+    return probe
+
+
+@pytest.mark.parametrize("case", EXAMPLES, ids=_ids(EXAMPLES, "ex"))
+def test_no_two_carried_artifacts_intersect(case):
+    # D-G4b-2: CarryIn centres every carried artifact in STAGE, so the
+    # answer was drawn over the list text and validate said ok. Each carried
+    # artifact must have a place of its own in STAGE, and the lens or frame
+    # must stay off the ones it is not about -- with nothing flagged.
+    probe = _probe_with(case, ANSWER)
+    assert probe.layout_warnings == []
+    mobs = _by_label(probe)
+    target, answer = mobs[f"carried[{case['target_id']}]"], mobs["carried[answer]"]
+    marker = mobs["zoom lens"] if "zoom lens" in mobs else mobs["focus frame"]
+    assert not bbox(target).intersects(bbox(answer))
+    assert not bbox(marker).intersects(bbox(answer))
+    stage = region_rect(Region.STAGE)
+    assert all(stage.contains(bbox(m)) for m in (target, answer, marker))
+
+
+def test_other_carried_artifact_stays_dimmed():
+    # Context, not subject (SCENE_SPEC.md §6): the answer keeps CarryIn's
+    # dimming while the focus comes up to full strength.
+    mobs = _by_label(_probe_with(EXAMPLES[0], ANSWER))
+    peak = max(max(x.get_fill_opacity(), x.get_stroke_opacity())
+               for x in mobs["carried[answer]"].family_members_with_points())
+    assert peak == pytest.approx(1 - continuity.DIM_DARKNESS)
+
+
+def test_carried_artifacts_that_cannot_share_stage_legibly_refuse_as_overflow():
+    # Six rows near BulletReveal's wrap width cannot stay legible in the band
+    # beside the target: a clean refusal naming what to drop, never a
+    # shrunken or piled-up frame.
+    crowded = ArtifactRecipe(name="crowded", producer="BulletReveal",
+                             params={"items": _FIXTURE_LISTS["long_rows"]})
+    with pytest.raises(LayoutError, match="'crowded'") as exc_info:
+        _probe_with(EXAMPLES[0], crowded)
+    assert exc_info.value.kind == "overflow"
+    assert exc_info.value.kind in CLEAN_REFUSALS
 
 
 # --- hooks ----------------------------------------------------------------------

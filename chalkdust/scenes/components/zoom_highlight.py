@@ -13,6 +13,14 @@ the focus, or beside the target when that hides less of the unfocused parts
 magnify meaningfully (the whole target, a full-width row) get an accent frame
 instead. The callout sits in LOWER_THIRD, where it can never cover what it is
 talking about.
+
+The beat may carry in more than the target (an answer next to the list it
+came from). CarryIn centres every carried artifact in STAGE, so they would sit
+on top of each other; before anything is shown the target takes the left of
+STAGE, where the lens works, and the others stack in a band on the right,
+dimmed as CarryIn left them (SCENE_SPEC.md §6). When they cannot all stay
+legible that way the beat refuses as overflow, naming what to drop -- as
+Callout refuses a second carried artifact.
 """
 
 from __future__ import annotations
@@ -47,6 +55,7 @@ from chalkdust.scenes.components.base import (
 )
 from chalkdust.scenes.regions import (
     DEFAULT_PADDING,
+    LayoutError,
     Rect,
     bbox,
     fit_to_region,
@@ -77,6 +86,12 @@ STROKE_WIDTH = 4
 # continuity's DIM_DARKNESS), so a neighbour half under the lens card reads as
 # background rather than as clipped text.
 RECEDE = 0.7
+
+# The band the other carried artifacts share takes at most this share of
+# STAGE's width (Callout's MAX_BAND): they are context, the target is the
+# subject, and the lens needs room around it.
+MAX_BAND = 0.42
+BAND_GAP = 0.3        # target area to the band
 
 # One LOWER_THIRD line of body text holds about this many characters; two
 # lines still fit legibly, three do not (fit_to_region then raises overflow).
@@ -143,6 +158,12 @@ class ZoomHighlight(Component):
         theme = scene.theme
 
         target = carried(scene, p.target_id)
+        # Where the target, and with it the lens or frame, may go: all of
+        # STAGE, unless other carried artifacts need a place of their own.
+        others = {name: mob for name, mob in getattr(scene, "_chalk_carried", {}).items()
+                  if name != p.target_id}
+        area = (_make_room(target, others, p.target_id) if others
+                else region_rect(Region.STAGE))
         # CarryIn saved the undimmed target AFTER placing it, so saved_state
         # is the full-strength twin at the same position, part for part.
         full = target.saved_state
@@ -158,9 +179,9 @@ class ZoomHighlight(Component):
         # The target's parts the zoom is not about: receded, and kept clear
         # of the lens where STAGE allows. With no parts, the whole target is
         # the focus.
-        others = ([m for m in target.submobjects if not any(m is f for f in focus)]
-                  if p.parts is not None else [])
-        planned = _settled_lens(focus, focus_full, target, others, theme)
+        unfocused = ([m for m in target.submobjects if not any(m is f for f in focus)]
+                     if p.parts is not None else [])
+        planned = _settled_lens(focus, focus_full, target, unfocused, theme, area)
         if planned is not None:
             marker, zoom = planned
             label(marker, "zoom lens")
@@ -180,7 +201,11 @@ class ZoomHighlight(Component):
             )
             reveal = Create(marker)
 
-        scene.exclusive(marker, callout)
+        # The other carried artifacts are in on it too: nothing this beat
+        # draws may land on them. (The target cannot be tagged: the lens is
+        # meant to sit over its focus. It is clear of them by construction,
+        # in its own area of STAGE.)
+        scene.exclusive(marker, callout, *others.values())
 
         t_focus, t_zoom, t_callout, t_hold = scene.budget(*_WEIGHTS)
         if p.parts is None:
@@ -190,7 +215,7 @@ class ZoomHighlight(Component):
             # adds an animated mobject that is not already on screen, and a new
             # Group would be -- drawing those parts a second time.
             scene.play(*(Transform(m, f.copy()) for m, f in zip(focus, focus_full)),
-                       *(m.animate.fade(RECEDE) for m in others),
+                       *(m.animate.fade(RECEDE) for m in unfocused),
                        run_time=t_focus)
         # On screen before the reveal starts, as Scene.play would put it: the
         # lens's Transform is not an introducer, and LayoutProbe only adds
@@ -313,7 +338,8 @@ _FIXTURE_LISTS: dict[str, list[str]] = {
 
 def _zoom_factor(box: Rect, stage: Rect) -> float:
     """How far the focus can be magnified with its lens inside LENS_FILL of
-    STAGE. A zero extent (a bare line) does not limit that direction."""
+    `stage` (STAGE, or the target's area of it). A zero extent (a bare line)
+    does not limit that direction."""
     limits = [MAX_ZOOM]
     for extent, room in ((box.width, stage.width), (box.height, stage.height)):
         if extent > 0:
@@ -321,13 +347,50 @@ def _zoom_factor(box: Rect, stage: Rect) -> float:
     return min(limits)
 
 
+def _make_room(target: Mobject, others: dict[str, Mobject], target_id: str) -> Rect:
+    """Give every carried artifact its own place in STAGE; return the target's.
+
+    The others stack top to bottom, in carry_in order, in a band on STAGE's
+    right as wide as the widest needs, up to MAX_BAND; the target gets the
+    rest, BAND_GAP away. Done before the first frame, so no frame shows them
+    piled up in the middle. Each is fitted with its saved full-strength twin
+    (CarryIn's save_state()), so a Restore() still lands where it now is.
+
+    Raises LayoutError("overflow") when any of them would fall below the
+    legibility floor in its place: the stage holds the target and its
+    context legibly, or the beat is carrying too much (SCENE_SPEC.md §6).
+    """
+    stage = region_rect(Region.STAGE)
+    band = min(max(o.width for o in others.values()) + 2 * DEFAULT_PADDING,
+               MAX_BAND * stage.width)
+    rest = stage.width - band - BAND_GAP
+    area = Rect(stage.left + rest / 2, stage.y, rest, stage.height)
+    slot_h = stage.height / len(others)
+    slots = [Rect(stage.right - band / 2, stage.top - slot_h * (i + 0.5), band, slot_h)
+             for i in range(len(others))]
+    try:
+        for mob, rect in [(target, area), *zip(others.values(), slots)]:
+            fit_to_region(mob, rect)
+            fit_to_region(mob.saved_state, rect)
+    except LayoutError as exc:
+        raise LayoutError(
+            f"ZoomHighlight on {target_id!r} shares STAGE with {list(others)}, and "
+            f"they do not all fit legibly side by side ({exc}). Carry in "
+            f"fewer artifacts, or only {target_id!r}.",
+            kind="overflow",
+        ) from exc
+    return area
+
+
 def _settled_lens(focus: Mobject, focus_full: Mobject, target: Mobject,
-                  others: list[Mobject], theme: Theme) -> tuple[Mobject, float] | None:
+                  others: list[Mobject], theme: Theme,
+                  area: Rect) -> tuple[Mobject, float] | None:
     """The lens at its settled size and place, with its zoom; None when the
     focus is too large to magnify by MIN_ZOOM anywhere (frame it instead).
 
-    Three places, each relative to the target and kept inside STAGE: over the
-    focus (the magnifying-glass reading), then beside the target on the right
+    Three places, each relative to the target and kept inside `area` (STAGE,
+    less any band other carried artifacts hold): over the focus (the
+    magnifying-glass reading), then beside the target on the right
     and on the left, level with the focus. Over the focus, the zoom is what
     LENS_FILL allows; beside, it is also capped by the room between the
     target and STAGE's edge, and a lens that would still touch the target
@@ -338,9 +401,9 @@ def _settled_lens(focus: Mobject, focus_full: Mobject, target: Mobject,
     hid every neighbour -- the context the callout is talking about -- while
     STAGE had room beside the narrow list.
     """
-    stage = region_rect(Region.STAGE).inset(DEFAULT_PADDING)
+    stage = area.inset(DEFAULT_PADDING)
     box, tbox = bbox(focus), bbox(target)
-    over = _zoom_factor(box, region_rect(Region.STAGE))
+    over = _zoom_factor(box, area)
     room = {"right": stage.right - tbox.right - LENS_GAP,
             "left": tbox.left - LENS_GAP - stage.left}
 

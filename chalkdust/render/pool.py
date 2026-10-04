@@ -29,11 +29,16 @@ What crosses the process boundary, and what does not:
     by its render key (worker._render), and theme.check_latex writes its
     records atomically, compiling in per-process scratch dirs.
 
-What stays in the caller (pipeline.render): measuring which beats are already
-cached -- a hit never enters the pool -- and deduplicating beats that share a
-render key, so two processes never write one cache slot. Each pooled beat
-commits to the cache exactly as a sequential render does: the worker writes
-`slot.tmp`, commits, and removes its partials.
+What stays in the caller (pipeline.render_stage_pooled): measuring which
+beats are already cached -- a hit never enters the pool -- and choosing what
+may be pooled at all. Two processes must never write one cache slot (or one
+Manim video dir, named by the same key), so the pool is handed only beats
+whose slot is known before they render, one beat per slot: library beats,
+deduplicated by key. A RawScene beat's slot is not known up front (one that
+degrades commits its fallback under a key that exists only inside the
+render), so the caller renders those itself, sequentially, after the pool.
+Each pooled beat commits to the cache exactly as a sequential render does:
+the worker writes `slot.tmp`, commits, and removes its partials.
 
 Errors are not pickled across the boundary as exceptions: a typed exception
 whose constructor takes more than a message does not survive unpickling, and

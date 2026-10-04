@@ -563,8 +563,10 @@ def cached_clip(beat: Beat, theme: Theme, ctx: BuildContext, cache: Cache,
 
     The key is None when only the render can tell what it will be: a RawScene
     beat that carries something in degrades inside the render, to a fallback
-    with a key of its own. Such a beat always goes to a worker, which still
-    finds that fallback in the cache if it is there."""
+    with a key of its own. Even a RawScene's own key is not the slot it may
+    fill: one that degrades commits its fallback under the fallback's key. So
+    render_stage_pooled never pools a RawScene miss; it renders it in this
+    process, which still finds that fallback in the cache if it is there."""
     if beat.spec.component == RawScene.name:
         if beat.spec.carry_in:
             return None, None
@@ -586,31 +588,46 @@ def render_stage_pooled(video: Video, ctx: BuildContext, cache: Cache, work_dir:
     Cache semantics are the sequential render's (D-004). Every beat's key is
     computed here first, and a hit never enters the pool: a library beat's
     cached clip is recorded as the worker would record it, a RawScene hit goes
-    through the worker here (all it does is log the use). Beats that share a
-    key render once, and the later ones report "cached", as they would
-    sequentially. Each miss is rendered by worker.render_beat in a worker
-    process, which commits its clip to the cache and removes its partials
-    exactly as it does in this one.
+    through the worker here (all it does is log the use).
 
-    Beats are reported in beat order, each once it and every beat before it
-    are done. A failure is typed as it is sequentially (ToolchainFailed or
-    RenderFailed, same message), for the earliest failing beat. A worker
-    process that dies is RenderFailed naming every beat that was in flight,
-    not any one of them: which one it was rendering is unknown. With a single
-    worker's worth of misses, or a render function that cannot reach another
-    process (pool.can_ship), the misses render here, in order: the same
-    worker, no pool to start.
+    The pool is handed only beats whose cache slot is known before they
+    render, one beat per slot: library beats that miss, deduplicated by key
+    (later beats with a key already pending take its clip and report
+    "cached", as they would sequentially). So no two processes ever write one
+    cache slot or one Manim video dir (both are named by the key). A RawScene
+    beat's slot is NOT known up front: a RawScene that degrades renders and
+    commits its BulletReveal fallback under a key that exists only inside the
+    render (and one that carries something in has no key here at all), and
+    two of them -- or one and a library beat -- can land on the same fallback
+    key. So every RawScene miss renders in this process, in beat order, after
+    the pool returns, through the sequential path: it finds anything the
+    pool or an earlier RawScene committed, exactly as it would sequentially.
+    (A RawScene renders out of process already, so little is lost.)
+
+    Each pooled miss is rendered by worker.render_beat in a worker process,
+    which commits its clip to the cache and removes its partials exactly as
+    it does in this one. Beats are reported in beat order, each once it and
+    every beat before it are done. A failure is typed as it is sequentially
+    (ToolchainFailed or RenderFailed, same message), for the earliest failing
+    pooled beat. A worker process that dies is RenderFailed naming every beat
+    that was in flight, not any one of them: which one it was rendering is
+    unknown. With a single worker's worth of pooled misses, or a render
+    function that cannot reach another process (pool.can_ship), every miss
+    renders here, in beat order: the same worker, no pool to start.
     """
     manim_dir = work_dir / "manim"
-    before = set((cache.root / "beats").glob("*.mp4"))
+    beats_dir = cache.root / "beats"
+    before = set(beats_dir.glob("*.mp4"))
     theme = resolve_fonts(get_theme(video.spec.theme))
     beats = video.beats
 
-    # Which beats miss, deduplicated by key: the first beat with a key renders
-    # it, later beats with the same key take its clip (`twin_of`).
+    # Which beats miss. Library misses are deduplicated by key: the first beat
+    # with a key renders it (`pooled`), later beats with the same key take its
+    # clip (`twin_of`). RawScene misses (`here`) have no slot known up front.
     first_with: dict[str, int] = {}
     twin_of: dict[int, int] = {}
-    misses: list[int] = []
+    pooled: list[int] = []
+    here: list[int] = []
     hits: list[int] = []
     for index, beat in enumerate(beats):
         try:
@@ -623,14 +640,19 @@ def render_stage_pooled(video: Video, ctx: BuildContext, cache: Cache, work_dir:
             hits.append(index)
             if beat.spec.component != RawScene.name:
                 beat.render_path = clip  # all worker._render does on a hit
-        elif key is not None and key in first_with:
+        elif beat.spec.component == RawScene.name or key is None:
+            here.append(index)
+        elif key in first_with:
             twin_of[index] = first_with[key]
         else:
-            if key is not None:
-                first_with[key] = index
-            misses.append(index)
+            first_with[key] = index
+            pooled.append(index)
 
     done: set[int] = set()
+    # Cache verdicts of beats rendered in this process, each measured against
+    # the cache just before its own render, as the sequential path does: a
+    # RawScene whose fallback an earlier beat committed in this run is a hit.
+    cached_here: dict[int, bool] = {}
     next_to_report = 0
 
     def finish(index: int) -> None:
@@ -647,32 +669,37 @@ def render_stage_pooled(video: Video, ctx: BuildContext, cache: Cache, work_dir:
                 beat.degraded = beats[twin_of[i]].degraded
                 report(beat, True)
             elif i in done:
-                report(beat, beat.render_path in before)
+                report(beat, cached_here.get(i, beat.render_path in before))
             else:
                 return
             next_to_report += 1
 
-    for index in hits:
-        if beats[index].spec.component == RawScene.name:
-            render_in_process(beats[index], video.spec.theme, ctx, cache,
-                              manim_dir, recipes[beats[index].id])
+    def render_here(index: int) -> None:
+        beat = beats[index]
+        just_before = set(beats_dir.glob("*.mp4"))
+        render_in_process(beat, video.spec.theme, ctx, cache, manim_dir,
+                          recipes[beat.id])
+        cached_here[index] = beat.render_path in just_before
         finish(index)
 
-    workers = default_jobs(len(misses)) if jobs is None else min(jobs, len(misses))
+    for index in hits:
+        if beats[index].spec.component == RawScene.name:
+            render_here(index)
+        else:
+            finish(index)
+
+    workers = default_jobs(len(pooled)) if jobs is None else min(jobs, len(pooled))
     # The pool runs the pipeline's own render_beat -- the same seam the
     # sequential render goes through -- bound to what every beat shares.
     render_fn = partial(render_beat, theme=video.spec.theme, ctx=ctx, cache=cache,
                         work_dir=manim_dir)
     if workers <= 1 or not can_ship(render_fn):
-        for index in misses:
-            beat = beats[index]
-            render_in_process(beat, video.spec.theme, ctx, cache, manim_dir,
-                              recipes[beat.id])
-            finish(index)
+        for index in sorted(pooled + here):
+            render_here(index)
         return
 
-    print(f"  rendering {len(misses)} beat(s) across {workers} processes")
-    work = [(i, beats[i], recipes[beats[i].id]) for i in misses]
+    print(f"  rendering {len(pooled)} beat(s) across {workers} processes")
+    work = [(i, beats[i], recipes[beats[i].id]) for i in pooled]
     try:
         render_pool(work, render_fn, partial(manim_scratch, work_dir, verbose),
                     manim_dir, workers, finish)
@@ -694,6 +721,12 @@ def render_stage_pooled(video: Video, ctx: BuildContext, cache: Cache, work_dir:
         else:
             where = f"before reporting any of {names(exc.unfinished)}"
         raise RenderFailed(f"a worker process died {where}: {exc.message}") from exc
+
+    # RawScene misses, in beat order, now that every pooled slot is committed:
+    # one that degrades onto a slot the pool or an earlier RawScene filled
+    # finds it there, as it would sequentially (see the docstring).
+    for index in here:
+        render_here(index)
 
 
 def render(

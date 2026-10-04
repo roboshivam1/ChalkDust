@@ -195,3 +195,61 @@ def test_default_jobs_is_one_per_pending_beat_at_most_the_cpus():
     assert default_jobs(5, cpus=24) == 5
     assert default_jobs(40, cpus=24) == 24
     assert default_jobs(5, cpus=1) == 1
+
+
+def _raw_twin_spec() -> dict:
+    """b01 and b02 from the example, then two RawScene beats certain to
+    degrade (a forbidden import each) with the same narration. Their own
+    render keys differ (different code), but degrade_spec builds both
+    fallbacks from narration and transition alone, so both degrade to ONE
+    BulletReveal key -- a key that exists only inside the render. Sequentially
+    b04 is a cache hit on b03's fallback."""
+    spec = example_spec()
+    b01, b02, b03 = spec["beats"][:3]
+    raw = {"id": "b03", "narration": b03["narration"], "component": "RawScene",
+           "params": {"rationale": "needs the OS", "code": "import os"}}
+    spec["beats"] = [b01, b02, raw,
+                     {**raw, "id": "b04",
+                      "params": {"rationale": "needs the OS",
+                                 "code": "import subprocess"}}]
+    return spec
+
+
+def test_raw_scenes_degrading_to_one_fallback_match_sequential(
+        tmp_path, capfd, fake_tts):
+    """Before: the pool sent both RawScene beats to workers, which raced on
+    one videos/beat_<key>/ dir and one .tmp-<key>.mp4 -- exit 6 pooled, exit 0
+    sequentially. Now only beats whose key is known up front (and unique)
+    are pooled; RawScene misses render here, in beat order, after the pool."""
+    path = write_spec(tmp_path / "spec.json", _raw_twin_spec())
+    lines = {}
+    for name, jobs in (("sequential", "1"), ("pooled", "3")):
+        rc = cli.main(["render", str(path), "--jobs", jobs,
+                       "--out", str(tmp_path / f"{name}.mp4"),
+                       "--cache-dir", str(tmp_path / name / "cache"),
+                       "--work-dir", str(tmp_path / name / "work")])
+        out, err = capfd.readouterr()
+        assert rc == 0, (name, err)
+        if name == "pooled":
+            # Really pooled: the two library beats, and only those.
+            assert "rendering 2 beat(s) across 2 processes" in out
+        # The degraded beats name their run's own usage log; nothing else
+        # in a line may differ.
+        lines[name] = [line.strip().replace(str(tmp_path / name), "<run>")
+                       for line in out.splitlines()
+                       if "  speech " in line and "  render " in line]
+
+    # Same per-beat verdicts, durations and degradations, in beat order: b04
+    # is a cache hit on the fallback b03 rendered, pooled as sequentially.
+    assert lines["pooled"] == lines["sequential"] and len(lines["pooled"]) == 4
+    b03, b04 = lines["pooled"][2:]
+    assert "render rebuilt" in b03 and "DEGRADED" in b03
+    assert "render cached" in b04 and "DEGRADED" in b04
+
+    clips = {name: sorted(p.name for p in (tmp_path / name / "cache" / "beats").glob("*.mp4"))
+             for name in lines}
+    assert clips["pooled"] == clips["sequential"] and len(clips["pooled"]) == 3
+    assert probe_duration(tmp_path / "pooled.mp4") == probe_duration(tmp_path / "sequential.mp4")
+    pooled = tmp_path / "pooled"
+    assert not list((pooled / "cache" / "beats").glob(".tmp-*"))
+    assert not (pooled / "work" / "manim" / "pool").exists()

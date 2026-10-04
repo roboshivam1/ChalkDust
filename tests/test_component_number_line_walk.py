@@ -240,7 +240,10 @@ class TestLayout:
                              text=True, timeout=180)
         assert out.returncode == 0, out.stderr
         kinds = [ln for ln in out.stdout.splitlines() if ln.startswith("kinds ")]
-        assert kinds == ["kinds ['illegible']"] * 3, out.stdout
+        # The theme's text constructors refuse undrawable text first, as kind
+        # "unrenderable_text" (theme.check_renderable), before this component's
+        # own glyph check would.
+        assert kinds == ["kinds ['unrenderable_text']"] * 3, out.stdout
 
     @pytest.mark.parametrize("step", [
         pytest.param({"at": 1, "label": "שלום"}, id="mark-rtl"),
@@ -250,8 +253,11 @@ class TestLayout:
     ])
     def test_glyphless_mark_or_interval_label_refuses_typed(self, step):
         # Used to be a raw IndexError from set_x on a mobject with no points.
+        # The theme's text constructors refuse undrawable text first, as kind
+        # "unrenderable_text" (theme.check_renderable), before this component's
+        # own glyph check would.
         report = _validate({"range": [0, 10], "steps": [step]})
-        assert report.kinds() == {"illegible"}, f"\n{report}"
+        assert report.kinds() == {"unrenderable_text"}, f"\n{report}"
 
 
 class TestJumpLabelsReadAsTheirOwnArc:

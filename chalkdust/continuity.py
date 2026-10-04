@@ -121,6 +121,31 @@ def resolve_carry_in(video: VideoSpec) -> dict[str, tuple[ArtifactRecipe, ...]]:
     return resolved
 
 
+def fixture_beat(component: str, params: dict[str, Any],
+                 ) -> tuple[BeatSpec, tuple[ArtifactRecipe, ...]]:
+    """One examples()/stress() case as the beat the pipeline would build.
+
+    A carry-in consumer (Callout, ZoomHighlight) cannot build from params
+    alone: build() fetches its target with carried(), which raises on a bare
+    build. Its Component.fixture_carry_in(params) names the artifacts the case
+    stands on, so the case becomes a beat carrying them in (the spec) plus
+    what resolve_carry_in would hand its render (the recipes). For every other
+    component the recipes are empty and the beat is the plain one.
+
+    The single entry point the registry walks share -- tests/test_layout.py,
+    the snapshot capture (validate/snapshot.py) and the semantic TestLibrary
+    -- so a consumer's fixtures are built one way everywhere, and that way is
+    beat_component(spec, recipes), the render's own.
+    """
+    from chalkdust.scenes.components import get_component
+
+    recipes = tuple(get_component(component).fixture_carry_in(params))
+    spec = BeatSpec(id="b01", narration="placeholder narration",
+                    component=component, params=params,
+                    carry_in=[r.name for r in recipes])
+    return spec, recipes
+
+
 def carry_in_fingerprint(recipes: Sequence[ArtifactRecipe]) -> str:
     """The cache-key term for a beat's carried artifacts.
 

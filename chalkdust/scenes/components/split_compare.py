@@ -288,7 +288,8 @@ def _layout(p: SplitCompareParams, theme: Theme) -> tuple[list[Mobject], Mobject
     if p.verdict is not None:
         colour = theme.palette.accent if p.emphasis == "verdict" else None
         verdict = label(_drawn(heading_text(_wrap_balanced(p.verdict, VERDICT_WRAP),
-                                            theme, colour), p.verdict, "verdict"),
+                                            theme, colour, what="SplitCompare verdict"),
+                               p.verdict, "verdict"),
                         "verdict")
         fit_to_region(verdict, Region.LOWER_THIRD)
     return sides, verdict
@@ -298,11 +299,13 @@ def _side_content(key: str, side: Side, theme: Theme, emphasized: bool) -> VGrou
     """Title, then body, then maths, stacked and centred."""
     parts: list[Mobject] = [
         _drawn(heading_text(_wrap_balanced(side.title, TITLE_WRAP), theme,
-                            theme.palette.accent if emphasized else None),
+                            theme.palette.accent if emphasized else None,
+                            what=f"SplitCompare {key}.title"),
                side.title, f"{key}.title")
     ]
     if side.body:
-        parts.append(_drawn(body_text(_wrap_balanced(side.body, BODY_WRAP), theme),
+        parts.append(_drawn(body_text(_wrap_balanced(side.body, BODY_WRAP), theme,
+                                      what=f"SplitCompare {key}.body"),
                             side.body, f"{key}.body"))
     if side.math:
         # theme.math refuses LaTeX that does not compile, or draws nothing, as

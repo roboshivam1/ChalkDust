@@ -148,7 +148,10 @@ def test_schema_rejects(params):
 def test_glyphless_text_refuses_as_illegible(index):
     # Characters the font cannot draw build an empty Text. The card must refuse
     # with a clean kind, not render an empty frame that passes every check.
+    # The theme's text constructors refuse undrawable text first, as kind
+    # "unrenderable_text" (theme.check_renderable), before this component's
+    # own glyph check would.
     probe = LayoutProbe(make_component(NAME, STRESS[index]), duration=8.0)
     with pytest.raises(LayoutError) as exc:
         probe.construct()
-    assert exc.value.kind == "illegible"
+    assert exc.value.kind == "unrenderable_text"

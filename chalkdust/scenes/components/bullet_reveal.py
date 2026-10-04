@@ -8,6 +8,7 @@ from typing import Annotated, Literal
 from manim import DOWN, LEFT, ORIGIN, UP, Dot, FadeIn, Text, VGroup
 from pydantic import AfterValidator, Field, StringConstraints
 
+from chalkdust.continuity import artifact_builder
 from chalkdust.core.models import Region
 from chalkdust.scenes.base import ChalkdustScene
 from chalkdust.scenes.components.base import (
@@ -19,7 +20,7 @@ from chalkdust.scenes.components.base import (
     wrap,
 )
 from chalkdust.scenes.regions import LayoutError, fit_to_region
-from chalkdust.scenes.theme import body_cap_height, body_text, heading_text
+from chalkdust.scenes.theme import Theme, body_cap_height, body_text, heading_text
 
 WRAP_WIDTH = 46
 
@@ -93,41 +94,13 @@ class BulletReveal(Component):
     def build(self, scene: ChalkdustScene) -> None:
         p: BulletRevealParams = self.params
         theme = scene.theme
-        cap = body_cap_height(theme)
-
         heading = None
         if p.heading:
             heading = label(_drawn(heading_text(wrap(p.heading, 34), theme),
                                    "heading"), "heading")
             fit_to_region(heading, Region.TITLE_BAR)
 
-        rows, dots, line_counts = [], [], []
-        for i, item in enumerate(p.items):
-            wrapped = wrap(item, WRAP_WIDTH)
-            line_counts.append(wrapped.count("\n") + 1)
-
-            text = _drawn(body_text(wrapped, theme), f"bullet {i}")
-            dot = Dot(radius=0.07, color=theme.palette.accent)
-            dot.next_to(text, LEFT, buff=DOT_GAP)
-            # Sit the dot on the optical centre of the FIRST line, measured
-            # down from the top by half a cap height. Independent of whether
-            # the row happens to contain descenders.
-            dot.set_y(text.get_top()[1] - cap / 2)
-
-            row = label(VGroup(dot, text), f"bullet[{i}]")
-            # Common left edge, so the dots form a straight column.
-            row.align_to(ORIGIN, LEFT)
-            rows.append(row)
-            dots.append(dot)
-
-        # Stack manually at a constant pitch instead of arrange(), which would
-        # space by bounding box and reintroduce the descender problem. The dot
-        # is already at the row's anchor, so we align dot y positions.
-        cursor = 0.0
-        for row, dot, n_lines in zip(rows, dots, line_counts):
-            row.shift(UP * (cursor - dot.get_y()))
-            cursor -= cap * (LINE_HEIGHT * n_lines + PARA_GAP)
-
+        rows = _stacked_rows(p.items, theme)
         bullets = label(VGroup(*rows), "bullets")
         fit_to_region(bullets, Region.STAGE)
 
@@ -191,3 +164,52 @@ class BulletReveal(Component):
             # illegible rather than built into a bare dot.
             {"items": ["\U0001F600" * 80]},
         ]
+
+
+# --- the list itself ----------------------------------------------------------
+
+
+def _stacked_rows(items: list[str], theme: Theme) -> list[VGroup]:
+    """One row per item -- VGroup(dot, text), labelled bullet[i] -- stacked at
+    a constant pitch, unplaced and at full strength. Shared by build() and
+    the artifact builder, so a carried list is the list the viewer saw --
+    and refuses a glyphless item (_drawn) on both paths alike."""
+    cap = body_cap_height(theme)
+    rows, dots, line_counts = [], [], []
+    for i, item in enumerate(items):
+        wrapped = wrap(item, WRAP_WIDTH)
+        line_counts.append(wrapped.count("\n") + 1)
+
+        text = _drawn(body_text(wrapped, theme), f"bullet {i}")
+        dot = Dot(radius=0.07, color=theme.palette.accent)
+        dot.next_to(text, LEFT, buff=DOT_GAP)
+        # Sit the dot on the optical centre of the FIRST line, measured
+        # down from the top by half a cap height. Independent of whether
+        # the row happens to contain descenders.
+        dot.set_y(text.get_top()[1] - cap / 2)
+
+        row = label(VGroup(dot, text), f"bullet[{i}]")
+        # Common left edge, so the dots form a straight column.
+        row.align_to(ORIGIN, LEFT)
+        rows.append(row)
+        dots.append(dot)
+
+    # Stack manually at a constant pitch instead of arrange(), which would
+    # space by bounding box and reintroduce the descender problem. The dot
+    # is already at the row's anchor, so we align dot y positions.
+    cursor = 0.0
+    for row, dot, n_lines in zip(rows, dots, line_counts):
+        row.shift(UP * (cursor - dot.get_y()))
+        cursor -= cap * (LINE_HEIGHT * n_lines + PARA_GAP)
+    return rows
+
+
+@artifact_builder("BulletReveal")
+def _artifact(params: BulletRevealParams, theme: Theme) -> VGroup:
+    """The settled list, for a later beat's carry_in (SCENE_SPEC.md §6).
+
+    The heading is not part of it: it lives in TITLE_BAR, and a carried
+    artifact is placed in STAGE. Parts, which Callout's `part` indexes, are
+    the rows in item order -- submobjects[i] is item i's VGroup(dot, text).
+    """
+    return label(VGroup(*_stacked_rows(params.items, theme)), "bullets")

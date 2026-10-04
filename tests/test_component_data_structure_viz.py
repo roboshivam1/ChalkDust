@@ -28,7 +28,15 @@ from chalkdust.scenes.components.data_structure_viz import (
     DataStructureViz,
     _plan,
 )
-from chalkdust.scenes.regions import LayoutError, bbox, region_rect, safe_area
+from chalkdust.scenes.regions import (
+    DEFAULT_PADDING,
+    MIN_FONT_SIZE,
+    LayoutError,
+    bbox,
+    region_rect,
+    safe_area,
+    smallest_font_size,
+)
 from chalkdust.scenes.theme import get_theme, resolve_fonts
 from chalkdust.validate.geometric import LayoutProbe, validate_beat
 
@@ -244,9 +252,11 @@ def test_long_swap_arc_stays_low_and_in_frame():
         assert abs(mob.get_y() - row_y) <= SWAP_LIFT * board.cell_h * 1.05
 
 
-def _assert_edges_clear(board, r: float, cap: float) -> None:
+def _assert_edges_clear(board, r: float, cap: float) -> float:
     """Every edge clears every node it does not join by EDGE_CLEAR cap heights
-    beyond the rim; `r` and `cap` at the board's current scale."""
+    beyond the rim; `r` and `cap` at the board's current scale. Returns the
+    smallest such gap, in cap heights."""
+    smallest = math.inf
     for key, edge in board.edges.items():
         a, b = edge.get_start_and_end()
         for name, node in board.nodes.items():
@@ -256,6 +266,8 @@ def _assert_edges_clear(board, r: float, cap: float) -> None:
             t = np.clip(np.dot(p - a, b - a) / np.dot(b - a, b - a), 0.0, 1.0)
             gap = np.linalg.norm(p - (a + t * (b - a))) - r
             assert gap >= EDGE_CLEAR * cap * 0.99, (sorted(key), name, gap / cap)
+            smallest = min(smallest, gap / cap)
+    return smallest
 
 
 @pytest.mark.parametrize("n", [8, 9, 10])
@@ -264,28 +276,39 @@ def test_graph_edges_clear_the_nodes_they_skip(n):
     # chord passes inside r + EDGE_CLEAR cap heights of the node it skips
     # (about 1.09r from its centre at n = 10) -- grazing its rim, so the
     # skipped node reads as joined. The ring must grow until every edge clears
-    # every node it does not join by EDGE_CLEAR cap heights beyond the rim.
-    # That geometry is in cap heights, so it is the same under every font.
+    # every node it does not join by EDGE_CLEAR cap heights beyond the rim,
+    # and no further: the tightest edge sits exactly EDGE_CLEAR cap heights
+    # off its skipped node, so an over-grown ring is caught too. That geometry
+    # is in cap heights, so it is the same under every font.
     names = [str(i) for i in range(n)]
     params = {"kind": "graph", "initial": {
         "nodes": names, "edges": [[names[i], names[(i + 2) % n]] for i in range(n)]}}
     grown = BOARDS["graph"](THEME, _plan(DataStructureViz(params).params), [])
     assert grown.grown
-    _assert_edges_clear(grown, grown.r, grown.cap)
+    tightest = _assert_edges_clear(grown, grown.r, grown.cap)
+    assert tightest <= EDGE_CLEAR * 1.01, tightest
     # Fitting it to STAGE either keeps that clearance in proportion or refuses
     # as overflow, naming the enlarged ring. Whether it fits depends on the
     # mono font's cap height per point: the grown ring's size is fixed in cap
     # heights, and the theme's JetBrains Mono has a 28% taller cap than the
     # fallback Courier New, so its 9- and 10-node rings would render at 21.4pt
     # and 17.4pt, under the 22pt floor, while Courier New's still clear it.
-    # The 8-node ring fits under both, and must.
+    # So a refusal is accepted only when it is forced: the scale that fits the
+    # grown ring into STAGE (as fit_to_region computes it) must take its
+    # smallest text under MIN_FONT_SIZE. The 8-node ring fits under both fonts.
+    inner = region_rect(Region.STAGE).inset(DEFAULT_PADDING)
+    box = bbox(grown.layout)
+    scale = min(1.0, inner.width / box.width, inner.height / box.height)
+    forced = smallest_font_size(grown.layout) * scale < MIN_FONT_SIZE
     try:
         board = DataStructureViz(params).board(THEME)
     except LayoutError as exc:
         assert n > 8, exc
+        assert forced, (n, smallest_font_size(grown.layout) * scale, exc)
         assert exc.kind == "overflow"
         assert "graph ring was enlarged" in str(exc)
         return
+    assert not forced, n
     r = board.nodes["0"][0].width / 2          # radius after fitting to the stage
     _assert_edges_clear(board, r, board.cap * r / board.r)
 

@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import json
 import math
+import dataclasses
 import re
 import subprocess
 import unicodedata
@@ -23,7 +24,7 @@ from dataclasses import asdict
 
 import numpy as np
 import pytest
-from manim import Code, Group, tempconfig
+from manim import Code, Group, Text, tempconfig
 from manim.animation.animation import prepare_animation
 from pydantic import ValidationError
 
@@ -53,6 +54,18 @@ EXAMPLES = CodeWalk.examples()
 DRAFT = TIERS[Quality.DRAFT]
 THEME = resolve_fonts(DEFAULT, warn=False)
 MONO = THEME.type.mono_font  # Courier New where JetBrains Mono is missing
+# Courier New, named outright: the fallback mono font on Windows and macOS,
+# for facts that belong to it -- glyphs it draws in the wrong column -- and
+# that the theme's JetBrains Mono does not reproduce.
+COURIER = dataclasses.replace(
+    THEME, type=dataclasses.replace(THEME.type, mono_font="Courier New"))
+# Character sequences a programming font (JetBrains Mono, Fira Code) draws
+# as one ligature through 'calt' unless the listing turns it off.
+PROGRAMMING_LIGATURES = (
+    "if lo <= hi and a >= b and a != b and x == y: mid = (lo + hi) >> 1\n"
+    "f = lambda x: x ** 2  # -> => <- |> <| :: ... /* */ <!-- --> www\n"
+    "n = 0x1F; s = '===' + '!==' + '<=>' + '>>=' + '<<' + '&&' + '||'"
+)
 # Precomposed letters past Latin-1 (o and u double acute, a and e ogonek,
 # c s z caron, l stroke): one character, one glyph, one column each.
 LATIN_EXT_A = "s = '\u0151\u0171 \u0105\u0119 \u010d\u0161\u017e \u0142'\nx = 1"
@@ -60,6 +73,12 @@ LATIN_EXT_A = "s = '\u0151\u0171 \u0105\u0119 \u010d\u0161\u017e \u0142'\nx = 1"
 
 def _probe(component: CodeWalk) -> LayoutProbe:
     probe = LayoutProbe(component, duration=10.0)
+    probe.construct()
+    return probe
+
+
+def _probe_in(component: CodeWalk, theme) -> LayoutProbe:
+    probe = LayoutProbe(component, duration=10.0, theme=theme)
     probe.construct()
     return probe
 
@@ -308,7 +327,7 @@ class TestBuild:
 
     @pytest.mark.parametrize("source,named", [
         ("# \u4f60\u597d\u4e16\u754c\nname = '\u6771\u4eac'  # tokyo", "U+4F60"),
-        ("# \u2200x \u2264 \u221e\nx = 1", "U+2200"),
+        ("# \u2230x \u225e \u221e\nx = 1", "U+2230"),
         ("# \u0915\u092e\u0932\nx = 1", "U+0915"),
         ("# \u0e2a\u0e1a\u0e32\u0e22\nx = 1", "U+0E2A"),
         ("# \u05e9\u05dc\u05d5\u05dd\nx = 1", "U+05E9"),
@@ -329,7 +348,9 @@ class TestBuild:
         # heart, keycap, variation selector and lone mark moved to the
         # schema's combining-mark refusal, as did the Devanagari and Thai
         # words, whose virama and vowel signs are marks; the bare heart and
-        # unmarked Devanagari and Thai letters stay here.)
+        # unmarked Devanagari and Thai letters stay here. The maths case was
+        # U+2200 FOR ALL, which only Courier New lacks: JetBrains Mono draws
+        # it, and it renders. U+2230 VOLUME INTEGRAL is missing from both.)
         _forbid_building_code(monkeypatch)
         comp = CodeWalk({"language": "python", "source": source})
         with pytest.raises(LayoutError) as info:
@@ -379,24 +400,49 @@ class TestBuild:
         ("s = 'a\u03fdb'", "U+03FD"),
     ], ids=["small-tilde", "latin-ext-b-stack", "reversed-lunate-sigma"])
     def test_glyphs_off_their_columns_refuse_unrenderable(self, source, named):
-        # Every count passes for these -- each character draws one path alone
-        # and in context -- yet in a line the tilde lands on the b, and the
-        # nine letters, like U+03FD and the b after it, pile into one blob,
-        # while validation said ok. The column check on the built listing
-        # refuses them, in the beat and in the carry-in artifact. (Stacked
-        # combining marks were a case here; the schema refuses them now,
-        # before any column is measured.)
+        # Every count passes for these in Courier New -- each character draws
+        # one path alone and in context -- yet in a line the tilde lands on
+        # the b, and the nine letters, like U+03FD and the b after it, pile
+        # into one blob, while validation said ok. The column check on the
+        # built listing refuses them, in the beat and in the carry-in
+        # artifact. (Stacked combining marks were a case here; the schema
+        # refuses them now, before any column is measured.) These are
+        # Courier New's glyphs, so the listing is drawn in Courier New
+        # whatever mono font is installed: JetBrains Mono gives the small
+        # tilde its own cell and has no glyph at all for the others (the
+        # next test holds the theme's font to the same guard).
         recipe = ArtifactRecipe(name="listing", producer="CodeWalk",
                                 params={"language": "python", "source": source})
-        for attempt in (lambda: _probe(CodeWalk(recipe.params)),
-                        lambda: build_artifact(recipe, THEME)):
+        for attempt in (lambda: _probe_in(CodeWalk(recipe.params), COURIER),
+                        lambda: build_artifact(recipe, COURIER)):
             with pytest.raises(LayoutError) as info:
                 attempt()
             assert info.value.kind == UNRENDERABLE_TEXT
             message = str(info.value)
-            assert named in message and repr(MONO) in message
+            assert named in message and repr("Courier New") in message
             assert message.startswith("CodeWalk source line 1:")
             assert "column" in message
+
+    @pytest.mark.parametrize("source,named", [
+        ("s = 'a\u02dcb'", "U+02DC"),
+        ("# \u0181\u0182\u0183\u0184\u0185\u0186\u0187\u0188\u0189 ok", "U+0181"),
+        ("s = 'a\u03fdb'", "U+03FD"),
+    ], ids=["small-tilde", "latin-ext-b-stack", "reversed-lunate-sigma"])
+    def test_same_text_in_the_theme_font_is_refused_or_on_its_columns(
+            self, source, named):
+        # The same listings in the resolved mono font: whichever font that
+        # is, each is either refused as text the font cannot draw, naming
+        # the character and the font, or built -- and then the column check
+        # passed in build() and every glyph sits on its own row. Never a
+        # listing drawn with its glyphs off their characters.
+        source += "\nx = 1"  # a second row, to measure the first against
+        try:
+            probe = _probe(CodeWalk({"language": "python", "source": source}))
+        except LayoutError as exc:
+            assert exc.kind == UNRENDERABLE_TEXT
+            assert named in str(exc) and repr(MONO) in str(exc)
+            return
+        assert _rows_hold(probe.mobjects[0], source)
 
     @pytest.mark.parametrize("source", [
         LATIN_EXT_A,
@@ -408,8 +454,10 @@ class TestBuild:
         "s = “quoted” + ‘single’  # — em – en …\n"
         "n = 3 × 4 ÷ 2 − 1",
         "s = 'q\u0301'\nx = 1",
+        PROGRAMMING_LIGATURES,
     ], ids=["latin-ext-a", "nfd-e-acute", "vietnamese", "latin-greek-cyrillic",
-            "arrows-boxes", "typographic", "q-acute-refused"])
+            "arrows-boxes", "typographic", "q-acute-refused",
+            "programming-ligatures"])
     def test_text_the_font_spaces_renders_on_its_columns(self, source):
         # The column check must not cost text the font does space one per
         # column: measured on its own here, every glyph sits within half a
@@ -445,6 +493,32 @@ class TestBuild:
                 if first is None:
                     first = (x, col)
                 assert abs((x - first[0]) / advance - (col - first[1])) <= 0.5, (i, c)
+
+    def test_listing_and_its_probes_draw_with_ligatures_off(self, monkeypatch):
+        # Code's disable_ligatures turns off liga/dlig/clig/hlig but not
+        # calt, through which JetBrains Mono draws `<=`, `===`, `>>` as one
+        # glyph, and Code refused ordinary source. Every Text a listing is
+        # drawn with -- code, line numbers, alignment glyphs -- and every
+        # probe of it (whole listing, cluster) must reach Pango with all of
+        # CODE_FONT_FEATURES off, or the probe and the drawing disagree.
+        seen: list[str] = []
+        original = Text._text2svg
+
+        def spy(self, color):
+            seen.append(color)
+            return original(self, color)
+
+        monkeypatch.setattr(Text, "_text2svg", spy)
+        features = f"font_features='{code_walk.CODE_FONT_FEATURES}"
+        code = code_walk._code("if lo <= hi:\n    m = (lo + hi) >> 1", "python", THEME)
+        assert len(seen) >= 3 and all(features in c for c in seen), seen
+        assert len(code.code_lines[0]) == len("iflo<=hi:")
+        assert len(code.code_lines[1]) == len("m=(lo+hi)>>1")
+        seen.clear()
+        code_walk._refuse_unrenderable("s = 'caf\u00e9' if a <= b else '==='", THEME)
+        code_walk._cluster_paths.cache_clear()
+        code_walk._cluster_paths("\u00e9", MONO)
+        assert len(seen) >= 2 and all(features in c for c in seen), seen
 
     def test_minimal_listing_has_no_highlight_bar(self):
         probe = _probe(CodeWalk({"language": "c", "source": "x"}))

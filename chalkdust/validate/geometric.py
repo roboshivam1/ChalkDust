@@ -27,7 +27,20 @@ from chalkdust.scenes.components import make_component
 
 @dataclass(frozen=True)
 class Finding:
-    kind: str      # out_of_bounds | overlap | illegible | overflow | build_error
+    """One failure the repair loop can dispatch on (SCENE_SPEC.md §9).
+
+    kinds, geometric (rung 3, this module):
+      out_of_bounds | overlap | illegible | overflow | build_error
+    kinds, semantic (rung 2, semantic.py):
+      duration        -- narration too short for the component's steps, or
+                         longer than one beat may run
+      carry_in        -- references an artifact no earlier beat registered
+      region_conflict -- two simultaneously active claimants share space
+      capacity        -- more text than the claimed regions can hold legibly
+      latex           -- a LaTeX string does not compile standalone
+    """
+
+    kind: str
     message: str
 
 
@@ -55,14 +68,21 @@ class LayoutProbe(ChalkdustScene):
     """A ChalkdustScene that applies animations instantly and writes nothing."""
 
     def play(self, *animations, **kwargs) -> None:  # type: ignore[override]
-        for anim in animations:
-            # prepare_animation converts `.animate` builders into Animations.
-            anim = prepare_animation(anim)
-            anim.begin()
-            anim.interpolate(1.0)   # jump to final state
-            anim.finish()
+        # Same order of operations as Scene.play, so the probe adds exactly
+        # what a real render adds, in the same sequence: first the mobject of
+        # every non-introducer animation not yet on screen
+        # (compile_animation_data), then each introducer just before it begins
+        # (begin_animations). Mechanical repair keys its fixes on that order.
+        # prepare_animation converts `.animate` builders into Animations.
+        anims = [prepare_animation(a) for a in animations]
+        self.add_mobjects_from_animations(anims)
+        for anim in anims:
             if anim.is_introducer():
                 self.add(anim.mobject)
+            anim.begin()
+        for anim in anims:
+            anim.interpolate(1.0)   # jump to final state
+            anim.finish()
             anim.clean_up_from_scene(self)   # removes mobjects for FadeOut etc.
 
     def wait(self, *args, **kwargs) -> None:  # type: ignore[override]
@@ -72,16 +92,24 @@ class LayoutProbe(ChalkdustScene):
 def validate_beat(spec: BeatSpec, theme: str = "default",
                   duration: float = 8.0) -> Report:
     """Check one beat's layout. Never raises -- failures come back as findings."""
-    report = Report(beat_id=spec.id)
     try:
         component = make_component(spec.component, spec.params)
     except Exception as exc:
-        report.findings.append(Finding("build_error", f"{type(exc).__name__}: {exc}"))
-        return report
+        return Report(spec.id, [Finding("build_error", f"{type(exc).__name__}: {exc}")])
 
     # strict=False so the scene collects every finding instead of stopping at
     # the first. The repair loop wants the full picture in one pass.
     probe = LayoutProbe(component, theme=theme, duration=duration, strict=False)
+    return run_probe(probe, spec.id)
+
+
+def run_probe(probe: LayoutProbe, beat_id: str) -> Report:
+    """Build `probe` (constructed with strict=False) and collect its findings.
+
+    Split out of validate_beat so repair.py can probe with a scene that
+    applies a repair plan, under exactly the same error handling.
+    """
+    report = Report(beat_id=beat_id)
     try:
         probe.construct()
     except LayoutError as exc:

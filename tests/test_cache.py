@@ -17,6 +17,8 @@ from chalkdust.render import worker
 from chalkdust.render.worker import RenderTier, render_beat, render_key
 from chalkdust.scenes import theme as theme_mod
 from chalkdust.scenes.theme import DEFAULT, THEMES, get_theme, resolve_fonts
+from chalkdust.validate import repair as repair_mod
+from chalkdust.validate.repair import RepairPlan
 
 
 @pytest.fixture(autouse=True)
@@ -52,10 +54,12 @@ def test_resolved_font_changes_render_key(monkeypatch):
     ctx = BuildContext()
     monkeypatch.setattr(theme_mod, "_installed_fonts",
                         lambda: {"Archivo", "Inter", "JetBrains Mono"})
-    as_designed = render_key(_beat(), resolve_fonts(get_theme("default")), ctx)
+    as_designed = render_key(_beat(), resolve_fonts(get_theme("default")), ctx,
+                             RepairPlan())
     monkeypatch.setattr(theme_mod, "_installed_fonts",
                         lambda: {"Arial", "Courier New"})
-    substituted = render_key(_beat(), resolve_fonts(get_theme("default")), ctx)
+    substituted = render_key(_beat(), resolve_fonts(get_theme("default")), ctx,
+                             RepairPlan())
 
     assert as_designed != substituted
 
@@ -64,8 +68,24 @@ def test_tier_settings_change_render_key(monkeypatch):
     # Retuning what "draft" means must not serve clips made at the old size.
     ctx = BuildContext(quality=Quality.DRAFT)
     theme = resolve_fonts(get_theme("default"), warn=False)
-    before = render_key(_beat(), theme, ctx)
+    before = render_key(_beat(), theme, ctx, RepairPlan())
     monkeypatch.setitem(worker.TIERS, Quality.DRAFT,
                         RenderTier(pixel_width=640, pixel_height=360, frame_rate=15))
 
-    assert render_key(_beat(), theme, ctx) != before
+    assert render_key(_beat(), theme, ctx, RepairPlan()) != before
+
+
+def test_repair_logic_change_changes_render_key(tmp_path, monkeypatch, off_edge_beat):
+    # The render applies a mechanical repair plan, so the plan determines the
+    # pixels. Changing only the repair code -- here, how far inside its region
+    # a nudge lands -- must not serve the clip drawn with the old plan.
+    ctx = BuildContext(quality=Quality.DRAFT)
+    theme = resolve_fonts(get_theme("default"), warn=False)
+    work = tmp_path / "work"
+    before = render_key(off_edge_beat, theme, ctx,
+                        worker.plan_repair(off_edge_beat, theme, ctx, work))
+    monkeypatch.setattr(repair_mod, "DEFAULT_PADDING", repair_mod.DEFAULT_PADDING + 0.5)
+    after = render_key(off_edge_beat, theme, ctx,
+                       worker.plan_repair(off_edge_beat, theme, ctx, work))
+
+    assert after != before

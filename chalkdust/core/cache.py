@@ -52,9 +52,11 @@ def beat_render_key(
     ctx: BuildContext,
     theme: dict[str, Any],
     tier: dict[str, Any],
+    repair: dict[str, Any],
 ) -> str:
     """A rendered beat depends on the visual spec, how long it must run, the
-    build context, the theme it is drawn in, and the render tier.
+    build context, the theme it is drawn in, the render tier, and the
+    mechanical repair plan the render applies.
 
     This is the ONLY place a render key is built. A new determining input
     (e.g. carried-in artifacts' construction params) is one more term here.
@@ -70,8 +72,17 @@ def beat_render_key(
     the "draft"/"final" label in `ctx`: retuning a tier must not serve clips
     rendered at the old settings (D-006).
 
-    Both arrive as plain data so this module stays below the scenes/render
-    boundary (ARCHITECTURE.md §5); the render worker does the resolving.
+    `repair` is the repair plan itself (SCENE_SPEC.md §9 step 1), not a
+    version of the repair code. The worker computes it from the spec, theme
+    and duration on every render, so any change to the repair logic that moves
+    what is drawn changes the plan, and with it the key, with no version to
+    remember to bump. A repair change that leaves every plan the same draws the
+    same pixels and rightly keeps the cache. (The component library, theme and
+    Manim versions arrive in `ctx`.)
+
+    All three arrive as plain data so this module stays below the
+    scenes/render boundary (ARCHITECTURE.md §5); the render worker does the
+    resolving.
 
     Deliberately excluded:
       - narration text: only affects the render via `duration`, already here
@@ -86,6 +97,7 @@ def beat_render_key(
         ctx.model_dump(mode="json"),
         theme,
         tier,
+        repair,
     )
 
 

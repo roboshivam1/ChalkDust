@@ -98,6 +98,16 @@ class Rect:
             max(self.height - 2 * padding, 0.01),
         )
 
+    @property
+    def area(self) -> float:
+        return self.width * self.height
+
+    def overlap_area(self, other: Rect) -> float:
+        """Area shared with `other`; 0.0 when they are disjoint or touch."""
+        w = min(self.right, other.right) - max(self.left, other.left)
+        h = min(self.top, other.top) - max(self.bottom, other.bottom)
+        return max(w, 0.0) * max(h, 0.0)
+
     def intersects(self, other: Rect) -> bool:
         return not (
             self.right <= other.left
@@ -215,6 +225,17 @@ def _apply_scale_to_tags(mob: Mobject, factor: float) -> None:
         existing = getattr(m, "_chalk_font_size", None)
         if existing is not None:
             m._chalk_font_size = existing * factor  # type: ignore[attr-defined]
+
+
+def scale_with_tags(mob: Mobject, factor: float) -> Mobject:
+    """Scale `mob` about its centre and keep its tracked font sizes honest.
+
+    Any scale applied outside fit_to_region must go through here, or the
+    legibility check would judge the text at its pre-scale size.
+    """
+    mob.scale(factor)
+    _apply_scale_to_tags(mob, factor)
+    return mob
 
 
 def smallest_font_size(mob: Mobject) -> float | None:

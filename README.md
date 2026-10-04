@@ -153,12 +153,13 @@ are in [`docs/VOICE.md`](docs/VOICE.md).
 of them (`-qq`) drop the `N passed` summary line and print only dots. To pass your own
 flags, replace the defaults: `python -m pytest -o addopts="" -q -p no:cacheprovider --tb=short`.
 There is no `pytest-xdist` in the dev extra, so the suite runs in one process. It builds
-and probes real Manim scenes and compiles LaTeX, so the full run is slow (17 minutes 30 seconds on the verified machine);
-one file (`python -m pytest tests/test_cache.py`) takes seconds.
+and probes real Manim scenes and compiles LaTeX, so the full run is slow (about 17 minutes on
+the verified machine, with other renders running alongside); one file (`python -m pytest tests/test_cache.py`) takes seconds.
 
 On the verified Windows machine (Python 3.13.12, MiKTeX first on PATH, the three theme fonts
-installed) the full run ends `2153 passed, 5 skipped, 4 warnings in 1050.90s (0:17:30)`, exit
-code 0. The five skips are expected there: `RawScene` declares no examples (two tests), `say`
+installed), after the render pool merged (which added the nine tests in
+`tests/test_render_pool.py`), the full run ends
+`2162 passed, 5 skipped, 4 warnings in 1029.13s (0:17:09)`, exit code 0. The five skips are expected there: `RawScene` declares no examples (two tests), `say`
 exists only on macOS, the Kokoro extra needs Python below 3.13, and Inter draws `U+E000`.
 
 If you run tests from a git worktree with an interpreter that was installed from a

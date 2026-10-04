@@ -88,11 +88,8 @@ def check_fonts(theme: Theme) -> list[str]:
     Call this once at startup. A missing font does not raise -- Pango falls
     back -- so this is the only way to notice before the render looks wrong.
     """
-    try:
-        import manimpango
-
-        available = set(manimpango.list_fonts())
-    except Exception:
+    available = _installed_fonts()
+    if not available:
         return []  # can't check; don't block the render
     wanted = {theme.type.heading_font, theme.type.body_font, theme.type.mono_font}
     return sorted(f for f in wanted if f not in available)
@@ -191,13 +188,22 @@ FALLBACKS = {
 _WARNED: set[tuple[str, str, str]] = set()
 
 
-def _installed_fonts() -> set[str]:
+@lru_cache(maxsize=1)
+def _installed_fonts() -> frozenset[str]:
+    """The system's font families, enumerated once per process.
+
+    resolve_fonts runs on every scene construction -- the validation probe,
+    the repair probe and the render of every beat -- and enumerating fonts
+    costs ~0.3 s a call on Windows. Fonts installed mid-run are not seen;
+    a run is minutes long and the render key would not notice them anyway
+    until the next process.
+    """
     try:
         import manimpango
 
-        return set(manimpango.list_fonts())
+        return frozenset(manimpango.list_fonts())
     except Exception:
-        return set()
+        return frozenset()
 
 
 def resolve_fonts(theme: Theme, warn: bool = True) -> Theme:

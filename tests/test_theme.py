@@ -1,18 +1,24 @@
 """Theme constructors: the behaviours every component inherits from them.
 
 The maths tests compile LaTeX, so `latex` and `dvisvgm` must be on PATH.
+
+Font resolution is held per process, not per scene: resolve_fonts runs on
+every scene construction -- the validation probe, the repair probe and the
+render of every beat -- so its cost and its warnings would otherwise scale
+with the number of scenes.
 """
 
 from __future__ import annotations
 
 import dataclasses
 
+import manimpango
 import pytest
 from manim import tempconfig
 
 from chalkdust.scenes import theme as theme_mod
 from chalkdust.scenes.regions import INVALID_LATEX, LayoutError
-from chalkdust.scenes.theme import DEFAULT, math, resolve_fonts
+from chalkdust.scenes.theme import DEFAULT, get_theme, math, resolve_fonts
 
 
 @pytest.mark.parametrize("bad", [r"\notacommand{x} = 1", r"\quad"],
@@ -38,3 +44,34 @@ def test_font_substitution_is_announced_once_per_process(capsys):
     out = capsys.readouterr().out
     assert out.count("'ChalkDust Absent Sans' missing") == 1, out
     assert first == second
+
+
+def test_substitution_warned_once_per_process(monkeypatch, capsys):
+    monkeypatch.setattr(theme_mod, "_installed_fonts",
+                        lambda: frozenset({"Arial", "Courier New"}))
+    monkeypatch.setattr(theme_mod, "_WARNED", set())
+
+    for _ in range(3):  # three scenes, e.g. probe, repair probe, render
+        resolve_fonts(get_theme("default"))
+
+    lines = capsys.readouterr().out.splitlines()
+    assert len(lines) == 3, lines  # heading, body, mono -- once each
+    assert all(line.startswith("[theme] ") for line in lines)
+
+
+def test_fonts_enumerated_once_per_process(monkeypatch):
+    calls = []
+
+    def list_fonts():
+        calls.append(1)
+        return ["Arial", "Courier New"]
+
+    monkeypatch.setattr(manimpango, "list_fonts", list_fonts)
+    theme_mod._installed_fonts.cache_clear()
+    try:
+        for _ in range(4):
+            resolve_fonts(get_theme("default"), warn=False)
+    finally:
+        theme_mod._installed_fonts.cache_clear()  # next caller sees real fonts
+
+    assert len(calls) == 1

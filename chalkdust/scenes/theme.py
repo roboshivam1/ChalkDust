@@ -287,10 +287,25 @@ def _describe(ch: str) -> str:
 # derivation that uses &.
 MATH_ENVIRONMENT = "align*"
 
-# A LaTeX run that has not finished by now is looping (`\def\a{\a}\a` never
-# returns), not slow: a cold MiKTeX compile that downloads packages measured
-# ~23 s on this project's machines.
+# How long one LaTeX run may take. A cold MiKTeX compile that downloads
+# packages measured ~23 s on this project's machines, but under parallel load
+# a valid label has taken longer than 120 s (register G4b-N6), so running past
+# it says nothing about the expression: the run is retried once
+# (LATEX_CHECK_ATTEMPTS), and a second timeout raises LatexToolchainError --
+# never invalid_latex, and never cached. A macro that never terminates
+# (`\def\a{\a}\a`) still ends there, named by its source.
 LATEX_CHECK_TIMEOUT = 120.0
+LATEX_CHECK_ATTEMPTS = 2
+
+
+class LatexToolchainError(RuntimeError):
+    """The TeX toolchain did not finish a compile in time, on any attempt.
+
+    A toolchain condition, not a verdict on the spec: the machine is loaded
+    or TeX is hung. Typed so the rungs report it as kind "toolchain" and the
+    pipeline as a toolchain failure with its own exit code, rather than as a
+    refusal the repair loop would answer by rewriting valid maths.
+    """
 
 
 def check_latex_source(source: str, *, what: str = "maths",
@@ -319,7 +334,8 @@ def check_latex_source(source: str, *, what: str = "maths",
     A failure that is not the expression's fault -- no `latex` on PATH, or
     a template that does not compile even around "x" -- raises RuntimeError,
     which the rungs report as build_error: regenerating the spec cannot fix
-    it.
+    it. A compile still running after LATEX_CHECK_TIMEOUT on every attempt
+    raises LatexToolchainError, which the rungs report as kind "toolchain".
     """
     template = tex_template or config["tex_template"]
     key = content_hash("latex-check", source, template.body,
@@ -363,8 +379,9 @@ def _compile_raw(source: str, key: str, template: TexTemplate,
     """Run the template's compiler once on the raw source.
 
     Returns None when it compiles, else LaTeX's first error line (the
-    expression's fault). Raises LayoutError(invalid_latex) on a timeout and
-    RuntimeError when the toolchain itself is at fault; neither is cached.
+    expression's fault). Raises LatexToolchainError when LaTeX times out on
+    every attempt and RuntimeError when the toolchain is otherwise at fault;
+    neither is cached.
     """
     error = _run_latex(template.get_texcode_for_expression_in_env(source, environment),
                        key, template, what, source)
@@ -378,32 +395,48 @@ def _compile_raw(source: str, key: str, template: TexTemplate,
     return error
 
 
+def _compile(command: list[str]) -> subprocess.CompletedProcess:
+    """One TeX run, bounded by LATEX_CHECK_TIMEOUT. Its own function so a
+    test can stand in for a slow toolchain without a slow test."""
+    return subprocess.run(command, stdin=subprocess.DEVNULL,
+                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                          timeout=LATEX_CHECK_TIMEOUT)
+
+
 def _run_latex(texcode: str, key: str, template: TexTemplate, what: str,
                source: str) -> str | None:
     compiler = template.tex_compiler
     if not isinstance(compiler, str):
         compiler = compiler[0]
-    # A private scratch dir per run: two processes checking the same source
-    # at once must not share a .log or .dvi (Windows locks open files).
-    work = _latex_dir() / f".run-{key}-{os.getpid()}"
-    work.mkdir(parents=True, exist_ok=True)
-    tex_file = work / f"{key}.tex"
-    tex_file.write_text(texcode, encoding="utf-8")
-    command = make_tex_compilation_command(
-        compiler, template.output_format, tex_file, work)
-    try:
-        cp = subprocess.run(command, stdin=subprocess.DEVNULL,
-                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                            timeout=LATEX_CHECK_TIMEOUT)
-    except FileNotFoundError as exc:
-        shutil.rmtree(work, ignore_errors=True)
-        raise RuntimeError(f"{compiler!r} is not on PATH; LaTeX cannot be "
-                           f"checked or rendered") from exc
-    except subprocess.TimeoutExpired as exc:
-        shutil.rmtree(work, ignore_errors=True)
-        raise refuse_invalid_latex(
-            what, source, f"does not finish compiling within "
-            f"{LATEX_CHECK_TIMEOUT:.0f} s (a macro that never terminates?)") from exc
+    for attempt in range(1, LATEX_CHECK_ATTEMPTS + 1):
+        # A private scratch dir per run: two processes checking the same
+        # source at once must not share a .log or .dvi (Windows locks open
+        # files). Per attempt too: a timed-out run's TeX may still hold its
+        # files, and a retry tripping over them would read as a LaTeX error.
+        work = _latex_dir() / f".run-{key}-{os.getpid()}-{attempt}"
+        work.mkdir(parents=True, exist_ok=True)
+        tex_file = work / f"{key}.tex"
+        tex_file.write_text(texcode, encoding="utf-8")
+        command = make_tex_compilation_command(
+            compiler, template.output_format, tex_file, work)
+        try:
+            cp = _compile(command)
+            break
+        except FileNotFoundError as exc:
+            shutil.rmtree(work, ignore_errors=True)
+            raise RuntimeError(f"{compiler!r} is not on PATH; LaTeX cannot be "
+                               f"checked or rendered") from exc
+        except subprocess.TimeoutExpired as exc:
+            shutil.rmtree(work, ignore_errors=True)
+            if attempt < LATEX_CHECK_ATTEMPTS:
+                continue  # slow is not wrong: run it again before judging
+            raise LatexToolchainError(
+                f"the TeX toolchain did not finish compiling {what} {source!r} "
+                f"within {LATEX_CHECK_TIMEOUT:.0f} s, {LATEX_CHECK_ATTEMPTS} "
+                f"times: LaTeX is slow or hung (a heavily loaded machine, or a "
+                f"macro that never terminates). This is not a verdict on the "
+                f"spec; run again on a quieter machine, and if it persists, "
+                f"look for a self-referencing macro in that source") from exc
     error = None
     if cp.returncode != 0:
         error = _first_tex_error(tex_file.with_suffix(".log"))

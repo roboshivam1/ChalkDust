@@ -36,15 +36,21 @@ EXIT_SEMANTIC_REFUSED = 8
 # whose full path has a '~' LaTeX cannot compile under: fix the command
 # line, not the spec.
 EXIT_DIRECTORY_UNUSABLE = 9
+# TeX did not finish a compile in time, on every attempt: a loaded machine or
+# a hung toolchain, not a verdict on the spec. Retry; nothing to fix in it.
+EXIT_TOOLCHAIN_FAILED = 10
 
 EXIT_CODES: dict[type[pipeline.PipelineError], tuple[int, str]] = {
     pipeline.SpecInvalid: (EXIT_SPEC_INVALID, "spec invalid"),
     pipeline.SemanticRefused: (EXIT_SEMANTIC_REFUSED, "semantic refused"),
+    # A broken carry-in reference is a spec error whichever rung finds it.
+    pipeline.CarryInRefused: (EXIT_SPEC_INVALID, "spec invalid"),
     pipeline.LayoutRefused: (EXIT_LAYOUT_REFUSED, "layout refused"),
     pipeline.SpeechFailed: (EXIT_SPEECH_FAILED, "speech failed"),
     pipeline.RenderFailed: (EXIT_RENDER_FAILED, "render failed"),
     pipeline.AssemblyFailed: (EXIT_ASSEMBLY_FAILED, "assembly failed"),
     pipeline.DirectoryUnusable: (EXIT_DIRECTORY_UNUSABLE, "directory unusable"),
+    pipeline.ToolchainFailed: (EXIT_TOOLCHAIN_FAILED, "toolchain failed"),
 }
 
 

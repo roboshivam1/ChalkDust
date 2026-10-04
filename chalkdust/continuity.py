@@ -146,6 +146,57 @@ def fixture_beat(component: str, params: dict[str, Any],
     return spec, recipes
 
 
+def referenced_parts(component: Component) -> tuple[str, list[int]] | None:
+    """The carried target a consumer indexes into, and the part indices it
+    names; None when it names no parts (it acts on the whole artifact).
+
+    The consumers' shared param contract (Callout, ZoomHighlight): `target_id`
+    names the carried artifact, and `part` (one index) or `parts` (several)
+    index its top-level parts -- the producer's artifact-builder structure,
+    which builders document as stable (SCENE_SPEC.md §6).
+    """
+    params = component.params
+    target = getattr(params, "target_id", None)
+    if target is None or target not in component.carried_targets():
+        return None
+    indices = [i for i in (getattr(params, "part", None),) if i is not None]
+    indices += list(getattr(params, "parts", None) or ())
+    return (target, indices) if indices else None
+
+
+def part_range_problems(component: Component, recipes: Sequence[ArtifactRecipe],
+                        theme: Theme) -> list[str]:
+    """Part indices a consumer names that its carried target does not have.
+
+    The part count is a property of the producer's artifact, so the artifact
+    is rebuilt from its recipe -- exactly as CarryIn would -- and counted.
+    Without this the bad index surfaces only inside build(), as a CarryInError
+    the probe used to report as build_error (register D-G4b-1). A target the
+    beat does not carry in is check_carried_targets' finding, not this one;
+    an artifact that cannot be rebuilt is left for the probe to report.
+    """
+    named = referenced_parts(component)
+    if named is None:
+        return []
+    target, indices = named
+    recipe = next((r for r in recipes if r.name == target), None)
+    if recipe is None:
+        return []
+    try:
+        n = len(build_artifact(recipe, theme).submobjects)
+    except Exception:
+        return []
+    bad = [i for i in indices if i >= n]
+    if not bad:
+        return []
+    return [
+        f"{component.name} points at part(s) {bad} of {target!r}, which "
+        f"{recipe.producer} builds with {n} part(s) (indices 0..{n - 1}). "
+        f"Point at a part that exists, or drop the index to act on the whole "
+        f"artifact."
+    ]
+
+
 def carry_in_fingerprint(recipes: Sequence[ArtifactRecipe]) -> str:
     """The cache-key term for a beat's carried artifacts.
 

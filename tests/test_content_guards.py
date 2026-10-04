@@ -100,6 +100,53 @@ def test_missing_latex_is_a_toolchain_error_not_invalid_latex(tmp_path, monkeypa
         check_latex_source(r"x + 1")
 
 
+def _timeouts(monkeypatch, outcomes: list) -> list:
+    """Stand in for theme._compile: each call takes the next outcome, a
+    TimeoutExpired to raise or a return code to finish with. Returns the
+    list of commands it was called with."""
+    calls = []
+
+    def compile_(command):
+        calls.append(command)
+        outcome = outcomes[len(calls) - 1]
+        if outcome == "timeout":
+            raise subprocess.TimeoutExpired(command, theme_mod.LATEX_CHECK_TIMEOUT)
+        return subprocess.CompletedProcess(command, outcome)
+
+    monkeypatch.setattr(theme_mod, "_compile", compile_)
+    monkeypatch.setattr(theme_mod, "_latex_verdicts", {})
+    return calls
+
+
+# A macro that never terminates: what a timeout must still catch.
+LOOPING = r"\def\a{\a}\a"
+
+
+def test_a_latex_timeout_is_retried_then_a_toolchain_error_never_cached(
+        tmp_path, monkeypatch):
+    # Register G4b-N6: a timeout is not a verdict on the expression. Run
+    # again once; a second timeout is the toolchain's, typed apart from
+    # invalid_latex, naming the source, and nothing is cached for it.
+    calls = _timeouts(monkeypatch, ["timeout", "timeout"])
+    with tempconfig({"media_dir": str(tmp_path)}), \
+            pytest.raises(theme_mod.LatexToolchainError) as exc:
+        check_latex_source(LOOPING, what="step[1]")
+    assert not isinstance(exc.value, LayoutError)
+    assert len(calls) == theme_mod.LATEX_CHECK_ATTEMPTS == 2
+    assert repr(LOOPING) in str(exc.value) and "step[1]" in str(exc.value)
+    assert "slow or hung" in str(exc.value)
+    assert theme_mod._latex_verdicts == {}
+    assert not list((tmp_path / "latex").glob("*.json"))
+
+
+def test_a_latex_timeout_that_finishes_on_retry_passes(tmp_path, monkeypatch):
+    # Slow, then done: the expression compiles, so it is accepted.
+    calls = _timeouts(monkeypatch, ["timeout", 0])
+    with tempconfig({"media_dir": str(tmp_path)}):
+        check_latex_source(r"F_{\mathrm{applied},7} + \Delta F_7")
+    assert len(calls) == 2
+
+
 def _maths_specs(bad: str) -> list[tuple[str, dict]]:
     """One spec per maths-taking component with `bad` in its maths field.
     GraphPlot is absent on purpose: its LaTeX is generated from parsed

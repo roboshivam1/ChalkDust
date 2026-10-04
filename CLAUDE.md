@@ -146,10 +146,28 @@ regenerating; never regenerate to make red go green.
 - Spec objects (`BeatSpec`, `VideoSpec`, component params) are frozen and are the only
   things that get hashed. State objects (`Beat`, `Video`) are never hashed.
 - Cache writes go through `cache.slot(...)`: write to `slot.tmp`, then `slot.commit()`.
-- Each beat renders in its own `video_dir` (`beat_<key>`) under the work dir so parallel
-  renders could never overwrite each other's partial movie files; `media_dir` stays shared
-  for Manim's text and LaTeX caches. Rendering is serial today (`worker.render_video` and
-  `pipeline.render` loop over beats); there is no pool in this tree.
+- Each beat renders in its own `video_dir` (`videos/beat_<key>`, `worker._render`), so
+  two renders never overwrite each other's partial movie files. That is what makes the
+  render pool safe.
+
+## Render pool
+
+`render --jobs N` (`render/pool.py`, `pipeline.render_stage_pooled`; ARCHITECTURE.md §4):
+
+- Cache hits never start a worker; only beats that miss are pooled, one per cache slot.
+- With no `--jobs`: one process per beat to render, at most the CPU count. A draft render
+  of a spec with fewer than 5 beats (`pool.DRAFT_MIN_POOLED`), or with fewer than 5 to
+  render, stays in-process: the pool's start-up costs more than it saves there.
+- `--jobs 1` is the sequential path, in this process.
+- `RawScene` beats render in the main process, after the pool: a degraded one's cache slot
+  is known only once it renders.
+- Output is identical either way: same keys, same clips, same MP4.
+- Workers are spawned (never forked) and each gets its own copy of Manim's `texts/` and
+  `Tex/` caches under `{media_dir}/pool/`: concurrent writes there tore SVGs. A worker
+  failure comes back as data and becomes the same `RenderFailed`/`ToolchainFailed` a
+  sequential render raises; a dead worker is `RenderFailed` naming the beats in flight.
+- Anything you hand the pool must pickle by reference (`pool.can_ship`); a closure (a test
+  double) silently falls back to the in-process path.
 
 ## Running tests
 
@@ -166,7 +184,7 @@ macOS: `.venv/bin/python -m pytest`.
   a CLI `-q` makes `-qq`, which prints only dots and no summary line. Either pass nothing
   extra or override the defaults as above. Quote the real summary line (`N passed in ...`)
   and the exit code when you report a result; dots are not a result.
-- No `pytest-xdist` is installed; don't pass `-n`. The full suite (2158 tests) is slow
+- No `pytest-xdist` is installed; don't pass `-n`. The full suite (2167 tests) is slow
   because it builds real Manim scenes and compiles LaTeX; iterate on the files you touched
   and run everything before you merge.
 - LaTeX (`MathTex`) needs MiKTeX's `latex` and `dvisvgm` on PATH, with MiKTeX's directory

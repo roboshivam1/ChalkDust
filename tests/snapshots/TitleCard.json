@@ -2,7 +2,8 @@
  "component": "TitleCard",
  "manim_version": "0.21.0",
  "reasons": [
-  "initial snapshot: seeded with the f4-layout-safety harness"
+  "initial snapshot: seeded with the f4-layout-safety harness",
+  "structure/geometry split for cross-font stability; theme fonts now installed on the Windows dev box"
  ],
  "cases": [
   {
@@ -15,6 +16,114 @@
       "op": "play",
       "animations": [
        "FadeIn"
+      ],
+      "run_time": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "title card revealed",
+      "mobjects": [
+       {
+        "type": "Text",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "WhyHashMapsDegrade",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 7.5
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "Text",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "WhyHashMapsDegrade",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       null
+      ],
+      "run_time": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "title card revealed",
+      "mobjects": [
+       {
+        "type": "Text",
+        "text": "Why Hash Maps Degrade",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 7.5
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "Text",
+        "text": "Why Hash Maps Degrade",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       null
       ],
       "run_time": 2.5
      },
@@ -57,6 +166,30 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        9.862,
+        0.759
+       ],
+       "font_size": 60.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        9.862,
+        0.759
+       ],
+       "font_size": 60.0
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {
@@ -109,6 +242,254 @@
       "op": "play",
       "animations": [
        "FadeIn"
+      ],
+      "run_time": 1.667
+     },
+     {
+      "op": "settle",
+      "label": "title card revealed",
+      "mobjects": [
+       {
+        "type": "Text",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "CSFUNDAMENTALS",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "BinarySearch",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "Halvingtheproblem,everystep",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 5.0
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "Text",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "CSFUNDAMENTALS",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "BinarySearch",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "Halvingtheproblem,everystep",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       null
+      ],
+      "run_time": 1.667
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       null
+      ],
+      "run_time": 1.667
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       null
+      ],
+      "run_time": 1.667
+     },
+     {
+      "op": "settle",
+      "label": "title card revealed",
+      "mobjects": [
+       {
+        "type": "Text",
+        "text": "CS FUNDAMENTALS",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "Binary Search",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "Halving the problem, every step",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 5.0
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "Text",
+        "text": "CS FUNDAMENTALS",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "Binary Search",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "text": "Halving the problem, every step",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       null
+      ],
+      "run_time": 1.667
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       null
+      ],
+      "run_time": 1.667
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       null
       ],
       "run_time": 1.667
      },
@@ -191,6 +572,66 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        0.0,
+        0.845,
+        3.239,
+        0.25
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.01,
+        5.454,
+        0.759
+       ],
+       "font_size": 60.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.955,
+        6.624,
+        0.43
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        0.845,
+        3.239,
+        0.25
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.01,
+        5.454,
+        0.759
+       ],
+       "font_size": 60.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.955,
+        6.624,
+        0.43
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {

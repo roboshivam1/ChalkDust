@@ -2,7 +2,8 @@
  "component": "SplitCompare",
  "manim_version": "0.21.0",
  "reasons": [
-  "SplitCompare merged"
+  "SplitCompare merged",
+  "structure/geometry split for cross-font stability; theme fonts now installed on the Windows dev box"
  ],
  "cases": [
   {
@@ -38,6 +39,406 @@
       "op": "play",
       "animations": [
        "FadeIn"
+      ],
+      "run_time": 2.133
+     },
+     {
+      "op": "settle",
+      "label": "split compare revealed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "left side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "flow": [
+           {
+            "type": "Text",
+            "text": "key:\"cat\"hash→4",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "right side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "flow": [
+           {
+            "type": "Text",
+            "text": "key:\"act\"hash→4",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "verdict",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "samebucket",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 3.567
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "left side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "flow": [
+           {
+            "type": "Text",
+            "text": "key:\"cat\"hash→4",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "right side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "flow": [
+           {
+            "type": "Text",
+            "text": "key:\"act\"hash→4",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "verdict",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "samebucket",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "left side"
+      ],
+      "run_time": 2.15
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "right side"
+      ],
+      "run_time": 2.15
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "verdict"
+      ],
+      "run_time": 2.133
+     },
+     {
+      "op": "settle",
+      "label": "split compare revealed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "left side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Text",
+            "text": "key: \"cat\"",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "hash → 4",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "right side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Text",
+            "text": "key: \"act\"",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "hash → 4",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "verdict",
+        "text": "same bucket",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 3.567
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "left side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Text",
+            "text": "key: \"cat\"",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "hash → 4",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "right side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Text",
+            "text": "key: \"act\"",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "hash → 4",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "verdict",
+        "text": "same bucket",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "left side"
+      ],
+      "run_time": 2.15
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "right side"
+      ],
+      "run_time": 2.15
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "verdict"
       ],
       "run_time": 2.133
      },
@@ -222,6 +623,210 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        -3.431,
+        -0.1,
+        6.061,
+        1.782
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.431,
+        -0.1,
+        6.061,
+        1.782
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.431,
+        -0.1,
+        2.627,
+        1.182
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.431,
+        0.215,
+        2.627,
+        0.553
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -3.431,
+        -0.526,
+        1.911,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.1,
+        6.061,
+        1.782
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.1,
+        6.061,
+        1.782
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.1,
+        2.633,
+        1.182
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.431,
+        0.215,
+        2.633,
+        0.553
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.526,
+        1.911,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        3.519,
+        0.449
+       ],
+       "font_size": 44.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -3.431,
+        -0.1,
+        6.061,
+        1.782
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.431,
+        -0.1,
+        6.061,
+        1.782
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.431,
+        -0.1,
+        2.627,
+        1.182
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.431,
+        0.215,
+        2.627,
+        0.553
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -3.431,
+        -0.526,
+        1.911,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.1,
+        6.061,
+        1.782
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.1,
+        6.061,
+        1.782
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.1,
+        2.633,
+        1.182
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.431,
+        0.215,
+        2.633,
+        0.553
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.526,
+        1.911,
+        0.329
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        3.519,
+        0.449
+       ],
+       "font_size": 44.0
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {
@@ -474,6 +1079,402 @@
          },
          {
           "type": "VGroup",
+          "flow": [
+           {
+            "type": "Text",
+            "text": "Arraylookup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Jumpstraighttotheindex",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "O(1)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "right side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "flow": [
+           {
+            "type": "Text",
+            "text": "LinkedlistWalknodebynodefromthehead",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "O(n)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 4.55
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "left side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "flow": [
+           {
+            "type": "Text",
+            "text": "Arraylookup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Jumpstraighttotheindex",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "O(1)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "right side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "flow": [
+           {
+            "type": "Text",
+            "text": "LinkedlistWalknodebynodefromthehead",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "O(n)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "left side"
+      ],
+      "run_time": 2.733
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "right side"
+      ],
+      "run_time": 2.717
+     },
+     {
+      "op": "settle",
+      "label": "split compare revealed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "left side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Text",
+            "text": "Array lookup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Jump straight to the index",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "O(1)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "right side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Text",
+            "text": "Linked list",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Walk node by node\nfrom the head",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "O(n)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 4.55
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "left side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Text",
+            "text": "Array lookup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Jump straight to the index",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "O(1)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "right side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Text",
+            "text": "Linked list",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Walk node by node\nfrom the head",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "O(n)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "left side"
+      ],
+      "run_time": 2.733
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "right side"
+      ],
+      "run_time": 2.717
+     },
+     {
+      "op": "settle",
+      "label": "split compare revealed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "left side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
           "children": [
            {
             "type": "Text",
@@ -645,6 +1646,228 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        -3.431,
+        -0.1,
+        6.061,
+        2.96
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.431,
+        -0.1,
+        6.061,
+        2.96
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.431,
+        0.014,
+        5.436,
+        2.131
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.431,
+        0.803,
+        3.563,
+        0.553
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -3.431,
+        0.012,
+        5.436,
+        0.43
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -3.431,
+        -0.777,
+        1.052,
+        0.548
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.1,
+        6.061,
+        2.96
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.1,
+        6.061,
+        2.96
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.1,
+        3.999,
+        2.36
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.431,
+        0.855,
+        2.765,
+        0.449
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.051,
+        3.999,
+        0.763
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        3.431,
+        -1.006,
+        1.107,
+        0.548
+       ],
+       "font_size": 44.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -3.431,
+        -0.1,
+        6.061,
+        2.96
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.431,
+        -0.1,
+        6.061,
+        2.96
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.431,
+        0.014,
+        5.436,
+        2.131
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.431,
+        0.803,
+        3.563,
+        0.553
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -3.431,
+        0.012,
+        5.436,
+        0.43
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -3.431,
+        -0.777,
+        1.052,
+        0.548
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.1,
+        6.061,
+        2.96
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.1,
+        6.061,
+        2.96
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.1,
+        3.999,
+        2.36
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.431,
+        0.855,
+        2.765,
+        0.449
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.051,
+        3.999,
+        0.763
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        3.431,
+        -1.006,
+        1.107,
+        0.548
+       ],
+       "font_size": 44.0
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {
@@ -920,6 +2143,434 @@
          },
          {
           "type": "VGroup",
+          "flow": [
+           {
+            "type": "Text",
+            "text": "Before",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "(a+b)^2",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "right side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "flow": [
+           {
+            "type": "Text",
+            "text": "After",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "a^2 + 2ab + b^2",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "verdict",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "Samevalue,expanded",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 3.567
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "left side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "flow": [
+           {
+            "type": "Text",
+            "text": "Before",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "(a+b)^2",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "right side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "flow": [
+           {
+            "type": "Text",
+            "text": "After",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "a^2 + 2ab + b^2",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "verdict",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "Samevalue,expanded",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "left side"
+      ],
+      "run_time": 2.15
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "right side"
+      ],
+      "run_time": 2.15
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "verdict"
+      ],
+      "run_time": 2.133
+     },
+     {
+      "op": "settle",
+      "label": "split compare revealed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "left side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Text",
+            "text": "Before",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "(a+b)^2",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "right side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Text",
+            "text": "After",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "a^2 + 2ab + b^2",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "verdict",
+        "text": "Same value, expanded",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 3.567
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "left side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Text",
+            "text": "Before",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "(a+b)^2",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "right side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Text",
+            "text": "After",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "a^2 + 2ab + b^2",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "verdict",
+        "text": "Same value, expanded",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "left side"
+      ],
+      "run_time": 2.15
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "right side"
+      ],
+      "run_time": 2.15
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "verdict"
+      ],
+      "run_time": 2.133
+     },
+     {
+      "op": "settle",
+      "label": "split compare revealed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "left side",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#0E1116",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
           "children": [
            {
             "type": "Text",
@@ -1085,6 +2736,210 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        -3.431,
+        -0.1,
+        6.061,
+        1.972
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.431,
+        -0.1,
+        6.061,
+        1.972
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.431,
+        -0.1,
+        1.812,
+        1.372
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.431,
+        0.359,
+        1.812,
+        0.454
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -3.431,
+        -0.477,
+        1.76,
+        0.618
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.1,
+        6.061,
+        1.972
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.1,
+        6.061,
+        1.972
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.054,
+        3.081,
+        1.281
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.431,
+        0.359,
+        1.368,
+        0.454
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.431,
+        3.081,
+        0.526
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        6.288,
+        0.547
+       ],
+       "font_size": 44.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -3.431,
+        -0.1,
+        6.061,
+        1.972
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.431,
+        -0.1,
+        6.061,
+        1.972
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.431,
+        -0.1,
+        1.812,
+        1.372
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.431,
+        0.359,
+        1.812,
+        0.454
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -3.431,
+        -0.477,
+        1.76,
+        0.618
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.1,
+        6.061,
+        1.972
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.1,
+        6.061,
+        1.972
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.054,
+        3.081,
+        1.281
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.431,
+        0.359,
+        1.368,
+        0.454
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        3.431,
+        -0.431,
+        3.081,
+        0.526
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        6.288,
+        0.547
+       ],
+       "font_size": 44.0
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {

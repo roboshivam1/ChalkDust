@@ -4,7 +4,8 @@
  "reasons": [
   "initial snapshot: seeded with the f4-layout-safety harness",
   "N-1: budget() hands out whole frames at the tier fps (run times snap to 1/60 s here)",
-  "shipped-audit rc2: reveal='all' budgets its single fade as one segment (weights [2k, 2], was k summed segments of 2), so a beat shorter than k+1 frames no longer overruns; example 2 moves one 60 fps frame from the fade to the hold"
+  "shipped-audit rc2: reveal='all' budgets its single fade as one segment (weights [2k, 2], was k summed segments of 2), so a beat shorter than k+1 frames no longer overruns; example 2 moves one 60 fps frame from the fade to the hold",
+  "structure/geometry split for cross-font stability; theme fonts now installed on the Windows dev box"
  ],
  "cases": [
   {
@@ -19,6 +20,186 @@
       "op": "play",
       "animations": [
        "animate"
+      ],
+      "run_time": 5.0
+     },
+     {
+      "op": "settle",
+      "label": "bullets revealed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "bullets",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Onejumpbecomesawalk",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 5.0
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "bullets",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Onejumpbecomesawalk",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "bullet[0]"
+      ],
+      "run_time": 5.0
+     },
+     {
+      "op": "settle",
+      "label": "bullets revealed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "bullets",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "One jump becomes a walk",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 5.0
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "bullets",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "One jump becomes a walk",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "bullet[0]"
       ],
       "run_time": 5.0
      },
@@ -97,6 +278,84 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.93,
+        0.425
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.93,
+        0.425
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.895,
+        -0.049,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        -0.1,
+        5.51,
+        0.425
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.93,
+        0.425
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.93,
+        0.425
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.895,
+        -0.049,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        -0.1,
+        5.51,
+        0.425
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {
@@ -213,6 +472,472 @@
       "op": "play",
       "animations": [
        "animate"
+      ],
+      "run_time": 2.217
+     },
+     {
+      "op": "settle",
+      "label": "bullets revealed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "bullets",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Aweakhashfunction",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Aloadfactorlefttoohigh",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Adversarialkeyschosentocollide",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "heading",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "Threecauses",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "title_bar"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.217
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "bullets",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Aweakhashfunction",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Aloadfactorlefttoohigh",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Adversarialkeyschosentocollide",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "heading",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "Threecauses",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "title_bar"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "heading"
+      ],
+      "run_time": 1.117
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "bullet[0]"
+      ],
+      "run_time": 2.233
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "bullet[1]"
+      ],
+      "run_time": 2.217
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "bullet[2]"
+      ],
+      "run_time": 2.217
+     },
+     {
+      "op": "settle",
+      "label": "bullets revealed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "bullets",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "A weak hash function",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "A load factor left too high",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Adversarial keys chosen to collide",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "heading",
+        "text": "Three causes",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "title_bar"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.217
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "bullets",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "A weak hash function",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "A load factor left too high",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Adversarial keys chosen to collide",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "heading",
+        "text": "Three causes",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "title_bar"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "heading"
+      ],
+      "run_time": 1.117
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "bullet[0]"
+      ],
+      "run_time": 2.233
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "bullet[1]"
+      ],
+      "run_time": 2.217
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "bullet[2]"
       ],
       "run_time": 2.217
      },
@@ -389,6 +1114,210 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        7.546,
+        2.108
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.321,
+        0.782,
+        4.904,
+        0.344
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.703,
+        0.792,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.111,
+        0.782,
+        4.484,
+        0.344
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.931,
+        -0.104,
+        5.683,
+        0.434
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.703,
+        -0.049,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.721,
+        -0.104,
+        5.263,
+        0.434
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.941,
+        7.546,
+        0.426
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.703,
+        -0.889,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        -0.941,
+        7.126,
+        0.426
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        3.0,
+        3.754,
+        0.449
+       ],
+       "font_size": 44.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        7.546,
+        2.108
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.321,
+        0.782,
+        4.904,
+        0.344
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.703,
+        0.792,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.111,
+        0.782,
+        4.484,
+        0.344
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.931,
+        -0.104,
+        5.683,
+        0.434
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.703,
+        -0.049,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.721,
+        -0.104,
+        5.263,
+        0.434
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.941,
+        7.546,
+        0.426
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.703,
+        -0.889,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        -0.941,
+        7.126,
+        0.426
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        3.0,
+        3.754,
+        0.449
+       ],
+       "font_size": 44.0
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {
@@ -613,6 +1542,616 @@
       "op": "play",
       "animations": [
        "FadeIn"
+      ],
+      "run_time": 8.567
+     },
+     {
+      "op": "settle",
+      "label": "bullets revealed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "bullets",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Pointnumber0",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Pointnumber1",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Pointnumber2",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[3]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Pointnumber3",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[4]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Pointnumber4",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[5]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Pointnumber5",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.433
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "bullets",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Pointnumber0",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Pointnumber1",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Pointnumber2",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[3]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Pointnumber3",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[4]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Pointnumber4",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[5]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "flow": [
+             {
+              "type": "Text",
+              "text": "Pointnumber5",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "bullets"
+      ],
+      "run_time": 8.567
+     },
+     {
+      "op": "settle",
+      "label": "bullets revealed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "bullets",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 0",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 1",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 2",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[3]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 3",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[4]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 4",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[5]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 5",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.433
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "bullets",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 0",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 1",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 2",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[3]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 3",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[4]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 4",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[5]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Point number 5",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "bullets"
       ],
       "run_time": 8.567
      },
@@ -881,6 +2420,354 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.569,
+        4.544
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.004,
+        2.002,
+        3.562,
+        0.339
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.715,
+        2.01,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.206,
+        2.002,
+        3.142,
+        0.339
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.06,
+        1.161,
+        3.45,
+        0.339
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.715,
+        1.169,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.15,
+        1.161,
+        3.03,
+        0.339
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.011,
+        0.32,
+        3.547,
+        0.339
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.715,
+        0.328,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.199,
+        0.32,
+        3.127,
+        0.339
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.007,
+        -0.52,
+        3.556,
+        0.339
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.715,
+        -0.513,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.203,
+        -0.52,
+        3.136,
+        0.339
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.361,
+        3.569,
+        0.339
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.715,
+        -1.353,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        -1.361,
+        3.149,
+        0.339
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.012,
+        -2.202,
+        3.545,
+        0.339
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.715,
+        -2.194,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.198,
+        -2.202,
+        3.125,
+        0.339
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        3.569,
+        4.544
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.004,
+        2.002,
+        3.562,
+        0.339
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.715,
+        2.01,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.206,
+        2.002,
+        3.142,
+        0.339
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.06,
+        1.161,
+        3.45,
+        0.339
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.715,
+        1.169,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.15,
+        1.161,
+        3.03,
+        0.339
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.011,
+        0.32,
+        3.547,
+        0.339
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.715,
+        0.328,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.199,
+        0.32,
+        3.127,
+        0.339
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.007,
+        -0.52,
+        3.556,
+        0.339
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.715,
+        -0.513,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.203,
+        -0.52,
+        3.136,
+        0.339
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.361,
+        3.569,
+        0.339
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.715,
+        -1.353,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        -1.361,
+        3.149,
+        0.339
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.012,
+        -2.202,
+        3.545,
+        0.339
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.715,
+        -2.194,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.198,
+        -2.202,
+        3.125,
+        0.339
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {

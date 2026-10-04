@@ -4,7 +4,8 @@
  "reasons": [
   "ProblemStatement merged",
   "ProblemStatement: italic gap between maths and unspaced prose after it",
-  "ProblemStatement: prose strut found by shape; Text nodes record the run, not the strut"
+  "ProblemStatement: prose strut found by shape; Text nodes record the run, not the strut",
+  "structure/geometry split for cross-font stability; theme fonts now installed on the Windows dev box"
  ],
  "cases": [
   {
@@ -75,6 +76,970 @@
       "animations": [
        "animate",
        "animate"
+      ],
+      "run_time": 1.667
+     },
+     {
+      "op": "settle",
+      "label": "problem stated",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "statement",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "Ablockofmass",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle m",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "isreleasedfromrestatthetopofaroughplaneinclinedat",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle \\theta",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "tothehorizontal.Thecoefficientofkineticfrictionbetweentheblockandtheplaneis",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle \\mu",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": ".",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "given",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "GIVEN",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle m = 2\\,\\mathrm{kg}",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle \\theta = 30^\\circ",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle \\mu = 0.2",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle g = 10\\,\\mathrm{m\\,s^{-2}}",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "find",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "FIND",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "theacceleration",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle a",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "oftheblockdowntheplane",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "statement",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "Ablockofmass",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle m",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "isreleasedfromrestatthetopofaroughplaneinclinedat",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle \\theta",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "tothehorizontal.Thecoefficientofkineticfrictionbetweentheblockandtheplaneis",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle \\mu",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": ".",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "given",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "GIVEN",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle m = 2\\,\\mathrm{kg}",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle \\theta = 30^\\circ",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle \\mu = 0.2",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle g = 10\\,\\mathrm{m\\,s^{-2}}",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "find",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "FIND",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "theacceleration",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle a",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "oftheblockdowntheplane",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "statement[0]"
+      ],
+      "run_time": 0.833
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "statement[1]"
+      ],
+      "run_time": 0.833
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "statement[2]"
+      ],
+      "run_time": 0.833
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       null,
+       "given[0]"
+      ],
+      "run_time": 0.833
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "given[1]"
+      ],
+      "run_time": 0.833
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "given[2]"
+      ],
+      "run_time": 0.833
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "given[3]"
+      ],
+      "run_time": 0.833
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       null,
+       "find value"
+      ],
+      "run_time": 1.667
+     },
+     {
+      "op": "settle",
+      "label": "problem stated",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "statement",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "statement[0]",
+          "children": [
+           {
+            "type": "Text",
+            "text": "A block of mass",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle m",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "is released from rest at the top of a rough",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "statement[1]",
+          "children": [
+           {
+            "type": "Text",
+            "text": "plane inclined at",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle \\theta",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "to the horizontal. The coefficient of",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "statement[2]",
+          "children": [
+           {
+            "type": "Text",
+            "text": "kinetic friction between the block and the plane is",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle \\mu",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": ".",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "given",
+        "children": [
+         {
+          "type": "Text",
+          "text": "GIVEN",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "given[0]",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "MathTex",
+              "tex": "\\mathrm{H}\\textstyle m = 2\\,\\mathrm{kg}",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "given[1]",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "MathTex",
+              "tex": "\\mathrm{H}\\textstyle \\theta = 30^\\circ",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "given[2]",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "MathTex",
+              "tex": "\\mathrm{H}\\textstyle \\mu = 0.2",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "given[3]",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "MathTex",
+              "tex": "\\mathrm{H}\\textstyle g = 10\\,\\mathrm{m\\,s^{-2}}",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "find",
+        "children": [
+         {
+          "type": "Text",
+          "text": "FIND",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "find value",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Text",
+              "text": "the acceleration",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             },
+             {
+              "type": "MathTex",
+              "tex": "\\mathrm{H}\\textstyle a",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             },
+             {
+              "type": "Text",
+              "text": "of the",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           },
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Text",
+              "text": "block down the plane",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "statement",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "statement[0]",
+          "children": [
+           {
+            "type": "Text",
+            "text": "A block of mass",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle m",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "is released from rest at the top of a rough",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "statement[1]",
+          "children": [
+           {
+            "type": "Text",
+            "text": "plane inclined at",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle \\theta",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "to the horizontal. The coefficient of",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "statement[2]",
+          "children": [
+           {
+            "type": "Text",
+            "text": "kinetic friction between the block and the plane is",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle \\mu",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": ".",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "given",
+        "children": [
+         {
+          "type": "Text",
+          "text": "GIVEN",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "given[0]",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "MathTex",
+              "tex": "\\mathrm{H}\\textstyle m = 2\\,\\mathrm{kg}",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "given[1]",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "MathTex",
+              "tex": "\\mathrm{H}\\textstyle \\theta = 30^\\circ",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "given[2]",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "MathTex",
+              "tex": "\\mathrm{H}\\textstyle \\mu = 0.2",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "given[3]",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "MathTex",
+              "tex": "\\mathrm{H}\\textstyle g = 10\\,\\mathrm{m\\,s^{-2}}",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "find",
+        "children": [
+         {
+          "type": "Text",
+          "text": "FIND",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "find value",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Text",
+              "text": "the acceleration",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             },
+             {
+              "type": "MathTex",
+              "tex": "\\mathrm{H}\\textstyle a",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             },
+             {
+              "type": "Text",
+              "text": "of the",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           },
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Text",
+              "text": "block down the plane",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "statement[0]"
+      ],
+      "run_time": 0.833
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "statement[1]"
+      ],
+      "run_time": 0.833
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "statement[2]"
+      ],
+      "run_time": 0.833
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       null,
+       "given[0]"
+      ],
+      "run_time": 0.833
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "given[1]"
+      ],
+      "run_time": 0.833
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "given[2]"
+      ],
+      "run_time": 0.833
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "given[3]"
+      ],
+      "run_time": 0.833
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       null,
+       "find value"
       ],
       "run_time": 1.667
      },
@@ -577,6 +1542,660 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        -0.0,
+        1.524,
+        11.883,
+        1.451
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        2.045,
+        11.883,
+        0.409
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.373,
+        2.088,
+        3.138,
+        0.324
+       ],
+       "font_size": 30.14
+      },
+      {
+       "bbox": [
+        -2.499,
+        2.027,
+        0.365,
+        0.202
+       ],
+       "font_size": 35.82
+      },
+      {
+       "bbox": [
+        1.873,
+        2.045,
+        8.137,
+        0.409
+       ],
+       "font_size": 30.14
+      },
+      {
+       "bbox": [
+        -0.664,
+        1.53,
+        10.555,
+        0.404
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.347,
+        1.528,
+        3.189,
+        0.4
+       ],
+       "font_size": 30.14
+      },
+      {
+       "bbox": [
+        -2.538,
+        1.568,
+        0.184,
+        0.319
+       ],
+       "font_size": 35.82
+      },
+      {
+       "bbox": [
+        1.144,
+        1.57,
+        6.938,
+        0.324
+       ],
+       "font_size": 30.14
+      },
+      {
+       "bbox": [
+        -0.832,
+        1.007,
+        10.22,
+        0.415
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.053,
+        1.012,
+        9.777,
+        0.404
+       ],
+       "font_size": 30.14
+      },
+      {
+       "bbox": [
+        4.078,
+        0.946,
+        0.242,
+        0.294
+       ],
+       "font_size": 35.82
+      },
+      {
+       "bbox": [
+        4.251,
+        0.92,
+        0.055,
+        0.055
+       ],
+       "font_size": 30.14
+      },
+      {
+       "bbox": [
+        -4.744,
+        -1.039,
+        2.396,
+        2.822
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.485,
+        0.255,
+        0.914,
+        0.235
+       ],
+       "font_size": 22.61
+      },
+      {
+       "bbox": [
+        -5.08,
+        -0.215,
+        1.723,
+        0.401
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.08,
+        -0.215,
+        1.723,
+        0.401
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.08,
+        -0.215,
+        1.723,
+        0.401
+       ],
+       "font_size": 35.82
+      },
+      {
+       "bbox": [
+        -5.241,
+        -0.842,
+        1.402,
+        0.324
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.241,
+        -0.842,
+        1.402,
+        0.324
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.241,
+        -0.842,
+        1.402,
+        0.324
+       ],
+       "font_size": 35.82
+      },
+      {
+       "bbox": [
+        -5.243,
+        -1.564,
+        1.397,
+        0.393
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.243,
+        -1.564,
+        1.397,
+        0.393
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.243,
+        -1.564,
+        1.397,
+        0.393
+       ],
+       "font_size": 35.82
+      },
+      {
+       "bbox": [
+        -4.744,
+        -2.22,
+        2.396,
+        0.461
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.744,
+        -2.22,
+        2.396,
+        0.461
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.744,
+        -2.22,
+        2.396,
+        0.461
+       ],
+       "font_size": 35.82
+      },
+      {
+       "bbox": [
+        2.738,
+        -0.279,
+        4.701,
+        1.303
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.731,
+        0.258,
+        0.686,
+        0.228
+       ],
+       "font_size": 22.61
+      },
+      {
+       "bbox": [
+        2.738,
+        -0.469,
+        4.701,
+        0.922
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.738,
+        -0.17,
+        4.701,
+        0.324
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.959,
+        -0.173,
+        3.142,
+        0.32
+       ],
+       "font_size": 30.14
+      },
+      {
+       "bbox": [
+        3.754,
+        -0.231,
+        0.204,
+        0.202
+       ],
+       "font_size": 35.82
+      },
+      {
+       "bbox": [
+        4.534,
+        -0.17,
+        1.111,
+        0.324
+       ],
+       "font_size": 30.14
+      },
+      {
+       "bbox": [
+        2.478,
+        -0.735,
+        4.181,
+        0.39
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.478,
+        -0.735,
+        4.181,
+        0.39
+       ],
+       "font_size": 30.14
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.0,
+        1.524,
+        11.883,
+        1.451
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        2.045,
+        11.883,
+        0.409
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.373,
+        2.088,
+        3.138,
+        0.324
+       ],
+       "font_size": 30.14
+      },
+      {
+       "bbox": [
+        -2.499,
+        2.027,
+        0.365,
+        0.202
+       ],
+       "font_size": 35.82
+      },
+      {
+       "bbox": [
+        1.873,
+        2.045,
+        8.137,
+        0.409
+       ],
+       "font_size": 30.14
+      },
+      {
+       "bbox": [
+        -0.664,
+        1.53,
+        10.555,
+        0.404
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.347,
+        1.528,
+        3.189,
+        0.4
+       ],
+       "font_size": 30.14
+      },
+      {
+       "bbox": [
+        -2.538,
+        1.568,
+        0.184,
+        0.319
+       ],
+       "font_size": 35.82
+      },
+      {
+       "bbox": [
+        1.144,
+        1.57,
+        6.938,
+        0.324
+       ],
+       "font_size": 30.14
+      },
+      {
+       "bbox": [
+        -0.832,
+        1.007,
+        10.22,
+        0.415
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.053,
+        1.012,
+        9.777,
+        0.404
+       ],
+       "font_size": 30.14
+      },
+      {
+       "bbox": [
+        4.078,
+        0.946,
+        0.242,
+        0.294
+       ],
+       "font_size": 35.82
+      },
+      {
+       "bbox": [
+        4.251,
+        0.92,
+        0.055,
+        0.055
+       ],
+       "font_size": 30.14
+      },
+      {
+       "bbox": [
+        -4.744,
+        -1.039,
+        2.396,
+        2.822
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.485,
+        0.255,
+        0.914,
+        0.235
+       ],
+       "font_size": 22.61
+      },
+      {
+       "bbox": [
+        -5.08,
+        -0.215,
+        1.723,
+        0.401
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.08,
+        -0.215,
+        1.723,
+        0.401
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.08,
+        -0.215,
+        1.723,
+        0.401
+       ],
+       "font_size": 35.82
+      },
+      {
+       "bbox": [
+        -5.241,
+        -0.842,
+        1.402,
+        0.324
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.241,
+        -0.842,
+        1.402,
+        0.324
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.241,
+        -0.842,
+        1.402,
+        0.324
+       ],
+       "font_size": 35.82
+      },
+      {
+       "bbox": [
+        -5.243,
+        -1.564,
+        1.397,
+        0.393
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.243,
+        -1.564,
+        1.397,
+        0.393
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.243,
+        -1.564,
+        1.397,
+        0.393
+       ],
+       "font_size": 35.82
+      },
+      {
+       "bbox": [
+        -4.744,
+        -2.22,
+        2.396,
+        0.461
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.744,
+        -2.22,
+        2.396,
+        0.461
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.744,
+        -2.22,
+        2.396,
+        0.461
+       ],
+       "font_size": 35.82
+      },
+      {
+       "bbox": [
+        2.738,
+        -0.279,
+        4.701,
+        1.303
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.731,
+        0.258,
+        0.686,
+        0.228
+       ],
+       "font_size": 22.61
+      },
+      {
+       "bbox": [
+        2.738,
+        -0.469,
+        4.701,
+        0.922
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.738,
+        -0.17,
+        4.701,
+        0.324
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.959,
+        -0.173,
+        3.142,
+        0.32
+       ],
+       "font_size": 30.14
+      },
+      {
+       "bbox": [
+        3.754,
+        -0.231,
+        0.204,
+        0.202
+       ],
+       "font_size": 35.82
+      },
+      {
+       "bbox": [
+        4.534,
+        -0.17,
+        1.111,
+        0.324
+       ],
+       "font_size": 30.14
+      },
+      {
+       "bbox": [
+        2.478,
+        -0.735,
+        4.181,
+        0.39
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.478,
+        -0.735,
+        4.181,
+        0.39
+       ],
+       "font_size": 30.14
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {
@@ -1262,6 +2881,362 @@
        {
         "type": "VGroup",
         "label": "statement",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "Evaluatethedefiniteintegral",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle \\int_0^{\\pi/2} \\frac{\\sin x}{\\sin x + \\cos x}\\,dx",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": ".",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "find",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "FIND",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "thevalueoftheintegral",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle I",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 3.75
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "statement",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "Evaluatethedefiniteintegral",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle \\int_0^{\\pi/2} \\frac{\\sin x}{\\sin x + \\cos x}\\,dx",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": ".",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "find",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "FIND",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "thevalueoftheintegral",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle I",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "statement[0]"
+      ],
+      "run_time": 3.75
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       null,
+       "find value"
+      ],
+      "run_time": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "problem stated",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "statement",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "statement[0]",
+          "children": [
+           {
+            "type": "Text",
+            "text": "Evaluate the definite integral",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle \\int_0^{\\pi/2} \\frac{\\sin x}{\\sin x + \\cos x}\\,dx",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": ".",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "find",
+        "children": [
+         {
+          "type": "Text",
+          "text": "FIND",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "find value",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Text",
+              "text": "the value of the integral",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             },
+             {
+              "type": "MathTex",
+              "tex": "\\mathrm{H}\\textstyle I",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 3.75
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "statement",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "statement[0]",
+          "children": [
+           {
+            "type": "Text",
+            "text": "Evaluate the definite integral",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle \\int_0^{\\pi/2} \\frac{\\sin x}{\\sin x + \\cos x}\\,dx",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": ".",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "find",
+        "children": [
+         {
+          "type": "Text",
+          "text": "FIND",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "find value",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Text",
+              "text": "the value of the integral",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             },
+             {
+              "type": "MathTex",
+              "tex": "\\mathrm{H}\\textstyle I",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "statement[0]"
+      ],
+      "run_time": 3.75
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       null,
+       "find value"
+      ],
+      "run_time": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "problem stated",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "statement",
         "children": [
          {
           "type": "VGroup",
@@ -1428,6 +3403,210 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        0.0,
+        0.546,
+        9.628,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.546,
+        9.628,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.867,
+        0.512,
+        5.895,
+        0.434
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.97,
+        0.546,
+        3.52,
+        0.715
+       ],
+       "font_size": 38.03
+      },
+      {
+       "bbox": [
+        4.785,
+        0.417,
+        0.059,
+        0.059
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.179,
+        -0.684,
+        5.27,
+        0.839
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.45,
+        -0.386,
+        0.729,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.179,
+        -0.886,
+        5.27,
+        0.434
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.179,
+        -0.886,
+        5.27,
+        0.434
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.353,
+        -0.886,
+        4.921,
+        0.434
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.346,
+        -0.846,
+        0.219,
+        0.323
+       ],
+       "font_size": 38.03
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        0.546,
+        9.628,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.546,
+        9.628,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.867,
+        0.512,
+        5.895,
+        0.434
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.97,
+        0.546,
+        3.52,
+        0.715
+       ],
+       "font_size": 38.03
+      },
+      {
+       "bbox": [
+        4.785,
+        0.417,
+        0.059,
+        0.059
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.179,
+        -0.684,
+        5.27,
+        0.839
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.45,
+        -0.386,
+        0.729,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.179,
+        -0.886,
+        5.27,
+        0.434
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.179,
+        -0.886,
+        5.27,
+        0.434
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.353,
+        -0.886,
+        4.921,
+        0.434
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.346,
+        -0.846,
+        0.219,
+        0.323
+       ],
+       "font_size": 38.03
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {
@@ -1679,6 +3858,762 @@
       "animations": [
        "animate",
        "animate"
+      ],
+      "run_time": 2.0
+     },
+     {
+      "op": "settle",
+      "label": "problem stated",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "statement",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "Aparticlemovesalongthe",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle x",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "-axissothatitspositionattime",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle t",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "secondsis",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle x(t) = t^3 - 6t^2 + 9t",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "metres.",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "given",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "GIVEN",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle x(t) = t^3 - 6t^2 + 9t",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle t \\ge 0",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "find",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "FIND",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "thetimesatwhichtheparticleismomentarilyatrest,andthedistanceittravelsbetweenthem",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 3.0
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "statement",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "Aparticlemovesalongthe",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle x",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "-axissothatitspositionattime",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle t",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "secondsis",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle x(t) = t^3 - 6t^2 + 9t",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "metres.",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "given",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "GIVEN",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle x(t) = t^3 - 6t^2 + 9t",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "MathTex",
+          "tex": "\\mathrm{H}\\textstyle t \\ge 0",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "find",
+        "flow": [
+         {
+          "type": "Text",
+          "text": "FIND",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "thetimesatwhichtheparticleismomentarilyatrest,andthedistanceittravelsbetweenthem",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "statement[0]"
+      ],
+      "run_time": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "statement[1]"
+      ],
+      "run_time": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       null,
+       "given[0]"
+      ],
+      "run_time": 1.0
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "given[1]"
+      ],
+      "run_time": 1.0
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       null,
+       "find value"
+      ],
+      "run_time": 2.0
+     },
+     {
+      "op": "settle",
+      "label": "problem stated",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "statement",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "statement[0]",
+          "children": [
+           {
+            "type": "Text",
+            "text": "A particle moves along the",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle x",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "-axis so that its position at time",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle t",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "statement[1]",
+          "children": [
+           {
+            "type": "Text",
+            "text": "seconds is",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle x(t) = t^3 - 6t^2 + 9t",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "metres.",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "given",
+        "children": [
+         {
+          "type": "Text",
+          "text": "GIVEN",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "given[0]",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "MathTex",
+              "tex": "\\mathrm{H}\\textstyle x(t) = t^3 - 6t^2 + 9t",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "given[1]",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "MathTex",
+              "tex": "\\mathrm{H}\\textstyle t \\ge 0",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "find",
+        "children": [
+         {
+          "type": "Text",
+          "text": "FIND",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "find value",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Text",
+              "text": "the times at which the",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           },
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Text",
+              "text": "particle is momentarily at",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           },
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Text",
+              "text": "rest, and the distance it",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           },
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Text",
+              "text": "travels between them",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 3.0
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "statement",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "statement[0]",
+          "children": [
+           {
+            "type": "Text",
+            "text": "A particle moves along the",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle x",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "-axis so that its position at time",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle t",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "statement[1]",
+          "children": [
+           {
+            "type": "Text",
+            "text": "seconds is",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle x(t) = t^3 - 6t^2 + 9t",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "metres.",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "given",
+        "children": [
+         {
+          "type": "Text",
+          "text": "GIVEN",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "given[0]",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "MathTex",
+              "tex": "\\mathrm{H}\\textstyle x(t) = t^3 - 6t^2 + 9t",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "given[1]",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "MathTex",
+              "tex": "\\mathrm{H}\\textstyle t \\ge 0",
+              "color": "#E6EDF3",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "find",
+        "children": [
+         {
+          "type": "Text",
+          "text": "FIND",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "label": "find value",
+          "children": [
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Text",
+              "text": "the times at which the",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           },
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Text",
+              "text": "particle is momentarily at",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           },
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Text",
+              "text": "rest, and the distance it",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           },
+           {
+            "type": "VGroup",
+            "children": [
+             {
+              "type": "Text",
+              "text": "travels between them",
+              "color": "#58A6FF",
+              "fill_opacity": 1.0,
+              "stroke_opacity": 1.0
+             }
+            ]
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "statement[0]"
+      ],
+      "run_time": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "statement[1]"
+      ],
+      "run_time": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       null,
+       "given[0]"
+      ],
+      "run_time": 1.0
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate"
+      ],
+      "targets": [
+       "given[1]"
+      ],
+      "run_time": 1.0
+     },
+     {
+      "op": "play",
+      "animations": [
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       null,
+       "find value"
       ],
       "run_time": 2.0
      },
@@ -2089,6 +5024,534 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        0.0,
+        1.323,
+        12.704,
+        1.021
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.619,
+        12.704,
+        0.43
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.574,
+        1.619,
+        5.556,
+        0.43
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.549,
+        1.602,
+        0.236,
+        0.215
+       ],
+       "font_size": 38.03
+      },
+      {
+       "bbox": [
+        2.836,
+        1.621,
+        6.483,
+        0.425
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        6.279,
+        1.645,
+        0.145,
+        0.302
+       ],
+       "font_size": 38.03
+      },
+      {
+       "bbox": [
+        -2.376,
+        1.068,
+        7.952,
+        0.51
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.25,
+        1.095,
+        2.205,
+        0.339
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.027,
+        1.068,
+        3.982,
+        0.51
+       ],
+       "font_size": 38.03
+      },
+      {
+       "bbox": [
+        0.847,
+        1.079,
+        1.506,
+        0.306
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -4.361,
+        -0.43,
+        3.982,
+        1.579
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.867,
+        0.235,
+        0.97,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -4.361,
+        -0.306,
+        3.982,
+        0.51
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.361,
+        -0.306,
+        3.982,
+        0.51
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.361,
+        -0.306,
+        3.982,
+        0.51
+       ],
+       "font_size": 38.03
+      },
+      {
+       "bbox": [
+        -5.848,
+        -1.029,
+        1.009,
+        0.38
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.848,
+        -1.029,
+        1.009,
+        0.38
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.848,
+        -1.029,
+        1.009,
+        0.38
+       ],
+       "font_size": 38.03
+      },
+      {
+       "bbox": [
+        2.991,
+        -0.837,
+        5.246,
+        2.393
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.732,
+        0.238,
+        0.729,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        2.991,
+        -1.039,
+        5.246,
+        1.989
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.663,
+        -0.214,
+        4.591,
+        0.34
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.663,
+        -0.214,
+        4.591,
+        0.34
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.991,
+        -0.808,
+        5.246,
+        0.426
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.991,
+        -0.808,
+        5.246,
+        0.426
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.805,
+        -1.35,
+        4.876,
+        0.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.805,
+        -1.35,
+        4.876,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.611,
+        -1.869,
+        4.486,
+        0.329
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.611,
+        -1.869,
+        4.486,
+        0.329
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        1.323,
+        12.704,
+        1.021
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.619,
+        12.704,
+        0.43
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.574,
+        1.619,
+        5.556,
+        0.43
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.549,
+        1.602,
+        0.236,
+        0.215
+       ],
+       "font_size": 38.03
+      },
+      {
+       "bbox": [
+        2.836,
+        1.621,
+        6.483,
+        0.425
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        6.279,
+        1.645,
+        0.145,
+        0.302
+       ],
+       "font_size": 38.03
+      },
+      {
+       "bbox": [
+        -2.376,
+        1.068,
+        7.952,
+        0.51
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.25,
+        1.095,
+        2.205,
+        0.339
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.027,
+        1.068,
+        3.982,
+        0.51
+       ],
+       "font_size": 38.03
+      },
+      {
+       "bbox": [
+        0.847,
+        1.079,
+        1.506,
+        0.306
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -4.361,
+        -0.43,
+        3.982,
+        1.579
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.867,
+        0.235,
+        0.97,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -4.361,
+        -0.306,
+        3.982,
+        0.51
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.361,
+        -0.306,
+        3.982,
+        0.51
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.361,
+        -0.306,
+        3.982,
+        0.51
+       ],
+       "font_size": 38.03
+      },
+      {
+       "bbox": [
+        -5.848,
+        -1.029,
+        1.009,
+        0.38
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.848,
+        -1.029,
+        1.009,
+        0.38
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.848,
+        -1.029,
+        1.009,
+        0.38
+       ],
+       "font_size": 38.03
+      },
+      {
+       "bbox": [
+        2.991,
+        -0.837,
+        5.246,
+        2.393
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.732,
+        0.238,
+        0.729,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        2.991,
+        -1.039,
+        5.246,
+        1.989
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.663,
+        -0.214,
+        4.591,
+        0.34
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.663,
+        -0.214,
+        4.591,
+        0.34
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.991,
+        -0.808,
+        5.246,
+        0.426
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.991,
+        -0.808,
+        5.246,
+        0.426
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.805,
+        -1.35,
+        4.876,
+        0.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.805,
+        -1.35,
+        4.876,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.611,
+        -1.869,
+        4.486,
+        0.329
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.611,
+        -1.869,
+        4.486,
+        0.329
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {

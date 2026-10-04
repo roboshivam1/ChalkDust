@@ -4,22 +4,57 @@ A snapshot records what a component builds for each of its examples(), probed
 exactly as the geometric validator probes -- animations snapped to their end
 state, no frame encoded. A carry-in consumer's case is built with its fixture
 artifacts on screen (continuity.fixture_beat), so the carried target is part
-of what is recorded. It has two halves:
+of what is recorded.
 
-  structure  Font-independent, compared on every machine. The timeline (each
-             play's animation classes and run time, each wait, each settle
-             point) and, at every settle point, the tree of on-screen
-             mobjects: type, label, text or TeX source, colour, opacity, and
-             which layout regions contain each top-level mobject.
+Text metrics depend on which fonts are installed: the theme's Archivo / Inter
+/ JetBrains Mono fall back to Arial / Courier New on a box without them, and
+to Helvetica Neue / Menlo on a Mac. Components measure text and decide from
+the measurement -- where a line breaks, which tick labels fit, whether a lens
+or a frame shows the zoom, which half of STAGE a narrow column lands in -- so
+the exact tree a component builds is itself font-dependent, not only its
+coordinates. A snapshot therefore has two halves:
 
-  geometry   Font-dependent. Bounding box and effective font size of every node
-             in that tree. Text metrics depend on which fonts are installed --
-             the theme's Archivo / Inter / JetBrains Mono fall back to Arial /
-             Courier New on a box without them, and to Helvetica Neue / Menlo
-             on a Mac -- so geometry is stored per fingerprint (platform +
-             resolved fonts) and compared, within GEOMETRY_TOL, only on a
-             machine with a matching fingerprint. Elsewhere that half is
-             skipped with the reason stated.
+  structure       Compared on every machine. A pure projection (project())
+                  of the exact record onto the facts no text measurement can
+                  change: the timeline (each play's animation classes and run
+                  time, each wait, each settle point's label) and, at every
+                  settle point, the tree of on-screen mobjects with
+                    - type and label of every node outside a flow, colour
+                      and opacity of every leaf, TeX sources verbatim;
+                    - text as a *flow*: a subtree whose leaves are all text
+                      or TeX (a wrapped paragraph's line groups, the runs of
+                      one line) keeps its root's type and label and records
+                      only the runs it draws, in order: text with whitespace
+                      removed, merged across the nodes that split it, with
+                      its colour; TeX verbatim. Where a line breaks -- and so
+                      how many line groups there are, their labels, and
+                      which words each holds -- is measured; what is written,
+                      in what order and colour, is not;
+                    - the coarse regions (title_bar, stage, lower_third)
+                      containing each top-level mobject. Membership of
+                      stage_left / stage_right is a width test a narrow
+                      column passes or fails by font;
+                    - for each decision in LAYOUT_CHOICES, only its name in
+                      place of what it decided: the children a node keeps,
+                      or which node is built (and so how it is animated).
+
+  per fingerprint  Compared, per font fingerprint (platform + resolved
+                  fonts), only on a machine whose fingerprint matches; skipped
+                  elsewhere with the reason stated. Two maps keyed by
+                  fingerprint:
+                    layout    the exact timeline: every node's text with its
+                              line breaks, every line group, every child a
+                              layout choice kept, all regions, the label of
+                              each animation's target. Compared exactly.
+                    geometry  bounding box and effective font size of every
+                              node in that tree, DFS order, compared within
+                              GEOMETRY_TOL.
+                  project(layout[fp]) equals the structure for every recorded
+                  fingerprint; a regenerate that breaks that drops the stale
+                  fingerprint with a note.
+
+No projection survives a font so wide that a component refuses its example
+(a LayoutError): that is a refusal the layout tests report, not drift.
 
 Pixels are deliberately not snapshotted. They vary with fonts and rasteriser
 noise, so a pixel test would be flaky and then ignored, which is worse than
@@ -29,6 +64,11 @@ Regenerate only on purpose, with a reason; the reason is kept in the file:
 
     python -m chalkdust.validate.snapshot --reason "why" [--component NAME ...]
 
+`--hide-font NAME` (repeatable) records as if NAME were not installed, so one
+box can keep the fallback fingerprint's baseline up to date: hiding Archivo,
+Inter and JetBrains Mono resolves the theme exactly as a box without them does
+(theme.resolve_fonts' fallback chain), giving the fallback fingerprint.
+
 A component that declares `snapshot_exempt` (RawScene: generated code, no
 fixed visual) has no snapshot; regenerating one is refused.
 """
@@ -37,7 +77,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
+from collections.abc import Iterable, Iterator
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
@@ -48,6 +91,7 @@ from manim.mobject.svg.svg_mobject import VMobjectFromSVGPath
 from chalkdust.continuity import CarryIn, beat_component, fixture_beat
 from chalkdust.core.models import Region
 from chalkdust.core.version import MANIM_VERSION
+from chalkdust.scenes import theme as theme_mod
 from chalkdust.scenes.components import Component, get_component, registered_names
 from chalkdust.scenes.regions import bbox, region_rect
 from chalkdust.scenes.theme import get_theme, resolve_fonts
@@ -60,6 +104,42 @@ DURATION = 10.0      # seconds; any fixed value works, it only scales run times
 GEOMETRY_TOL = 0.01  # Manim units; real layout shifts are tenths, noise is 1e-6
 FONT_SIZE_TOL = 0.1
 REGION_TOL = 0.05    # a bbox touching a region edge must not flip across fonts
+
+# Regions whose membership is a placement decision, not a width test: a
+# component puts a mobject in the title bar, on the stage or in the lower
+# third. Whether it also fits inside one half of STAGE depends on how wide its
+# text measures (seen: EquationDerivation's narrow lines and a FreeBodyDiagram
+# label flip with the font), so the halves are font-dependent.
+COARSE_REGIONS = (Region.TITLE_BAR.value, Region.STAGE.value, Region.LOWER_THIRD.value)
+
+# Decisions a component takes by measuring text, so their outcome is
+# font-dependent. component -> {label of a node the decision shapes:
+# (what it decides, name of the decision)}:
+#   "children"  which children the node holds. The structure keeps the node's
+#               type and label and records {"layout_choice": name} in place
+#               of its children.
+#   "node"      which node is built at all. The structure records the node as
+#               {"layout_choice": name}, and an animation of it as
+#               "layout_choice:<name>" (its class follows the node: a lens
+#               grows by Transform, a frame is drawn by Create).
+# The exact node, children and animation are kept per fingerprint.
+LAYOUT_CHOICES: dict[str, dict[str, tuple[str, str]]] = {
+    # _pick_labels keeps a tick label only where its measured box clears the
+    # curves, the other axis and its neighbours, and moves an interior axis's
+    # labels to the plot edge (each with a tick mark of its own) when too few
+    # fit: which tick labels and tick marks the axes hold depends on how wide
+    # each label measures (seen: example 1's axes hold 23 parts in Arial, 22
+    # in Inter, 21 in Verdana).
+    "GraphPlot": {"axes": ("children", "tick labels and marks the axes keep")},
+    # _settled_lens magnifies the focus in place, or beside the target in the
+    # room STAGE leaves, or -- with no room for MIN_ZOOM -- frames it instead:
+    # lens or frame depends on how wide the focus text measures (seen:
+    # example 0 is a lens in Arial and Inter, a frame in Verdana).
+    "ZoomHighlight": {"zoom lens": ("node", "lens or frame"),
+                      "focus frame": ("node", "lens or frame")},
+}
+
+_WS = re.compile(r"\s+")
 
 
 # --- capture ----------------------------------------------------------------
@@ -75,11 +155,42 @@ def snapshotted_names() -> list[str]:
     return [n for n in registered_names() if not snapshot_exempt(n)]
 
 
-
 def fingerprint() -> str:
     """What this machine's text geometry depends on."""
     t = resolve_fonts(get_theme(THEME), warn=False).type
     return f"{sys.platform}|{t.heading_font}|{t.body_font}|{t.mono_font}"
+
+
+@contextmanager
+def fonts_hidden(names: Iterable[str]) -> Iterator[None]:
+    """Resolve fonts as if `names` were not installed.
+
+    theme.resolve_fonts reads the installed families from
+    theme._installed_fonts(); answering without `names` makes every scene
+    built in the block resolve the theme exactly as a machine lacking them
+    does, so its snapshot is that machine's (fingerprint() included). A name
+    that is not installed is refused: hiding it would change nothing, and a
+    baseline recorded "without" a font this box never had would mislabel it.
+    """
+    hide = frozenset(names)
+    if not hide:
+        yield
+        return
+    real = theme_mod._installed_fonts
+    available = real()
+    absent = sorted(hide - available)
+    if absent:
+        raise ValueError(f"not installed, so cannot be hidden: {absent}")
+    theme_mod._installed_fonts = lambda: available - hide  # type: ignore[assignment]
+    try:
+        yield
+    finally:
+        theme_mod._installed_fonts = real
+
+
+def _target(animation: Any) -> str | None:
+    """Label of the mobject an animation (or `.animate` builder) acts on."""
+    return getattr(getattr(animation, "mobject", None), "_chalk_label", None)
 
 
 class SnapshotProbe(LayoutProbe):
@@ -98,6 +209,7 @@ class SnapshotProbe(LayoutProbe):
             # would build a second animation from the same builder.
             "animations": ["animate" if isinstance(a, _AnimationBuilder)
                            else type(a).__name__ for a in animations],
+            "targets": [_target(a) for a in animations],
             "run_time": _r(kwargs.get("run_time", own)),
         })
         super().play(*animations, **kwargs)
@@ -107,14 +219,14 @@ class SnapshotProbe(LayoutProbe):
         super().wait(duration, *args, **kwargs)
 
     def settle(self, label: str = "settle point") -> None:
-        structure, geometry = [], []
+        tree, geometry = [], []
         for mob in self.mobjects:
-            node = _structure(mob, geometry)
+            node = _exact(mob, geometry)
             box = bbox(mob)
             node["regions"] = [r.value for r in Region
                                if region_rect(r).contains(box, tol=REGION_TOL)]
-            structure.append(node)
-        self.timeline.append({"op": "settle", "label": label, "mobjects": structure})
+            tree.append(node)
+        self.timeline.append({"op": "settle", "label": label, "mobjects": tree})
         self.geometry.append(geometry)
         super().settle(label)
 
@@ -123,8 +235,8 @@ def _r(x: float, places: int = 3) -> float:
     return round(float(x), places)
 
 
-def _structure(mob: Mobject, geometry: list[dict[str, Any]]) -> dict[str, Any]:
-    """Font-independent description of `mob`; appends its geometry, DFS order."""
+def _exact(mob: Mobject, geometry: list[dict[str, Any]]) -> dict[str, Any]:
+    """Exact description of `mob` as built here; appends its geometry, DFS order."""
     box = bbox(mob)
     tag = getattr(mob, "_chalk_font_size", None)
     geometry.append({
@@ -146,7 +258,7 @@ def _structure(mob: Mobject, geometry: list[dict[str, Any]]) -> dict[str, Any]:
     if isinstance(mob, (Text, MarkupText, SingleStringMathTex)) or glyphs:
         node.update(_paint(mob))
     else:
-        node["children"] = [_structure(c, geometry) for c in mob.submobjects]
+        node["children"] = [_exact(c, geometry) for c in mob.submobjects]
     return node
 
 
@@ -163,16 +275,116 @@ def _paint(mob: Mobject) -> dict[str, Any]:
     return {}
 
 
-def capture(name: str, params: dict[str, Any]) -> tuple[dict, list]:
-    """(structure, geometry) for one component instance -- built as the
-    pipeline builds its beat (continuity.fixture_beat): a carry-in consumer's
-    case with its fixture artifacts on screen first, so the snapshot is the
-    frame it draws and records the carried target with it."""
+# --- projection: the font-independent half -------------------------------------
+
+_PAINT = ("color", "fill_opacity", "stroke_opacity")
+
+
+def _is_text(node: dict[str, Any]) -> bool:
+    """True if every leaf under `node` is text or TeX (a flow)."""
+    if "text" in node or "tex" in node:
+        return True
+    children = node.get("children")
+    return bool(children) and all(_is_text(c) for c in children)
+
+
+def _flow(node: dict[str, Any]) -> list[dict[str, Any]]:
+    """The runs a text-only subtree draws, independent of where it broke.
+
+    Leaves in drawing order; text has its whitespace removed (a break may
+    fall between words or, for a word wider than a line, inside one) and
+    adjacent text leaves of the same type and paint merge into one run. TeX
+    is never broken by layout, so each source stays its own run, verbatim.
+    """
+    runs: list[dict[str, Any]] = []
+
+    def leaves(n: dict[str, Any]) -> Iterator[dict[str, Any]]:
+        if "children" in n:
+            for c in n["children"]:
+                yield from leaves(c)
+        else:
+            yield n
+
+    for leaf in leaves(node):
+        paint = {k: leaf[k] for k in _PAINT if k in leaf}
+        if "tex" in leaf:
+            runs.append({"type": leaf["type"], "tex": leaf["tex"], **paint})
+            continue
+        text = _WS.sub("", leaf["text"])
+        if not text:
+            continue
+        last = runs[-1] if runs else None
+        if (last is not None and "text" in last and last["type"] == leaf["type"]
+                and {k: last.get(k) for k in _PAINT} == {k: paint.get(k) for k in _PAINT}):
+            last["text"] += text
+        else:
+            runs.append({"type": leaf["type"], "text": text, **paint})
+    return runs
+
+
+def _project_node(node: dict[str, Any], choices: dict[str, tuple[str, str]]) -> dict[str, Any]:
+    decides, choice = choices.get(node.get("label"), (None, None))
+    if decides == "node":
+        return {"layout_choice": choice}
+    out = {k: v for k, v in node.items()
+           if k not in ("children", "text", "tex", "regions")}
+    if decides == "children":
+        out["children"] = {"layout_choice": choice}
+    elif _is_text(node):
+        # Paint lives on the runs; the flow's own node keeps type and label.
+        for k in _PAINT:
+            out.pop(k, None)
+        out["flow"] = _flow(node)
+    elif "children" in node:
+        out["children"] = [_project_node(c, choices) for c in node["children"]]
+    return out
+
+
+def project(name: str, timeline: list[dict[str, Any]]) -> dict[str, Any]:
+    """The structure: what `name`'s exact timeline records that no text
+    measurement can change (see the module docstring)."""
+    choices = LAYOUT_CHOICES.get(name, {})
+    built = {label: choice for label, (decides, choice) in choices.items()
+             if decides == "node"}
+    out = []
+    for op in timeline:
+        if op["op"] == "play":
+            targets = op.get("targets") or [None] * len(op["animations"])
+            out.append({
+                "op": "play",
+                "animations": [f"layout_choice:{built[t]}" if t in built else a
+                               for a, t in zip(op["animations"], targets)],
+                "run_time": op["run_time"],
+            })
+        elif op["op"] == "settle":
+            mobjects = []
+            for node in op["mobjects"]:
+                p = _project_node(node, choices)
+                p["regions"] = [r for r in node.get("regions", []) if r in COARSE_REGIONS]
+                mobjects.append(p)
+            out.append({"op": "settle", "label": op["label"], "mobjects": mobjects})
+        else:
+            out.append(dict(op))
+    return {"timeline": out}
+
+
+def capture_all(name: str, params: dict[str, Any]) -> tuple[dict, list, list]:
+    """(structure, exact timeline, geometry) for one component instance --
+    built as the pipeline builds its beat (continuity.fixture_beat): a
+    carry-in consumer's case with its fixture artifacts on screen first, so
+    the snapshot is the frame it draws and records the carried target with
+    it."""
     spec, recipes = fixture_beat(name, params)
     probe = SnapshotProbe(beat_component(spec, recipes), theme=THEME,
                           duration=DURATION, strict=False)
     probe.construct()
-    return {"timeline": probe.timeline}, probe.geometry
+    return project(name, probe.timeline), probe.timeline, probe.geometry
+
+
+def capture(name: str, params: dict[str, Any]) -> tuple[dict, list]:
+    """(structure, geometry) for one component instance; see capture_all."""
+    structure, _, geometry = capture_all(name, params)
+    return structure, geometry
 
 
 # --- compare ----------------------------------------------------------------
@@ -226,12 +438,28 @@ def load(name: str, directory: Path = DEFAULT_DIR) -> dict | None:
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
 
 
+def recorded_layout(case: dict[str, Any]) -> dict[str, list]:
+    """A recorded case's exact timeline, per fingerprint.
+
+    Files written before the structure/layout split kept the exact timeline
+    as "structure" (one shared tree: every recorded fingerprint had to match
+    it) and only geometry per fingerprint; that reads losslessly as the same
+    exact timeline for each of those fingerprints.
+    """
+    if "layout" in case:
+        return case["layout"]
+    return {fp: case["structure"]["timeline"] for fp in case.get("geometry", {})}
+
+
 def regenerate(name: str, reason: str, directory: Path = DEFAULT_DIR) -> list[str]:
     """Rewrite one component's snapshot from this machine. Returns notes.
 
-    Other machines' geometry is kept for a case whose params and structure
-    are unchanged, and dropped (with a note) where they changed -- it
-    describes a layout that no longer exists.
+    Other fingerprints' layout and geometry are kept for a case whose params
+    are unchanged and whose exact timeline still projects to this machine's
+    structure, and dropped (with a note) otherwise -- they describe a build
+    that no longer exists. A reason identical to the last one recorded is
+    not repeated: recording the same change under a second font set (see
+    --hide-font) is one regeneration.
     """
     if snapshot_exempt(name):
         raise ValueError(f"{name} is exempt from snapshots: {snapshot_exempt(name)}")
@@ -240,21 +468,37 @@ def regenerate(name: str, reason: str, directory: Path = DEFAULT_DIR) -> list[st
     fp = fingerprint()
     notes, cases = [], []
     for i, params in enumerate(get_component(name).examples()):
-        structure, geometry = capture(name, params)
+        structure, timeline, geometry = capture_all(name, params)
         prior = old_cases[i] if i < len(old_cases) else None
-        kept: dict[str, Any] = {}
-        if prior and prior["params"] == params and prior["structure"] == structure:
-            kept = {k: v for k, v in prior["geometry"].items() if k != fp}
-        elif prior and set(prior["geometry"]) - {fp}:
-            notes.append(f"{name} case {i}: structure changed; dropped geometry for "
-                         f"{sorted(set(prior['geometry']) - {fp})}")
-        cases.append({"params": params, "structure": structure,
-                      "geometry": {**kept, fp: geometry}})
+        layout_kept: dict[str, Any] = {}
+        geometry_kept: dict[str, Any] = {}
+        others = sorted(set(prior["geometry"]) - {fp}) if prior else []
+        if prior and prior["params"] == params:
+            layouts = recorded_layout(prior)
+            for other in others:
+                if other in layouts and project(name, layouts[other]) == structure:
+                    layout_kept[other] = layouts[other]
+                    geometry_kept[other] = prior["geometry"][other]
+                else:
+                    notes.append(f"{name} case {i}: structure changed; dropped the "
+                                 f"layout and geometry for {other}")
+        elif others:
+            notes.append(f"{name} case {i}: params changed; dropped the layout and "
+                         f"geometry for {others}")
+        cases.append({
+            "params": params,
+            "structure": structure,
+            "layout": dict(sorted({**layout_kept, fp: timeline}.items())),
+            "geometry": dict(sorted({**geometry_kept, fp: geometry}.items())),
+        })
 
+    reasons = list(old["reasons"])
+    if not reasons or reasons[-1] != reason:
+        reasons.append(reason)
     data = {
         "component": name,
         "manim_version": MANIM_VERSION,
-        "reasons": old["reasons"] + [reason],
+        "reasons": reasons,
         "cases": cases,
     }
     path = snapshot_path(name, directory)
@@ -274,6 +518,10 @@ def main(argv: list[str] | None = None) -> int:
                         help="why the snapshot is changing; recorded in the file")
     parser.add_argument("--component", action="append",
                         help="component name; repeatable (default: all)")
+    parser.add_argument("--hide-font", action="append", default=[], metavar="FAMILY",
+                        help="record as if this installed font family were absent "
+                             "(repeatable); hiding the theme fonts records the "
+                             "fallback fingerprint")
     parser.add_argument("--dir", type=Path, default=DEFAULT_DIR)
     args = parser.parse_args(argv)
     if not args.reason.strip():
@@ -283,11 +531,16 @@ def main(argv: list[str] | None = None) -> int:
     if exempt:
         parser.error(f"exempt from snapshots: {exempt}")
 
+    absent = sorted(set(args.hide_font) - theme_mod._installed_fonts())
+    if absent:
+        parser.error(f"not installed, so cannot be hidden: {absent}")
+
     config.verbosity = "WARNING"
-    for name in args.component or snapshotted_names():
-        for note in regenerate(name, args.reason.strip(), args.dir):
-            print(note)
-        print(f"wrote {snapshot_path(name, args.dir)} [{fingerprint()}]")
+    with fonts_hidden(args.hide_font):
+        for name in args.component or snapshotted_names():
+            for note in regenerate(name, args.reason.strip(), args.dir):
+                print(note)
+            print(f"wrote {snapshot_path(name, args.dir)} [{fingerprint()}]")
     return 0
 
 

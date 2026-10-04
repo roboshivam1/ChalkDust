@@ -1,9 +1,0 @@
-Metadata-Version: 2.4
-Name: chalkdust
-Version: 0.1.0
-Summary: Educational video generator: Manim animations with synced AI voiceover
-Requires-Python: >=3.11
-Requires-Dist: manim==0.21.0
-Requires-Dist: pydantic>=2.6
-Provides-Extra: dev
-Requires-Dist: pytest>=8.0; extra == "dev"

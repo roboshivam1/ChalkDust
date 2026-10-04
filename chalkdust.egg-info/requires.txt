@@ -1,5 +1,0 @@
-manim==0.21.0
-pydantic>=2.6
-
-[dev]
-pytest>=8.0

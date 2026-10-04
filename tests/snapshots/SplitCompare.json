@@ -58,13 +58,20 @@
          },
          {
           "type": "VGroup",
-          "flow": [
+          "children": [
            {
             "type": "Text",
-            "text": "key:\"cat\"hash→4",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "text": "key:\"cat\""
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "hash→4"
            }
           ]
          }
@@ -85,13 +92,20 @@
          },
          {
           "type": "VGroup",
-          "flow": [
+          "children": [
            {
             "type": "Text",
-            "text": "key:\"act\"hash→4",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "text": "key:\"act\""
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "hash→4"
            }
           ]
          }
@@ -103,15 +117,10 @@
        {
         "type": "Text",
         "label": "verdict",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "samebucket",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "samebucket",
         "regions": [
          "lower_third"
         ]
@@ -138,13 +147,20 @@
          },
          {
           "type": "VGroup",
-          "flow": [
+          "children": [
            {
             "type": "Text",
-            "text": "key:\"cat\"hash→4",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "text": "key:\"cat\""
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "hash→4"
            }
           ]
          }
@@ -165,13 +181,20 @@
          },
          {
           "type": "VGroup",
-          "flow": [
+          "children": [
            {
             "type": "Text",
-            "text": "key:\"act\"hash→4",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "text": "key:\"act\""
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "hash→4"
            }
           ]
          }
@@ -183,15 +206,10 @@
        {
         "type": "Text",
         "label": "verdict",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "samebucket",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "samebucket",
         "regions": [
          "lower_third"
         ]
@@ -1079,27 +1097,27 @@
          },
          {
           "type": "VGroup",
-          "flow": [
+          "children": [
            {
             "type": "Text",
-            "text": "Arraylookup",
             "color": "#58A6FF",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "text": "Arraylookup"
            },
            {
             "type": "Text",
-            "text": "Jumpstraighttotheindex",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "text": "Jumpstraighttotheindex"
            },
            {
             "type": "MathTex",
-            "tex": "O(1)",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "tex": "O(1)"
            }
           ]
          }
@@ -1120,20 +1138,27 @@
          },
          {
           "type": "VGroup",
-          "flow": [
+          "children": [
            {
             "type": "Text",
-            "text": "LinkedlistWalknodebynodefromthehead",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "text": "Linkedlist"
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Walknodebynodefromthehead"
            },
            {
             "type": "MathTex",
-            "tex": "O(n)",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "tex": "O(n)"
            }
           ]
          }
@@ -1164,27 +1189,27 @@
          },
          {
           "type": "VGroup",
-          "flow": [
+          "children": [
            {
             "type": "Text",
-            "text": "Arraylookup",
             "color": "#58A6FF",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "text": "Arraylookup"
            },
            {
             "type": "Text",
-            "text": "Jumpstraighttotheindex",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "text": "Jumpstraighttotheindex"
            },
            {
             "type": "MathTex",
-            "tex": "O(1)",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "tex": "O(1)"
            }
           ]
          }
@@ -1205,20 +1230,27 @@
          },
          {
           "type": "VGroup",
-          "flow": [
+          "children": [
            {
             "type": "Text",
-            "text": "LinkedlistWalknodebynodefromthehead",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "text": "Linkedlist"
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Walknodebynodefromthehead"
            },
            {
             "type": "MathTex",
-            "tex": "O(n)",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "tex": "O(n)"
            }
           ]
          }
@@ -2143,20 +2175,20 @@
          },
          {
           "type": "VGroup",
-          "flow": [
+          "children": [
            {
             "type": "Text",
-            "text": "Before",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "text": "Before"
            },
            {
             "type": "MathTex",
-            "tex": "(a+b)^2",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "tex": "(a+b)^2"
            }
           ]
          }
@@ -2177,20 +2209,20 @@
          },
          {
           "type": "VGroup",
-          "flow": [
+          "children": [
            {
             "type": "Text",
-            "text": "After",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "text": "After"
            },
            {
             "type": "MathTex",
-            "tex": "a^2 + 2ab + b^2",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "tex": "a^2 + 2ab + b^2"
            }
           ]
          }
@@ -2202,15 +2234,10 @@
        {
         "type": "Text",
         "label": "verdict",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Samevalue,expanded",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Samevalue,expanded",
         "regions": [
          "lower_third"
         ]
@@ -2237,20 +2264,20 @@
          },
          {
           "type": "VGroup",
-          "flow": [
+          "children": [
            {
             "type": "Text",
-            "text": "Before",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "text": "Before"
            },
            {
             "type": "MathTex",
-            "tex": "(a+b)^2",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "tex": "(a+b)^2"
            }
           ]
          }
@@ -2271,20 +2298,20 @@
          },
          {
           "type": "VGroup",
-          "flow": [
+          "children": [
            {
             "type": "Text",
-            "text": "After",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "text": "After"
            },
            {
             "type": "MathTex",
-            "tex": "a^2 + 2ab + b^2",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
+            "stroke_opacity": 1.0,
+            "tex": "a^2 + 2ab + b^2"
            }
           ]
          }
@@ -2296,15 +2323,10 @@
        {
         "type": "Text",
         "label": "verdict",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Samevalue,expanded",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Samevalue,expanded",
         "regions": [
          "lower_third"
         ]

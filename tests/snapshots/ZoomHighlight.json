@@ -62,15 +62,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Aweakhashfunction",
-              "color": "#E6EDF3",
-              "fill_opacity": 0.105,
-              "stroke_opacity": 0.105
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 0.105,
+            "stroke_opacity": 0.105,
+            "text": "Aweakhashfunction"
            }
           ]
          },
@@ -86,15 +81,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Aloadfactorlefttoohigh",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Aloadfactorlefttoohigh"
            }
           ]
          },
@@ -110,15 +100,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Adversarialkeyschosentocollide",
-              "color": "#E6EDF3",
-              "fill_opacity": 0.105,
-              "stroke_opacity": 0.105
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 0.105,
+            "stroke_opacity": 0.105,
+            "text": "Adversarialkeyschosentocollide"
            }
           ]
          }
@@ -136,15 +121,10 @@
        {
         "type": "Text",
         "label": "callout",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Past0.75full,chainsgrowfasterthanthetable",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Past0.75full,chainsgrowfasterthanthetable",
         "regions": [
          "lower_third"
         ]
@@ -175,15 +155,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Aweakhashfunction",
-              "color": "#E6EDF3",
-              "fill_opacity": 0.105,
-              "stroke_opacity": 0.105
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 0.105,
+            "stroke_opacity": 0.105,
+            "text": "Aweakhashfunction"
            }
           ]
          },
@@ -199,15 +174,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Aloadfactorlefttoohigh",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Aloadfactorlefttoohigh"
            }
           ]
          },
@@ -223,15 +193,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Adversarialkeyschosentocollide",
-              "color": "#E6EDF3",
-              "fill_opacity": 0.105,
-              "stroke_opacity": 0.105
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 0.105,
+            "stroke_opacity": 0.105,
+            "text": "Adversarialkeyschosentocollide"
            }
           ]
          }
@@ -249,15 +214,10 @@
        {
         "type": "Text",
         "label": "callout",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Past0.75full,chainsgrowfasterthanthetable",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Past0.75full,chainsgrowfasterthanthetable",
         "regions": [
          "lower_third"
         ]
@@ -1517,15 +1477,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "hash(key)",
-              "color": "#E6EDF3",
-              "fill_opacity": 0.105,
-              "stroke_opacity": 0.105
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 0.105,
+            "stroke_opacity": 0.105,
+            "text": "hash(key)"
            }
           ]
          },
@@ -1541,15 +1496,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "mod8",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "mod8"
            }
           ]
          },
@@ -1565,15 +1515,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "bucket4",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "bucket4"
            }
           ]
          }
@@ -1591,15 +1536,10 @@
        {
         "type": "Text",
         "label": "callout",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Themoduloiswheretwokeyscollide",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Themoduloiswheretwokeyscollide",
         "regions": [
          "lower_third"
         ]
@@ -1630,15 +1570,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "hash(key)",
-              "color": "#E6EDF3",
-              "fill_opacity": 0.105,
-              "stroke_opacity": 0.105
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 0.105,
+            "stroke_opacity": 0.105,
+            "text": "hash(key)"
            }
           ]
          },
@@ -1654,15 +1589,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "mod8",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "mod8"
            }
           ]
          },
@@ -1678,15 +1608,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "bucket4",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "bucket4"
            }
           ]
          }
@@ -1704,15 +1629,10 @@
        {
         "type": "Text",
         "label": "callout",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Themoduloiswheretwokeyscollide",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Themoduloiswheretwokeyscollide",
         "regions": [
          "lower_third"
         ]
@@ -3154,15 +3074,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Aweakhashfunction",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Aweakhashfunction"
            }
           ]
          },
@@ -3178,15 +3093,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Aloadfactorlefttoohigh",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Aloadfactorlefttoohigh"
            }
           ]
          },
@@ -3202,15 +3112,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Adversarialkeyschosentocollide",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Adversarialkeyschosentocollide"
            }
           ]
          }
@@ -3228,15 +3133,10 @@
        {
         "type": "Text",
         "label": "callout",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Allthreeendthesameway:onelongchain",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Allthreeendthesameway:onelongchain",
         "regions": [
          "lower_third"
         ]
@@ -3267,15 +3167,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Aweakhashfunction",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Aweakhashfunction"
            }
           ]
          },
@@ -3291,15 +3186,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Aloadfactorlefttoohigh",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Aloadfactorlefttoohigh"
            }
           ]
          },
@@ -3315,15 +3205,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Adversarialkeyschosentocollide",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Adversarialkeyschosentocollide"
            }
           ]
          }
@@ -3341,15 +3226,10 @@
        {
         "type": "Text",
         "label": "callout",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Allthreeendthesameway:onelongchain",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Allthreeendthesameway:onelongchain",
         "regions": [
          "lower_third"
         ]

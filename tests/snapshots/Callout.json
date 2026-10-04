@@ -51,15 +51,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Aweakhashfunction",
-              "color": "#E6EDF3",
-              "fill_opacity": 0.35,
-              "stroke_opacity": 0.35
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Aweakhashfunction"
            }
           ]
          },
@@ -75,15 +70,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Aloadfactorlefttoohigh",
-              "color": "#E6EDF3",
-              "fill_opacity": 0.35,
-              "stroke_opacity": 0.35
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Aloadfactorlefttoohigh"
            }
           ]
          },
@@ -99,15 +89,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Adversarialkeyschosentocollide",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Adversarialkeyschosentocollide"
            }
           ]
          }
@@ -134,15 +119,10 @@
        {
         "type": "Text",
         "label": "callout",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Theoneanattackercontrols",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Theoneanattackercontrols",
         "regions": [
          "stage"
         ]
@@ -173,15 +153,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Aweakhashfunction",
-              "color": "#E6EDF3",
-              "fill_opacity": 0.35,
-              "stroke_opacity": 0.35
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Aweakhashfunction"
            }
           ]
          },
@@ -197,15 +172,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Aloadfactorlefttoohigh",
-              "color": "#E6EDF3",
-              "fill_opacity": 0.35,
-              "stroke_opacity": 0.35
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Aloadfactorlefttoohigh"
            }
           ]
          },
@@ -221,15 +191,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Adversarialkeyschosentocollide",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Adversarialkeyschosentocollide"
            }
           ]
          }
@@ -256,15 +221,10 @@
        {
         "type": "Text",
         "label": "callout",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Theoneanattackercontrols",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Theoneanattackercontrols",
         "regions": [
          "stage"
         ]
@@ -1257,15 +1217,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Hashthekey",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Hashthekey"
            }
           ]
          },
@@ -1281,15 +1236,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Findthebucket",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Findthebucket"
            }
           ]
          },
@@ -1305,15 +1255,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Walkthechain",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Walkthechain"
            }
           ]
          },
@@ -1329,15 +1274,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Comparekeys",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Comparekeys"
            }
           ]
          }
@@ -1364,15 +1304,10 @@
        {
         "type": "Text",
         "label": "callout",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Everylookuppaysforallfoursteps",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Everylookuppaysforallfoursteps",
         "regions": [
          "stage"
         ]
@@ -1403,15 +1338,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Hashthekey",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Hashthekey"
            }
           ]
          },
@@ -1427,15 +1357,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Findthebucket",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Findthebucket"
            }
           ]
          },
@@ -1451,15 +1376,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Walkthechain",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Walkthechain"
            }
           ]
          },
@@ -1475,15 +1395,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Comparekeys",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Comparekeys"
            }
           ]
          }
@@ -1510,15 +1425,10 @@
        {
         "type": "Text",
         "label": "callout",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Everylookuppaysforallfoursteps",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Everylookuppaysforallfoursteps",
         "regions": [
          "stage"
         ]
@@ -2688,15 +2598,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Hashthekey",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Hashthekey"
            }
           ]
          },
@@ -2712,15 +2617,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Findthebucket",
-              "color": "#E6EDF3",
-              "fill_opacity": 0.35,
-              "stroke_opacity": 0.35
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Findthebucket"
            }
           ]
          },
@@ -2736,15 +2636,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Walkthechain",
-              "color": "#E6EDF3",
-              "fill_opacity": 0.35,
-              "stroke_opacity": 0.35
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Walkthechain"
            }
           ]
          },
@@ -2760,15 +2655,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Comparekeys",
-              "color": "#E6EDF3",
-              "fill_opacity": 0.35,
-              "stroke_opacity": 0.35
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Comparekeys"
            }
           ]
          }
@@ -2795,15 +2685,10 @@
        {
         "type": "Text",
         "label": "callout",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Constanttime",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Constanttime",
         "regions": [
          "stage"
         ]
@@ -2834,15 +2719,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Hashthekey",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Hashthekey"
            }
           ]
          },
@@ -2858,15 +2738,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Findthebucket",
-              "color": "#E6EDF3",
-              "fill_opacity": 0.35,
-              "stroke_opacity": 0.35
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Findthebucket"
            }
           ]
          },
@@ -2882,15 +2757,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Walkthechain",
-              "color": "#E6EDF3",
-              "fill_opacity": 0.35,
-              "stroke_opacity": 0.35
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Walkthechain"
            }
           ]
          },
@@ -2906,15 +2776,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Comparekeys",
-              "color": "#E6EDF3",
-              "fill_opacity": 0.35,
-              "stroke_opacity": 0.35
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Comparekeys"
            }
           ]
          }
@@ -2941,15 +2806,10 @@
        {
         "type": "Text",
         "label": "callout",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Constanttime",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Constanttime",
         "regions": [
          "stage"
         ]

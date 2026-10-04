@@ -324,8 +324,9 @@ def _leaves(nodes: list[dict]):
 
 class TestProjection:
     """The structure keeps what the spec decides and drops what measuring
-    text decides -- each case below is a difference seen between Arial,
-    Inter/Archivo and wider or narrower fonts."""
+    text decides -- each dropped fact below is a difference seen between
+    Arial, Inter/Archivo and wider or narrower fonts, and each kept one was
+    the same under all of them."""
 
     WRAPPED = _settle(_paragraph(
         _line(0, _text("A block of mass"), _tex("m"), _text("is released from rest")),
@@ -372,17 +373,61 @@ class TestProjection:
         assert stage == left
         assert stage != lower
 
+    LINE = {"type": "Line", "color": "#8B949E", "fill_opacity": 0.0, "stroke_opacity": 1.0}
+    TICKS = [_text(str(k), "#8B949E", f"xtick[{k}]") for k in (-2, -1, 1, 2)]
+    AXES = {"type": "VGroup", "label": "axes", "children": [LINE, LINE, LINE, *TICKS]}
+
     def test_which_tick_labels_survive_is_not_structure(self):
         # GraphPlot example 1 keeps 9 tick labels in Arial and 8 in Inter.
-        line = {"type": "Line", "color": "#8B949E", "fill_opacity": 0.0,
-                "stroke_opacity": 1.0}
-        ticks = [_text(str(k), "#8B949E", f"xtick[{k}]") for k in (-2, -1, 1, 2)]
-        axes = {"type": "VGroup", "label": "axes", "children": [line, line, *ticks]}
-        dropped = {**axes, "children": [line, line, *ticks[1:]]}
-        assert project("GraphPlot", _settle(axes)) == project("GraphPlot", _settle(dropped))
+        dropped = {**self.AXES, "children": [self.LINE] * 3 + self.TICKS[1:]}
+        assert project("GraphPlot", _settle(self.AXES)) == project(
+            "GraphPlot", _settle(dropped))
         # ...but only GraphPlot's axes make that choice; elsewhere it is drift.
-        assert project("NumberLineWalk", _settle(axes)) != project(
+        assert project("NumberLineWalk", _settle(self.AXES)) != project(
             "NumberLineWalk", _settle(dropped))
+
+    @pytest.mark.parametrize("edit", [
+        lambda ch: ch.pop(0),
+        lambda ch: ch.pop(2),
+        lambda ch: ch.__setitem__(0, {**ch[0], "color": "#FF0000"}),
+        lambda ch: ch.__setitem__(slice(3, None), [{**t, "color": "#FF0000"} for t in ch[3:]]),
+        lambda ch: ch.__setitem__(slice(3, None), [_tex(t["text"], "#8B949E") | {
+            "label": t["label"]} for t in ch[3:]]),
+    ], ids=["axis line deleted", "tick mark deleted", "axis line recoloured",
+            "tick labels recoloured", "tick labels typeset differently"])
+    def test_axis_lines_and_tick_marks_are_still_structure(self, edit):
+        # The axes, and one tick mark per tick, are drawn whatever the font:
+        # only which labels survive is the layout's choice. Losing or
+        # recolouring a line, or the labels changing kind, is drift.
+        changed = copy.deepcopy(self.AXES)
+        edit(changed["children"])
+        assert diff_structure(project("GraphPlot", _settle(self.AXES)),
+                              project("GraphPlot", _settle(changed)))
+
+    GIVEN = {"type": "VGroup", "label": "given", "children": [
+        _text("GIVEN", "#8B949E"),
+        {"type": "VGroup", "label": "given[0]", "children": [
+            {"type": "VGroup", "children": [_tex("m = 2"), _text("on a calibrated")]},
+            {"type": "VGroup", "children": [_text("balance")]}]},
+        {"type": "VGroup", "label": "given[1]", "children": [
+            {"type": "VGroup", "children": [_tex(r"\theta = 30^\circ")]}]}]}
+
+    def test_given_items_are_structure_their_lines_are_not(self):
+        # Each given is laid out in measured lines (a font may break "on a
+        # calibrated balance" elsewhere), but how many givens there are, and
+        # what each holds, is the spec's.
+        rewrapped = copy.deepcopy(self.GIVEN)
+        rewrapped["children"][1]["children"] = [
+            {"type": "VGroup", "children": [_tex("m = 2"), _text("on a")]},
+            {"type": "VGroup", "children": [_text("calibrated balance")]}]
+        assert project("ProblemStatement", _settle(self.GIVEN)) == project(
+            "ProblemStatement", _settle(rewrapped))
+        merged = copy.deepcopy(self.GIVEN)
+        first, second = merged["children"][1:]
+        first["children"] += second["children"]
+        merged["children"].remove(second)
+        assert diff_structure(project("ProblemStatement", _settle(self.GIVEN)),
+                              project("ProblemStatement", _settle(merged)))
 
     def test_lens_or_frame_is_not_structure_but_its_timing_is(self):
         # ZoomHighlight example 0 is a lens in Arial and Inter, a frame in
@@ -400,18 +445,85 @@ class TestProjection:
         assert project("ZoomHighlight", timeline(lens, "Transform")) != project(
             "ZoomHighlight", timeline(frame, "Create", run_time=2.0))
 
-    def test_real_line_breaks_differ_by_font_but_not_the_structure(self):
-        # The recorded ProblemStatement example 0 breaks its lines in
-        # different places under Arial and under the theme fonts. Skipped
-        # until both are recorded.
-        case = _recorded("ProblemStatement")["cases"][0]
+    @pytest.mark.parametrize("name, i", [
+        ("ProblemStatement", 0), ("ProblemStatement", 2), ("GraphPlot", 1)])
+    def test_real_layouts_differ_by_font_but_not_the_structure(self, name, i):
+        # Recorded under Arial and under the theme fonts, ProblemStatement
+        # examples 0 and 2 break their lines in different places and GraphPlot
+        # example 1 keeps a different set of tick labels. Skipped until both
+        # are recorded.
+        case = _recorded(name)["cases"][i]
         layouts = recorded_layout(case)
         fallback, theme = "win32|Arial|Arial|Courier New", "win32|Archivo|Inter|JetBrains Mono"
         if not {fallback, theme} <= set(layouts):
             pytest.skip(f"needs {fallback} and {theme} recorded; have {sorted(layouts)}")
         assert layouts[fallback] != layouts[theme]
-        assert project("ProblemStatement", layouts[fallback]) == project(
-            "ProblemStatement", layouts[theme]) == case["structure"]
+        assert project(name, layouts[fallback]) == project(
+            name, layouts[theme]) == case["structure"]
+
+    # Font-invariant facts the structure must keep, each found identical
+    # under Arial, Inter/Archivo, Verdana, Times New Roman and Georgia/Segoe
+    # UI: an edit of the real recorded layout that a regression could make
+    # must change the structure, so every machine catches it.
+    @pytest.mark.parametrize("name, i, edit", [
+        ("GraphPlot", 0, lambda t: _labelled(t, "axes")["children"].__setitem__(
+            slice(None), [c for c in _labelled(t, "axes")["children"]
+                          if c["type"] != "Line"])),
+        ("GraphPlot", 0, lambda t: [c.update(color="#FF0000")
+                                    for c in _labelled(t, "axes")["children"][:2]]),
+        ("GraphPlot", 0, lambda t: _labelled(t, "axes")["children"].pop(5)),
+        ("UnitBreakdown", 0, lambda t: _merge(_labelled(t, "UnitBreakdown")["children"], 1, 2)),
+        ("ProblemStatement", 0, lambda t: _merge(_labelled(t, "given")["children"], 1, 2)),
+        ("ProblemStatement", 0, lambda t: _labelled(t, "find value").pop("label")),
+        ("DataStructureViz", 0, lambda t: _merge(
+            next(n for n in _settled(t) if _child(n, "value '29'"))["children"], 0, 1)),
+        ("StepTrace", 0, lambda t: _merge(_labelled(t, "header")["children"], 0, 1)),
+        ("StepTrace", 0, lambda t: _labelled(t, "frame[1]")["children"].insert(
+            0, _labelled(t, "frame[0]")["children"].pop())),
+        ("NumberLineWalk", 0, lambda t: _merge(_labelled(t, "tick labels")["children"], 0, 1)),
+        ("SplitCompare", 0, lambda t: _merge(
+            _labelled(t, "left side")["children"][1]["children"], 0, 1)),
+    ], ids=["GraphPlot axis lines and tick marks deleted", "GraphPlot axis lines recoloured",
+            "GraphPlot one tick mark deleted", "UnitBreakdown labels merged",
+            "ProblemStatement givens merged", "ProblemStatement find value ungrouped",
+            "DataStructureViz value labels merged", "StepTrace header cells merged",
+            "StepTrace cell moved between frames", "NumberLineWalk tick labels merged",
+            "SplitCompare lines merged"])
+    def test_a_font_invariant_regression_changes_the_structure(self, name, i, edit):
+        case = _recorded(name)["cases"][i]
+        for fp, layout in recorded_layout(case).items():
+            assert diff_structure(case["structure"], project(name, layout)) == []
+            changed = copy.deepcopy(layout)
+            edit(changed)
+            assert diff_structure(case["structure"], project(name, changed)), (
+                f"{name} example {i} under {fp}: the edit is invisible to the structure")
+
+
+def _settled(timeline: list[dict]) -> list[dict]:
+    """Every node at the last settle point, depth first."""
+    def walk(nodes):
+        for n in nodes:
+            yield n
+            yield from walk(n.get("children", []))
+    return list(walk([op for op in timeline if op["op"] == "settle"][-1]["mobjects"]))
+
+
+def _labelled(timeline: list[dict], label: str) -> dict:
+    return next(n for n in _settled(timeline) if n.get("label") == label)
+
+
+def _child(node: dict, label: str) -> bool:
+    return any(c.get("label") == label for c in node.get("children", []))
+
+
+def _merge(children: list[dict], a: int, b: int) -> None:
+    """Fold children[b] into children[a], as a regression that drew two items
+    as one would: one node holding both texts, or both nodes' children."""
+    into, gone = children[a], children.pop(b)
+    if "children" in into:
+        into["children"] += gone["children"]
+    else:
+        into["text"] += " " + gone["text"]
 
 
 class TestHiddenFonts:

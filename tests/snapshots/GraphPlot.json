@@ -67,15 +67,10 @@
            },
            {
             "type": "MathTex",
-            "flow": [
-             {
-              "type": "MathTex",
-              "tex": "f(x) = x^{2} - 2 x - 3",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "f(x) = x^{2} - 2 x - 3"
            }
           ]
          }
@@ -87,9 +82,113 @@
        {
         "type": "VGroup",
         "label": "axes",
-        "children": {
-         "layout_choice": "tick labels and marks the axes keep"
+        "layout_choice": {
+         "name": "tick labels the axes keep",
+         "kept": {
+          "xtick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ],
+          "ytick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
         },
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
         "regions": [
          "stage"
         ]
@@ -154,15 +253,10 @@
            },
            {
             "type": "MathTex",
-            "flow": [
-             {
-              "type": "MathTex",
-              "tex": "f(x) = x^{2} - 2 x - 3",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "f(x) = x^{2} - 2 x - 3"
            }
           ]
          }
@@ -174,9 +268,113 @@
        {
         "type": "VGroup",
         "label": "axes",
-        "children": {
-         "layout_choice": "tick labels and marks the axes keep"
+        "layout_choice": {
+         "name": "tick labels the axes keep",
+         "kept": {
+          "xtick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ],
+          "ytick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
         },
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
         "regions": [
          "stage"
         ]
@@ -204,15 +402,10 @@
        {
         "type": "Text",
         "label": "marker[0].label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "vertex",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "vertex",
         "regions": [
          "stage"
         ]
@@ -230,15 +423,10 @@
        {
         "type": "Text",
         "label": "marker[1].label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "root",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "root",
         "regions": [
          "stage"
         ]
@@ -269,15 +457,10 @@
            },
            {
             "type": "MathTex",
-            "flow": [
-             {
-              "type": "MathTex",
-              "tex": "f(x) = x^{2} - 2 x - 3",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "f(x) = x^{2} - 2 x - 3"
            }
           ]
          }
@@ -289,9 +472,113 @@
        {
         "type": "VGroup",
         "label": "axes",
-        "children": {
-         "layout_choice": "tick labels and marks the axes keep"
+        "layout_choice": {
+         "name": "tick labels the axes keep",
+         "kept": {
+          "xtick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ],
+          "ytick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
         },
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
         "regions": [
          "stage"
         ]
@@ -319,15 +606,10 @@
        {
         "type": "Text",
         "label": "marker[0].label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "vertex",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "vertex",
         "regions": [
          "stage"
         ]
@@ -345,15 +627,10 @@
        {
         "type": "Text",
         "label": "marker[1].label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "root",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "root",
         "regions": [
          "stage"
         ]
@@ -3627,15 +3904,10 @@
            },
            {
             "type": "MathTex",
-            "flow": [
-             {
-              "type": "MathTex",
-              "tex": "y = \\sin(x)",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "y = \\sin(x)"
            }
           ]
          },
@@ -3651,15 +3923,10 @@
            },
            {
             "type": "MathTex",
-            "flow": [
-             {
-              "type": "MathTex",
-              "tex": "y = \\cos(x)",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "y = \\cos(x)"
            }
           ]
          }
@@ -3671,9 +3938,113 @@
        {
         "type": "VGroup",
         "label": "axes",
-        "children": {
-         "layout_choice": "tick labels and marks the axes keep"
+        "layout_choice": {
+         "name": "tick labels the axes keep",
+         "kept": {
+          "xtick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ],
+          "ytick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
         },
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
         "regions": [
          "stage"
         ]
@@ -3720,15 +4091,10 @@
            },
            {
             "type": "MathTex",
-            "flow": [
-             {
-              "type": "MathTex",
-              "tex": "y = \\sin(x)",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "y = \\sin(x)"
            }
           ]
          },
@@ -3744,15 +4110,10 @@
            },
            {
             "type": "MathTex",
-            "flow": [
-             {
-              "type": "MathTex",
-              "tex": "y = \\cos(x)",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "y = \\cos(x)"
            }
           ]
          }
@@ -3764,9 +4125,113 @@
        {
         "type": "VGroup",
         "label": "axes",
-        "children": {
-         "layout_choice": "tick labels and marks the axes keep"
+        "layout_choice": {
+         "name": "tick labels the axes keep",
+         "kept": {
+          "xtick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ],
+          "ytick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
         },
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
         "regions": [
          "stage"
         ]
@@ -3817,15 +4282,10 @@
            },
            {
             "type": "MathTex",
-            "flow": [
-             {
-              "type": "MathTex",
-              "tex": "y = \\sin(x)",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "y = \\sin(x)"
            }
           ]
          },
@@ -3841,15 +4301,10 @@
            },
            {
             "type": "MathTex",
-            "flow": [
-             {
-              "type": "MathTex",
-              "tex": "y = \\cos(x)",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "y = \\cos(x)"
            }
           ]
          }
@@ -3861,9 +4316,113 @@
        {
         "type": "VGroup",
         "label": "axes",
-        "children": {
-         "layout_choice": "tick labels and marks the axes keep"
+        "layout_choice": {
+         "name": "tick labels the axes keep",
+         "kept": {
+          "xtick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ],
+          "ytick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
         },
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
         "regions": [
          "stage"
         ]
@@ -7217,15 +7776,10 @@
            },
            {
             "type": "MathTex",
-            "flow": [
-             {
-              "type": "MathTex",
-              "tex": "y = \\tan(x)",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "y = \\tan(x)"
            }
           ]
          }
@@ -7237,9 +7791,125 @@
        {
         "type": "VGroup",
         "label": "axes",
-        "children": {
-         "layout_choice": "tick labels and marks the axes keep"
+        "layout_choice": {
+         "name": "tick labels the axes keep",
+         "kept": {
+          "xtick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ],
+          "ytick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
         },
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
         "regions": [
          "stage"
         ]
@@ -7290,15 +7960,10 @@
            },
            {
             "type": "MathTex",
-            "flow": [
-             {
-              "type": "MathTex",
-              "tex": "y = \\tan(x)",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "y = \\tan(x)"
            }
           ]
          }
@@ -7310,9 +7975,125 @@
        {
         "type": "VGroup",
         "label": "axes",
-        "children": {
-         "layout_choice": "tick labels and marks the axes keep"
+        "layout_choice": {
+         "name": "tick labels the axes keep",
+         "kept": {
+          "xtick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ],
+          "ytick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
         },
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
         "regions": [
          "stage"
         ]
@@ -7340,15 +8121,10 @@
        {
         "type": "Text",
         "label": "marker[0].label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "tan=1",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "tan=1",
         "regions": [
          "stage"
         ]
@@ -7379,15 +8155,10 @@
            },
            {
             "type": "MathTex",
-            "flow": [
-             {
-              "type": "MathTex",
-              "tex": "y = \\tan(x)",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "y = \\tan(x)"
            }
           ]
          }
@@ -7399,9 +8170,125 @@
        {
         "type": "VGroup",
         "label": "axes",
-        "children": {
-         "layout_choice": "tick labels and marks the axes keep"
+        "layout_choice": {
+         "name": "tick labels the axes keep",
+         "kept": {
+          "xtick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ],
+          "ytick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
         },
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
         "regions": [
          "stage"
         ]
@@ -7429,15 +8316,10 @@
        {
         "type": "Text",
         "label": "marker[0].label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "tan=1",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "tan=1",
         "regions": [
          "stage"
         ]

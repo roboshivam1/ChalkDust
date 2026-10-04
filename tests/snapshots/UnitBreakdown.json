@@ -73,20 +73,46 @@
        {
         "type": "VGroup",
         "label": "UnitBreakdown",
-        "flow": [
+        "children": [
          {
           "type": "MathTex",
-          "tex": " \\mathrm{N}   =   \\mathrm{kg}   \\cdot   \\mathrm{m}   \\cdot   \\mathrm{s}^{-2} ",
+          "label": "units",
           "color": "#58A6FF",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "tex": " \\mathrm{N}   =   \\mathrm{kg}   \\cdot   \\mathrm{m}   \\cdot   \\mathrm{s}^{-2} "
          },
          {
           "type": "Text",
-          "text": "forcemasslengthpersecondsquared",
+          "label": "label[0]",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "force"
+         },
+         {
+          "type": "Text",
+          "label": "label[1]",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "mass"
+         },
+         {
+          "type": "Text",
+          "label": "label[2]",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "length"
+         },
+         {
+          "type": "Text",
+          "label": "label[3]",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "persecondsquared"
          }
         ],
         "regions": [
@@ -106,20 +132,46 @@
        {
         "type": "VGroup",
         "label": "UnitBreakdown",
-        "flow": [
+        "children": [
          {
           "type": "MathTex",
-          "tex": " \\mathrm{N}   =   \\mathrm{kg}   \\cdot   \\mathrm{m}   \\cdot   \\mathrm{s}^{-2} ",
+          "label": "units",
           "color": "#58A6FF",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "tex": " \\mathrm{N}   =   \\mathrm{kg}   \\cdot   \\mathrm{m}   \\cdot   \\mathrm{s}^{-2} "
          },
          {
           "type": "Text",
-          "text": "forcemasslengthpersecondsquared",
+          "label": "label[0]",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "force"
+         },
+         {
+          "type": "Text",
+          "label": "label[1]",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "mass"
+         },
+         {
+          "type": "Text",
+          "label": "label[2]",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "length"
+         },
+         {
+          "type": "Text",
+          "label": "label[3]",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "persecondsquared"
          }
         ],
         "regions": [
@@ -755,20 +807,38 @@
        {
         "type": "VGroup",
         "label": "UnitBreakdown",
-        "flow": [
+        "children": [
          {
           "type": "MathTex",
-          "tex": " \\mathrm{J}   =   \\mathrm{N}   \\cdot   \\mathrm{m} ",
+          "label": "units",
           "color": "#58A6FF",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "tex": " \\mathrm{J}   =   \\mathrm{N}   \\cdot   \\mathrm{m} "
          },
          {
           "type": "Text",
-          "text": "energyforcedistance",
+          "label": "label[0]",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "energy"
+         },
+         {
+          "type": "Text",
+          "label": "label[1]",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "force"
+         },
+         {
+          "type": "Text",
+          "label": "label[2]",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "distance"
          }
         ],
         "regions": [
@@ -788,20 +858,38 @@
        {
         "type": "VGroup",
         "label": "UnitBreakdown",
-        "flow": [
+        "children": [
          {
           "type": "MathTex",
-          "tex": " \\mathrm{J}   =   \\mathrm{N}   \\cdot   \\mathrm{m} ",
+          "label": "units",
           "color": "#58A6FF",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "tex": " \\mathrm{J}   =   \\mathrm{N}   \\cdot   \\mathrm{m} "
          },
          {
           "type": "Text",
-          "text": "energyforcedistance",
+          "label": "label[0]",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "energy"
+         },
+         {
+          "type": "Text",
+          "label": "label[1]",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "force"
+         },
+         {
+          "type": "Text",
+          "label": "label[2]",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "distance"
          }
         ],
         "regions": [
@@ -1335,13 +1423,14 @@
        {
         "type": "VGroup",
         "label": "UnitBreakdown",
-        "flow": [
+        "children": [
          {
           "type": "MathTex",
-          "tex": " \\mathrm{W}   =   \\mathrm{J}   \\cdot   \\mathrm{s}^{-1} ",
+          "label": "units",
           "color": "#58A6FF",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "tex": " \\mathrm{W}   =   \\mathrm{J}   \\cdot   \\mathrm{s}^{-1} "
          }
         ],
         "regions": [
@@ -1361,13 +1450,14 @@
        {
         "type": "VGroup",
         "label": "UnitBreakdown",
-        "flow": [
+        "children": [
          {
           "type": "MathTex",
-          "tex": " \\mathrm{W}   =   \\mathrm{J}   \\cdot   \\mathrm{s}^{-1} ",
+          "label": "units",
           "color": "#58A6FF",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "tex": " \\mathrm{W}   =   \\mathrm{J}   \\cdot   \\mathrm{s}^{-1} "
          }
         ],
         "regions": [

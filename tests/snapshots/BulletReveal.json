@@ -43,15 +43,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Onejumpbecomesawalk",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Onejumpbecomesawalk"
            }
           ]
          }
@@ -86,15 +81,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Onejumpbecomesawalk",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Onejumpbecomesawalk"
            }
           ]
          }
@@ -495,15 +485,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Aweakhashfunction",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Aweakhashfunction"
            }
           ]
          },
@@ -519,15 +504,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Aloadfactorlefttoohigh",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Aloadfactorlefttoohigh"
            }
           ]
          },
@@ -543,15 +523,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Adversarialkeyschosentocollide",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Adversarialkeyschosentocollide"
            }
           ]
          }
@@ -563,15 +538,10 @@
        {
         "type": "Text",
         "label": "heading",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Threecauses",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Threecauses",
         "regions": [
          "title_bar"
         ]
@@ -602,15 +572,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Aweakhashfunction",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Aweakhashfunction"
            }
           ]
          },
@@ -626,15 +591,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Aloadfactorlefttoohigh",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Aloadfactorlefttoohigh"
            }
           ]
          },
@@ -650,15 +610,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Adversarialkeyschosentocollide",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Adversarialkeyschosentocollide"
            }
           ]
          }
@@ -670,15 +625,10 @@
        {
         "type": "Text",
         "label": "heading",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Threecauses",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Threecauses",
         "regions": [
          "title_bar"
         ]
@@ -1565,15 +1515,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Pointnumber0",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Pointnumber0"
            }
           ]
          },
@@ -1589,15 +1534,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Pointnumber1",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Pointnumber1"
            }
           ]
          },
@@ -1613,15 +1553,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Pointnumber2",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Pointnumber2"
            }
           ]
          },
@@ -1637,15 +1572,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Pointnumber3",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Pointnumber3"
            }
           ]
          },
@@ -1661,15 +1591,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Pointnumber4",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Pointnumber4"
            }
           ]
          },
@@ -1685,15 +1610,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Pointnumber5",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Pointnumber5"
            }
           ]
          }
@@ -1728,15 +1648,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Pointnumber0",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Pointnumber0"
            }
           ]
          },
@@ -1752,15 +1667,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Pointnumber1",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Pointnumber1"
            }
           ]
          },
@@ -1776,15 +1686,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Pointnumber2",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Pointnumber2"
            }
           ]
          },
@@ -1800,15 +1705,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Pointnumber3",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Pointnumber3"
            }
           ]
          },
@@ -1824,15 +1724,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Pointnumber4",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Pointnumber4"
            }
           ]
          },
@@ -1848,15 +1743,10 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Pointnumber5",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Pointnumber5"
            }
           ]
          }

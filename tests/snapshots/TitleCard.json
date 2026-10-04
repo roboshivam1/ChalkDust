@@ -25,15 +25,10 @@
       "mobjects": [
        {
         "type": "Text",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "WhyHashMapsDegrade",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "WhyHashMapsDegrade",
         "regions": [
          "stage"
         ]
@@ -50,15 +45,10 @@
       "mobjects": [
        {
         "type": "Text",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "WhyHashMapsDegrade",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "WhyHashMapsDegrade",
         "regions": [
          "stage"
         ]
@@ -251,45 +241,30 @@
       "mobjects": [
        {
         "type": "Text",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "CSFUNDAMENTALS",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "CSFUNDAMENTALS",
         "regions": [
          "stage"
         ]
        },
        {
         "type": "Text",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "BinarySearch",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "BinarySearch",
         "regions": [
          "stage"
         ]
        },
        {
         "type": "Text",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Halvingtheproblem,everystep",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Halvingtheproblem,everystep",
         "regions": [
          "stage"
         ]
@@ -306,45 +281,30 @@
       "mobjects": [
        {
         "type": "Text",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "CSFUNDAMENTALS",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "CSFUNDAMENTALS",
         "regions": [
          "stage"
         ]
        },
        {
         "type": "Text",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "BinarySearch",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "BinarySearch",
         "regions": [
          "stage"
         ]
        },
        {
         "type": "Text",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Halvingtheproblem,everystep",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Halvingtheproblem,everystep",
         "regions": [
          "stage"
         ]

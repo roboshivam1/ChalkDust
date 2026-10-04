@@ -57,15 +57,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "2kgblock",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "2kgblock"
          }
         ],
         "regions": [
@@ -98,15 +93,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "2kgblock",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "2kgblock"
          }
         ],
         "regions": [
@@ -131,15 +121,10 @@
        {
         "type": "MathTex",
         "label": "label[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "mg",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
         "regions": [
          "stage"
         ]
@@ -170,15 +155,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "2kgblock",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "2kgblock"
          }
         ],
         "regions": [
@@ -203,15 +183,10 @@
        {
         "type": "MathTex",
         "label": "label[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "mg",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
         "regions": [
          "stage"
         ]
@@ -234,15 +209,10 @@
        {
         "type": "MathTex",
         "label": "label[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "N",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "N",
         "regions": [
          "stage"
         ]
@@ -273,15 +243,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "2kgblock",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "2kgblock"
          }
         ],
         "regions": [
@@ -306,15 +271,10 @@
        {
         "type": "MathTex",
         "label": "label[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "mg",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
         "regions": [
          "stage"
         ]
@@ -337,15 +297,10 @@
        {
         "type": "MathTex",
         "label": "label[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "N",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "N",
         "regions": [
          "stage"
         ]
@@ -368,15 +323,10 @@
        {
         "type": "MathTex",
         "label": "label[2]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "T",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T",
         "regions": [
          "stage"
         ]
@@ -407,15 +357,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "2kgblock",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "2kgblock"
          }
         ],
         "regions": [
@@ -440,15 +385,10 @@
        {
         "type": "MathTex",
         "label": "label[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "mg",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
         "regions": [
          "stage"
         ]
@@ -471,15 +411,10 @@
        {
         "type": "MathTex",
         "label": "label[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "N",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "N",
         "regions": [
          "stage"
         ]
@@ -502,15 +437,10 @@
        {
         "type": "MathTex",
         "label": "label[2]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "T",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T",
         "regions": [
          "stage"
         ]
@@ -533,15 +463,10 @@
        {
         "type": "MathTex",
         "label": "label[3]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "f_k",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "f_k",
         "regions": [
          "stage"
         ]
@@ -568,15 +493,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "2kgblock",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "2kgblock"
          }
         ],
         "regions": [
@@ -601,15 +521,10 @@
        {
         "type": "MathTex",
         "label": "label[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "mg",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
         "regions": [
          "stage"
         ]
@@ -632,15 +547,10 @@
        {
         "type": "MathTex",
         "label": "label[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "N",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "N",
         "regions": [
          "stage"
         ]
@@ -663,15 +573,10 @@
        {
         "type": "MathTex",
         "label": "label[2]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "T",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T",
         "regions": [
          "stage"
         ]
@@ -694,15 +599,10 @@
        {
         "type": "MathTex",
         "label": "label[3]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "f_k",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "f_k",
         "regions": [
          "stage"
         ]
@@ -3082,15 +2982,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "m",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "m"
          }
         ],
         "regions": [
@@ -3123,15 +3018,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "m",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "m"
          }
         ],
         "regions": [
@@ -3156,15 +3046,10 @@
        {
         "type": "MathTex",
         "label": "label[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "mg",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
         "regions": [
          "stage"
         ]
@@ -3195,15 +3080,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "m",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "m"
          }
         ],
         "regions": [
@@ -3228,15 +3108,10 @@
        {
         "type": "MathTex",
         "label": "label[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "mg",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
         "regions": [
          "stage"
         ]
@@ -3259,15 +3134,10 @@
        {
         "type": "MathTex",
         "label": "label[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "N",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "N",
         "regions": [
          "stage"
         ]
@@ -3298,15 +3168,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "m",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "m"
          }
         ],
         "regions": [
@@ -3331,15 +3196,10 @@
        {
         "type": "MathTex",
         "label": "label[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "mg",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
         "regions": [
          "stage"
         ]
@@ -3362,15 +3222,10 @@
        {
         "type": "MathTex",
         "label": "label[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "N",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "N",
         "regions": [
          "stage"
         ]
@@ -3393,15 +3248,10 @@
        {
         "type": "MathTex",
         "label": "label[2]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "f_s",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "f_s",
         "regions": [
          "stage"
         ]
@@ -3428,15 +3278,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "m",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "m"
          }
         ],
         "regions": [
@@ -3461,15 +3306,10 @@
        {
         "type": "MathTex",
         "label": "label[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "mg",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
         "regions": [
          "stage"
         ]
@@ -3492,15 +3332,10 @@
        {
         "type": "MathTex",
         "label": "label[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "N",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "N",
         "regions": [
          "stage"
         ]
@@ -3523,15 +3358,10 @@
        {
         "type": "MathTex",
         "label": "label[2]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "f_s",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "f_s",
         "regions": [
          "stage"
         ]
@@ -5247,15 +5077,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "lamp",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "lamp"
          }
         ],
         "regions": [
@@ -5288,15 +5113,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "lamp",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "lamp"
          }
         ],
         "regions": [
@@ -5321,15 +5141,10 @@
        {
         "type": "MathTex",
         "label": "label[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "T_1",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T_1",
         "regions": [
          "stage"
         ]
@@ -5360,15 +5175,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "lamp",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "lamp"
          }
         ],
         "regions": [
@@ -5393,15 +5203,10 @@
        {
         "type": "MathTex",
         "label": "label[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "T_1",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T_1",
         "regions": [
          "stage"
         ]
@@ -5424,15 +5229,10 @@
        {
         "type": "MathTex",
         "label": "label[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "T_2",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T_2",
         "regions": [
          "stage"
         ]
@@ -5463,15 +5263,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "lamp",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "lamp"
          }
         ],
         "regions": [
@@ -5496,15 +5291,10 @@
        {
         "type": "MathTex",
         "label": "label[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "T_1",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T_1",
         "regions": [
          "stage"
         ]
@@ -5527,15 +5317,10 @@
        {
         "type": "MathTex",
         "label": "label[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "T_2",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T_2",
         "regions": [
          "stage"
         ]
@@ -5558,15 +5343,10 @@
        {
         "type": "MathTex",
         "label": "label[2]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "mg",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
         "regions": [
          "stage"
         ]
@@ -5597,15 +5377,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "lamp",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "lamp"
          }
         ],
         "regions": [
@@ -5630,15 +5405,10 @@
        {
         "type": "MathTex",
         "label": "label[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "T_1",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T_1",
         "regions": [
          "stage"
         ]
@@ -5661,15 +5431,10 @@
        {
         "type": "MathTex",
         "label": "label[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "T_2",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T_2",
         "regions": [
          "stage"
         ]
@@ -5692,15 +5457,10 @@
        {
         "type": "MathTex",
         "label": "label[2]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "mg",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
         "regions": [
          "stage"
         ]
@@ -5723,15 +5483,10 @@
        {
         "type": "MathTex",
         "label": "label[3]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "\\vec{F}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "\\vec{F}",
         "regions": [
          "stage"
         ]
@@ -5758,15 +5513,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "lamp",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "lamp"
          }
         ],
         "regions": [
@@ -5791,15 +5541,10 @@
        {
         "type": "MathTex",
         "label": "label[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "T_1",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T_1",
         "regions": [
          "stage"
         ]
@@ -5822,15 +5567,10 @@
        {
         "type": "MathTex",
         "label": "label[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "T_2",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T_2",
         "regions": [
          "stage"
         ]
@@ -5853,15 +5593,10 @@
        {
         "type": "MathTex",
         "label": "label[2]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "mg",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
         "regions": [
          "stage"
         ]
@@ -5884,15 +5619,10 @@
        {
         "type": "MathTex",
         "label": "label[3]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "\\vec{F}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "\\vec{F}",
         "regions": [
          "stage"
         ]

@@ -144,41 +144,65 @@
        {
         "type": "VGroup",
         "label": "given",
-        "flow": [
+        "children": [
          {
           "type": "Text",
-          "text": "GIVEN",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "GIVEN"
          },
          {
-          "type": "MathTex",
-          "tex": "\\mathrm{H}\\textstyle m = 2\\,\\mathrm{kg}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "type": "VGroup",
+          "label": "given[0]",
+          "flow": [
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle m = 2\\,\\mathrm{kg}",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
          },
          {
-          "type": "MathTex",
-          "tex": "\\mathrm{H}\\textstyle \\theta = 30^\\circ",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "type": "VGroup",
+          "label": "given[1]",
+          "flow": [
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle \\theta = 30^\\circ",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
          },
          {
-          "type": "MathTex",
-          "tex": "\\mathrm{H}\\textstyle \\mu = 0.2",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "type": "VGroup",
+          "label": "given[2]",
+          "flow": [
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle \\mu = 0.2",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
          },
          {
-          "type": "MathTex",
-          "tex": "\\mathrm{H}\\textstyle g = 10\\,\\mathrm{m\\,s^{-2}}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "type": "VGroup",
+          "label": "given[3]",
+          "flow": [
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle g = 10\\,\\mathrm{m\\,s^{-2}}",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
          }
         ],
         "regions": [
@@ -188,34 +212,40 @@
        {
         "type": "VGroup",
         "label": "find",
-        "flow": [
+        "children": [
          {
           "type": "Text",
-          "text": "FIND",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "FIND"
          },
          {
-          "type": "Text",
-          "text": "theacceleration",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         },
-         {
-          "type": "MathTex",
-          "tex": "\\mathrm{H}\\textstyle a",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         },
-         {
-          "type": "Text",
-          "text": "oftheblockdowntheplane",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "type": "VGroup",
+          "label": "find value",
+          "flow": [
+           {
+            "type": "Text",
+            "text": "theacceleration",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle a",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "oftheblockdowntheplane",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
          }
         ],
         "regions": [
@@ -293,41 +323,65 @@
        {
         "type": "VGroup",
         "label": "given",
-        "flow": [
+        "children": [
          {
           "type": "Text",
-          "text": "GIVEN",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "GIVEN"
          },
          {
-          "type": "MathTex",
-          "tex": "\\mathrm{H}\\textstyle m = 2\\,\\mathrm{kg}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "type": "VGroup",
+          "label": "given[0]",
+          "flow": [
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle m = 2\\,\\mathrm{kg}",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
          },
          {
-          "type": "MathTex",
-          "tex": "\\mathrm{H}\\textstyle \\theta = 30^\\circ",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "type": "VGroup",
+          "label": "given[1]",
+          "flow": [
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle \\theta = 30^\\circ",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
          },
          {
-          "type": "MathTex",
-          "tex": "\\mathrm{H}\\textstyle \\mu = 0.2",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "type": "VGroup",
+          "label": "given[2]",
+          "flow": [
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle \\mu = 0.2",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
          },
          {
-          "type": "MathTex",
-          "tex": "\\mathrm{H}\\textstyle g = 10\\,\\mathrm{m\\,s^{-2}}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "type": "VGroup",
+          "label": "given[3]",
+          "flow": [
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle g = 10\\,\\mathrm{m\\,s^{-2}}",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
          }
         ],
         "regions": [
@@ -337,34 +391,40 @@
        {
         "type": "VGroup",
         "label": "find",
-        "flow": [
+        "children": [
          {
           "type": "Text",
-          "text": "FIND",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "FIND"
          },
          {
-          "type": "Text",
-          "text": "theacceleration",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         },
-         {
-          "type": "MathTex",
-          "tex": "\\mathrm{H}\\textstyle a",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         },
-         {
-          "type": "Text",
-          "text": "oftheblockdowntheplane",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "type": "VGroup",
+          "label": "find value",
+          "flow": [
+           {
+            "type": "Text",
+            "text": "theacceleration",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle a",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "oftheblockdowntheplane",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
          }
         ],
         "regions": [
@@ -2911,27 +2971,33 @@
        {
         "type": "VGroup",
         "label": "find",
-        "flow": [
+        "children": [
          {
           "type": "Text",
-          "text": "FIND",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "FIND"
          },
          {
-          "type": "Text",
-          "text": "thevalueoftheintegral",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         },
-         {
-          "type": "MathTex",
-          "tex": "\\mathrm{H}\\textstyle I",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "type": "VGroup",
+          "label": "find value",
+          "flow": [
+           {
+            "type": "Text",
+            "text": "thevalueoftheintegral",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle I",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
          }
         ],
         "regions": [
@@ -2981,27 +3047,33 @@
        {
         "type": "VGroup",
         "label": "find",
-        "flow": [
+        "children": [
          {
           "type": "Text",
-          "text": "FIND",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "FIND"
          },
          {
-          "type": "Text",
-          "text": "thevalueoftheintegral",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         },
-         {
-          "type": "MathTex",
-          "tex": "\\mathrm{H}\\textstyle I",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "type": "VGroup",
+          "label": "find value",
+          "flow": [
+           {
+            "type": "Text",
+            "text": "thevalueoftheintegral",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle I",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
          }
         ],
         "regions": [
@@ -3926,27 +3998,39 @@
        {
         "type": "VGroup",
         "label": "given",
-        "flow": [
+        "children": [
          {
           "type": "Text",
-          "text": "GIVEN",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "GIVEN"
          },
          {
-          "type": "MathTex",
-          "tex": "\\mathrm{H}\\textstyle x(t) = t^3 - 6t^2 + 9t",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "type": "VGroup",
+          "label": "given[0]",
+          "flow": [
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle x(t) = t^3 - 6t^2 + 9t",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
          },
          {
-          "type": "MathTex",
-          "tex": "\\mathrm{H}\\textstyle t \\ge 0",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "type": "VGroup",
+          "label": "given[1]",
+          "flow": [
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle t \\ge 0",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
          }
         ],
         "regions": [
@@ -3956,20 +4040,26 @@
        {
         "type": "VGroup",
         "label": "find",
-        "flow": [
+        "children": [
          {
           "type": "Text",
-          "text": "FIND",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "FIND"
          },
          {
-          "type": "Text",
-          "text": "thetimesatwhichtheparticleismomentarilyatrest,andthedistanceittravelsbetweenthem",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "type": "VGroup",
+          "label": "find value",
+          "flow": [
+           {
+            "type": "Text",
+            "text": "thetimesatwhichtheparticleismomentarilyatrest,andthedistanceittravelsbetweenthem",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
          }
         ],
         "regions": [
@@ -4047,27 +4137,39 @@
        {
         "type": "VGroup",
         "label": "given",
-        "flow": [
+        "children": [
          {
           "type": "Text",
-          "text": "GIVEN",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "GIVEN"
          },
          {
-          "type": "MathTex",
-          "tex": "\\mathrm{H}\\textstyle x(t) = t^3 - 6t^2 + 9t",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "type": "VGroup",
+          "label": "given[0]",
+          "flow": [
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle x(t) = t^3 - 6t^2 + 9t",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
          },
          {
-          "type": "MathTex",
-          "tex": "\\mathrm{H}\\textstyle t \\ge 0",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "type": "VGroup",
+          "label": "given[1]",
+          "flow": [
+           {
+            "type": "MathTex",
+            "tex": "\\mathrm{H}\\textstyle t \\ge 0",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
          }
         ],
         "regions": [
@@ -4077,20 +4179,26 @@
        {
         "type": "VGroup",
         "label": "find",
-        "flow": [
+        "children": [
          {
           "type": "Text",
-          "text": "FIND",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "FIND"
          },
          {
-          "type": "Text",
-          "text": "thetimesatwhichtheparticleismomentarilyatrest,andthedistanceittravelsbetweenthem",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "type": "VGroup",
+          "label": "find value",
+          "flow": [
+           {
+            "type": "Text",
+            "text": "thetimesatwhichtheparticleismomentarilyatrest,andthedistanceittravelsbetweenthem",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
          }
         ],
         "regions": [

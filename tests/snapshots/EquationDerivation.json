@@ -47,15 +47,10 @@
        {
         "type": "MathTex",
         "label": "step[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": " x^2 + 6x   + 5 = 0",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": " x^2 + 6x   + 5 = 0",
         "regions": [
          "stage"
         ]
@@ -87,15 +82,10 @@
        {
         "type": "MathTex",
         "label": "step[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": " x^2 + 6x   + 5 = 0",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": " x^2 + 6x   + 5 = 0",
         "regions": [
          "stage"
         ]
@@ -103,15 +93,10 @@
        {
         "type": "MathTex",
         "label": "step[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": " x^2 + 6x   + 9 = 4",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": " x^2 + 6x   + 9 = 4",
         "regions": [
          "stage"
         ]
@@ -119,15 +104,10 @@
        {
         "type": "Text",
         "label": "annotation[1]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "add4tobothsides",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "add4tobothsides",
         "regions": [
          "stage"
         ]
@@ -159,15 +139,10 @@
        {
         "type": "MathTex",
         "label": "step[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": " x^2 + 6x   + 5 = 0",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": " x^2 + 6x   + 5 = 0",
         "regions": [
          "stage"
         ]
@@ -175,15 +150,10 @@
        {
         "type": "MathTex",
         "label": "step[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": " x^2 + 6x   + 9 = 4",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": " x^2 + 6x   + 9 = 4",
         "regions": [
          "stage"
         ]
@@ -191,15 +161,10 @@
        {
         "type": "Text",
         "label": "annotation[1]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "add4tobothsides",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "add4tobothsides",
         "regions": [
          "stage"
         ]
@@ -207,15 +172,10 @@
        {
         "type": "MathTex",
         "label": "step[2]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": " (x + 3)^2   = 4",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": " (x + 3)^2   = 4",
         "regions": [
          "stage"
         ]
@@ -223,15 +183,10 @@
        {
         "type": "Text",
         "label": "annotation[2]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "factortheperfectsquare",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "factortheperfectsquare",
         "regions": [
          "stage"
         ]
@@ -263,15 +218,10 @@
        {
         "type": "MathTex",
         "label": "step[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": " x^2 + 6x   + 5 = 0",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": " x^2 + 6x   + 5 = 0",
         "regions": [
          "stage"
         ]
@@ -279,15 +229,10 @@
        {
         "type": "MathTex",
         "label": "step[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": " x^2 + 6x   + 9 = 4",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": " x^2 + 6x   + 9 = 4",
         "regions": [
          "stage"
         ]
@@ -295,15 +240,10 @@
        {
         "type": "Text",
         "label": "annotation[1]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "add4tobothsides",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "add4tobothsides",
         "regions": [
          "stage"
         ]
@@ -311,15 +251,10 @@
        {
         "type": "MathTex",
         "label": "step[2]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": " (x + 3)^2   = 4",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": " (x + 3)^2   = 4",
         "regions": [
          "stage"
         ]
@@ -327,15 +262,10 @@
        {
         "type": "Text",
         "label": "annotation[2]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "factortheperfectsquare",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "factortheperfectsquare",
         "regions": [
          "stage"
         ]
@@ -343,15 +273,10 @@
        {
         "type": "MathTex",
         "label": "step[3]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "x + 3 = \\pm 2",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "x + 3 = \\pm 2",
         "regions": [
          "stage"
         ]
@@ -359,15 +284,10 @@
        {
         "type": "Text",
         "label": "annotation[3]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "takesquareroots",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "takesquareroots",
         "regions": [
          "stage"
         ]
@@ -392,15 +312,10 @@
        {
         "type": "MathTex",
         "label": "step[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": " x^2 + 6x   + 5 = 0",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": " x^2 + 6x   + 5 = 0",
         "regions": [
          "stage"
         ]
@@ -408,15 +323,10 @@
        {
         "type": "MathTex",
         "label": "step[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": " x^2 + 6x   + 9 = 4",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": " x^2 + 6x   + 9 = 4",
         "regions": [
          "stage"
         ]
@@ -424,15 +334,10 @@
        {
         "type": "Text",
         "label": "annotation[1]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "add4tobothsides",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "add4tobothsides",
         "regions": [
          "stage"
         ]
@@ -440,15 +345,10 @@
        {
         "type": "MathTex",
         "label": "step[2]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": " (x + 3)^2   = 4",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": " (x + 3)^2   = 4",
         "regions": [
          "stage"
         ]
@@ -456,15 +356,10 @@
        {
         "type": "Text",
         "label": "annotation[2]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "factortheperfectsquare",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "factortheperfectsquare",
         "regions": [
          "stage"
         ]
@@ -472,15 +367,10 @@
        {
         "type": "MathTex",
         "label": "step[3]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "x + 3 = \\pm 2",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "x + 3 = \\pm 2",
         "regions": [
          "stage"
         ]
@@ -488,15 +378,10 @@
        {
         "type": "Text",
         "label": "annotation[3]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "takesquareroots",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "takesquareroots",
         "regions": [
          "stage"
         ]
@@ -504,15 +389,10 @@
        {
         "type": "MathTex",
         "label": "step[4]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "x = -1 \\text{ or } x = -5",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "x = -1 \\text{ or } x = -5",
         "regions": [
          "stage"
         ]
@@ -530,15 +410,10 @@
        {
         "type": "MathTex",
         "label": "step[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": " x^2 + 6x   + 5 = 0",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": " x^2 + 6x   + 5 = 0",
         "regions": [
          "stage"
         ]
@@ -546,15 +421,10 @@
        {
         "type": "MathTex",
         "label": "step[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": " x^2 + 6x   + 9 = 4",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": " x^2 + 6x   + 9 = 4",
         "regions": [
          "stage"
         ]
@@ -562,15 +432,10 @@
        {
         "type": "Text",
         "label": "annotation[1]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "add4tobothsides",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "add4tobothsides",
         "regions": [
          "stage"
         ]
@@ -578,15 +443,10 @@
        {
         "type": "MathTex",
         "label": "step[2]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": " (x + 3)^2   = 4",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": " (x + 3)^2   = 4",
         "regions": [
          "stage"
         ]
@@ -594,15 +454,10 @@
        {
         "type": "Text",
         "label": "annotation[2]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "factortheperfectsquare",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "factortheperfectsquare",
         "regions": [
          "stage"
         ]
@@ -610,15 +465,10 @@
        {
         "type": "MathTex",
         "label": "step[3]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "x + 3 = \\pm 2",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "x + 3 = \\pm 2",
         "regions": [
          "stage"
         ]
@@ -626,15 +476,10 @@
        {
         "type": "Text",
         "label": "annotation[3]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "takesquareroots",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "takesquareroots",
         "regions": [
          "stage"
         ]
@@ -642,15 +487,10 @@
        {
         "type": "MathTex",
         "label": "step[4]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "x = -1 \\text{ or } x = -5",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "x = -1 \\text{ or } x = -5",
         "regions": [
          "stage"
         ]
@@ -2318,15 +2158,10 @@
        {
         "type": "MathTex",
         "label": "step[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "v^2 = u^2 + 2as",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "v^2 = u^2 + 2as",
         "regions": [
          "stage"
         ]
@@ -2351,15 +2186,10 @@
        {
         "type": "MathTex",
         "label": "step[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "v^2 = u^2 + 2as",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "v^2 = u^2 + 2as",
         "regions": [
          "stage"
         ]
@@ -2367,15 +2197,10 @@
        {
         "type": "MathTex",
         "label": "step[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "2as = v^2 - u^2",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "2as = v^2 - u^2",
         "regions": [
          "stage"
         ]
@@ -2407,15 +2232,10 @@
        {
         "type": "MathTex",
         "label": "step[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "v^2 = u^2 + 2as",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "v^2 = u^2 + 2as",
         "regions": [
          "stage"
         ]
@@ -2423,15 +2243,10 @@
        {
         "type": "MathTex",
         "label": "step[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "2as = v^2 - u^2",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "2as = v^2 - u^2",
         "regions": [
          "stage"
         ]
@@ -2439,15 +2254,10 @@
        {
         "type": "MathTex",
         "label": "step[2]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "s = \\frac{v^2 - u^2}{2a}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "s = \\frac{v^2 - u^2}{2a}",
         "regions": [
          "stage"
         ]
@@ -2455,15 +2265,10 @@
        {
         "type": "Text",
         "label": "annotation[2]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "dividebothsidesby2a",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "dividebothsidesby2a",
         "regions": [
          "stage"
         ]
@@ -2481,15 +2286,10 @@
        {
         "type": "MathTex",
         "label": "step[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "v^2 = u^2 + 2as",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "v^2 = u^2 + 2as",
         "regions": [
          "stage"
         ]
@@ -2497,15 +2297,10 @@
        {
         "type": "MathTex",
         "label": "step[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "2as = v^2 - u^2",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "2as = v^2 - u^2",
         "regions": [
          "stage"
         ]
@@ -2513,15 +2308,10 @@
        {
         "type": "MathTex",
         "label": "step[2]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "s = \\frac{v^2 - u^2}{2a}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "s = \\frac{v^2 - u^2}{2a}",
         "regions": [
          "stage"
         ]
@@ -2529,15 +2319,10 @@
        {
         "type": "Text",
         "label": "annotation[2]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "dividebothsidesby2a",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "dividebothsidesby2a",
         "regions": [
          "stage"
         ]
@@ -3209,15 +2994,10 @@
        {
         "type": "MathTex",
         "label": "step[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "\\sin^2\\theta + \\cos^2\\theta = 1",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "\\sin^2\\theta + \\cos^2\\theta = 1",
         "regions": [
          "stage"
         ]
@@ -3242,15 +3022,10 @@
        {
         "type": "MathTex",
         "label": "step[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "\\sin^2\\theta + \\cos^2\\theta = 1",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "\\sin^2\\theta + \\cos^2\\theta = 1",
         "regions": [
          "stage"
         ]
@@ -3258,15 +3033,10 @@
        {
         "type": "MathTex",
         "label": "step[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "\\frac{\\sin^2\\theta}{\\sin^2\\theta} + \\frac{\\cos^2\\theta}{\\sin^2\\theta} = \\frac{1}{\\sin^2\\theta}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "\\frac{\\sin^2\\theta}{\\sin^2\\theta} + \\frac{\\cos^2\\theta}{\\sin^2\\theta} = \\frac{1}{\\sin^2\\theta}",
         "regions": [
          "stage"
         ]
@@ -3291,15 +3061,10 @@
        {
         "type": "MathTex",
         "label": "step[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "\\sin^2\\theta + \\cos^2\\theta = 1",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "\\sin^2\\theta + \\cos^2\\theta = 1",
         "regions": [
          "stage"
         ]
@@ -3307,15 +3072,10 @@
        {
         "type": "MathTex",
         "label": "step[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "\\frac{\\sin^2\\theta}{\\sin^2\\theta} + \\frac{\\cos^2\\theta}{\\sin^2\\theta} = \\frac{1}{\\sin^2\\theta}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "\\frac{\\sin^2\\theta}{\\sin^2\\theta} + \\frac{\\cos^2\\theta}{\\sin^2\\theta} = \\frac{1}{\\sin^2\\theta}",
         "regions": [
          "stage"
         ]
@@ -3323,15 +3083,10 @@
        {
         "type": "MathTex",
         "label": "step[2]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "1 + \\cot^2\\theta = \\csc^2\\theta",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "1 + \\cot^2\\theta = \\csc^2\\theta",
         "regions": [
          "stage"
         ]
@@ -3349,15 +3104,10 @@
        {
         "type": "MathTex",
         "label": "step[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "\\sin^2\\theta + \\cos^2\\theta = 1",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "\\sin^2\\theta + \\cos^2\\theta = 1",
         "regions": [
          "stage"
         ]
@@ -3365,15 +3115,10 @@
        {
         "type": "MathTex",
         "label": "step[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "\\frac{\\sin^2\\theta}{\\sin^2\\theta} + \\frac{\\cos^2\\theta}{\\sin^2\\theta} = \\frac{1}{\\sin^2\\theta}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "\\frac{\\sin^2\\theta}{\\sin^2\\theta} + \\frac{\\cos^2\\theta}{\\sin^2\\theta} = \\frac{1}{\\sin^2\\theta}",
         "regions": [
          "stage"
         ]
@@ -3381,15 +3126,10 @@
        {
         "type": "MathTex",
         "label": "step[2]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "1 + \\cot^2\\theta = \\csc^2\\theta",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "1 + \\cot^2\\theta = \\csc^2\\theta",
         "regions": [
          "stage"
         ]

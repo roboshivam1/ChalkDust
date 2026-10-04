@@ -43,15 +43,10 @@
        {
         "type": "MathTex",
         "label": "answer",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "T = 24 \\; \\mathrm{N}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T = 24 \\; \\mathrm{N}",
         "regions": [
          "stage"
         ]
@@ -68,15 +63,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "B",
-            "color": "#58A6FF",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "B"
          }
         ],
         "regions": [
@@ -96,15 +86,10 @@
        {
         "type": "Text",
         "label": "label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "ANSWER",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "ANSWER",
         "regions": [
          "stage"
         ]
@@ -122,15 +107,10 @@
        {
         "type": "MathTex",
         "label": "answer",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "T = 24 \\; \\mathrm{N}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T = 24 \\; \\mathrm{N}",
         "regions": [
          "stage"
         ]
@@ -147,15 +127,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "B",
-            "color": "#58A6FF",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "B"
          }
         ],
         "regions": [
@@ -175,15 +150,10 @@
        {
         "type": "Text",
         "label": "label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "ANSWER",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "ANSWER",
         "regions": [
          "stage"
         ]
@@ -774,15 +744,10 @@
        {
         "type": "MathTex",
         "label": "answer",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "v = \\sqrt{\\frac{2gh}{1 + k^2/r^2}} \\; \\mathrm{m\\,s^{-1}}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "v = \\sqrt{\\frac{2gh}{1 + k^2/r^2}} \\; \\mathrm{m\\,s^{-1}}",
         "regions": [
          "stage"
         ]
@@ -800,15 +765,10 @@
        {
         "type": "Text",
         "label": "label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "ANSWER",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "ANSWER",
         "regions": [
          "stage"
         ]
@@ -826,15 +786,10 @@
        {
         "type": "MathTex",
         "label": "answer",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "v = \\sqrt{\\frac{2gh}{1 + k^2/r^2}} \\; \\mathrm{m\\,s^{-1}}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "v = \\sqrt{\\frac{2gh}{1 + k^2/r^2}} \\; \\mathrm{m\\,s^{-1}}",
         "regions": [
          "stage"
         ]
@@ -852,15 +807,10 @@
        {
         "type": "Text",
         "label": "label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "ANSWER",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "ANSWER",
         "regions": [
          "stage"
         ]
@@ -1239,15 +1189,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "C",
-            "color": "#58A6FF",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "C"
          }
         ],
         "regions": [
@@ -1267,15 +1212,10 @@
        {
         "type": "Text",
         "label": "label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "ANSWER",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "ANSWER",
         "regions": [
          "stage"
         ]
@@ -1302,15 +1242,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "C",
-            "color": "#58A6FF",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "C"
          }
         ],
         "regions": [
@@ -1330,15 +1265,10 @@
        {
         "type": "Text",
         "label": "label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "ANSWER",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "ANSWER",
         "regions": [
          "stage"
         ]

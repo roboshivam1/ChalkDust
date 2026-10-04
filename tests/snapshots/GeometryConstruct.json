@@ -117,15 +117,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -142,15 +137,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -197,15 +187,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -222,15 +207,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -256,15 +236,10 @@
        {
         "type": "Text",
         "label": "note[0]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "CompassonA,openedtoB",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "CompassonA,openedtoB",
         "regions": [
          "lower_third"
         ]
@@ -301,15 +276,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -326,15 +296,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -367,15 +332,10 @@
        {
         "type": "Text",
         "label": "note[1]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Sameopening,centredonB",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Sameopening,centredonB",
         "regions": [
          "lower_third"
         ]
@@ -412,15 +372,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -437,15 +392,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -483,15 +433,10 @@
            {
             "type": "Text",
             "label": "label C",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "C",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "C"
            }
           ]
          }
@@ -503,15 +448,10 @@
        {
         "type": "Text",
         "label": "note[2]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "ThecirclescrossatC",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "ThecirclescrossatC",
         "regions": [
          "lower_third"
         ]
@@ -547,15 +487,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -572,15 +507,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -618,15 +548,10 @@
            {
             "type": "Text",
             "label": "label C",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "C",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "C"
            }
           ]
          },
@@ -672,15 +597,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -697,15 +617,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -743,15 +658,10 @@
            {
             "type": "Text",
             "label": "label C",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "C",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "C"
            }
           ]
          },
@@ -805,15 +715,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -830,15 +735,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -876,15 +776,10 @@
            {
             "type": "Text",
             "label": "label C",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "C",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "C"
            }
           ]
          },
@@ -917,15 +812,10 @@
        {
         "type": "Text",
         "label": "note[5]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "AllthreesidesequaltheradiusAB",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "AllthreesidesequaltheradiusAB",
         "regions": [
          "lower_third"
         ]
@@ -953,15 +843,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -978,15 +863,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -1024,15 +904,10 @@
            {
             "type": "Text",
             "label": "label C",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "C",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "C"
            }
           ]
          },
@@ -1065,15 +940,10 @@
        {
         "type": "Text",
         "label": "note[5]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "AllthreesidesequaltheradiusAB",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "AllthreesidesequaltheradiusAB",
         "regions": [
          "lower_third"
         ]
@@ -1105,15 +975,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -1130,15 +995,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -1176,15 +1036,10 @@
            {
             "type": "Text",
             "label": "label C",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "C",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "C"
            }
           ]
          },
@@ -1217,15 +1072,10 @@
        {
         "type": "Text",
         "label": "note[5]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "AllthreesidesequaltheradiusAB",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "AllthreesidesequaltheradiusAB",
         "regions": [
          "lower_third"
         ]
@@ -5656,15 +5506,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -5681,15 +5526,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -5736,15 +5576,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -5761,15 +5596,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -5795,15 +5625,10 @@
        {
         "type": "Text",
         "label": "note[0]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "CircleatAthroughB",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "CircleatAthroughB",
         "regions": [
          "lower_third"
         ]
@@ -5840,15 +5665,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -5865,15 +5685,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -5906,15 +5721,10 @@
        {
         "type": "Text",
         "label": "note[1]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "CircleatBthroughA",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "CircleatBthroughA",
         "regions": [
          "lower_third"
         ]
@@ -5951,15 +5761,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -5976,15 +5781,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -6022,15 +5822,10 @@
            {
             "type": "Text",
             "label": "label P",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "P",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "P"
            },
            {
             "type": "Dot",
@@ -6041,15 +5836,10 @@
            {
             "type": "Text",
             "label": "label Q",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Q",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Q"
            }
           ]
          }
@@ -6061,15 +5851,10 @@
        {
         "type": "Text",
         "label": "note[2]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "TheymeetatPandQ",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "TheymeetatPandQ",
         "regions": [
          "lower_third"
         ]
@@ -6106,15 +5891,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -6131,15 +5911,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -6177,15 +5952,10 @@
            {
             "type": "Text",
             "label": "label P",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "P",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "P"
            },
            {
             "type": "Dot",
@@ -6196,15 +5966,10 @@
            {
             "type": "Text",
             "label": "label Q",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Q",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Q"
            }
           ]
          },
@@ -6223,15 +5988,10 @@
        {
         "type": "Text",
         "label": "note[3]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "PQistheperpendicularbisector",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "PQistheperpendicularbisector",
         "regions": [
          "lower_third"
         ]
@@ -6268,15 +6028,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -6293,15 +6048,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -6339,15 +6089,10 @@
            {
             "type": "Text",
             "label": "label P",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "P",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "P"
            },
            {
             "type": "Dot",
@@ -6358,15 +6103,10 @@
            {
             "type": "Text",
             "label": "label Q",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Q",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Q"
            }
           ]
          },
@@ -6390,15 +6130,10 @@
            {
             "type": "Text",
             "label": "label M",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "M",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "M"
            }
           ]
          }
@@ -6410,15 +6145,10 @@
        {
         "type": "Text",
         "label": "note[4]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "MisthemidpointofAB",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "MisthemidpointofAB",
         "regions": [
          "lower_third"
         ]
@@ -6446,15 +6176,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -6471,15 +6196,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -6517,15 +6237,10 @@
            {
             "type": "Text",
             "label": "label P",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "P",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "P"
            },
            {
             "type": "Dot",
@@ -6536,15 +6251,10 @@
            {
             "type": "Text",
             "label": "label Q",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Q",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Q"
            }
           ]
          },
@@ -6568,15 +6278,10 @@
            {
             "type": "Text",
             "label": "label M",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "M",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "M"
            }
           ]
          }
@@ -6588,15 +6293,10 @@
        {
         "type": "Text",
         "label": "note[4]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "MisthemidpointofAB",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "MisthemidpointofAB",
         "regions": [
          "lower_third"
         ]
@@ -6628,15 +6328,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -6653,15 +6348,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -6699,15 +6389,10 @@
            {
             "type": "Text",
             "label": "label P",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "P",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "P"
            },
            {
             "type": "Dot",
@@ -6718,15 +6403,10 @@
            {
             "type": "Text",
             "label": "label Q",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "Q",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Q"
            }
           ]
          },
@@ -6750,15 +6430,10 @@
            {
             "type": "Text",
             "label": "label M",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "M",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "M"
            }
           ]
          }
@@ -6770,15 +6445,10 @@
        {
         "type": "Text",
         "label": "note[4]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "MisthemidpointofAB",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "MisthemidpointofAB",
         "regions": [
          "lower_third"
         ]
@@ -11179,15 +10849,10 @@
            {
             "type": "Text",
             "label": "label O",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "O",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "O"
            }
           ]
          },
@@ -11204,15 +10869,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -11229,15 +10889,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -11268,15 +10923,10 @@
            {
             "type": "Text",
             "label": "label R",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "R",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "R"
            }
           ]
          }
@@ -11315,15 +10965,10 @@
            {
             "type": "Text",
             "label": "label O",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "O",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "O"
            }
           ]
          },
@@ -11340,15 +10985,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -11365,15 +11005,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -11404,15 +11039,10 @@
            {
             "type": "Text",
             "label": "label R",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "R",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "R"
            }
           ]
          },
@@ -11458,15 +11088,10 @@
            {
             "type": "Text",
             "label": "label O",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "O",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "O"
            }
           ]
          },
@@ -11483,15 +11108,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -11508,15 +11128,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -11547,15 +11162,10 @@
            {
             "type": "Text",
             "label": "label R",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "R",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "R"
            }
           ]
          },
@@ -11579,15 +11189,10 @@
            {
             "type": "Text",
             "label": "label S",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "S",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "S"
            }
           ]
          }
@@ -11626,15 +11231,10 @@
            {
             "type": "Text",
             "label": "label O",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "O",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "O"
            }
           ]
          },
@@ -11651,15 +11251,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -11676,15 +11271,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -11715,15 +11305,10 @@
            {
             "type": "Text",
             "label": "label R",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "R",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "R"
            }
           ]
          },
@@ -11747,15 +11332,10 @@
            {
             "type": "Text",
             "label": "label S",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "S",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "S"
            }
           ]
          },
@@ -11801,15 +11381,10 @@
            {
             "type": "Text",
             "label": "label O",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "O",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "O"
            }
           ]
          },
@@ -11826,15 +11401,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -11851,15 +11421,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -11890,15 +11455,10 @@
            {
             "type": "Text",
             "label": "label R",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "R",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "R"
            }
           ]
          },
@@ -11922,15 +11482,10 @@
            {
             "type": "Text",
             "label": "label S",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "S",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "S"
            }
           ]
          },
@@ -11983,15 +11538,10 @@
            {
             "type": "Text",
             "label": "label O",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "O",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "O"
            }
           ]
          },
@@ -12008,15 +11558,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -12033,15 +11578,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -12072,15 +11612,10 @@
            {
             "type": "Text",
             "label": "label R",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "R",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "R"
            }
           ]
          },
@@ -12104,15 +11639,10 @@
            {
             "type": "Text",
             "label": "label S",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "S",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "S"
            }
           ]
          },
@@ -12143,15 +11673,10 @@
            {
             "type": "Text",
             "label": "label T",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "T",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "T"
            }
           ]
          }
@@ -12190,15 +11715,10 @@
            {
             "type": "Text",
             "label": "label O",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "O",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "O"
            }
           ]
          },
@@ -12215,15 +11735,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -12240,15 +11755,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -12279,15 +11789,10 @@
            {
             "type": "Text",
             "label": "label R",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "R",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "R"
            }
           ]
          },
@@ -12311,15 +11816,10 @@
            {
             "type": "Text",
             "label": "label S",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "S",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "S"
            }
           ]
          },
@@ -12350,15 +11850,10 @@
            {
             "type": "Text",
             "label": "label T",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "T",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "T"
            }
           ]
          },
@@ -12397,15 +11892,10 @@
            {
             "type": "Text",
             "label": "label O",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "O",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "O"
            }
           ]
          },
@@ -12422,15 +11912,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -12447,15 +11932,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -12486,15 +11966,10 @@
            {
             "type": "Text",
             "label": "label R",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "R",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "R"
            }
           ]
          },
@@ -12518,15 +11993,10 @@
            {
             "type": "Text",
             "label": "label S",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "S",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "S"
            }
           ]
          },
@@ -12557,15 +12027,10 @@
            {
             "type": "Text",
             "label": "label T",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "T",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "T"
            }
           ]
          },
@@ -12608,15 +12073,10 @@
            {
             "type": "Text",
             "label": "label O",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "O",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "O"
            }
           ]
          },
@@ -12633,15 +12093,10 @@
            {
             "type": "Text",
             "label": "label A",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "A",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "A"
            }
           ]
          },
@@ -12658,15 +12113,10 @@
            {
             "type": "Text",
             "label": "label B",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "B",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "B"
            }
           ]
          },
@@ -12697,15 +12147,10 @@
            {
             "type": "Text",
             "label": "label R",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "R",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "R"
            }
           ]
          },
@@ -12729,15 +12174,10 @@
            {
             "type": "Text",
             "label": "label S",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "S",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "S"
            }
           ]
          },
@@ -12768,15 +12208,10 @@
            {
             "type": "Text",
             "label": "label T",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "T",
-              "color": "#E6EDF3",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "T"
            }
           ]
          },

@@ -108,15 +108,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Sourcecode",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Sourcecode"
          }
         ],
         "regions": [
@@ -156,15 +151,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Lexer",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Lexer"
          }
         ],
         "regions": [
@@ -204,15 +194,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Parser",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Parser"
          }
         ],
         "regions": [
@@ -252,15 +237,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Codegenerator",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Codegenerator"
          }
         ],
         "regions": [
@@ -289,15 +269,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Sourcecode",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Sourcecode"
          }
         ],
         "regions": [
@@ -337,15 +312,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Lexer",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Lexer"
          }
         ],
         "regions": [
@@ -385,15 +355,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Parser",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Parser"
          }
         ],
         "regions": [
@@ -433,15 +398,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Codegenerator",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Codegenerator"
          }
         ],
         "regions": [
@@ -2213,15 +2173,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Client",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Client"
          }
         ],
         "regions": [
@@ -2261,15 +2216,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Loadbalancer",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Loadbalancer"
          }
         ],
         "regions": [
@@ -2330,15 +2280,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Appserver1",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Appserver1"
          }
         ],
         "regions": [
@@ -2357,15 +2302,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Appserver2",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Appserver2"
          }
         ],
         "regions": [
@@ -2426,15 +2366,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Cache",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Cache"
          }
         ],
         "regions": [
@@ -2495,15 +2430,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Database",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Database"
          }
         ],
         "regions": [
@@ -2532,15 +2462,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Client",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Client"
          }
         ],
         "regions": [
@@ -2580,15 +2505,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Loadbalancer",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Loadbalancer"
          }
         ],
         "regions": [
@@ -2649,15 +2569,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Appserver1",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Appserver1"
          }
         ],
         "regions": [
@@ -2676,15 +2591,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Appserver2",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Appserver2"
          }
         ],
         "regions": [
@@ -2745,15 +2655,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Cache",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Cache"
          }
         ],
         "regions": [
@@ -2814,15 +2719,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Database",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Database"
          }
         ],
         "regions": [
@@ -5938,15 +5838,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Trainingdata",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Trainingdata"
          }
         ],
         "regions": [
@@ -5986,15 +5881,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Model",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Model"
          }
         ],
         "regions": [
@@ -6034,15 +5924,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Loss",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Loss"
          }
         ],
         "regions": [
@@ -6082,15 +5967,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Optimizer",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Optimizer"
          }
         ],
         "regions": [
@@ -6161,15 +6041,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Trainingdata",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Trainingdata"
          }
         ],
         "regions": [
@@ -6209,15 +6084,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Model",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Model"
          }
         ],
         "regions": [
@@ -6257,15 +6127,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Loss",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Loss"
          }
         ],
         "regions": [
@@ -6305,15 +6170,10 @@
          },
          {
           "type": "Text",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Optimizer",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Optimizer"
          }
         ],
         "regions": [

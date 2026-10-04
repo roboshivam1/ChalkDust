@@ -45,30 +45,20 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "2",
-              "color": "#58A6FF",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "2"
            }
           ]
          },
          {
           "type": "Text",
           "label": "claim",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Findtheaccelerationoftheblockalongtheincline",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Findtheaccelerationoftheblockalongtheincline"
          }
         ],
         "regions": [
@@ -104,30 +94,20 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "2",
-              "color": "#58A6FF",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "2"
            }
           ]
          },
          {
           "type": "Text",
           "label": "claim",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Findtheaccelerationoftheblockalongtheincline",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Findtheaccelerationoftheblockalongtheincline"
          }
         ],
         "regions": [
@@ -137,15 +117,10 @@
        {
         "type": "MathTex",
         "label": "work[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "mg\\sin\\theta = ma",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg\\sin\\theta = ma",
         "regions": [
          "stage"
         ]
@@ -183,30 +158,20 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "2",
-              "color": "#58A6FF",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "2"
            }
           ]
          },
          {
           "type": "Text",
           "label": "claim",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Findtheaccelerationoftheblockalongtheincline",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Findtheaccelerationoftheblockalongtheincline"
          }
         ],
         "regions": [
@@ -216,15 +181,10 @@
        {
         "type": "MathTex",
         "label": "work[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "mg\\sin\\theta = ma",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg\\sin\\theta = ma",
         "regions": [
          "stage"
         ]
@@ -232,15 +192,10 @@
        {
         "type": "MathTex",
         "label": "work[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "a = g\\sin\\theta = 9.8 \\times \\tfrac{1}{2} = 4.9\\ \\mathrm{m\\,s^{-2}}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "a = g\\sin\\theta = 9.8 \\times \\tfrac{1}{2} = 4.9\\ \\mathrm{m\\,s^{-2}}",
         "regions": [
          "stage"
         ]
@@ -278,30 +233,20 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "2",
-              "color": "#58A6FF",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "2"
            }
           ]
          },
          {
           "type": "Text",
           "label": "claim",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Findtheaccelerationoftheblockalongtheincline",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Findtheaccelerationoftheblockalongtheincline"
          }
         ],
         "regions": [
@@ -311,15 +256,10 @@
        {
         "type": "MathTex",
         "label": "work[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "mg\\sin\\theta = ma",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg\\sin\\theta = ma",
         "regions": [
          "stage"
         ]
@@ -327,15 +267,10 @@
        {
         "type": "MathTex",
         "label": "work[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "a = g\\sin\\theta = 9.8 \\times \\tfrac{1}{2} = 4.9\\ \\mathrm{m\\,s^{-2}}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "a = g\\sin\\theta = 9.8 \\times \\tfrac{1}{2} = 4.9\\ \\mathrm{m\\,s^{-2}}",
         "regions": [
          "stage"
         ]
@@ -343,15 +278,10 @@
        {
         "type": "Text",
         "label": "justification",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Newton'ssecondlawalongtheincline;thesurfaceissmooth,sonofrictionacts",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Newton'ssecondlawalongtheincline;thesurfaceissmooth,sonofrictionacts",
         "regions": [
          "lower_third"
         ]
@@ -382,30 +312,20 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "2",
-              "color": "#58A6FF",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "2"
            }
           ]
          },
          {
           "type": "Text",
           "label": "claim",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Findtheaccelerationoftheblockalongtheincline",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Findtheaccelerationoftheblockalongtheincline"
          }
         ],
         "regions": [
@@ -415,15 +335,10 @@
        {
         "type": "MathTex",
         "label": "work[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "mg\\sin\\theta = ma",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg\\sin\\theta = ma",
         "regions": [
          "stage"
         ]
@@ -431,15 +346,10 @@
        {
         "type": "MathTex",
         "label": "work[1]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "a = g\\sin\\theta = 9.8 \\times \\tfrac{1}{2} = 4.9\\ \\mathrm{m\\,s^{-2}}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "a = g\\sin\\theta = 9.8 \\times \\tfrac{1}{2} = 4.9\\ \\mathrm{m\\,s^{-2}}",
         "regions": [
          "stage"
         ]
@@ -447,15 +357,10 @@
        {
         "type": "Text",
         "label": "justification",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Newton'ssecondlawalongtheincline;thesurfaceissmooth,sonofrictionacts",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Newton'ssecondlawalongtheincline;thesurfaceissmooth,sonofrictionacts",
         "regions": [
          "lower_third"
         ]
@@ -1868,30 +1773,20 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "3",
-              "color": "#58A6FF",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "3"
            }
           ]
          },
          {
           "type": "Text",
           "label": "claim",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Substitutetherootsintothesum",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Substitutetherootsintothesum"
          }
         ],
         "regions": [
@@ -1927,30 +1822,20 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "3",
-              "color": "#58A6FF",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "3"
            }
           ]
          },
          {
           "type": "Text",
           "label": "claim",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Substitutetherootsintothesum",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Substitutetherootsintothesum"
          }
         ],
         "regions": [
@@ -1960,15 +1845,10 @@
        {
         "type": "MathTex",
         "label": "work[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "\\alpha + \\beta = -\\frac{b}{a} = -\\frac{-7}{2} = \\frac{7}{2}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "\\alpha + \\beta = -\\frac{b}{a} = -\\frac{-7}{2} = \\frac{7}{2}",
         "regions": [
          "stage"
         ]
@@ -2003,30 +1883,20 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "3",
-              "color": "#58A6FF",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "3"
            }
           ]
          },
          {
           "type": "Text",
           "label": "claim",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Substitutetherootsintothesum",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Substitutetherootsintothesum"
          }
         ],
         "regions": [
@@ -2036,15 +1906,10 @@
        {
         "type": "MathTex",
         "label": "work[0]",
-        "flow": [
-         {
-          "type": "MathTex",
-          "tex": "\\alpha + \\beta = -\\frac{b}{a} = -\\frac{-7}{2} = \\frac{7}{2}",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "\\alpha + \\beta = -\\frac{b}{a} = -\\frac{-7}{2} = \\frac{7}{2}",
         "regions": [
          "stage"
         ]
@@ -2777,30 +2642,20 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "1",
-              "color": "#58A6FF",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "1"
            }
           ]
          },
          {
           "type": "Text",
           "label": "claim",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Decidewhetherfrictionisstaticorkinetic",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Decidewhetherfrictionisstaticorkinetic"
          }
         ],
         "regions": [
@@ -2836,30 +2691,20 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "1",
-              "color": "#58A6FF",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "1"
            }
           ]
          },
          {
           "type": "Text",
           "label": "claim",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Decidewhetherfrictionisstaticorkinetic",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Decidewhetherfrictionisstaticorkinetic"
          }
         ],
         "regions": [
@@ -2869,15 +2714,10 @@
        {
         "type": "Text",
         "label": "work[0]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Theappliedforceis8N.",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Theappliedforceis8N.",
         "regions": [
          "stage"
         ]
@@ -2915,30 +2755,20 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "1",
-              "color": "#58A6FF",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "1"
            }
           ]
          },
          {
           "type": "Text",
           "label": "claim",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Decidewhetherfrictionisstaticorkinetic",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Decidewhetherfrictionisstaticorkinetic"
          }
         ],
         "regions": [
@@ -2948,15 +2778,10 @@
        {
         "type": "Text",
         "label": "work[0]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Theappliedforceis8N.",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Theappliedforceis8N.",
         "regions": [
          "stage"
         ]
@@ -2964,15 +2789,10 @@
        {
         "type": "Text",
         "label": "work[1]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "LimitingfrictionismuN=0.5x20=10N.",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "LimitingfrictionismuN=0.5x20=10N.",
         "regions": [
          "stage"
         ]
@@ -3010,30 +2830,20 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "1",
-              "color": "#58A6FF",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "1"
            }
           ]
          },
          {
           "type": "Text",
           "label": "claim",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Decidewhetherfrictionisstaticorkinetic",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Decidewhetherfrictionisstaticorkinetic"
          }
         ],
         "regions": [
@@ -3043,15 +2853,10 @@
        {
         "type": "Text",
         "label": "work[0]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Theappliedforceis8N.",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Theappliedforceis8N.",
         "regions": [
          "stage"
         ]
@@ -3059,15 +2864,10 @@
        {
         "type": "Text",
         "label": "work[1]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "LimitingfrictionismuN=0.5x20=10N.",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "LimitingfrictionismuN=0.5x20=10N.",
         "regions": [
          "stage"
         ]
@@ -3075,15 +2875,10 @@
        {
         "type": "Text",
         "label": "work[2]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "8N<10N,sotheblockstaysatrest.",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "8N<10N,sotheblockstaysatrest.",
         "regions": [
          "stage"
         ]
@@ -3121,30 +2916,20 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "1",
-              "color": "#58A6FF",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "1"
            }
           ]
          },
          {
           "type": "Text",
           "label": "claim",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Decidewhetherfrictionisstaticorkinetic",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Decidewhetherfrictionisstaticorkinetic"
          }
         ],
         "regions": [
@@ -3154,15 +2939,10 @@
        {
         "type": "Text",
         "label": "work[0]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Theappliedforceis8N.",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Theappliedforceis8N.",
         "regions": [
          "stage"
         ]
@@ -3170,15 +2950,10 @@
        {
         "type": "Text",
         "label": "work[1]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "LimitingfrictionismuN=0.5x20=10N.",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "LimitingfrictionismuN=0.5x20=10N.",
         "regions": [
          "stage"
         ]
@@ -3186,15 +2961,10 @@
        {
         "type": "Text",
         "label": "work[2]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "8N<10N,sotheblockstaysatrest.",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "8N<10N,sotheblockstaysatrest.",
         "regions": [
          "stage"
         ]
@@ -3202,15 +2972,10 @@
        {
         "type": "Text",
         "label": "justification",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Frictiononlybecomeskineticoncetheappliedforceexceedsthelimitingvalue",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Frictiononlybecomeskineticoncetheappliedforceexceedsthelimitingvalue",
         "regions": [
          "lower_third"
         ]
@@ -3241,30 +3006,20 @@
            },
            {
             "type": "Text",
-            "flow": [
-             {
-              "type": "Text",
-              "text": "1",
-              "color": "#58A6FF",
-              "fill_opacity": 1.0,
-              "stroke_opacity": 1.0
-             }
-            ]
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "1"
            }
           ]
          },
          {
           "type": "Text",
           "label": "claim",
-          "flow": [
-           {
-            "type": "Text",
-            "text": "Decidewhetherfrictionisstaticorkinetic",
-            "color": "#E6EDF3",
-            "fill_opacity": 1.0,
-            "stroke_opacity": 1.0
-           }
-          ]
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "Decidewhetherfrictionisstaticorkinetic"
          }
         ],
         "regions": [
@@ -3274,15 +3029,10 @@
        {
         "type": "Text",
         "label": "work[0]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Theappliedforceis8N.",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Theappliedforceis8N.",
         "regions": [
          "stage"
         ]
@@ -3290,15 +3040,10 @@
        {
         "type": "Text",
         "label": "work[1]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "LimitingfrictionismuN=0.5x20=10N.",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "LimitingfrictionismuN=0.5x20=10N.",
         "regions": [
          "stage"
         ]
@@ -3306,15 +3051,10 @@
        {
         "type": "Text",
         "label": "work[2]",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "8N<10N,sotheblockstaysatrest.",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "8N<10N,sotheblockstaysatrest.",
         "regions": [
          "stage"
         ]
@@ -3322,15 +3062,10 @@
        {
         "type": "Text",
         "label": "justification",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "Frictiononlybecomeskineticoncetheappliedforceexceedsthelimitingvalue",
-          "color": "#8B949E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Frictiononlybecomeskineticoncetheappliedforceexceedsthelimitingvalue",
         "regions": [
          "lower_third"
         ]

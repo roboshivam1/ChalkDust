@@ -157,13 +157,83 @@
        {
         "type": "VGroup",
         "label": "tick labels",
-        "flow": [
+        "children": [
          {
           "type": "Text",
-          "text": "−2−1012345678",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "−2"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "−1"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "0"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "1"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "2"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "3"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "4"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "5"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "6"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "7"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "8"
          }
         ],
         "regions": [
@@ -182,15 +252,10 @@
        {
         "type": "Text",
         "label": "steps[0] label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "start",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "start",
         "regions": [
          "stage"
         ]
@@ -218,15 +283,10 @@
        {
         "type": "Text",
         "label": "steps[1] label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "+5",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "+5",
         "regions": [
          "stage"
         ]
@@ -254,15 +314,10 @@
        {
         "type": "Text",
         "label": "steps[2] label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "−3",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "−3",
         "regions": [
          "stage"
         ]
@@ -366,13 +421,83 @@
        {
         "type": "VGroup",
         "label": "tick labels",
-        "flow": [
+        "children": [
          {
           "type": "Text",
-          "text": "−2−1012345678",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "−2"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "−1"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "0"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "1"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "2"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "3"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "4"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "5"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "6"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "7"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "8"
          }
         ],
         "regions": [
@@ -391,15 +516,10 @@
        {
         "type": "Text",
         "label": "steps[0] label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "start",
-          "color": "#E6EDF3",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "start",
         "regions": [
          "stage"
         ]
@@ -427,15 +547,10 @@
        {
         "type": "Text",
         "label": "steps[1] label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "+5",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "+5",
         "regions": [
          "stage"
         ]
@@ -463,15 +578,10 @@
        {
         "type": "Text",
         "label": "steps[2] label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "−3",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "−3",
         "regions": [
          "stage"
         ]
@@ -3101,13 +3211,97 @@
        {
         "type": "VGroup",
         "label": "tick labels",
-        "flow": [
+        "children": [
          {
           "type": "Text",
-          "text": "0123456789101112",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "0"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "1"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "2"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "3"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "4"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "5"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "6"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "7"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "8"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "9"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "10"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "11"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "12"
          }
         ],
         "regions": [
@@ -3146,15 +3340,10 @@
        {
         "type": "Text",
         "label": "steps[1] label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "+3",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "+3",
         "regions": [
          "stage"
         ]
@@ -3182,15 +3371,10 @@
        {
         "type": "Text",
         "label": "steps[2] label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "+3",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "+3",
         "regions": [
          "stage"
         ]
@@ -3218,15 +3402,10 @@
        {
         "type": "Text",
         "label": "steps[3] label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "+3",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "+3",
         "regions": [
          "stage"
         ]
@@ -3254,15 +3433,10 @@
        {
         "type": "Text",
         "label": "steps[4] label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "4jumpsof3",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "4jumpsof3",
         "regions": [
          "stage"
         ]
@@ -3378,13 +3552,97 @@
        {
         "type": "VGroup",
         "label": "tick labels",
-        "flow": [
+        "children": [
          {
           "type": "Text",
-          "text": "0123456789101112",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "0"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "1"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "2"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "3"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "4"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "5"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "6"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "7"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "8"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "9"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "10"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "11"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "12"
          }
         ],
         "regions": [
@@ -3423,15 +3681,10 @@
        {
         "type": "Text",
         "label": "steps[1] label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "+3",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "+3",
         "regions": [
          "stage"
         ]
@@ -3459,15 +3712,10 @@
        {
         "type": "Text",
         "label": "steps[2] label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "+3",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "+3",
         "regions": [
          "stage"
         ]
@@ -3495,15 +3743,10 @@
        {
         "type": "Text",
         "label": "steps[3] label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "+3",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "+3",
         "regions": [
          "stage"
         ]
@@ -3531,15 +3774,10 @@
        {
         "type": "Text",
         "label": "steps[4] label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "4jumpsof3",
-          "color": "#58A6FF",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "4jumpsof3",
         "regions": [
          "stage"
         ]
@@ -6834,13 +7072,83 @@
        {
         "type": "VGroup",
         "label": "tick labels",
-        "flow": [
+        "children": [
          {
           "type": "Text",
-          "text": "−5−4−3−2−1012345",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "−5"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "−4"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "−3"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "−2"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "−1"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "0"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "1"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "2"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "3"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "4"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "5"
          }
         ],
         "regions": [
@@ -6874,15 +7182,10 @@
        {
         "type": "Text",
         "label": "steps[0] label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "x>1",
-          "color": "#F0883E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#F0883E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "x>1",
         "regions": [
          "stage"
         ]
@@ -6918,15 +7221,10 @@
        {
         "type": "Text",
         "label": "steps[1] label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "−4≤x≤−1",
-          "color": "#3FB950",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#3FB950",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "−4≤x≤−1",
         "regions": [
          "stage"
         ]
@@ -7030,13 +7328,83 @@
        {
         "type": "VGroup",
         "label": "tick labels",
-        "flow": [
+        "children": [
          {
           "type": "Text",
-          "text": "−5−4−3−2−1012345",
           "color": "#8B949E",
           "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
+          "stroke_opacity": 1.0,
+          "text": "−5"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "−4"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "−3"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "−2"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "−1"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "0"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "1"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "2"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "3"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "4"
+         },
+         {
+          "type": "Text",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "5"
          }
         ],
         "regions": [
@@ -7070,15 +7438,10 @@
        {
         "type": "Text",
         "label": "steps[0] label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "x>1",
-          "color": "#F0883E",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#F0883E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "x>1",
         "regions": [
          "stage"
         ]
@@ -7114,15 +7477,10 @@
        {
         "type": "Text",
         "label": "steps[1] label",
-        "flow": [
-         {
-          "type": "Text",
-          "text": "−4≤x≤−1",
-          "color": "#3FB950",
-          "fill_opacity": 1.0,
-          "stroke_opacity": 1.0
-         }
-        ],
+        "color": "#3FB950",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "−4≤x≤−1",
         "regions": [
          "stage"
         ]

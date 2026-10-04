@@ -19,31 +19,38 @@ coordinates. A snapshot therefore has two halves:
                   change: the timeline (each play's animation classes and run
                   time, each wait, each settle point's label) and, at every
                   settle point, the tree of on-screen mobjects with
-                    - type and label of every node outside a flow, colour
-                      and opacity of every leaf, TeX sources verbatim;
-                    - text as a *flow*: a subtree whose leaves are all text
-                      or TeX (a wrapped paragraph's line groups, the runs of
-                      one line) keeps its root's type and label and records
-                      only the runs it draws, in order: text with whitespace
-                      removed, merged across the nodes that split it, with
-                      its colour; TeX verbatim. Where a line breaks -- and so
-                      how many line groups there are, their labels, and
+                    - type and label of every node, colour and opacity of
+                      every leaf, TeX sources verbatim, and each text leaf's
+                      characters with whitespace removed (wrap() turns a
+                      space into a newline, or breaks inside a word wider
+                      than a line, and a repair rescales its width);
+                    - every node and node boundary as built -- labelled
+                      items (a given, a unit's label, a value label), table
+                      cells, tick labels on a number line -- except inside a
+                      line-wrap container (LAYOUT_CHOICES "lines": a
+                      paragraph laid out in measured lines, each line a group
+                      of text and TeX pieces). Such a container keeps its own
+                      type and label and records only the *flow* it draws:
+                      its runs in order, text merged across the pieces and
+                      lines that split it, with colour; TeX verbatim. Where a
+                      line breaks -- how many line groups, their labels,
                       which words each holds -- is measured; what is written,
                       in what order and colour, is not;
                     - the coarse regions (title_bar, stage, lower_third)
                       containing each top-level mobject. Membership of
                       stage_left / stage_right is a width test a narrow
                       column passes or fails by font;
-                    - for each decision in LAYOUT_CHOICES, only its name in
-                      place of what it decided: the children a node keeps,
-                      or which node is built (and so how it is animated).
+                    - for each other decision in LAYOUT_CHOICES, only its
+                      name in place of what it decided: which of a node's
+                      labels survive (the rest of its children stay), or
+                      which node is built (and so how it is animated).
 
   per fingerprint  Compared, per font fingerprint (platform + resolved
                   fonts), only on a machine whose fingerprint matches; skipped
                   elsewhere with the reason stated. Two maps keyed by
                   fingerprint:
                     layout    the exact timeline: every node's text with its
-                              line breaks, every line group, every child a
+                              line breaks, every line group, every label a
                               layout choice kept, all regions, the label of
                               each animation's target. Compared exactly.
                     geometry  bounding box and effective font size of every
@@ -82,7 +89,7 @@ import sys
 from collections.abc import Iterable, Iterator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple
 
 from manim import MarkupText, Mobject, SingleStringMathTex, Text, VMobject, config
 from manim.mobject.mobject import _AnimationBuilder
@@ -112,31 +119,64 @@ REGION_TOL = 0.05    # a bbox touching a region edge must not flip across fonts
 # label flip with the font), so the halves are font-dependent.
 COARSE_REGIONS = (Region.TITLE_BAR.value, Region.STAGE.value, Region.LOWER_THIRD.value)
 
+class Choice(NamedTuple):
+    """A decision a component takes by measuring text (see LAYOUT_CHOICES)."""
+
+    decides: str      # "lines", "labels" or "node"
+    name: str         # what the structure records in place of the outcome
+    labels: str = ""  # "labels" only: full-match pattern of the chosen children
+
+
 # Decisions a component takes by measuring text, so their outcome is
-# font-dependent. component -> {label of a node the decision shapes:
-# (what it decides, name of the decision)}:
-#   "children"  which children the node holds. The structure keeps the node's
-#               type and label and records {"layout_choice": name} in place
-#               of its children.
-#   "node"      which node is built at all. The structure records the node as
-#               {"layout_choice": name}, and an animation of it as
-#               "layout_choice:<name>" (its class follows the node: a lens
-#               grows by Transform, a frame is drawn by Create).
-# The exact node, children and animation are kept per fingerprint.
-LAYOUT_CHOICES: dict[str, dict[str, tuple[str, str]]] = {
+# font-dependent. component -> {full-match pattern on a node's label: Choice}:
+#   "lines"   the node is a line-wrap container: a paragraph laid out in
+#             measured lines. The structure keeps its type and label and
+#             records the flow it draws (see _flow) in place of its lines.
+#   "labels"  which of the node's children whose label matches
+#             `Choice.labels` survive. The structure keeps every other child
+#             as built, and records {"name", "kept"} in place of the chosen
+#             ones, "kept" being the type and paint of what survives, per
+#             label stem (font-invariant: see GraphPlot below).
+#   "node"    which node is built at all. The structure records the node as
+#             {"layout_choice": name}, and an animation of it as
+#             "layout_choice:<name>" (its class follows the node: a lens
+#             grows by Transform, a frame is drawn by Create).
+# The exact node, lines, labels and animation are kept per fingerprint.
+# Anything not listed here is structure: a decision that turns out to depend
+# on the font fails test_structure_unchanged on the other machine, loudly,
+# rather than being absorbed by a rule broader than the decision.
+LAYOUT_CHOICES: dict[str, dict[str, Choice]] = {
+    # _Flow.lines() fills each line on measured widths, and _split_long_words
+    # hard-breaks a word at a character count derived from the measured
+    # _char_width: how many lines the statement, each given and the find
+    # value take, and which words each line holds, depends on the font (seen:
+    # example 0's "kinetic" moves down a line in Inter; example 2 re-splits).
+    # The labelled items themselves -- the statement, given[i], find value --
+    # and their order are the spec's, and stay structure.
+    "ProblemStatement": {
+        "statement": Choice("lines", "statement lines"),
+        r"given\[\d+\]": Choice("lines", "given lines"),
+        "find value": Choice("lines", "find lines"),
+    },
     # _pick_labels keeps a tick label only where its measured box clears the
-    # curves, the other axis and its neighbours, and moves an interior axis's
-    # labels to the plot edge (each with a tick mark of its own) when too few
-    # fit: which tick labels and tick marks the axes hold depends on how wide
-    # each label measures (seen: example 1's axes hold 23 parts in Arial, 22
-    # in Inter, 21 in Verdana).
-    "GraphPlot": {"axes": ("children", "tick labels and marks the axes keep")},
+    # curves, the other axis and its neighbours (seen: example 1's axes keep
+    # 9 tick labels in Arial, 8 in Inter, 7 in Verdana). The axis lines and
+    # one tick mark per tick are drawn whatever the font, and stay structure,
+    # as does the type and colour of the labels each axis keeps (every axis
+    # keeps at least MIN_AXIS_LABELS, all drawn the same way: tick_label
+    # chooses LaTeX per axis, from its range). If too few labels fit an
+    # interior axis they move to the plot edge, each with a tick mark of its
+    # own; no example does that under any font tried (Arial, Inter, Verdana,
+    # Times New Roman, Georgia, Segoe UI), so the tick-mark count stays
+    # structure until one is seen to.
+    "GraphPlot": {"axes": Choice("labels", "tick labels the axes keep",
+                                 r"[xy]tick\[-?\d+\]")},
     # _settled_lens magnifies the focus in place, or beside the target in the
     # room STAGE leaves, or -- with no room for MIN_ZOOM -- frames it instead:
     # lens or frame depends on how wide the focus text measures (seen:
     # example 0 is a lens in Arial and Inter, a frame in Verdana).
-    "ZoomHighlight": {"zoom lens": ("node", "lens or frame"),
-                      "focus frame": ("node", "lens or frame")},
+    "ZoomHighlight": {"zoom lens": Choice("node", "lens or frame"),
+                      "focus frame": Choice("node", "lens or frame")},
 }
 
 _WS = re.compile(r"\s+")
@@ -278,23 +318,28 @@ def _paint(mob: Mobject) -> dict[str, Any]:
 # --- projection: the font-independent half -------------------------------------
 
 _PAINT = ("color", "fill_opacity", "stroke_opacity")
+_STEM = re.compile(r"\[[^\]]*\]$")
 
 
-def _is_text(node: dict[str, Any]) -> bool:
-    """True if every leaf under `node` is text or TeX (a flow)."""
-    if "text" in node or "tex" in node:
-        return True
-    children = node.get("children")
-    return bool(children) and all(_is_text(c) for c in children)
+def _choice(choices: dict[str, Choice], label: str | None) -> Choice | None:
+    if label is None:
+        return None
+    return next((c for pattern, c in choices.items() if re.fullmatch(pattern, label)),
+                None)
+
+
+def _paint_of(node: dict[str, Any]) -> dict[str, Any]:
+    return {k: node[k] for k in _PAINT if k in node}
 
 
 def _flow(node: dict[str, Any]) -> list[dict[str, Any]]:
-    """The runs a text-only subtree draws, independent of where it broke.
+    """The runs a line-wrap container draws, independent of where it broke.
 
     Leaves in drawing order; text has its whitespace removed (a break may
     fall between words or, for a word wider than a line, inside one) and
-    adjacent text leaves of the same type and paint merge into one run. TeX
-    is never broken by layout, so each source stays its own run, verbatim.
+    adjacent text leaves of the same type and paint merge into one run --
+    a run of prose is split into one piece per line it spans. TeX is never
+    broken by layout, so each source stays its own run, verbatim.
     """
     runs: list[dict[str, Any]] = []
 
@@ -306,37 +351,61 @@ def _flow(node: dict[str, Any]) -> list[dict[str, Any]]:
             yield n
 
     for leaf in leaves(node):
-        paint = {k: leaf[k] for k in _PAINT if k in leaf}
+        paint = _paint_of(leaf)
         if "tex" in leaf:
             runs.append({"type": leaf["type"], "tex": leaf["tex"], **paint})
+            continue
+        if "text" not in leaf:
+            runs.append({"type": leaf["type"], **paint})
             continue
         text = _WS.sub("", leaf["text"])
         if not text:
             continue
         last = runs[-1] if runs else None
         if (last is not None and "text" in last and last["type"] == leaf["type"]
-                and {k: last.get(k) for k in _PAINT} == {k: paint.get(k) for k in _PAINT}):
+                and _paint_of(last) == paint):
             last["text"] += text
         else:
             runs.append({"type": leaf["type"], "text": text, **paint})
     return runs
 
 
-def _project_node(node: dict[str, Any], choices: dict[str, tuple[str, str]]) -> dict[str, Any]:
-    decides, choice = choices.get(node.get("label"), (None, None))
-    if decides == "node":
-        return {"layout_choice": choice}
+def _kept(chosen: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    """Type and paint of the children a "labels" choice kept, per label stem
+    (xtick[3] -> xtick), each distinct kind once."""
+    kinds: dict[str, dict[str, dict[str, Any]]] = {}
+    for c in chosen:
+        kind = {"type": c["type"], **_paint_of(c)}
+        kinds.setdefault(_STEM.sub("", c["label"]), {})[
+            json.dumps(kind, sort_keys=True)] = kind
+    return {stem: [k for _, k in sorted(by.items())] for stem, by in sorted(kinds.items())}
+
+
+def _project_node(node: dict[str, Any], choices: dict[str, Choice]) -> dict[str, Any]:
+    choice = _choice(choices, node.get("label"))
+    if choice and choice.decides == "node":
+        return {"layout_choice": choice.name}
     out = {k: v for k, v in node.items()
            if k not in ("children", "text", "tex", "regions")}
-    if decides == "children":
-        out["children"] = {"layout_choice": choice}
-    elif _is_text(node):
-        # Paint lives on the runs; the flow's own node keeps type and label.
+    if choice and choice.decides == "lines":
+        # Paint lives on the runs; the container keeps type and label.
         for k in _PAINT:
             out.pop(k, None)
         out["flow"] = _flow(node)
-    elif "children" in node:
-        out["children"] = [_project_node(c, choices) for c in node["children"]]
+        return out
+    if "text" in node:
+        out["text"] = _WS.sub("", node["text"])
+    if "tex" in node:
+        out["tex"] = node["tex"]
+    if "children" in node:
+        children = node["children"]
+        if choice and choice.decides == "labels":
+            def chosen(c: dict[str, Any]) -> bool:
+                return re.fullmatch(choice.labels, c.get("label") or "") is not None
+            out["layout_choice"] = {"name": choice.name,
+                                    "kept": _kept([c for c in children if chosen(c)])}
+            children = [c for c in children if not chosen(c)]
+        out["children"] = [_project_node(c, choices) for c in children]
     return out
 
 
@@ -344,15 +413,18 @@ def project(name: str, timeline: list[dict[str, Any]]) -> dict[str, Any]:
     """The structure: what `name`'s exact timeline records that no text
     measurement can change (see the module docstring)."""
     choices = LAYOUT_CHOICES.get(name, {})
-    built = {label: choice for label, (decides, choice) in choices.items()
-             if decides == "node"}
+
+    def built(target: str | None) -> str | None:
+        choice = _choice(choices, target)
+        return choice.name if choice and choice.decides == "node" else None
+
     out = []
     for op in timeline:
         if op["op"] == "play":
             targets = op.get("targets") or [None] * len(op["animations"])
             out.append({
                 "op": "play",
-                "animations": [f"layout_choice:{built[t]}" if t in built else a
+                "animations": [f"layout_choice:{built(t)}" if built(t) else a
                                for a, t in zip(op["animations"], targets)],
                 "run_time": op["run_time"],
             })

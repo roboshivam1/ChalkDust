@@ -20,9 +20,10 @@ from __future__ import annotations
 
 import re
 import shutil
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator, Sequence
 from contextlib import contextmanager
 from dataclasses import dataclass, field
+from functools import partial
 from pathlib import Path
 
 from manim import tempconfig
@@ -31,6 +32,7 @@ from pydantic import ValidationError
 from chalkdust.continuity import ArtifactRecipe, resolve_carry_in
 from chalkdust.core.cache import Cache, tts_key
 from chalkdust.core.models import (
+    Beat,
     BeatSpec,
     BuildContext,
     CarryInError,
@@ -39,7 +41,8 @@ from chalkdust.core.models import (
     VideoSpec,
 )
 from chalkdust.render.assemble import assemble
-from chalkdust.render.worker import long_path, render_beat
+from chalkdust.render.pool import BeatFailed, can_ship, default_jobs, render_pool
+from chalkdust.render.worker import long_path, plan_repair, render_beat, render_key
 from chalkdust.scenes.components import get_component
 from chalkdust.scenes.components.raw_scene import (
     USAGE_LOG_NAME,
@@ -49,7 +52,7 @@ from chalkdust.scenes.components.raw_scene import (
     check_code,
     degrade_spec,
 )
-from chalkdust.scenes.theme import LatexToolchainError, get_theme
+from chalkdust.scenes.theme import LatexToolchainError, Theme, get_theme, resolve_fonts
 from chalkdust.speech.base import TTSError
 from chalkdust.speech.tts import resolve_voice, synthesize_beat
 from chalkdust.validate.geometric import Report
@@ -539,6 +542,145 @@ def validate(spec_path: Path, work_dir: Path = DEFAULT_WORK_DIR,
     return spec
 
 
+def render_in_process(beat: Beat, theme: str, ctx: BuildContext, cache: Cache,
+                      manim_dir: Path, recipes: Sequence[ArtifactRecipe]) -> None:
+    """One beat through the worker, in this process, its failure typed by
+    stage: TeX timing out is ToolchainFailed, anything else RenderFailed."""
+    try:
+        render_beat(beat, theme, ctx, cache, manim_dir, recipes)
+    except LatexToolchainError as exc:
+        raise ToolchainFailed(f"{beat.id} ({beat.spec.component}): {exc}") from exc
+    except Exception as exc:
+        raise RenderFailed(f"{beat.id} ({beat.spec.component}): {exc}") from exc
+
+
+def cached_clip(beat: Beat, theme: Theme, ctx: BuildContext, cache: Cache,
+                manim_dir: Path, recipes: Sequence[ArtifactRecipe]
+                ) -> tuple[str | None, Path | None]:
+    """(render key, cached clip or None) for one beat, computed as the worker
+    computes them (worker._render, raw_scene.render_raw_beat), so the pool is
+    handed only real misses. `theme` is font-resolved.
+
+    The key is None when only the render can tell what it will be: a RawScene
+    beat that carries something in degrades inside the render, to a fallback
+    with a key of its own. Such a beat always goes to a worker, which still
+    finds that fallback in the cache if it is there."""
+    if beat.spec.component == RawScene.name:
+        if beat.spec.carry_in:
+            return None, None
+        # A RawScene is never mechanically repaired: its plan is the empty one.
+        key = render_key(beat, theme, ctx, RepairPlan())
+    else:
+        plan = plan_repair(beat, theme, ctx, manim_dir, recipes)
+        key = render_key(beat, theme, ctx, plan, recipes)
+    slot = cache.slot("beats", key, ".mp4")
+    return key, slot.path if slot.exists else None
+
+
+def render_stage_pooled(video: Video, ctx: BuildContext, cache: Cache, work_dir: Path,
+                        recipes: dict[str, tuple[ArtifactRecipe, ...]],
+                        jobs: int | None, verbose: bool,
+                        report: Callable[[Beat, bool], None]) -> None:
+    """The render stage across a process pool (ARCHITECTURE.md §4, D-005).
+
+    Cache semantics are the sequential render's (D-004). Every beat's key is
+    computed here first, and a hit never enters the pool: a library beat's
+    cached clip is recorded as the worker would record it, a RawScene hit goes
+    through the worker here (all it does is log the use). Beats that share a
+    key render once, and the later ones report "cached", as they would
+    sequentially. Each miss is rendered by worker.render_beat in a worker
+    process, which commits its clip to the cache and removes its partials
+    exactly as it does in this one.
+
+    Beats are reported in beat order, each once it and every beat before it
+    are done. A failure is typed as it is sequentially (ToolchainFailed or
+    RenderFailed, same message), for the earliest failing beat. With a single
+    worker's worth of misses, or a render function that cannot reach another
+    process (pool.can_ship), the misses render here, in order: the same
+    worker, no pool to start.
+    """
+    manim_dir = work_dir / "manim"
+    before = set((cache.root / "beats").glob("*.mp4"))
+    theme = resolve_fonts(get_theme(video.spec.theme))
+    beats = video.beats
+
+    # Which beats miss, deduplicated by key: the first beat with a key renders
+    # it, later beats with the same key take its clip (`twin_of`).
+    first_with: dict[str, int] = {}
+    twin_of: dict[int, int] = {}
+    misses: list[int] = []
+    hits: list[int] = []
+    for index, beat in enumerate(beats):
+        try:
+            key, clip = cached_clip(beat, theme, ctx, cache, manim_dir, recipes[beat.id])
+        except LatexToolchainError as exc:
+            raise ToolchainFailed(f"{beat.id} ({beat.spec.component}): {exc}") from exc
+        except Exception as exc:
+            raise RenderFailed(f"{beat.id} ({beat.spec.component}): {exc}") from exc
+        if clip is not None:
+            hits.append(index)
+            if beat.spec.component != RawScene.name:
+                beat.render_path = clip  # all worker._render does on a hit
+        elif key is not None and key in first_with:
+            twin_of[index] = first_with[key]
+        else:
+            if key is not None:
+                first_with[key] = index
+            misses.append(index)
+
+    done: set[int] = set()
+    next_to_report = 0
+
+    def finish(index: int) -> None:
+        """`index` is done: report every beat whose turn has now come."""
+        nonlocal next_to_report
+        done.add(index)
+        while next_to_report < len(beats):
+            i = next_to_report
+            beat = beats[i]
+            if i in twin_of:
+                if twin_of[i] not in done:
+                    return
+                beat.render_path = beats[twin_of[i]].render_path
+                beat.degraded = beats[twin_of[i]].degraded
+                report(beat, True)
+            elif i in done:
+                report(beat, beat.render_path in before)
+            else:
+                return
+            next_to_report += 1
+
+    for index in hits:
+        if beats[index].spec.component == RawScene.name:
+            render_in_process(beats[index], video.spec.theme, ctx, cache,
+                              manim_dir, recipes[beats[index].id])
+        finish(index)
+
+    workers = default_jobs(len(misses)) if jobs is None else min(jobs, len(misses))
+    # The pool runs the pipeline's own render_beat -- the same seam the
+    # sequential render goes through -- bound to what every beat shares.
+    render_fn = partial(render_beat, theme=video.spec.theme, ctx=ctx, cache=cache,
+                        work_dir=manim_dir)
+    if workers <= 1 or not can_ship(render_fn):
+        for index in misses:
+            beat = beats[index]
+            render_in_process(beat, video.spec.theme, ctx, cache, manim_dir,
+                              recipes[beat.id])
+            finish(index)
+        return
+
+    print(f"  rendering {len(misses)} beat(s) across {workers} processes")
+    work = [(i, beats[i], recipes[beats[i].id]) for i in misses]
+    try:
+        render_pool(work, render_fn, partial(manim_scratch, work_dir, verbose),
+                    manim_dir, workers, finish)
+    except BeatFailed as exc:
+        beat = beats[exc.index]
+        error = ToolchainFailed if exc.kind == "toolchain" else RenderFailed
+        cause = RuntimeError(f"in worker process:\n{exc.trace}") if exc.trace else None
+        raise error(f"{beat.id} ({beat.spec.component}): {exc.message}") from cause
+
+
 def render(
     spec_path: Path,
     quality: Quality = Quality.DRAFT,
@@ -546,9 +688,18 @@ def render(
     cache_dir: Path = DEFAULT_CACHE_DIR,
     work_dir: Path = DEFAULT_WORK_DIR,
     verbose: bool = False,
+    jobs: int | None = 1,
 ) -> RunResult:
     """Spec file -> finished MP4. Every stage is cached per beat (D-004), so a
-    re-run after editing one narration line rebuilds only that beat."""
+    re-run after editing one narration line rebuilds only that beat.
+
+    `jobs` is how many processes render beats (ARCHITECTURE.md §4): 1 is the
+    sequential render, in this process; N > 1 renders the beats that miss the
+    cache across up to N worker processes (render_stage_pooled); None picks N
+    from the CPUs and the number of beats to render (pool.default_jobs). Clips,
+    cache and assembled video are the same whichever is used."""
+    if jobs is not None and jobs < 1:
+        raise ValueError(f"jobs must be at least 1, or None to choose; got {jobs}")
     work_dir = Path(work_dir)
     # Before validation spends anything: a cache dir that cannot be one would
     # otherwise surface only after the probe, as a traceback.
@@ -584,32 +735,35 @@ def render(
     # removed once the clip is committed to the cache.
     manim_dir = work_dir / "manim"
     beats_dir = cache.root / "beats"
-    with manim_scratch(work_dir, verbose):
-        for beat in video.beats:
-            # The render key (font-resolved theme, tier, repair plan, carried
-            # artifacts) is the worker's to build; a beat was cached iff the
-            # clip the worker recorded on it was in the cache before the call.
-            before = set(beats_dir.glob("*.mp4"))
-            try:
-                render_beat(beat, spec.theme, ctx, cache, manim_dir, recipes[beat.id])
-            except LatexToolchainError as exc:
-                raise ToolchainFailed(f"{beat.id} ({beat.spec.component}): {exc}") from exc
-            except Exception as exc:
-                raise RenderFailed(f"{beat.id} ({beat.spec.component}): {exc}") from exc
-            cached = beat.render_path in before
 
-            outcome = BeatOutcome(beat.id, speech_cached[beat.id], cached,
-                                  beat.duration,  # type: ignore[arg-type]
-                                  degraded=beat.degraded)
-            result.beats.append(outcome)
-            shown = beat.spec.component
-            if beat.degraded:
-                # The reason is in the RawScene usage log, one line per call.
-                shown += (" -> DEGRADED to BulletReveal (reason in "
-                          f"{manim_dir / USAGE_LOG_NAME})")
-            print(f"  {beat.id}  speech {'cached' if outcome.speech_cached else 'synth '}"
-                  f"  render {'cached ' if cached else 'rebuilt'}"
-                  f"  {outcome.duration:6.2f}s  {shown}")
+    def report(beat: Beat, cached: bool) -> None:
+        outcome = BeatOutcome(beat.id, speech_cached[beat.id], cached,
+                              beat.duration,  # type: ignore[arg-type]
+                              degraded=beat.degraded)
+        result.beats.append(outcome)
+        shown = beat.spec.component
+        if beat.degraded:
+            # The reason is in the RawScene usage log, one line per call.
+            shown += (" -> DEGRADED to BulletReveal (reason in "
+                      f"{manim_dir / USAGE_LOG_NAME})")
+        print(f"  {beat.id}  speech {'cached' if outcome.speech_cached else 'synth '}"
+              f"  render {'cached ' if cached else 'rebuilt'}"
+              f"  {outcome.duration:6.2f}s  {shown}")
+
+    with manim_scratch(work_dir, verbose):
+        if jobs == 1:
+            for beat in video.beats:
+                # The render key (font-resolved theme, tier, repair plan,
+                # carried artifacts) is the worker's to build; a beat was
+                # cached iff the clip the worker recorded on it was in the
+                # cache before the call.
+                before = set(beats_dir.glob("*.mp4"))
+                render_in_process(beat, spec.theme, ctx, cache, manim_dir,
+                                  recipes[beat.id])
+                report(beat, beat.render_path in before)
+        else:
+            render_stage_pooled(video, ctx, cache, work_dir, recipes, jobs,
+                                verbose, report)
 
     summary = (f"  beats: {len(result.beats) - len(result.rebuilt)} cached, "
                f"{len(result.rebuilt)} rebuilt")

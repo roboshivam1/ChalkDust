@@ -91,12 +91,12 @@ SINGLE_LINE_PITCH = 1.75
 # How far, in mono cells, a glyph's ink centre may sit from its source column
 # before the listing is refused (_refuse_misplaced). Measured in Courier New:
 # text that draws correctly -- ASCII, Latin-1, Greek, Cyrillic, Vietnamese,
-# q + U+0301, typographic quotes, arrows and box drawing, whose corners hug a
-# cell edge -- is at most 0.23 cells off; a glyph with no advance (U+02DC,
-# U+0181-U+0188) or a run of combining marks the font gives advance moves
-# every later glyph at least 1.04 cells (an ideographic space, drawn by a
-# fallback font, 0.67). Half a cell is the line between "in its own cell"
-# and "in a neighbour's".
+# typographic quotes, arrows and box drawing, whose corners hug a cell edge
+# -- is at most 0.23 cells off; a glyph with no advance (U+02DC,
+# U+0181-U+0188, U+03FD) moves every later glyph at least 1.04 cells (an
+# ideographic space, drawn by a fallback font, 0.67). Half a cell is the
+# line between "in its own cell" and "in a neighbour's". Combining marks
+# never get here: the schema refuses them (_normalise_source).
 COLUMN_TOLERANCE = 0.5
 
 # Code checks that every non-space character became exactly one glyph and
@@ -107,7 +107,7 @@ COLUMN_TOLERANCE = 0.5
 # the repair loop can read which character on which line to drop
 # (SCENE_SPEC.md §8 rung 1). That is an early refusal for the common cases,
 # not the guard: what the *resolved* mono font cannot draw (CJK in Courier
-# New, a right-to-left letter, U+2764 behind a variation selector) is only
+# New, a right-to-left letter, U+2764 HEAVY BLACK HEART) is only
 # knowable from the font, and is refused before Code is built by
 # _refuse_unrenderable, through the theme's glyph guard.
 # The BMP characters with Emoji_Presentation=Yes (Unicode emoji-data.txt);
@@ -166,12 +166,23 @@ class CodeWalkParams(ComponentParams):
     @field_validator("source")
     @classmethod
     def _normalise_source(cls, v: str) -> str:
-        """Compose accents, refuse undrawable characters, and drop trailing
-        whitespace and blank lines at either end.
+        """Compose accents, refuse undrawable characters and combining marks,
+        and drop trailing whitespace and blank lines at either end.
 
         NFC first: a decomposed accent ("e" + U+0301) is two characters that
         Pango draws as one glyph, which Code refuses; the composed form looks
         the same and is one character, one glyph.
+
+        Then any combining mark NFC left standing (categories Mn and Me) is
+        refused, naming it and its line. No precomposed letter exists for it
+        (q + U+0301, i + U+0307 from "İ".lower(), a variation selector, a
+        keycap), and Courier New draws such a mark about one cell right of
+        its letter -- on the closing quote, or on the next letter, so
+        x + U+0301 + y reads as x + ý -- while every glyph count and
+        column passes. Code listings almost never carry one, so refusing it
+        at rung 1, where the repair loop can read what to drop, beats a
+        listing that shows other text than its source (SCENE_SPEC.md §8,
+        §11 rule 1).
 
         Pygments strips leading and trailing newlines before lexing (its
         `stripnl` default), so a leading blank line would silently shift every
@@ -188,6 +199,11 @@ class CodeWalkParams(ComponentParams):
                         "a code listing cannot draw (emoji and zero-width or "
                         "format characters); remove it or spell it in ASCII"
                     )
+        marked = [(n, line) for n, line in enumerate(lines, start=1)
+                  if any(_combining(c) for c in line)]
+        if marked:
+            n, line = marked[0]
+            raise ValueError(_mark_message(n, line, [m for m, _ in marked[1:]]))
         while lines and not lines[0]:
             lines.pop(0)
         while lines and not lines[-1]:
@@ -338,17 +354,20 @@ class CodeWalk(Component):
              "highlights": [{"start": 2}, {"start": 1, "end": 3}]},
             # (e) text the mono font may lack, each of which garbled the
             # listing while validation said ok: CJK (missing-glyph boxes),
-            # a right-to-left comment (draws nothing), an emoji the schema
-            # lets through (U+2764 + VS16), a keycap built from combining
-            # marks, and Unicode maths. Private-use code points never get
-            # this far: rung 1 refuses them in any spec param.
+            # a right-to-left comment (draws nothing), a symbol the schema
+            # lets through (U+2764, no emoji presentation), a letter with no
+            # advance (U+02DC lands on the next letter), a space that draws
+            # a glyph in context (U+1680), and Unicode maths. Private-use
+            # code points and combining marks (a keycap, a variation
+            # selector, q + U+0301) never get this far: rung 1 refuses them.
             {"language": "python",
              "source": "# 你好世界\nname = '東京'  # tokyo",
              "highlights": [{"start": 2}]},
             {"language": "python", "source": "x = 1  # שלום עולם\ny = 2",
              "highlights": [{"start": 1}]},
-            {"language": "python", "source": "love = '\u2764\ufe0f'\nprint(love)"},
-            {"language": "python", "source": "key = '1\ufe0f\u20e3'\nprint(key)"},
+            {"language": "python", "source": "love = '\u2764'\nprint(love)"},
+            {"language": "python", "source": "s = 'a\u02dcb'\nprint(s)"},
+            {"language": "python", "source": "s = 'a\u1680b'\nprint(s)"},
             {"language": "python", "source": "# ∀x ≤ ∞\nx = 1",
              "highlights": [{"start": 2}]},
             # (e) accented Latin, Greek and Cyrillic, which the font does draw:
@@ -398,6 +417,34 @@ def _undrawable(ch: str) -> bool:
         return True
     return cp in _EMOJI_BMP or (
         cp in _PICTOGRAPHS and unicodedata.category(ch) in ("So", "Sk")
+    )
+
+
+def _combining(ch: str) -> bool:
+    """A nonspacing or enclosing mark (Mn, Me): drawn on the character before
+    it, which is what a mono listing gets wrong (see _normalise_source)."""
+    return unicodedata.category(ch) in ("Mn", "Me")
+
+
+def _mark_message(n: int, line: str, more: list[int]) -> str:
+    """The schema's refusal of the combining marks on source line `n`: each
+    distinct mark with its name, and each letter + marks it sits in with
+    their code points, so the fix (which character to drop) is readable."""
+    marks = dict.fromkeys(c for c in line if _combining(c))
+    named = ", ".join(f"U+{ord(c):04X} {unicodedata.name(c, 'unnamed mark')}"
+                      for c in marks)
+    where = ", ".join(
+        f"{cl!r} ({' '.join(f'U+{ord(c):04X}' for c in cl)})"
+        for cl in dict.fromkeys(cl for cl in _clusters(line) if any(map(_combining, cl)))
+    )
+    also = (f" Also on line{'s' if len(more) > 1 else ''} "
+            f"{', '.join(map(str, more))}." if more else "")
+    return (
+        f"source line {n} contains combining mark{'s' if len(marks) > 1 else ''} "
+        f"{named} in {where}, which no precomposed letter absorbs: a mono "
+        f"listing draws such a mark off its letter, over the next column, or "
+        f"not at all, so it would show other text than its source. Use a "
+        f"precomposed letter (é, ñ, ü are fine) or spell it in ASCII.{also}"
     )
 
 
@@ -550,12 +597,11 @@ def _refuse_unrenderable(source: str, theme: Theme) -> None:
       1. theme.check_renderable on the distinct characters -- the guard every
          theme text constructor applies. It names each character the font
          cannot draw, and the font.
-      2. Each cluster that check does not settle -- a base carrying combining
-         marks or a mark with no base (the theme does not probe marks; alone,
-         HarfBuzz gives one a dotted circle), or a precomposed letter (the
-         theme lets one draw as base + mark) -- is drawn whole and must come
-         out as exactly one path per non-space character, which is what Code
-         assumes. A keycap 1 + U+FE0F + U+20E3 draws six.
+      2. Each cluster that check does not settle -- a precomposed letter
+         (the theme lets one draw as base + mark), or a base carrying spacing
+         marks (Mc; the schema has already refused the nonspacing and
+         enclosing ones) -- is drawn whole and must come out as exactly one
+         path per non-space character, which is what Code assumes.
       3. Code's assumption itself, so shaping in context cannot slip past the
          probes: the whole listing, drawn as Code's Paragraph draws it, must
          come out as exactly one glyph per non-space character. An ASCII
@@ -620,35 +666,31 @@ def _refuse_misplaced(code: Code, source: str, theme: Theme) -> None:
     _refuse_unrenderable counts glyphs; this measures where they went. Some
     characters draw exactly one path alone and in context, so every count
     passes, yet Pango gives them no advance in a line: U+02DC SMALL TILDE
-    lands on the next letter, U+0181-U+0188 pile into one blob, and Courier
-    New gives stacked combining marks advance, pushing the rest of the line
-    right. A code listing's columns are part of what it says (indentation,
+    lands on the next letter, and U+0181-U+0188 and U+03FD pile into one
+    blob. A code listing's columns are part of what it says (indentation,
     alignment), so that is garbled text that validate_beat would call ok.
 
     The model is what a mono listing promises: every character after Code's
-    tab expansion (tab_width 4, as Code is built here) takes one column,
-    except combining marks, which take none. Each base glyph's ink centre
-    must sit within COLUMN_TOLERANCE cells of its column. Column 0 is taken
-    from the glyphs whose place nothing but ASCII decides -- an ASCII glyph
-    with only ASCII before it on its line, whose advance the mono font fixes
-    -- not from every glyph: a median over the whole listing drifts toward
-    a line's shifted tail and lets the shift it is meant to catch through.
+    tab expansion (tab_width 4, as Code is built here) takes one column. The
+    schema refused the combining marks that would take none, so no mark is
+    measured against a letter here. Each glyph's ink centre must sit within
+    COLUMN_TOLERANCE cells of its column. Column 0 is taken from the glyphs
+    whose place nothing but ASCII decides -- an ASCII glyph with only ASCII
+    before it on its line, whose advance the mono font fixes -- not from
+    every glyph: a median over the whole listing drifts toward a line's
+    shifted tail and lets the shift it is meant to catch through.
     Runs on the listing at natural size, where _cell measured the cell, and
     costs arithmetic only -- no extra Text.
     """
     font = theme.type.mono_font
     _, advance = _cell(theme)
     lines = [line.expandtabs(4) for line in source.split("\n")]
-    # (line number, index in the expanded line, offset in cells from column,
-    #  whether only ASCII decides where it sits)
+    # (line number, column = index in the expanded line, offset in cells
+    #  from that column, whether only ASCII decides where it sits)
     placed: list[tuple[int, int, float, bool]] = []
     for n, line in enumerate(lines, start=1):
         glyphs = iter(code.code_lines[n - 1])
-        col = -1
         for j, c in enumerate(line):
-            mark = unicodedata.category(c)[0] == "M"
-            if not mark:
-                col += 1
             if c.isspace():
                 continue  # Code keeps no glyph for whitespace
             # One glyph per visible character is what _refuse_unrenderable and
@@ -661,9 +703,8 @@ def _refuse_misplaced(code: Code, source: str, theme: Theme) -> None:
                     f"characters that font draws one by one.",
                     kind=UNRENDERABLE_TEXT,
                 )
-            if not mark:
-                placed.append((n, j, glyph.get_x() / advance - col,
-                               line[:j + 1].isascii()))
+            placed.append((n, j, glyph.get_x() / advance - j,
+                           line[:j + 1].isascii()))
     if not placed:
         return
     # A listing with no such glyph (every line opens on non-ASCII) falls back

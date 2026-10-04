@@ -45,6 +45,9 @@ EXAMPLES = CodeWalk.examples()
 DRAFT = TIERS[Quality.DRAFT]
 THEME = resolve_fonts(DEFAULT, warn=False)
 MONO = THEME.type.mono_font  # Courier New where JetBrains Mono is missing
+# Precomposed letters past Latin-1 (o and u double acute, a and e ogonek,
+# c s z caron, l stroke): one character, one glyph, one column each.
+LATIN_EXT_A = "s = '\u0151\u0171 \u0105\u0119 \u010d\u0161\u017e \u0142'\nx = 1"
 
 
 def _probe(component: CodeWalk) -> LayoutProbe:
@@ -198,6 +201,52 @@ class TestSchema:
         with pytest.raises(ValidationError, match=r"line 1 contains U\+"):
             CodeWalk({"language": "python", "source": source})
 
+    @pytest.mark.parametrize("source,named,line", [
+        ("s = 'q\u0301'\nx = 1", "U+0071 U+0301", 1),
+        ('s = "\u0130".lower()  # \'i\u0307\'', "U+0069 U+0307", 1),
+        ("s = 'x\u0301y'", "U+0078 U+0301", 1),
+        ("x = ' \u0301'", "U+0020 U+0301", 1),
+        ("x = 1\ns = 'a" + "\u0323\u0324\u0325\u0326" * 5 + "'", "U+0326", 2),
+        ("z\u0300\u0301\u0302\u0303\u0304\u0305 = 1", "U+0305", 1),
+        ("x = 'a\u034fb'", "U+0061 U+034F", 1),
+        ("love = '\u2764\ufe0f'\nx = 1", "U+2764 U+FE0F", 1),
+        ("key = '1\ufe0f\u20e3'\nx = 1", "U+0031 U+FE0F U+20E3", 1),
+        ("s = 'x\ufe0f'\nx = 1", "U+0078 U+FE0F", 1),
+        ("\u0301x = 1\ny = 2", "U+0301", 1),
+        ("# \u0928\u092e\u0938\u094d\u0924\u0947\nx = 1", "U+094D", 1),
+        ("# \u0e2a\u0e27\u0e31\u0e2a\u0e14\u0e35\nx = 1", "U+0E31", 1),
+    ], ids=["q-acute", "turkish-dotted-i", "acute-between-letters", "acute-on-space",
+            "below-mark-stack", "stacked-marks", "grapheme-joiner", "heart-vs16",
+            "keycap", "variation-selector", "lone-mark", "devanagari-virama",
+            "thai-vowel-marks"])
+    def test_rejects_combining_marks_naming_them_and_their_line(self, source, named,
+                                                                line):
+        # A nonspacing or enclosing mark NFC cannot fold into a precomposed
+        # letter is drawn off its letter in Courier New, about one cell right:
+        # q + U+0301 put the accent on the closing quote, 'x' + U+0301 + 'y'
+        # read as 'xy' with the accent on the y, and "İ".lower() lost its dot
+        # to the quote -- while validation said ok. Refused at rung 1, naming
+        # each mark, the letter it sits on and the line.
+        # q-acute moved here from the rows and columns "renders" tests, which
+        # pinned that misrender as correct; stacked-marks from the column
+        # check, and the joiner, VS16, keycap, variation selector, lone mark
+        # and the marked Devanagari and Thai words from the font guard, all
+        # of which now never see a mark.
+        with pytest.raises(ValidationError) as info:
+            CodeWalk({"language": "python", "source": source})
+        message = str(info.value)
+        assert f"source line {line} contains combining mark" in message
+        assert named in message
+        assert "precomposed letter" in message
+
+    def test_combining_marks_on_several_lines_are_all_located(self):
+        # The repair loop fixes the listing in one pass only if it hears of
+        # every line: the first is spelled out, the rest are listed.
+        with pytest.raises(ValidationError,
+                           match=r"source line 2 contains .* Also on line 4\."):
+            CodeWalk({"language": "python",
+                      "source": "x = 1\ns = 'q\u0301'\ny = 2\nt = 'j\u0301'"})
+
     def test_decomposed_accent_is_composed_and_draws(self):
         # "e" + U+0301 is two characters Pango draws as one glyph, which Code
         # refused; NFC makes it the one character it looks like.
@@ -237,39 +286,42 @@ class TestBuild:
         assert info.value.kind == "overflow"
 
     def test_glyph_the_font_cannot_draw_refuses_unrenderable(self):
-        # Past the schema's list: a combining grapheme joiner draws nothing.
-        # It is refused as the theme refuses text its font cannot draw, not
-        # as "illegible" (that kind means too small, which splitting the beat
-        # would fix; this only a rewrite fixes).
-        comp = CodeWalk({"language": "python", "source": "x = 'a\u034fb'"})
-        with pytest.raises(LayoutError, match=r"U\+0061 U\+034F") as info:
+        # Past the schema's list: U+3164 HANGUL FILLER is a letter that looks
+        # blank, and Courier New draws a missing-glyph box for it. (The
+        # combining grapheme joiner this case used to pin is now refused at
+        # the schema, as a combining mark.) It is refused as the theme
+        # refuses text its font cannot draw, not as "illegible" (that kind
+        # means too small, which splitting the beat would fix; this only a
+        # rewrite fixes).
+        comp = CodeWalk({"language": "python", "source": "x = 'a\u3164b'"})
+        with pytest.raises(LayoutError, match=r"U\+3164") as info:
             _probe(comp)
         assert info.value.kind == UNRENDERABLE_TEXT
 
     @pytest.mark.parametrize("source,named", [
         ("# \u4f60\u597d\u4e16\u754c\nname = '\u6771\u4eac'  # tokyo", "U+4F60"),
         ("# \u2200x \u2264 \u221e\nx = 1", "U+2200"),
-        ("# \u0928\u092e\u0938\u094d\u0924\u0947\nx = 1", "U+0928"),
-        ("# \u0e2a\u0e27\u0e31\u0e2a\u0e14\u0e35\nx = 1", "U+0E2A"),
+        ("# \u0915\u092e\u0932\nx = 1", "U+0915"),
+        ("# \u0e2a\u0e1a\u0e32\u0e22\nx = 1", "U+0E2A"),
         ("# \u05e9\u05dc\u05d5\u05dd\nx = 1", "U+05E9"),
         ("# \u0645\u0631\u062d\u0628\u0627\nx = 1", "U+0645"),
-        ("love = '\u2764\ufe0f'\nx = 1", "U+2764"),
-        ("key = '1\ufe0f\u20e3'\nx = 1", "U+0031 U+FE0F U+20E3"),
-        ("s = 'x\ufe0f'\nx = 1", "U+0078 U+FE0F"),
-        ("\u0301x = 1\ny = 2", "U+0301"),
+        ("love = '\u2764'\nx = 1", "U+2764"),
         ("p = '\ue000'\nx = 1", "U+E000"),
         ("u = '\u0378'\nx = 1", "U+0378"),
         ("m = '\U0001d400'\nx = 1", "U+1D400"),
     ], ids=["cjk", "maths-symbols", "devanagari", "thai", "hebrew", "arabic",
-            "heart-vs16", "keycap", "variation-selector", "lone-mark",
-            "private-use", "unassigned", "math-alnum"])
+            "heart", "private-use", "unassigned", "math-alnum"])
     def test_text_the_mono_font_cannot_draw_refuses_before_code(self, source, named,
                                                                 monkeypatch):
         # Each of these drew missing-glyph boxes or nothing; Code then mapped
         # glyphs to characters off by the difference, dropped later lines and
         # left its " pA1" alignment glyphs in the frame, and validation said
         # ok. The theme's glyph guard refuses them before Code is built,
-        # naming the character, its line and the resolved font.
+        # naming the character, its line and the resolved font. (The VS16
+        # heart, keycap, variation selector and lone mark moved to the
+        # schema's combining-mark refusal, as did the Devanagari and Thai
+        # words, whose virama and vowel signs are marks; the bare heart and
+        # unmarked Devanagari and Thai letters stay here.)
         _forbid_building_code(monkeypatch)
         comp = CodeWalk({"language": "python", "source": source})
         with pytest.raises(LayoutError) as info:
@@ -282,13 +334,16 @@ class TestBuild:
     def test_context_shaping_the_probes_miss_is_still_refused(self, monkeypatch):
         # The last check is Code's own assumption, on the whole listing: one
         # glyph per visible character. Blind the cluster probe (as shaping in
-        # context would) and the keycap still refuses, before Code is built.
+        # context would) and U+1680 OGHAM SPACE MARK -- a space to every
+        # per-character check, a dash in the line -- still refuses, before
+        # Code is built. (This used to be the keycap, which the schema now
+        # refuses as combining marks.)
         monkeypatch.setattr(code_walk, "_cluster_paths",
                             lambda cluster, font: sum(not c.isspace() for c in cluster))
         _forbid_building_code(monkeypatch)
-        comp = CodeWalk({"language": "python", "source": "key = '1\ufe0f\u20e3'\nx = 1"})
+        comp = CodeWalk({"language": "python", "source": "s = 'a\u1680b'\nx = 1"})
         with pytest.raises(LayoutError,
-                           match="draws 15 glyphs for its 12 visible characters") as info:
+                           match="draws 10 glyphs for its 9 visible characters") as info:
             _probe(comp)
         assert info.value.kind == UNRENDERABLE_TEXT
 
@@ -296,12 +351,15 @@ class TestBuild:
         "s = 'na\u00efve caf\u00e9 \u00df \u00f1'\nx = 1",
         "s = '\u03b1\u03b2\u03b3 \u03a9 \u03bb'\nx = 1",
         "s = '\u043f\u0440\u0438\u0432\u0435\u0442'\nx = 1",
-        "s = 'q\u0301'\nx = 1",
+        LATIN_EXT_A,
         "v = 'Vi\u1ec7t \u01d8'\nx = 1",
-    ], ids=["latin-1", "greek", "cyrillic", "q-acute", "vietnamese"])
+    ], ids=["latin-1", "greek", "cyrillic", "latin-ext-a", "vietnamese"])
     def test_text_the_font_draws_renders_on_its_rows(self, source):
         # The guard must not cost the scripts the font does draw: each glyph
         # lands on its own line's row, none shifted, nothing left over.
+        # (q + U+0301 was a case here: its rows hold, but the accent is drawn
+        # on the closing quote, so it pinned a misrender. It is refused at the
+        # schema now; precomposed Latin Extended-A takes its place.)
         probe = _probe(CodeWalk({"language": "python", "source": source,
                                  "highlights": [{"start": 1}]}))
         code, _bar = probe.mobjects
@@ -310,14 +368,16 @@ class TestBuild:
     @pytest.mark.parametrize("source,named", [
         ("s = 'a˜b'", "U+02DC"),
         ("# ƁƂƃƄƅƆƇƈƉ ok", "U+0181"),
-        ("z̀́̂̃̄̅ = 1", "U+0305"),
-    ], ids=["small-tilde", "latin-ext-b-stack", "stacked-marks"])
+        ("s = 'a\u03fdb'", "U+03FD"),
+    ], ids=["small-tilde", "latin-ext-b-stack", "reversed-lunate-sigma"])
     def test_glyphs_off_their_columns_refuse_unrenderable(self, source, named):
         # Every count passes for these -- each character draws one path alone
-        # and in context -- yet in a line the tilde lands on the b, the nine
-        # letters pile into one blob, and the marks push "= 1" three cells
-        # right, while validation said ok. The column check on the built
-        # listing refuses them, in the beat and in the carry-in artifact.
+        # and in context -- yet in a line the tilde lands on the b, and the
+        # nine letters, like U+03FD and the b after it, pile into one blob,
+        # while validation said ok. The column check on the built listing
+        # refuses them, in the beat and in the carry-in artifact. (Stacked
+        # combining marks were a case here; the schema refuses them now,
+        # before any column is measured.)
         recipe = ArtifactRecipe(name="listing", producer="CodeWalk",
                                 params={"language": "python", "source": source})
         for attempt in (lambda: _probe(CodeWalk(recipe.params)),
@@ -331,40 +391,49 @@ class TestBuild:
             assert "column" in message
 
     @pytest.mark.parametrize("source", [
-        "s = 'q́'\nx = 1",
-        "s = 'café'\nx = 1",
+        LATIN_EXT_A,
+        "s = 'cafe\u0301'\nx = 1",
         "# Tiếng Việt có dấu\nx = 1",
         next(case["source"] for case in CodeWalk.stress()
              if "мир" in case["source"]),
         "# → ← ↑ ↓ ↔\n# ┌─┐ │ └─┘\nx = 1",
         "s = “quoted” + ‘single’  # — em – en …\n"
         "n = 3 × 4 ÷ 2 − 1",
-    ], ids=["q-acute", "nfd-e-acute", "vietnamese", "latin-greek-cyrillic",
-            "arrows-boxes", "typographic"])
+        "s = 'q\u0301'\nx = 1",
+    ], ids=["latin-ext-a", "nfd-e-acute", "vietnamese", "latin-greek-cyrillic",
+            "arrows-boxes", "typographic", "q-acute-refused"])
     def test_text_the_font_spaces_renders_on_its_columns(self, source):
         # The column check must not cost text the font does space one per
-        # column: measured on its own here, every base glyph sits within
-        # half a cell of its column (combining marks take none), counted
-        # from the first glyph of its line.
-        probe = _probe(CodeWalk({"language": "python", "source": source}))
+        # column: measured on its own here, every glyph sits within half a
+        # cell of its column, counted from the first glyph of its line. No
+        # glyph is skipped: a combining mark NFC leaves standing is refused
+        # by the schema, never measured -- q + U+0301 used to be measured
+        # here with its mark skipped, which pinned the accent drawn on the
+        # closing quote as correct -- so the listing that reaches build() is
+        # one column and one glyph per character (the NFD accent arrives
+        # composed).
+        params = {"language": "python", "source": source}
+        if any(unicodedata.category(c) in ("Mn", "Me")
+               for c in unicodedata.normalize("NFC", source)):
+            with pytest.raises(ValidationError, match="combining mark"):
+                CodeWalk(params)
+            return
+        comp = CodeWalk(params)
+        text = comp.params.source
+        probe = _probe(comp)
         code = probe.mobjects[0]
         # One cell of the placed (fitted) listing: a natural-size probe's
         # digit pitch, scaled as line number 1 was scaled.
         ref = code_walk._code("00\n00", "text", THEME)
         advance = ref.code_lines[0][1].get_x() - ref.code_lines[0][0].get_x()
         advance *= code.line_numbers[0].height / ref.line_numbers[0].height
-        text = unicodedata.normalize("NFC", source).split("\n")
-        for i, line in enumerate(text):
+        for i, line in enumerate(text.split("\n")):
             glyphs = iter(code.code_lines[i])
-            col, first = -1, None
-            for c in line:
-                mark = unicodedata.category(c)[0] == "M"
-                col += not mark
+            first = None
+            for col, c in enumerate(line):
                 if c.isspace():
                     continue
                 x = next(glyphs).get_x()
-                if mark:
-                    continue
                 if first is None:
                     first = (x, col)
                 assert abs((x - first[0]) / advance - (col - first[1])) <= 0.5, (i, c)

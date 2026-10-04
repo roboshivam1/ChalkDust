@@ -4,7 +4,8 @@
  "reasons": [
   "CodeWalk merged",
   "CodeWalk rb2 on integration 8156a15: glyph guard runs before Code is built; examples unchanged",
-  "CodeWalk fix pass: listings whose glyphs leave their mono columns refuse as unrenderable_text; examples unchanged"
+  "CodeWalk fix pass: listings whose glyphs leave their mono columns refuse as unrenderable_text; examples unchanged",
+  "CodeWalk wave 5 on integration 86799bf: combining marks NFC cannot compose refuse at the schema; examples unchanged"
  ],
  "cases": [
   {

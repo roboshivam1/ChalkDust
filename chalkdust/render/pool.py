@@ -134,13 +134,13 @@ def default_jobs(pending: int, cpus: int | None = None, draft: bool = False) -> 
     Measured on a 24-core Windows machine (8 P + 16 E cores), quiet (no other
     render running), cold render and Manim caches, speech held constant, two
     runs each. Render stage, --jobs 1 -> this default:
-      - 1080p60: 1.57x for 4 beats (25.8 s -> 16.5 s), 1.67x for 5, 1.8-2.0x
+      - 1080p60: 1.57x for 4 beats (25.8 s -> 16.5 s), 1.67x for 5, 1.7-1.9x
         for 9-10 (e.g. 124.6 s -> 64.1 s); whole command 1.27-1.47x. Well
         short of the beat count: the longest beat bounds it, and concurrent
         renders contend (not profiled further).
-      - 480p15: a beat renders in one to two seconds, so the pool's fixed
-        cost (spawning workers, each importing Manim) is the whole story for
-        small specs: 2 beats +0.9-1.1 s slower, 3 beats -0.2..+0.2 s, 4 beats
+      - 480p15: a beat renders in one to two seconds, so fixed costs (the
+        caller's cache check, spawning workers that each import Manim) are
+        the whole story for small specs: 2 beats +0.9-1.1 s slower, 3 beats -0.2..+0.2 s, 4 beats
         +0.7 s (binary_search) or -1.0 s (others), 5 beats -1.5..-2.0 s, 9-10
         beats -6.6..-7.7 s (1.5-1.6x). Hence DRAFT_MIN_POOLED.
     `--jobs N` is taken as given; `--jobs 1` keeps the sequential path.

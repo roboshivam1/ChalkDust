@@ -8,14 +8,16 @@ pooled), so registering it here is enough; the worker processes only render.
 
 from __future__ import annotations
 
+import os
 import subprocess
+import time
 from pathlib import Path
 
 import pytest
 
 from chalkdust import cli, pipeline
 from chalkdust.core.models import Quality
-from chalkdust.render import worker
+from chalkdust.render import pool, worker
 from chalkdust.render.pool import default_jobs
 from chalkdust.scenes.theme import LatexToolchainError
 from chalkdust.speech import tts
@@ -135,6 +137,56 @@ def test_failing_beat_in_the_pool_is_typed_as_sequentially(
     # re-run after the fix renders only b02.
     assert len(list((tmp_path / "cache" / "beats").glob("*.mp4"))) == 2
     assert not list((tmp_path / "cache" / "beats").glob(".tmp-*"))
+
+
+def _die_in_b03(beat, *args, **kwargs):
+    """Stands in for worker.render_beat: b03's worker process dies outright
+    (os._exit, as a native crash or an out-of-memory kill would) once b01 and
+    b02 have started in their own processes. b01 and b02 hold before
+    rendering, so all three are surely in flight when it dies and the pool
+    stops them with it; the hold is bounded, after which they render for
+    real."""
+    started = pool._started_dir[0]
+    deadline = time.monotonic() + 60
+    if beat.id == "b03":
+        while len(list(started.iterdir())) < 3 and time.monotonic() < deadline:
+            time.sleep(0.05)
+        os._exit(3)
+    while time.monotonic() < deadline:
+        time.sleep(0.05)
+    return worker.render_beat(beat, *args, **kwargs)
+
+
+def test_dead_worker_is_not_blamed_on_one_beat(tmp_path, monkeypatch, capfd, fake_tts):
+    """A dead worker sends no report, and the broken pool fails every running
+    beat alike: the error must name the beats in flight -- b03, whose process
+    died, among them -- and say which one crashed is unknown, never pin the
+    crash on one beat (before: "render failed: b01 (TitleCard): worker
+    process died"). It also pins that the death is noticed at once: noticed
+    only when b01 and b02 finish their hold, it would name b03 alone."""
+    monkeypatch.setattr(pipeline, "render_beat", _die_in_b03)
+    spec = example_spec()
+    spec["beats"] = spec["beats"][:3]
+    path = write_spec(tmp_path / "spec.json", spec)
+
+    rc = cli.main(["render", str(path), "--jobs", "3",
+                   "--out", str(tmp_path / "out.mp4"),
+                   "--cache-dir", str(tmp_path / "cache"),
+                   "--work-dir", str(tmp_path / "work")])
+
+    out, err = capfd.readouterr()
+    assert "rendering 3 beat(s) across 3 processes" in out  # really pooled
+    assert rc == cli.EXIT_RENDER_FAILED
+    first = err.splitlines()[0]
+    assert first.startswith("chalkdust: render failed: a worker process died "
+                            "while rendering one of b01 (TitleCard), b02 (BulletReveal), "
+                            "b03 (BulletReveal) (which one crashed is unknown"), first
+    # Not attributed to any single beat, b01 (the lowest index) least of all.
+    assert not first.startswith("chalkdust: render failed: b0")
+    # The pool cleaned up after itself; nothing half-written reached the cache.
+    assert not list((tmp_path / "cache" / "beats").glob(".tmp-*"))
+    assert not (tmp_path / "work" / "manim" / "pool").exists()
+    assert not (tmp_path / "out.mp4").exists()
 
 
 def test_default_jobs_is_one_per_pending_beat_at_most_the_cpus():

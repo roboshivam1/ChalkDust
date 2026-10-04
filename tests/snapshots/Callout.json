@@ -3,7 +3,8 @@
  "manim_version": "0.21.0",
  "reasons": [
   "Callout merged",
-  "Callout rebuilt owned-only on integration: clear-side fallback, hostile stress battery (fallback, RTL, emoji, CJK, blank braille, LaTeX-looking text)"
+  "Callout rebuilt owned-only on integration: clear-side fallback, hostile stress battery (fallback, RTL, emoji, CJK, blank braille, LaTeX-looking text)",
+  "structure/geometry split for cross-font stability; theme fonts now installed on the Windows dev box"
  ],
  "cases": [
   {
@@ -27,6 +28,460 @@
       "animations": [
        "GrowArrow",
        "FadeIn"
+      ],
+      "run_time": 2.85
+     },
+     {
+      "op": "settle",
+      "label": "callout shown",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[causes]",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Aweakhashfunction"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Aloadfactorlefttoohigh"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Adversarialkeyschosentocollide"
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "callout arrow",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Theoneanattackercontrols",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 4.283
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[causes]",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Aweakhashfunction"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Aloadfactorlefttoohigh"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Adversarialkeyschosentocollide"
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "callout arrow",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Theoneanattackercontrols",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "MoveToTarget"
+      ],
+      "targets": [
+       "carried[causes]"
+      ],
+      "run_time": 2.867
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "targets": [
+       "callout arrow",
+       "callout"
+      ],
+      "run_time": 2.85
+     },
+     {
+      "op": "settle",
+      "label": "callout shown",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[causes]",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "A weak hash function",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "A load factor left too high",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Adversarial keys chosen to collide",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "callout arrow",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "text": "The one an attacker\ncontrols",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 4.283
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[causes]",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "A weak hash function",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "A load factor left too high",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Adversarial keys chosen to collide",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "callout arrow",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "text": "The one an attacker\ncontrols",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "MoveToTarget"
+      ],
+      "targets": [
+       "carried[causes]"
+      ],
+      "run_time": 2.867
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "targets": [
+       "callout arrow",
+       "callout"
       ],
       "run_time": 2.85
      },
@@ -237,6 +692,246 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        -2.48,
+        -0.1,
+        7.546,
+        2.108
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.801,
+        0.782,
+        4.904,
+        0.344
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.183,
+        0.792,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.591,
+        0.782,
+        4.484,
+        0.344
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -3.411,
+        -0.104,
+        5.683,
+        0.434
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.183,
+        -0.049,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.201,
+        -0.104,
+        5.263,
+        0.434
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.48,
+        -0.941,
+        7.546,
+        0.426
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.183,
+        -0.889,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.27,
+        -0.941,
+        7.126,
+        0.426
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.693,
+        -0.941,
+        0.6,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.468,
+        -0.941,
+        0.15,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.173,
+        -0.941,
+        4.159,
+        0.762
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -2.48,
+        -0.1,
+        7.546,
+        2.108
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.801,
+        0.782,
+        4.904,
+        0.344
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.183,
+        0.792,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.591,
+        0.782,
+        4.484,
+        0.344
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -3.411,
+        -0.104,
+        5.683,
+        0.434
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.183,
+        -0.049,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.201,
+        -0.104,
+        5.263,
+        0.434
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.48,
+        -0.941,
+        7.546,
+        0.426
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.183,
+        -0.889,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.27,
+        -0.941,
+        7.126,
+        0.426
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.693,
+        -0.941,
+        0.6,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.468,
+        -0.941,
+        0.15,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.173,
+        -0.941,
+        4.159,
+        0.762
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {
@@ -522,6 +1217,532 @@
            },
            {
             "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Hashthekey"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Findthebucket"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Walkthechain"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[3]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Comparekeys"
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "callout arrow",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Everylookuppaysforallfoursteps",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 4.283
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[steps]",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Hashthekey"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Findthebucket"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Walkthechain"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[3]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Comparekeys"
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "callout arrow",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Everylookuppaysforallfoursteps",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "MoveToTarget"
+      ],
+      "targets": [
+       "carried[steps]"
+      ],
+      "run_time": 2.867
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "targets": [
+       "callout arrow",
+       "callout"
+      ],
+      "run_time": 2.85
+     },
+     {
+      "op": "settle",
+      "label": "callout shown",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[steps]",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Hash the key",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Find the bucket",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Walk the chain",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[3]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Compare keys",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "callout arrow",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "text": "Every lookup pays for all four steps",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 4.283
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[steps]",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Hash the key",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Find the bucket",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Walk the chain",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[3]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Compare keys",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "callout arrow",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "text": "Every lookup pays for all four steps",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "MoveToTarget"
+      ],
+      "targets": [
+       "carried[steps]"
+      ],
+      "run_time": 2.867
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "targets": [
+       "callout arrow",
+       "callout"
+      ],
+      "run_time": 2.85
+     },
+     {
+      "op": "settle",
+      "label": "callout shown",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[steps]",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
             "text": "Hash the key",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
@@ -743,6 +1964,300 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        0.0,
+        0.515,
+        3.621,
+        2.943
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.262,
+        1.779,
+        3.098,
+        0.416
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.741,
+        1.825,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.052,
+        1.779,
+        2.678,
+        0.416
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        0.976,
+        3.621,
+        0.339
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.741,
+        0.984,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        0.976,
+        3.201,
+        0.339
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.088,
+        0.135,
+        3.445,
+        0.34
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.741,
+        0.143,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.122,
+        0.135,
+        3.025,
+        0.34
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.115,
+        -0.746,
+        3.391,
+        0.42
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.741,
+        -0.698,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.095,
+        -0.746,
+        2.971,
+        0.42
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.356,
+        0.15,
+        0.6
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.131,
+        0.15,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.971,
+        7.343,
+        0.431
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        0.515,
+        3.621,
+        2.943
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.262,
+        1.779,
+        3.098,
+        0.416
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.741,
+        1.825,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.052,
+        1.779,
+        2.678,
+        0.416
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        0.976,
+        3.621,
+        0.339
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.741,
+        0.984,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.21,
+        0.976,
+        3.201,
+        0.339
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.088,
+        0.135,
+        3.445,
+        0.34
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.741,
+        0.143,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.122,
+        0.135,
+        3.025,
+        0.34
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.115,
+        -0.746,
+        3.391,
+        0.42
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.741,
+        -0.698,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.095,
+        -0.746,
+        2.971,
+        0.42
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.356,
+        0.15,
+        0.6
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.131,
+        0.15,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.971,
+        7.343,
+        0.431
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {
@@ -1083,6 +2598,534 @@
            },
            {
             "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Hashthekey"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Findthebucket"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Walkthechain"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[3]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Comparekeys"
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "callout arrow",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Constanttime",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 4.283
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[steps]",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "text": "Hashthekey"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Findthebucket"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Walkthechain"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[3]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35,
+            "text": "Comparekeys"
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "callout arrow",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "Constanttime",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "MoveToTarget"
+      ],
+      "targets": [
+       "carried[steps]"
+      ],
+      "run_time": 2.867
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "targets": [
+       "callout arrow",
+       "callout"
+      ],
+      "run_time": 2.85
+     },
+     {
+      "op": "settle",
+      "label": "callout shown",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[steps]",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Hash the key",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "Find the bucket",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "Walk the chain",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[3]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "Compare keys",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "callout arrow",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "text": "Constant time",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 4.283
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[steps]",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "Hash the key",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[1]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "Find the bucket",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[2]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "Walk the chain",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "bullet[3]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "Text",
+            "text": "Compare keys",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "callout arrow",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "callout",
+        "text": "Constant time",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "MoveToTarget"
+      ],
+      "targets": [
+       "carried[steps]"
+      ],
+      "run_time": 2.867
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "targets": [
+       "callout arrow",
+       "callout"
+      ],
+      "run_time": 2.85
+     },
+     {
+      "op": "settle",
+      "label": "callout shown",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "carried[steps]",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "bullet[0]",
+          "children": [
+           {
+            "type": "Dot",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
             "text": "Hash the key",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
@@ -1306,6 +3349,300 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        1.836,
+        -0.1,
+        3.621,
+        2.943
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.574,
+        1.164,
+        3.098,
+        0.416
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.095,
+        1.21,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.784,
+        1.164,
+        2.678,
+        0.416
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.836,
+        0.361,
+        3.621,
+        0.339
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.095,
+        0.369,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.046,
+        0.361,
+        3.201,
+        0.339
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.748,
+        -0.48,
+        3.445,
+        0.34
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.095,
+        -0.472,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.958,
+        -0.48,
+        3.025,
+        0.34
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.721,
+        -1.361,
+        3.391,
+        0.42
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.095,
+        -1.313,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.931,
+        -1.361,
+        2.971,
+        0.42
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.375,
+        1.164,
+        0.6,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.15,
+        1.164,
+        0.15,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.211,
+        1.164,
+        2.872,
+        0.34
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        1.836,
+        -0.1,
+        3.621,
+        2.943
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.574,
+        1.164,
+        3.098,
+        0.416
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.095,
+        1.21,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.784,
+        1.164,
+        2.678,
+        0.416
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.836,
+        0.361,
+        3.621,
+        0.339
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.095,
+        0.369,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.046,
+        0.361,
+        3.201,
+        0.339
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.748,
+        -0.48,
+        3.445,
+        0.34
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.095,
+        -0.472,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.958,
+        -0.48,
+        3.025,
+        0.34
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.721,
+        -1.361,
+        3.391,
+        0.42
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.095,
+        -1.313,
+        0.14,
+        0.14
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.931,
+        -1.361,
+        2.971,
+        0.42
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.375,
+        1.164,
+        0.6,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.15,
+        1.164,
+        0.15,
+        0.15
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.211,
+        1.164,
+        2.872,
+        0.34
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {

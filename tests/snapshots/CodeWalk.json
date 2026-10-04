@@ -5,7 +5,8 @@
   "CodeWalk merged",
   "CodeWalk rb2 on integration 8156a15: glyph guard runs before Code is built; examples unchanged",
   "CodeWalk fix pass: listings whose glyphs leave their mono columns refuse as unrenderable_text; examples unchanged",
-  "CodeWalk wave 5 on integration 86799bf: combining marks NFC cannot compose refuse at the schema; examples unchanged"
+  "CodeWalk wave 5 on integration 86799bf: combining marks NFC cannot compose refuse at the schema; examples unchanged",
+  "structure/geometry split for cross-font stability; theme fonts now installed on the Windows dev box"
  ],
  "cases": [
   {
@@ -567,7 +568,1823 @@
      }
     ]
    },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "code"
+      ],
+      "run_time": 0.633
+     },
+     {
+      "op": "settle",
+      "label": "code revealed",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup"
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       "highlight",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null
+      ],
+      "run_time": 0.633
+     },
+     {
+      "op": "settle",
+      "label": "highlight 0",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup"
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.883
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Transform",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       "highlight",
+       null,
+       null,
+       null,
+       null
+      ],
+      "run_time": 0.633
+     },
+     {
+      "op": "settle",
+      "label": "highlight 1",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup"
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.867
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Transform",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       "highlight",
+       null,
+       null,
+       null,
+       null
+      ],
+      "run_time": 0.617
+     },
+     {
+      "op": "settle",
+      "label": "highlight 2",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup"
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.867
+     },
+     {
+      "op": "wait",
+      "duration": 1.867
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup"
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "code"
+      ],
+      "run_time": 0.633
+     },
+     {
+      "op": "settle",
+      "label": "code revealed",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup"
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       "highlight",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null
+      ],
+      "run_time": 0.633
+     },
+     {
+      "op": "settle",
+      "label": "highlight 0",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup"
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.883
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Transform",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       "highlight",
+       null,
+       null,
+       null,
+       null
+      ],
+      "run_time": 0.633
+     },
+     {
+      "op": "settle",
+      "label": "highlight 1",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup"
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.867
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Transform",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       "highlight",
+       null,
+       null,
+       null,
+       null
+      ],
+      "run_time": 0.617
+     },
+     {
+      "op": "settle",
+      "label": "highlight 2",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup"
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.867
+     },
+     {
+      "op": "wait",
+      "duration": 1.867
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup"
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.374,
+        2.746
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.374,
+        2.746
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.799,
+        -0.088,
+        0.175,
+        2.038
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -3.799,
+        0.789,
+        0.175,
+        0.284
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.799,
+        0.353,
+        0.175,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.797,
+        -0.088,
+        0.171,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.793,
+        -0.524,
+        0.163,
+        0.284
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.797,
+        -0.963,
+        0.171,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.213,
+        -0.096,
+        7.348,
+        2.139
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.213,
+        0.775,
+        7.348,
+        0.396
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.063,
+        0.338,
+        2.925,
+        0.396
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.334,
+        -0.112,
+        4.368,
+        0.372
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.014,
+        -0.971,
+        6.894,
+        0.389
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.374,
+        2.746
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.374,
+        2.746
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.799,
+        -0.088,
+        0.175,
+        2.038
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -3.799,
+        0.789,
+        0.175,
+        0.284
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.799,
+        0.353,
+        0.175,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.797,
+        -0.088,
+        0.171,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.793,
+        -0.524,
+        0.163,
+        0.284
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.797,
+        -0.963,
+        0.171,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.213,
+        -0.096,
+        7.348,
+        2.139
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.213,
+        0.775,
+        7.348,
+        0.396
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.063,
+        0.338,
+        2.925,
+        0.396
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.334,
+        -0.112,
+        4.368,
+        0.372
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.014,
+        -0.971,
+        6.894,
+        0.389
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.353,
+        7.928,
+        0.438
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.374,
+        2.746
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.374,
+        2.746
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.799,
+        -0.088,
+        0.175,
+        2.038
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -3.799,
+        0.789,
+        0.175,
+        0.284
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.799,
+        0.353,
+        0.175,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.797,
+        -0.088,
+        0.171,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.793,
+        -0.524,
+        0.163,
+        0.284
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.797,
+        -0.963,
+        0.171,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.213,
+        -0.096,
+        7.348,
+        2.139
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.213,
+        0.775,
+        7.348,
+        0.396
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.063,
+        0.338,
+        2.925,
+        0.396
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.334,
+        -0.112,
+        4.368,
+        0.372
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.014,
+        -0.971,
+        6.894,
+        0.389
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.088,
+        7.928,
+        0.438
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.374,
+        2.746
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.374,
+        2.746
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.799,
+        -0.088,
+        0.175,
+        2.038
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -3.799,
+        0.789,
+        0.175,
+        0.284
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.799,
+        0.353,
+        0.175,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.797,
+        -0.088,
+        0.171,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.793,
+        -0.524,
+        0.163,
+        0.284
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.797,
+        -0.963,
+        0.171,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.213,
+        -0.096,
+        7.348,
+        2.139
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.213,
+        0.775,
+        7.348,
+        0.396
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.063,
+        0.338,
+        2.925,
+        0.396
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.334,
+        -0.112,
+        4.368,
+        0.372
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.014,
+        -0.971,
+        6.894,
+        0.389
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.963,
+        7.928,
+        0.438
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.374,
+        2.746
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        8.374,
+        2.746
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.799,
+        -0.088,
+        0.175,
+        2.038
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -3.799,
+        0.789,
+        0.175,
+        0.284
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.799,
+        0.353,
+        0.175,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.797,
+        -0.088,
+        0.171,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.793,
+        -0.524,
+        0.163,
+        0.284
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.797,
+        -0.963,
+        0.171,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.213,
+        -0.096,
+        7.348,
+        2.139
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        0.213,
+        0.775,
+        7.348,
+        0.396
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.063,
+        0.338,
+        2.925,
+        0.396
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.334,
+        -0.112,
+        4.368,
+        0.372
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.014,
+        -0.971,
+        6.894,
+        0.389
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.963,
+        7.928,
+        0.438
+       ],
+       "font_size": null
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {
@@ -2326,7 +4143,3588 @@
      }
     ]
    },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "code"
+      ],
+      "run_time": 0.5
+     },
+     {
+      "op": "settle",
+      "label": "code revealed",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       "highlight",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null
+      ],
+      "run_time": 0.5
+     },
+     {
+      "op": "settle",
+      "label": "highlight 0",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Transform",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       "highlight",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null
+      ],
+      "run_time": 0.5
+     },
+     {
+      "op": "settle",
+      "label": "highlight 1",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Transform",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       "highlight",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null
+      ],
+      "run_time": 0.5
+     },
+     {
+      "op": "settle",
+      "label": "highlight 2",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Transform",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       "highlight",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null
+      ],
+      "run_time": 0.5
+     },
+     {
+      "op": "settle",
+      "label": "highlight 3",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.5
+     },
+     {
+      "op": "wait",
+      "duration": 1.5
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "code"
+      ],
+      "run_time": 0.5
+     },
+     {
+      "op": "settle",
+      "label": "code revealed",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       "highlight",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null
+      ],
+      "run_time": 0.5
+     },
+     {
+      "op": "settle",
+      "label": "highlight 0",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Transform",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       "highlight",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null
+      ],
+      "run_time": 0.5
+     },
+     {
+      "op": "settle",
+      "label": "highlight 1",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Transform",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       "highlight",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null
+      ],
+      "run_time": 0.5
+     },
+     {
+      "op": "settle",
+      "label": "highlight 2",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Transform",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate",
+       "animate"
+      ],
+      "targets": [
+       "highlight",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null
+      ],
+      "run_time": 0.5
+     },
+     {
+      "op": "settle",
+      "label": "highlight 3",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.5
+     },
+     {
+      "op": "wait",
+      "duration": 1.5
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#E6EDF3",
+            "fill_opacity": 0.35,
+            "stroke_opacity": 0.35
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Rectangle",
+        "label": "highlight",
+        "color": "#58A6FF",
+        "fill_opacity": 0.18,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        9.981,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        9.981,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.514,
+        -0.089,
+        0.381,
+        4.025
+       ],
+       "font_size": 26.67
+      },
+      {
+       "bbox": [
+        -4.406,
+        1.788,
+        0.167,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.407,
+        1.373,
+        0.167,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.405,
+        0.953,
+        0.163,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.401,
+        0.538,
+        0.156,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.405,
+        0.119,
+        0.163,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.411,
+        -0.297,
+        0.175,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.409,
+        -0.712,
+        0.172,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.41,
+        -1.129,
+        0.173,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.411,
+        -1.544,
+        0.175,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.514,
+        -1.962,
+        0.381,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.31,
+        -0.087,
+        8.789,
+        4.103
+       ],
+       "font_size": 26.67
+      },
+      {
+       "bbox": [
+        -0.113,
+        1.775,
+        7.945,
+        0.378
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.139,
+        1.347,
+        7.021,
+        0.354
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.673,
+        0.953,
+        3.953,
+        0.356
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.24,
+        0.529,
+        5.888,
+        0.37
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.76,
+        0.108,
+        7.89,
+        0.378
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.76,
+        -0.308,
+        7.89,
+        0.378
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.241,
+        -0.733,
+        3.89,
+        0.347
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.546,
+        -1.131,
+        0.159,
+        0.348
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.569,
+        -1.575,
+        2.101,
+        0.33
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.991,
+        -1.964,
+        0.159,
+        0.348
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        9.981,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        9.981,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.514,
+        -0.089,
+        0.381,
+        4.025
+       ],
+       "font_size": 26.67
+      },
+      {
+       "bbox": [
+        -4.406,
+        1.788,
+        0.167,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.407,
+        1.373,
+        0.167,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.405,
+        0.953,
+        0.163,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.401,
+        0.538,
+        0.156,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.405,
+        0.119,
+        0.163,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.411,
+        -0.297,
+        0.175,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.409,
+        -0.712,
+        0.172,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.41,
+        -1.129,
+        0.173,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.411,
+        -1.544,
+        0.175,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.514,
+        -1.962,
+        0.381,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.31,
+        -0.087,
+        8.789,
+        4.103
+       ],
+       "font_size": 26.67
+      },
+      {
+       "bbox": [
+        -0.113,
+        1.775,
+        7.945,
+        0.378
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.139,
+        1.347,
+        7.021,
+        0.354
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.673,
+        0.953,
+        3.953,
+        0.356
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.24,
+        0.529,
+        5.888,
+        0.37
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.76,
+        0.108,
+        7.89,
+        0.378
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.76,
+        -0.308,
+        7.89,
+        0.378
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.241,
+        -0.733,
+        3.89,
+        0.347
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.546,
+        -1.131,
+        0.159,
+        0.348
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.569,
+        -1.575,
+        2.101,
+        0.33
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.991,
+        -1.964,
+        0.159,
+        0.348
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        1.373,
+        9.556,
+        0.417
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        9.981,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        9.981,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.514,
+        -0.089,
+        0.381,
+        4.025
+       ],
+       "font_size": 26.67
+      },
+      {
+       "bbox": [
+        -4.406,
+        1.788,
+        0.167,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.407,
+        1.373,
+        0.167,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.405,
+        0.953,
+        0.163,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.401,
+        0.538,
+        0.156,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.405,
+        0.119,
+        0.163,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.411,
+        -0.297,
+        0.175,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.409,
+        -0.712,
+        0.172,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.41,
+        -1.129,
+        0.173,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.411,
+        -1.544,
+        0.175,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.514,
+        -1.962,
+        0.381,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.31,
+        -0.087,
+        8.789,
+        4.103
+       ],
+       "font_size": 26.67
+      },
+      {
+       "bbox": [
+        -0.113,
+        1.775,
+        7.945,
+        0.378
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.139,
+        1.347,
+        7.021,
+        0.354
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.673,
+        0.953,
+        3.953,
+        0.356
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.24,
+        0.529,
+        5.888,
+        0.37
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.76,
+        0.108,
+        7.89,
+        0.378
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.76,
+        -0.308,
+        7.89,
+        0.378
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.241,
+        -0.733,
+        3.89,
+        0.347
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.546,
+        -1.131,
+        0.159,
+        0.348
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.569,
+        -1.575,
+        2.101,
+        0.33
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.991,
+        -1.964,
+        0.159,
+        0.348
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        0.746,
+        9.556,
+        0.832
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        9.981,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        9.981,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.514,
+        -0.089,
+        0.381,
+        4.025
+       ],
+       "font_size": 26.67
+      },
+      {
+       "bbox": [
+        -4.406,
+        1.788,
+        0.167,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.407,
+        1.373,
+        0.167,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.405,
+        0.953,
+        0.163,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.401,
+        0.538,
+        0.156,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.405,
+        0.119,
+        0.163,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.411,
+        -0.297,
+        0.175,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.409,
+        -0.712,
+        0.172,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.41,
+        -1.129,
+        0.173,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.411,
+        -1.544,
+        0.175,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.514,
+        -1.962,
+        0.381,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.31,
+        -0.087,
+        8.789,
+        4.103
+       ],
+       "font_size": 26.67
+      },
+      {
+       "bbox": [
+        -0.113,
+        1.775,
+        7.945,
+        0.378
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.139,
+        1.347,
+        7.021,
+        0.354
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.673,
+        0.953,
+        3.953,
+        0.356
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.24,
+        0.529,
+        5.888,
+        0.37
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.76,
+        0.108,
+        7.89,
+        0.378
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.76,
+        -0.308,
+        7.89,
+        0.378
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.241,
+        -0.733,
+        3.89,
+        0.347
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.546,
+        -1.131,
+        0.159,
+        0.348
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.569,
+        -1.575,
+        2.101,
+        0.33
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.991,
+        -1.964,
+        0.159,
+        0.348
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        -0.296,
+        9.556,
+        1.248
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        9.981,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        9.981,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.514,
+        -0.089,
+        0.381,
+        4.025
+       ],
+       "font_size": 26.67
+      },
+      {
+       "bbox": [
+        -4.406,
+        1.788,
+        0.167,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.407,
+        1.373,
+        0.167,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.405,
+        0.953,
+        0.163,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.401,
+        0.538,
+        0.156,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.405,
+        0.119,
+        0.163,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.411,
+        -0.297,
+        0.175,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.409,
+        -0.712,
+        0.172,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.41,
+        -1.129,
+        0.173,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.411,
+        -1.544,
+        0.175,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.514,
+        -1.962,
+        0.381,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.31,
+        -0.087,
+        8.789,
+        4.103
+       ],
+       "font_size": 26.67
+      },
+      {
+       "bbox": [
+        -0.113,
+        1.775,
+        7.945,
+        0.378
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.139,
+        1.347,
+        7.021,
+        0.354
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.673,
+        0.953,
+        3.953,
+        0.356
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.24,
+        0.529,
+        5.888,
+        0.37
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.76,
+        0.108,
+        7.89,
+        0.378
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.76,
+        -0.308,
+        7.89,
+        0.378
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.241,
+        -0.733,
+        3.89,
+        0.347
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.546,
+        -1.131,
+        0.159,
+        0.348
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.569,
+        -1.575,
+        2.101,
+        0.33
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.991,
+        -1.964,
+        0.159,
+        0.348
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        -1.544,
+        9.556,
+        0.417
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        9.981,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        9.981,
+        4.7
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.514,
+        -0.089,
+        0.381,
+        4.025
+       ],
+       "font_size": 26.67
+      },
+      {
+       "bbox": [
+        -4.406,
+        1.788,
+        0.167,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.407,
+        1.373,
+        0.167,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.405,
+        0.953,
+        0.163,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.401,
+        0.538,
+        0.156,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.405,
+        0.119,
+        0.163,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.411,
+        -0.297,
+        0.175,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.409,
+        -0.712,
+        0.172,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.41,
+        -1.129,
+        0.173,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.411,
+        -1.544,
+        0.175,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.514,
+        -1.962,
+        0.381,
+        0.278
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.31,
+        -0.087,
+        8.789,
+        4.103
+       ],
+       "font_size": 26.67
+      },
+      {
+       "bbox": [
+        -0.113,
+        1.775,
+        7.945,
+        0.378
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.139,
+        1.347,
+        7.021,
+        0.354
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.673,
+        0.953,
+        3.953,
+        0.356
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.24,
+        0.529,
+        5.888,
+        0.37
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.76,
+        0.108,
+        7.89,
+        0.378
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.76,
+        -0.308,
+        7.89,
+        0.378
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.241,
+        -0.733,
+        3.89,
+        0.347
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.546,
+        -1.131,
+        0.159,
+        0.348
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.569,
+        -1.575,
+        2.101,
+        0.33
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.991,
+        -1.964,
+        0.159,
+        0.348
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.0,
+        -1.544,
+        9.556,
+        0.417
+       ],
+       "font_size": null
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {
@@ -3862,7 +9260,579 @@
      }
     ]
    },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "code"
+      ],
+      "run_time": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "code revealed",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 7.5
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "code"
+      ],
+      "run_time": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "code revealed",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 7.5
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "Code",
+        "label": "code",
+        "children": [
+         {
+          "type": "SurroundingRectangle",
+          "color": "#1A1E23",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Paragraph",
+          "children": [
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "VGroup",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        11.657,
+        2.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        11.657,
+        2.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.441,
+        -0.086,
+        0.175,
+        1.596
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -5.441,
+        0.57,
+        0.175,
+        0.284
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.441,
+        0.134,
+        0.175,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.439,
+        -0.307,
+        0.171,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.435,
+        -0.743,
+        0.163,
+        0.284
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.213,
+        -0.096,
+        10.632,
+        1.701
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.518,
+        0.56,
+        7.171,
+        0.389
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.217,
+        0.13,
+        10.623,
+        0.373
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.614,
+        -0.305,
+        2.966,
+        0.292
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.822,
+        -0.752,
+        4.546,
+        0.389
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        11.657,
+        2.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        11.657,
+        2.309
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.441,
+        -0.086,
+        0.175,
+        1.596
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -5.441,
+        0.57,
+        0.175,
+        0.284
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.441,
+        0.134,
+        0.175,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.439,
+        -0.307,
+        0.171,
+        0.288
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.435,
+        -0.743,
+        0.163,
+        0.284
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.213,
+        -0.096,
+        10.632,
+        1.701
+       ],
+       "font_size": 28.0
+      },
+      {
+       "bbox": [
+        -1.518,
+        0.56,
+        7.171,
+        0.389
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.217,
+        0.13,
+        10.623,
+        0.373
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.614,
+        -0.305,
+        2.966,
+        0.292
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.822,
+        -0.752,
+        4.546,
+        0.389
+       ],
+       "font_size": null
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {

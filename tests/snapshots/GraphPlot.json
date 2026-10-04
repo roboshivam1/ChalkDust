@@ -3,7 +3,8 @@
  "manim_version": "0.21.0",
  "reasons": [
   "GraphPlot merged",
-  "GraphPlot fix round: marker labels never on ink (tick marks are obstacles), marker x in the sample grid"
+  "GraphPlot fix round: marker labels never on ink (tick marks are obstacles), marker x in the sample grid",
+  "structure/geometry split for cross-font stability; theme fonts now installed on the Windows dev box"
  ],
  "cases": [
   {
@@ -43,6 +44,622 @@
       "animations": [
        "Create",
        "animate"
+      ],
+      "run_time": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "curves drawn",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "f(x) = x^{2} - 2 x - 3"
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "layout_choice": {
+         "name": "tick labels the axes keep",
+         "kept": {
+          "xtick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ],
+          "ytick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        },
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "MoveAlongPath"
+      ],
+      "run_time": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.75
+     },
+     {
+      "op": "play",
+      "animations": [
+       "MoveAlongPath"
+      ],
+      "run_time": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.75
+     },
+     {
+      "op": "settle",
+      "label": "graph traced",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "f(x) = x^{2} - 2 x - 3"
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "layout_choice": {
+         "name": "tick labels the axes keep",
+         "kept": {
+          "xtick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ],
+          "ytick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        },
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Dot",
+        "label": "marker[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "marker[0].label",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "vertex",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Dot",
+        "label": "marker[1]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "marker[1].label",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "root",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.0
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "f(x) = x^{2} - 2 x - 3"
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "layout_choice": {
+         "name": "tick labels the axes keep",
+         "kept": {
+          "xtick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ],
+          "ytick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        },
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Dot",
+        "label": "marker[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "marker[0].label",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "vertex",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Dot",
+        "label": "marker[1]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "marker[1].label",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "root",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "axes"
+      ],
+      "run_time": 1.0
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "animate"
+      ],
+      "targets": [
+       "curve[0]",
+       "legend[0]"
       ],
       "run_time": 2.5
      },
@@ -253,12 +870,18 @@
       "animations": [
        "MoveAlongPath"
       ],
+      "targets": [
+       "marker[0]"
+      ],
       "run_time": 1.5
      },
      {
       "op": "play",
       "animations": [
        "FadeIn"
+      ],
+      "targets": [
+       "marker[0].label"
       ],
       "run_time": 0.75
      },
@@ -267,12 +890,782 @@
       "animations": [
        "MoveAlongPath"
       ],
+      "targets": [
+       "marker[1]"
+      ],
       "run_time": 1.5
      },
      {
       "op": "play",
       "animations": [
        "FadeIn"
+      ],
+      "targets": [
+       "marker[1].label"
+      ],
+      "run_time": 0.75
+     },
+     {
+      "op": "settle",
+      "label": "graph traced",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "f(x) = x^{2} - 2 x - 3",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-2]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-1]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[1]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[2]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-2]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[1]",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[2]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[4]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Dot",
+        "label": "marker[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "marker[0].label",
+        "text": "vertex",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Dot",
+        "label": "marker[1]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "marker[1].label",
+        "text": "root",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.0
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "f(x) = x^{2} - 2 x - 3",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-2]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-1]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[1]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[2]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-2]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[1]",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[2]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[4]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Dot",
+        "label": "marker[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "marker[0].label",
+        "text": "vertex",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Dot",
+        "label": "marker[1]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "marker[1].label",
+        "text": "root",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "axes"
+      ],
+      "run_time": 1.0
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "animate"
+      ],
+      "targets": [
+       "curve[0]",
+       "legend[0]"
+      ],
+      "run_time": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "curves drawn",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "f(x) = x^{2} - 2 x - 3",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-2]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-1]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[1]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[2]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-2]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[1]",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[2]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[4]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "MoveAlongPath"
+      ],
+      "targets": [
+       "marker[0]"
+      ],
+      "run_time": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "marker[0].label"
+      ],
+      "run_time": 0.75
+     },
+     {
+      "op": "play",
+      "animations": [
+       "MoveAlongPath"
+      ],
+      "targets": [
+       "marker[1]"
+      ],
+      "run_time": 1.5
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "marker[1].label"
       ],
       "run_time": 0.75
      },
@@ -777,6 +2170,842 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        4.498,
+        2.025,
+        3.926,
+        0.449
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.498,
+        2.025,
+        3.926,
+        0.449
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.76,
+        2.025,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.823,
+        2.025,
+        3.276,
+        0.449
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.05,
+        0.042,
+        8.092,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.005,
+        -0.157,
+        7.827,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        0.042,
+        0.0,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        -1.754,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        -0.955,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        -0.157,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        0.641,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        1.439,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.919,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.614,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.005,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.701,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.604,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.908,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.661,
+        -1.754,
+        0.382,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.972,
+        -0.955,
+        0.355,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.547,
+        0.641,
+        0.154,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.558,
+        1.439,
+        0.177,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -5.919,
+        -0.44,
+        0.355,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.005,
+        -0.439,
+        0.091,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.701,
+        -0.44,
+        0.154,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.908,
+        -0.439,
+        0.177,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.005,
+        0.042,
+        7.827,
+        3.592
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        4.498,
+        2.025,
+        3.926,
+        0.449
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.498,
+        2.025,
+        3.926,
+        0.449
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.76,
+        2.025,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.823,
+        2.025,
+        3.276,
+        0.449
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.05,
+        0.042,
+        8.092,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.005,
+        -0.157,
+        7.827,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        0.042,
+        0.0,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        -1.754,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        -0.955,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        -0.157,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        0.641,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        1.439,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.919,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.614,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.005,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.701,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.604,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.908,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.661,
+        -1.754,
+        0.382,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.972,
+        -0.955,
+        0.355,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.547,
+        0.641,
+        0.154,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.558,
+        1.439,
+        0.177,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -5.919,
+        -0.44,
+        0.355,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.005,
+        -0.439,
+        0.091,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.701,
+        -0.44,
+        0.154,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.908,
+        -0.439,
+        0.177,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.005,
+        0.042,
+        7.827,
+        3.592
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.005,
+        -1.754,
+        0.16,
+        0.16
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.005,
+        -1.519,
+        0.961,
+        0.229
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.604,
+        -0.157,
+        0.16,
+        0.16
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.186,
+        0.077,
+        0.596,
+        0.229
+       ],
+       "font_size": 24.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        4.498,
+        2.025,
+        3.926,
+        0.449
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.498,
+        2.025,
+        3.926,
+        0.449
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.76,
+        2.025,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.823,
+        2.025,
+        3.276,
+        0.449
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.05,
+        0.042,
+        8.092,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.005,
+        -0.157,
+        7.827,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        0.042,
+        0.0,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        -1.754,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        -0.955,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        -0.157,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        0.641,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        1.439,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.919,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.614,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.31,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.005,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.701,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.604,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.908,
+        -0.157,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.661,
+        -1.754,
+        0.382,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.972,
+        -0.955,
+        0.355,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.547,
+        0.641,
+        0.154,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.558,
+        1.439,
+        0.177,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -5.919,
+        -0.44,
+        0.355,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.005,
+        -0.439,
+        0.091,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.701,
+        -0.44,
+        0.154,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.908,
+        -0.439,
+        0.177,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.005,
+        0.042,
+        7.827,
+        3.592
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.005,
+        -1.754,
+        0.16,
+        0.16
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.005,
+        -1.519,
+        0.961,
+        0.229
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.604,
+        -0.157,
+        0.16,
+        0.16
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.186,
+        0.077,
+        0.596,
+        0.229
+       ],
+       "font_size": 24.0
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {
@@ -1675,6 +3904,1342 @@
            },
            {
             "type": "MathTex",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "y = \\sin(x)"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "legend[1]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#F0883E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "y = \\cos(x)"
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "layout_choice": {
+         "name": "tick labels the axes keep",
+         "kept": {
+          "xtick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ],
+          "ytick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        },
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[1]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "settle",
+      "label": "graph traced",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "y = \\sin(x)"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "legend[1]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#F0883E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "y = \\cos(x)"
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "layout_choice": {
+         "name": "tick labels the axes keep",
+         "kept": {
+          "xtick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ],
+          "ytick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        },
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[1]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "y = \\sin(x)"
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "legend[1]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#F0883E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "y = \\cos(x)"
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "layout_choice": {
+         "name": "tick labels the axes keep",
+         "kept": {
+          "xtick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ],
+          "ytick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        },
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[1]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "axes"
+      ],
+      "run_time": 1.25
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "animate"
+      ],
+      "targets": [
+       "curve[0]",
+       "legend[0]"
+      ],
+      "run_time": 3.133
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "animate"
+      ],
+      "targets": [
+       "curve[1]",
+       "legend[1]"
+      ],
+      "run_time": 3.117
+     },
+     {
+      "op": "settle",
+      "label": "curves drawn",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "y = \\sin(x)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "legend[1]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#F0883E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "y = \\cos(x)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-2]",
+          "text": "−1.0",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-1]",
+          "text": "−0.5",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-3]",
+          "text": "−6",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-2]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-1]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[1]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[2]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[3]",
+          "text": "6",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[1]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "settle",
+      "label": "graph traced",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "y = \\sin(x)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "legend[1]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#F0883E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "y = \\cos(x)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-2]",
+          "text": "−1.0",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-1]",
+          "text": "−0.5",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-3]",
+          "text": "−6",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-2]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-1]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[1]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[2]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[3]",
+          "text": "6",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[1]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "y = \\sin(x)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "VGroup",
+          "label": "legend[1]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#F0883E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "y = \\cos(x)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-2]",
+          "text": "−1.0",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-1]",
+          "text": "−0.5",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-3]",
+          "text": "−6",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-2]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-1]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[1]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[2]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[3]",
+          "text": "6",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[1]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "axes"
+      ],
+      "run_time": 1.25
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "animate"
+      ],
+      "targets": [
+       "curve[0]",
+       "legend[0]"
+      ],
+      "run_time": 3.133
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "animate"
+      ],
+      "targets": [
+       "curve[1]",
+       "legend[1]"
+      ],
+      "run_time": 3.117
+     },
+     {
+      "op": "settle",
+      "label": "curves drawn",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
             "tex": "y = \\sin(x)",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
@@ -2379,6 +5944,878 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        5.256,
+        1.701,
+        2.411,
+        1.097
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.234,
+        2.051,
+        2.367,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.275,
+        2.051,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.559,
+        2.051,
+        1.717,
+        0.399
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        5.256,
+        1.352,
+        2.411,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.275,
+        1.352,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.581,
+        1.352,
+        1.761,
+        0.399
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        9.053,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        9.053,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        0.0,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        -1.754,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        -0.856,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.94,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        1.838,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.296,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.903,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.51,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.275,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.668,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.061,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.657,
+        -1.754,
+        0.6,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.629,
+        -0.856,
+        0.657,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -5.296,
+        -0.242,
+        0.373,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.903,
+        -0.239,
+        0.382,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.51,
+        0.325,
+        0.355,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.275,
+        0.325,
+        0.154,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.668,
+        -0.239,
+        0.177,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        3.061,
+        0.327,
+        0.167,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        9.053,
+        3.592
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        9.053,
+        3.592
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        5.256,
+        1.701,
+        2.411,
+        1.097
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.234,
+        2.051,
+        2.367,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.275,
+        2.051,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.559,
+        2.051,
+        1.717,
+        0.399
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        5.256,
+        1.352,
+        2.411,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.275,
+        1.352,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.581,
+        1.352,
+        1.761,
+        0.399
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        9.053,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        9.053,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        0.0,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        -1.754,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        -0.856,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.94,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        1.838,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.296,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.903,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.51,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.275,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.668,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.061,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.657,
+        -1.754,
+        0.6,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.629,
+        -0.856,
+        0.657,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -5.296,
+        -0.242,
+        0.373,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.903,
+        -0.239,
+        0.382,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.51,
+        0.325,
+        0.355,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.275,
+        0.325,
+        0.154,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.668,
+        -0.239,
+        0.177,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        3.061,
+        0.327,
+        0.167,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        9.053,
+        3.592
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        9.053,
+        3.592
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        5.256,
+        1.701,
+        2.411,
+        1.097
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.234,
+        2.051,
+        2.367,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.275,
+        2.051,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.559,
+        2.051,
+        1.717,
+        0.399
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        5.256,
+        1.352,
+        2.411,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.275,
+        1.352,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.581,
+        1.352,
+        1.761,
+        0.399
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        9.053,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        9.053,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        0.0,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        -1.754,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        -0.856,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.94,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        1.838,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.296,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.903,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.51,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.275,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.668,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.061,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.657,
+        -1.754,
+        0.6,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.629,
+        -0.856,
+        0.657,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -5.296,
+        -0.242,
+        0.373,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.903,
+        -0.239,
+        0.382,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.51,
+        0.325,
+        0.355,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.275,
+        0.325,
+        0.154,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.668,
+        -0.239,
+        0.177,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        3.061,
+        0.327,
+        0.167,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        9.053,
+        3.592
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.117,
+        0.042,
+        9.053,
+        3.592
+       ],
+       "font_size": null
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {
@@ -3339,6 +7776,602 @@
            },
            {
             "type": "MathTex",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "y = \\tan(x)"
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "layout_choice": {
+         "name": "tick labels the axes keep",
+         "kept": {
+          "xtick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ],
+          "ytick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        },
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "MoveAlongPath"
+      ],
+      "run_time": 1.933
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.967
+     },
+     {
+      "op": "settle",
+      "label": "graph traced",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "y = \\tan(x)"
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "layout_choice": {
+         "name": "tick labels the axes keep",
+         "kept": {
+          "xtick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ],
+          "ytick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        },
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Dot",
+        "label": "marker[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "marker[0].label",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "tan=1",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.583
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0,
+            "tex": "y = \\tan(x)"
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "layout_choice": {
+         "name": "tick labels the axes keep",
+         "kept": {
+          "xtick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ],
+          "ytick": [
+           {
+            "type": "Text",
+            "color": "#8B949E",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        },
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Dot",
+        "label": "marker[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "marker[0].label",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "text": "tan=1",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "axes"
+      ],
+      "run_time": 1.283
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "animate"
+      ],
+      "targets": [
+       "curve[0]",
+       "legend[0]"
+      ],
+      "run_time": 3.233
+     },
+     {
+      "op": "settle",
+      "label": "curves drawn",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
             "tex": "y = \\tan(x)",
             "color": "#E6EDF3",
             "fill_opacity": 1.0,
@@ -3570,12 +8603,848 @@
       "animations": [
        "MoveAlongPath"
       ],
+      "targets": [
+       "marker[0]"
+      ],
       "run_time": 1.933
      },
      {
       "op": "play",
       "animations": [
        "FadeIn"
+      ],
+      "targets": [
+       "marker[0].label"
+      ],
+      "run_time": 0.967
+     },
+     {
+      "op": "settle",
+      "label": "graph traced",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "y = \\tan(x)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-2]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-1]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[1]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[2]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-4]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-3]",
+          "text": "−3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-2]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-1]",
+          "text": "−1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[1]",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[2]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[3]",
+          "text": "3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[4]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Dot",
+        "label": "marker[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "marker[0].label",
+        "text": "tan = 1",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.583
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "y = \\tan(x)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-2]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-1]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[1]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[2]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-4]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-3]",
+          "text": "−3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-2]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-1]",
+          "text": "−1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[1]",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[2]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[3]",
+          "text": "3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[4]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Dot",
+        "label": "marker[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "marker[0].label",
+        "text": "tan = 1",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "axes"
+      ],
+      "run_time": 1.283
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "animate"
+      ],
+      "targets": [
+       "curve[0]",
+       "legend[0]"
+      ],
+      "run_time": 3.233
+     },
+     {
+      "op": "settle",
+      "label": "curves drawn",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "legend",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "legend[0]",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "MathTex",
+            "tex": "y = \\tan(x)",
+            "color": "#E6EDF3",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "axes",
+        "children": [
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Line",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-2]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[-1]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[1]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "ytick[2]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-4]",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-3]",
+          "text": "−3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-2]",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[-1]",
+          "text": "−1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[1]",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[2]",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[3]",
+          "text": "3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "label": "xtick[4]",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VMobject",
+        "label": "curve[0]",
+        "color": "#FFFFFF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "MoveAlongPath"
+      ],
+      "targets": [
+       "marker[0]"
+      ],
+      "run_time": 1.933
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "marker[0].label"
       ],
       "run_time": 0.967
      },
@@ -4122,6 +9991,968 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        5.235,
+        2.051,
+        2.453,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.235,
+        2.051,
+        2.453,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.233,
+        2.051,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.56,
+        2.051,
+        1.803,
+        0.399
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.042,
+        9.286,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.042,
+        9.286,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.042,
+        0.0,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        -1.624,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        -0.791,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.042,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.876,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        1.709,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.403,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.371,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.339,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.308,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.244,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.788,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.819,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.851,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.627,
+        -1.624,
+        0.382,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.613,
+        -0.791,
+        0.355,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.513,
+        0.876,
+        0.154,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.524,
+        1.709,
+        0.177,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -5.403,
+        0.324,
+        0.382,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -4.371,
+        -0.242,
+        0.369,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.339,
+        -0.241,
+        0.355,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.308,
+        0.324,
+        0.293,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.244,
+        -0.239,
+        0.091,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.788,
+        -0.241,
+        0.154,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.819,
+        0.327,
+        0.166,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        2.851,
+        -0.239,
+        0.177,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.042,
+        9.286,
+        4.166
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        5.235,
+        2.051,
+        2.453,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.235,
+        2.051,
+        2.453,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.233,
+        2.051,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.56,
+        2.051,
+        1.803,
+        0.399
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.042,
+        9.286,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.042,
+        9.286,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.042,
+        0.0,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        -1.624,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        -0.791,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.042,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.876,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        1.709,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.403,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.371,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.339,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.308,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.244,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.788,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.819,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.851,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.627,
+        -1.624,
+        0.382,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.613,
+        -0.791,
+        0.355,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.513,
+        0.876,
+        0.154,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.524,
+        1.709,
+        0.177,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -5.403,
+        0.324,
+        0.382,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -4.371,
+        -0.242,
+        0.369,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.339,
+        -0.241,
+        0.355,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.308,
+        0.324,
+        0.293,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.244,
+        -0.239,
+        0.091,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.788,
+        -0.241,
+        0.154,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.819,
+        0.327,
+        0.166,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        2.851,
+        -0.239,
+        0.177,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.042,
+        9.286,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.466,
+        0.459,
+        0.16,
+        0.16
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.337,
+        0.459,
+        1.006,
+        0.247
+       ],
+       "font_size": 24.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        5.235,
+        2.051,
+        2.453,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.235,
+        2.051,
+        2.453,
+        0.399
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.233,
+        2.051,
+        0.45,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.56,
+        2.051,
+        1.803,
+        0.399
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.042,
+        9.286,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.042,
+        9.286,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.042,
+        0.0,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        -1.624,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        -0.791,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.042,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.876,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        1.709,
+        0.12,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.403,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.371,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.339,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.308,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.244,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.788,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.819,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.851,
+        0.042,
+        0.0,
+        0.12
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.627,
+        -1.624,
+        0.382,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.613,
+        -0.791,
+        0.355,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.513,
+        0.876,
+        0.154,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.524,
+        1.709,
+        0.177,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -5.403,
+        0.324,
+        0.382,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -4.371,
+        -0.242,
+        0.369,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.339,
+        -0.241,
+        0.355,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.308,
+        0.324,
+        0.293,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.244,
+        -0.239,
+        0.091,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.788,
+        -0.241,
+        0.154,
+        0.246
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.819,
+        0.327,
+        0.166,
+        0.249
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        2.851,
+        -0.239,
+        0.177,
+        0.243
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.276,
+        0.042,
+        9.286,
+        4.166
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.466,
+        0.459,
+        0.16,
+        0.16
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.337,
+        0.459,
+        1.006,
+        0.247
+       ],
+       "font_size": 24.0
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {

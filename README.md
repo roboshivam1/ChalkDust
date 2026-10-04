@@ -205,13 +205,16 @@ specs are in `examples/`. Every command below was run on the verified Windows ma
 
 `render` validates first (a spec that cannot lay out never costs a TTS call), then runs
 speech for every beat, renders each beat from its measured duration, and assembles. It
-prints one line per beat saying what the cache did:
+prints one line per beat saying what the cache did, plus a line naming the pool when it
+starts one:
 
 ```
-  b01  speech cached  render cached    10.03s  TitleCard
+rendering examples\binary_search.json at final
+  rendering 4 beat(s) across 4 processes
+  b01  speech cached  render rebuilt   10.03s  TitleCard
   ...
-  beats: 4 cached, 0 rebuilt
-wrote out\cs-binary-search-intro-draft.mp4
+  beats: 0 cached, 4 rebuilt
+wrote out\cs-binary-search-intro-final.mp4
 ```
 
 | Option | Applies to | Default |
@@ -219,8 +222,27 @@ wrote out\cs-binary-search-intro-draft.mp4
 | `--quality draft\|final` | `render` | `draft` = 854x480 at 15 fps; `final` = 1920x1080 at 60 fps |
 | `--out PATH` | `render` | `out/<video_id>-<quality>.mp4` |
 | `--cache-dir DIR` | `render` | `.cache` |
+| `-j`, `--jobs N` | `render` | one process per beat that needs rendering, at most the CPU count; a draft render with fewer than 5 beats stays in one process. `--jobs 1` renders one after another in this process; `0` is refused (exit 2) |
 | `--work-dir DIR` | both | `work` |
 | `-v`, `--verbose` | both | off; shows Manim's own logging and progress bars |
+
+**Parallel render (`--jobs`).** `render` renders the beats that miss the cache across
+N processes (`chalkdust/render/pool.py`, ARCHITECTURE.md §4). Cache hits never start a
+worker. With no `--jobs`, it starts one process per beat to render, at most the CPU count,
+except that a draft render of a spec with fewer than five beats (or with fewer than five
+to render) stays in one process: there the pool's start-up costs more than it saves.
+`--jobs 1` renders them one after another in a single process. `RawScene` beats always
+render in the main process, after the pool, since a degraded one's cache slot is known
+only once it renders. The clips, cache keys and finished MP4 are the same whichever you
+pick: here, `cs_hash_table` rendered cold with `--jobs 4` and with `-j 1` into two cache
+dirs gave the same nine keys and byte-identical clips (run as `python -m chalkdust`, which
+is the same entry point).
+
+```powershell
+.venv\Scripts\chalkdust render examples\cs_hash_table.json --jobs 4
+#   rendering 9 beat(s) across 4 processes
+.venv\Scripts\chalkdust render examples\cs_hash_table.json -j 1
+```
 
 ### The examples
 
@@ -232,11 +254,15 @@ wrote out\cs-binary-search-intro-draft.mp4
 | `examples/jee_incline_pulley.json` | 10 | ProblemStatement, SolutionStep, FreeBodyDiagram, AnswerBox, ... | JEE Advanced worked solution |
 | `examples/science_orbits.json` | 9 | VectorField, SplitCompare, UnitBreakdown, GraphPlot, ... | science explainer |
 
-None sets a `voice`, so each speaks in the platform's default voice. Measured here
-(draft, cold cache, Windows SAPI voice): `binary_search` 14.8 s, `completing_the_square`
-22.8 s, `cs_hash_table` 47 s, `science_orbits` 53 s, `jee_incline_pulley` 54 s. The
-`binary_search` render at `final` took 41 s with its speech already cached. Re-running
-`binary_search` at draft with nothing changed took 9.8 s, every beat cached.
+None sets a `voice`, so each speaks in the platform's default voice. Measured after the
+render pool merged, whole command, draft, cold caches and a fresh work dir, Windows SAPI
+voice, default `--jobs`, on a machine that was also running other jobs (one load sample
+right after read 43% CPU), so read them as rough: `binary_search` 20.6 s (4 beats, one process),
+`completing_the_square` 38.8 s, `cs_hash_table` 58.3 s, `science_orbits` 66.9 s,
+`jee_incline_pulley` 98.3 s (10 beats across 10 processes). Speech for every beat is
+synthesised, one beat at a time, before any render starts. The `binary_search`
+render at `final` took 41.1 s with its speech already cached (4 beats across 4 processes).
+Re-running `binary_search` at draft with nothing changed took 12.7 s, every beat cached.
 
 ### What gets written where
 
@@ -245,7 +271,7 @@ None sets a `voice`, so each speaks in the platform's default voice. Measured he
 | `out/<video_id>-<quality>.mp4` | the finished video (`--out` to move it) |
 | `.cache/tts/<key>.wav` | normalised narration, keyed on the text and the *resolved* voice |
 | `.cache/beats/<key>.mp4` | one rendered clip per beat, keyed on everything that determines it: component, params, carry-ins, measured duration, build context, the font-resolved theme, resolution and frame rate, and the mechanical repair plan |
-| `work/manim/` | Manim's scratch, including its text and LaTeX caches (`texts/`, `Tex/`) |
+| `work/manim/` | Manim's scratch, including its text and LaTeX caches (`texts/`, `Tex/`); while a `--jobs` pool runs, `pool/` holds each worker's private copy of those two, removed when the pool is done |
 | `work/assemble/<video_id>-<quality>/` | mux and concat intermediates, deleted after a successful render |
 
 Edit one beat's narration and re-run: only that beat's speech and render are rebuilt
@@ -263,8 +289,8 @@ A failure goes to stderr as `chalkdust: <what>: <detail>`.
 | 2 | usage error (argparse) | a missing `spec` argument or unknown option; observed |
 | 3 | spec invalid | unreadable or non-UTF-8 file, schema error, unknown component or bad params, bad `video_id`, a broken `carry_in` reference; observed (unknown component, missing file, UTF-16 file) |
 | 4 | layout refused | a component cannot fit its content legibly even after mechanical repair (rung 3); observed with six long bullets |
-| 5 | speech failed | backend missing or unusable: Kokoro without its extra, no default voice on this OS, a `rate` SAPI cannot speak; observed (Kokoro) |
-| 6 | render failed | Manim raised while rendering a beat; not reproduced |
+| 5 | speech failed | backend unknown, missing or unusable: Kokoro without its extra, no default voice on this OS, a `rate` SAPI cannot speak. A per-beat failure names the beat (`speech failed: b01: ...`); a voice that cannot be resolved does not (`docs/VOICE.md`); observed (Kokoro, unknown backend) |
+| 6 | render failed | Manim raised while rendering a beat, or a `--jobs` worker process died (the message names the beats that were in flight); not reproduced |
 | 7 | assembly failed | the ffmpeg mux, concat or loudness step failed; not reproduced |
 | 8 | semantic refused | rung 2: narration too short for the animation or too long for one beat (`duration`), more text than the regions hold (`capacity`), LaTeX that does not compile (`invalid_latex`); observed (`duration`, `invalid_latex`) |
 | 9 | directory unusable | `--work-dir` or `--cache-dir` is a file or cannot be created, or the work dir's full path contains `~`; observed |

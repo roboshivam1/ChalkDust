@@ -26,6 +26,9 @@ none.
 Regenerate only on purpose, with a reason; the reason is kept in the file:
 
     python -m chalkdust.validate.snapshot --reason "why" [--component NAME ...]
+
+A component that declares `snapshot_exempt` (RawScene: generated code, no
+fixed visual) has no snapshot; regenerating one is refused.
 """
 
 from __future__ import annotations
@@ -57,6 +60,17 @@ REGION_TOL = 0.05    # a bbox touching a region edge must not flip across fonts
 
 
 # --- capture ----------------------------------------------------------------
+
+
+def snapshot_exempt(name: str) -> str | None:
+    """The component's stated reason for having no snapshot, or None."""
+    return get_component(name).snapshot_exempt or None
+
+
+def snapshotted_names() -> list[str]:
+    """Every registered component that must ship a snapshot."""
+    return [n for n in registered_names() if not snapshot_exempt(n)]
+
 
 
 def fingerprint() -> str:
@@ -212,6 +226,8 @@ def regenerate(name: str, reason: str, directory: Path = DEFAULT_DIR) -> list[st
     are unchanged, and dropped (with a note) where they changed -- it
     describes a layout that no longer exists.
     """
+    if snapshot_exempt(name):
+        raise ValueError(f"{name} is exempt from snapshots: {snapshot_exempt(name)}")
     old = load(name, directory) or {"cases": [], "reasons": []}
     old_cases = old["cases"]
     fp = fingerprint()
@@ -256,8 +272,12 @@ def main(argv: list[str] | None = None) -> int:
     if not args.reason.strip():
         parser.error("--reason must say why")
 
+    exempt = [n for n in args.component or [] if snapshot_exempt(n)]
+    if exempt:
+        parser.error(f"exempt from snapshots: {exempt}")
+
     config.verbosity = "WARNING"
-    for name in args.component or registered_names():
+    for name in args.component or snapshotted_names():
         for note in regenerate(name, args.reason.strip(), args.dir):
             print(note)
         print(f"wrote {snapshot_path(name, args.dir)} [{fingerprint()}]")

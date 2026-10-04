@@ -36,14 +36,16 @@ LIMITATIONS, same register as geometric.py's:
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 
 import numpy as np
 from manim import Mobject
 
+from chalkdust.continuity import ArtifactRecipe, beat_component
 from chalkdust.core.models import BeatSpec, Region
 from chalkdust.scenes.base import ChalkdustScene
-from chalkdust.scenes.components import Component, make_component
+from chalkdust.scenes.components import Component
 from chalkdust.scenes.components.base import wrap_scale
 from chalkdust.scenes.regions import (
     DEFAULT_PADDING,
@@ -259,10 +261,15 @@ class RepairResult:
 
 
 def repair_beat(spec: BeatSpec, theme: Theme | str = "default",
-                duration: float = 8.0) -> RepairResult:
-    """Validate one beat and mechanically repair it if it fails. Never raises."""
+                duration: float = 8.0,
+                recipes: Sequence[ArtifactRecipe] = ()) -> RepairResult:
+    """Validate one beat and mechanically repair it if it fails. Never raises.
+
+    `recipes` are the beat's carried artifacts (SCENE_SPEC.md §6): the probe
+    builds with them on screen, as the render does (continuity.beat_component).
+    """
     try:
-        component = make_component(spec.component, spec.params)
+        component = beat_component(spec, recipes)
     except Exception as exc:
         report = Report(spec.id, [Finding("build_error", f"{type(exc).__name__}: {exc}")])
         return RepairResult(spec.id, RepairPlan(), report, [report])

@@ -53,6 +53,8 @@ def beat_render_key(
     theme: dict[str, Any],
     tier: dict[str, Any],
     repair: dict[str, Any],
+    *,
+    carried: str | None = None,
 ) -> str:
     """A rendered beat depends on the visual spec, how long it must run, the
     build context, the theme it is drawn in, the render tier, and the
@@ -88,7 +90,7 @@ def beat_render_key(
       - narration text: only affects the render via `duration`, already here
       - transition: applied at ffmpeg assembly, not baked into the clip
     """
-    return content_hash(
+    key = content_hash(
         "beat",
         spec.component,
         spec.params,
@@ -99,6 +101,23 @@ def beat_render_key(
         tier,
         repair,
     )
+
+    # --- carry-in term (SCENE_SPEC.md §6) -----------------------------------
+    # A carried artifact is rebuilt from ANOTHER beat's component + params, so
+    # this spec alone does not determine the frame: editing the producing beat
+    # must re-render every beat that carries its artifact. `carried` is
+    # continuity.carry_in_fingerprint(...) of this beat's resolved recipes.
+    # Beats without carry-ins keep their key unchanged. Keyword-only, so a
+    # key term added positionally later can never land in it by accident.
+    if spec.carry_in:
+        if carried is None:
+            raise ValueError(
+                f"{spec.id} carries in {spec.carry_in}; its render key needs "
+                "carried=continuity.carry_in_fingerprint(recipes), or a change "
+                "to the producing beat would serve a stale render"
+            )
+        key = content_hash(key, "carry_in", carried)
+    return key
 
 
 # --- store ------------------------------------------------------------------

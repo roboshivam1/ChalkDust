@@ -10,8 +10,9 @@ import pytest
 from manim import tempconfig
 
 from chalkdust.core.cache import Cache
-from chalkdust.core.models import Beat, BeatSpec, BuildContext, Quality
-from chalkdust.render.worker import render_beat
+from chalkdust.core.models import Beat, BeatSpec, BuildContext, Quality, Video, VideoSpec
+from chalkdust.render.worker import render_beat, render_video
+from chalkdust.scenes.components.raw_scene import USAGE_LOG_NAME
 from chalkdust.validate.geometric import validate_beat
 
 
@@ -72,3 +73,51 @@ def test_render_applies_the_mechanical_repair_plan(tmp_path, off_edge_beat):
                       Cache(tmp_path / "cache"), tmp_path / "work")
 
     assert out.is_file()
+
+
+def _video(spec, duration: float = 1.0) -> Video:
+    video = Video.from_spec(spec)
+    for beat in video.beats:
+        beat.duration = duration
+    return video
+
+
+def test_render_video_renders_carry_in_beat_keyed_on_its_producer(tmp_path,
+                                                                  carry_in_video):
+    # b02 builds only if its carried artifact is on screen (conftest
+    # _Highlight), and its key must move when the producing beat is edited
+    # (SCENE_SPEC.md §6). Before the worker resolved carry-ins this raised
+    # ValueError from beat_render_key.
+    cache, work = Cache(tmp_path / "cache"), tmp_path / "work"
+    first = render_video(_video(carry_in_video("Bucket array")), BuildContext(),
+                         cache, work, verbose=False)
+    edited = render_video(_video(carry_in_video("Bucket list")), BuildContext(),
+                          cache, work, verbose=False)
+
+    assert all(b.render_path.is_file() for b in first.beats + edited.beats)
+    assert first.beats[1].render_path != edited.beats[1].render_path
+
+
+def _raw_beat() -> Beat:
+    beat = Beat(spec=BeatSpec(id="b01", narration="A point traces the curve.",
+                              component="RawScene",
+                              params={"rationale": "needs os", "code": "import os"}))
+    beat.duration = 1.0
+    return beat
+
+
+def test_render_beat_routes_raw_scene_and_degrades(tmp_path):
+    # A RawScene beat used to go to plan_repair / RepairedScene, where
+    # RawScene.build raises RawSceneError(kind="out_of_process").
+    beat = _raw_beat()
+    out = render_beat(beat, "default", BuildContext(), Cache(tmp_path / "cache"),
+                      tmp_path / "work")
+    assert out.is_file() and beat.degraded
+    assert (tmp_path / "work" / USAGE_LOG_NAME).is_file()
+
+
+def test_render_video_routes_raw_scene_and_degrades(tmp_path):
+    video = _video(VideoSpec(video_id="v", beats=(_raw_beat().spec,)))
+    render_video(video, BuildContext(), Cache(tmp_path / "cache"), tmp_path / "work",
+                 verbose=False)
+    assert video.beats[0].degraded and video.beats[0].render_path.is_file()

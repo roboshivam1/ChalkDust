@@ -688,7 +688,8 @@ def render_stage_pooled(video: Video, ctx: BuildContext, cache: Cache, work_dir:
         else:
             finish(index)
 
-    workers = default_jobs(len(pooled)) if jobs is None else min(jobs, len(pooled))
+    workers = (default_jobs(len(pooled), draft=ctx.quality is Quality.DRAFT)
+               if jobs is None else min(jobs, len(pooled)))
     # The pool runs the pipeline's own render_beat -- the same seam the
     # sequential render goes through -- bound to what every beat shares.
     render_fn = partial(render_beat, theme=video.spec.theme, ctx=ctx, cache=cache,
@@ -744,7 +745,9 @@ def render(
     `jobs` is how many processes render beats (ARCHITECTURE.md §4): 1 is the
     sequential render, in this process; N > 1 renders the beats that miss the
     cache across up to N worker processes (render_stage_pooled); None picks N
-    from the CPUs and the number of beats to render (pool.default_jobs). Clips,
+    from the CPUs, the number of beats to render and the quality -- a draft
+    render of fewer than pool.DRAFT_MIN_POOLED beats stays sequential
+    (pool.default_jobs). Clips,
     cache and assembled video are the same whichever is used."""
     if jobs is not None and jobs < 1:
         raise ValueError(f"jobs must be at least 1, or None to choose; got {jobs}")

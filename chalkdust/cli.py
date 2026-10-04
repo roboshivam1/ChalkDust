@@ -92,7 +92,8 @@ def _build_parser() -> argparse.ArgumentParser:
     render.add_argument("-j", "--jobs", type=_jobs, default=None, metavar="N",
                         help="render beats across N processes; 1 renders them one "
                              "after another in this process (default: one per beat "
-                             "that needs rendering, at most the CPU count)")
+                             "that needs rendering, at most the CPU count; at draft, "
+                             "fewer than 5 beats to render stay in one process)")
     return parser
 
 

@@ -197,6 +197,18 @@ def test_default_jobs_is_one_per_pending_beat_at_most_the_cpus():
     assert default_jobs(5, cpus=1) == 1
 
 
+def test_default_jobs_keeps_small_draft_renders_sequential():
+    """Measured (pool.default_jobs): at draft the pool's start-up outweighs
+    the gain below DRAFT_MIN_POOLED beats -- binary_search's 4 beats rendered
+    0.7 s slower pooled -- so auto stays sequential there; final is unchanged."""
+    assert pool.DRAFT_MIN_POOLED == 5
+    for pending in (2, 3, 4):
+        assert default_jobs(pending, cpus=24, draft=True) == 1
+        assert default_jobs(pending, cpus=24) == pending
+    assert default_jobs(5, cpus=24, draft=True) == 5
+    assert default_jobs(40, cpus=24, draft=True) == 24
+
+
 def _raw_twin_spec() -> dict:
     """b01 and b02 from the example, then two RawScene beats certain to
     degrade (a forbidden import each) with the same narration. Their own

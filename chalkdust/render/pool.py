@@ -108,26 +108,41 @@ def available_cpus() -> int:
     return max(1, count or 1)
 
 
-def default_jobs(pending: int, cpus: int | None = None) -> int:
+# At draft (480p15), the fewest beats to render worth starting a pool for.
+# Measured on a quiet 24-core Windows machine (cold caches, 2 runs each; see
+# default_jobs): with 2 beats the pool lost ~1 s every time, with 3 it was a
+# wash, with 4 it lost 0.7 s on binary_search and won ~1 s on others, and from
+# 5 it won every time (1.5-2 s at 5, 7 s at 9-10).
+DRAFT_MIN_POOLED = 5
+
+
+def default_jobs(pending: int, cpus: int | None = None, draft: bool = False) -> int:
     """How many processes to render `pending` beats with, when not told.
 
     One per beat that needs rendering, never more than the CPUs available:
     a Manim render is one busy core (cairo rasterises single-threaded) plus
     the encoder, so beats beyond the core count only queue. Never more than
     `pending` either: an idle worker still pays its spawn and Manim's import.
-    At most one pending beat means no pool at all.
+    At most one pending beat means no pool at all, and so does a `draft`
+    render of fewer than DRAFT_MIN_POOLED beats.
 
-    Measured on a 24-core Windows machine (8 P + 16 E cores, shared with
-    other work): at 1080p60 one process per beat cut the render stage
-    1.6-1.9x for 4-9 beats, well short of the beat count (the longest beat
-    bounds it, and concurrent renders contend; not profiled further). At
-    480p15 a beat renders in about two seconds, so the pool's fixed cost (the
-    cache check here, about 0.3 s a beat, and 4-5 s to start the workers)
-    about cancels the gain for four or five beats -- a few seconds either
-    way, slower on a loaded machine -- and wins from nine (17.1 s -> 9.8 s).
-    `--jobs 1` keeps the sequential path.
+    Measured on a 24-core Windows machine (8 P + 16 E cores), quiet (no other
+    render running), cold render and Manim caches, speech held constant, two
+    runs each. Render stage, --jobs 1 -> this default:
+      - 1080p60: 1.57x for 4 beats (25.8 s -> 16.5 s), 1.67x for 5, 1.8-2.0x
+        for 9-10 (e.g. 124.6 s -> 64.1 s); whole command 1.27-1.47x. Well
+        short of the beat count: the longest beat bounds it, and concurrent
+        renders contend (not profiled further).
+      - 480p15: a beat renders in one to two seconds, so the pool's fixed
+        cost (spawning workers, each importing Manim) is the whole story for
+        small specs: 2 beats +0.9-1.1 s slower, 3 beats -0.2..+0.2 s, 4 beats
+        +0.7 s (binary_search) or -1.0 s (others), 5 beats -1.5..-2.0 s, 9-10
+        beats -6.6..-7.7 s (1.5-1.6x). Hence DRAFT_MIN_POOLED.
+    `--jobs N` is taken as given; `--jobs 1` keeps the sequential path.
     """
     cpus = available_cpus() if cpus is None else max(1, cpus)
+    if draft and pending < DRAFT_MIN_POOLED:
+        return 1
     limit = MAX_WORKERS_WINDOWS if os.name == "nt" else cpus
     return max(1, min(pending, cpus, limit))
 

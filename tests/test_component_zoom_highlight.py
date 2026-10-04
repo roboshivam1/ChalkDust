@@ -30,13 +30,21 @@ from chalkdust.render.worker import TIERS
 from chalkdust.scenes.base import ChalkdustScene, frames_covering
 from chalkdust.scenes.components import get_component, make_component
 from chalkdust.scenes.components.zoom_highlight import (
+    LENS_GAP,
+    LENS_PAD,
     MAX_ZOOM,
     MIN_ZOOM,
     _FIXTURE_LISTS,
     ZoomHighlight,
     _zoom_factor,
 )
-from chalkdust.scenes.regions import LayoutError, bbox, region_rect, smallest_font_size
+from chalkdust.scenes.regions import (
+    DEFAULT_PADDING,
+    LayoutError,
+    bbox,
+    region_rect,
+    smallest_font_size,
+)
 from chalkdust.speech import tts
 from chalkdust.speech.base import run
 from chalkdust.validate.geometric import LayoutProbe
@@ -169,12 +177,25 @@ def test_lens_magnifies_focus_and_recedes_the_rest():
     assert peak(target[1]) == pytest.approx(1.0)
     assert peak(target[2]) == pytest.approx(1.0)
     assert peak(target[0]) < 1 - continuity.DIM_DARKNESS
-    # As far as the lens may magnify the two rows (BulletReveal's pitch makes
-    # their height, not MAX_ZOOM, the limit), and magnified text is tracked at
-    # its magnified size, so legibility is judged on what the viewer sees.
-    zoom = _zoom_factor(bbox(Group(target[1], target[2])), region_rect(Region.STAGE))
+    # As far as the lens may magnify the two rows where it settles, and
+    # magnified text is tracked at its magnified size, so legibility is judged
+    # on what the viewer sees. It settles beside the narrow list, on the right
+    # (why: test_lens_settles_beside_a_narrow_target_hiding_no_unfocused_part),
+    # so its zoom is _settled_lens's "beside" zoom: what LENS_FILL allows over
+    # the focus (BulletReveal's pitch makes the rows' height, not MAX_ZOOM,
+    # that limit), capped by the room between the list and STAGE's right edge.
+    # Which cap binds depends on the font's advance widths: under the fallback
+    # Arial the list is narrow and LENS_FILL binds (x2.17); under the theme's
+    # Inter it is wider and the room beside it binds (x2.03). Both are the
+    # designed magnification, so it is computed here, never a constant.
+    focus = bbox(Group(target[1], target[2]))
+    assert bbox(lens).left > bbox(target).right
+    room = (region_rect(Region.STAGE).inset(DEFAULT_PADDING).right
+            - bbox(target).right - LENS_GAP)
+    zoom = min(_zoom_factor(focus, region_rect(Region.STAGE)),
+               (room - 2 * LENS_PAD) / focus.width)
     assert MIN_ZOOM <= zoom <= MAX_ZOOM
-    assert lens[1].height == pytest.approx(bbox(Group(target[1], target[2])).height * zoom)
+    assert lens[1].height == pytest.approx(focus.height * zoom)
     assert smallest_font_size(lens) == pytest.approx(smallest_font_size(target) * zoom)
     assert region_rect(Region.STAGE).contains(bbox(lens))
     assert region_rect(Region.LOWER_THIRD).contains(bbox(callout))

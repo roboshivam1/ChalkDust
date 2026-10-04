@@ -57,10 +57,23 @@ The TTS cache is keyed on the **resolved** voice (D-004), so the same spec never
 cached audio across platforms. A spec with no `voice` and the same spec spelled out
 (`windows_sapi`, `Microsoft David Desktop`) hash to the same key.
 
-A speech failure of any kind (backend unusable, `rate` out of range, voice not installed)
-surfaces from `chalkdust render` as `chalkdust: speech failed: <beat>: <detail>` with exit
-code 5 (`README.md`, exit codes). `chalkdust validate` never touches speech. On macOS resolution yields exactly the old defaults
-(`macos_say`/`Daniel`), so audio cached before this rule stays valid.
+A speech failure of any kind exits `chalkdust render` with code 5 (`README.md`, exit
+codes), in one of two shapes (`pipeline.render`):
+
+- **Resolution fails**, before any beat is spoken: an unknown `backend` with no
+  `voice_id`, or no `backend` on an OS with no platform default. The message has no beat:
+  `chalkdust: speech failed: unknown TTS backend 'nosuch'; have: ['kokoro', 'macos_say', 'windows_sapi']`.
+- **A beat's synthesis fails** (backend unusable, `rate` out of range, voice not
+  installed, or an unknown `backend` that did name a `voice_id`): the message names the
+  beat, `chalkdust: speech failed: b01: Kokoro backend needs the optional extra: pip install -e ".[kokoro]" (No module named 'kokoro')`.
+
+Both messages were observed on Windows, rendering `binary_search` with a `voice` block
+added (`{"backend": "nosuch"}` and `{"backend": "kokoro"}`); `{"backend": "nosuch",
+"voice_id": "x"}` gave the first message with the `b01: ` prefix. `chalkdust validate`
+never touches speech.
+
+On macOS resolution yields exactly the old defaults (`macos_say`/`Daniel`), so audio
+cached before this rule stays valid.
 
 ## Python 3.13
 

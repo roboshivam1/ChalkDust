@@ -21,11 +21,13 @@ BASE_WPM = 175
 
 class MacOSSay:
     name = "macos_say"
+    # `say` cannot emit WAV, so we declare AIFF: the caller hands us an .aiff
+    # path and normalize_audio converts it afterwards.
+    raw_format = "aiff"
+    default_voice = "Daniel"
 
     def synthesize(self, text: str, voice: VoiceConfig, out_path: Path) -> None:
         require("say")
-        # `say` cannot emit WAV, so the caller hands us an .aiff path and
-        # normalize_audio converts it afterwards.
         run([
             "say",
             "-v", voice.voice_id,

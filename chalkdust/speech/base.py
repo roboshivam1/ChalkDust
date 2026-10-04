@@ -27,13 +27,20 @@ class TTSError(RuntimeError):
 
 
 class TTSBackend(Protocol):
-    """Synthesise `text` to `out_path` as a WAV file.
+    """Synthesise `text` to `out_path`, in the backend's own raw format.
 
-    Backends may write any format ffmpeg can read; normalisation happens
-    afterwards in tts.py.
+    Each engine has a native output (`say` writes AIFF, SAPI and Kokoro WAV),
+    so the backend declares it as `raw_format` -- the file extension the stage
+    gives `out_path`, which is how ffmpeg recognises the file when
+    normalize_audio converts it to the canonical format afterwards in tts.py.
+
+    `default_voice` is used when a spec names no voice_id: voice ids are
+    meaningful only to the backend that owns them (docs/VOICE.md).
     """
 
     name: str
+    raw_format: str
+    default_voice: str
 
     def synthesize(self, text: str, voice: VoiceConfig, out_path: Path) -> None: ...
 
@@ -45,13 +52,20 @@ def require(binary: str) -> str:
     return path
 
 
-def run(cmd: list[str]) -> None:
+def run(cmd: list[str], input: str | None = None) -> None:
     """Run a command, raising with captured stderr on failure.
 
     ffmpeg writes everything to stderr, so a bare CalledProcessError tells you
-    nothing useful. This surfaces the actual message.
+    nothing useful. This surfaces the actual message. `input`, if given, is
+    written to the command's stdin.
+
+    A command that cannot even start (on Windows, e.g. a command line over the
+    32767-character limit, WinError 206) raises TTSError too, not a raw OSError.
     """
-    proc = subprocess.run(cmd, capture_output=True, text=True)
+    try:
+        proc = subprocess.run(cmd, input=input, capture_output=True, text=True)
+    except OSError as e:
+        raise TTSError(f"{cmd[0]} could not be started: {e}") from e
     if proc.returncode != 0:
         tail = proc.stderr.strip().splitlines()[-6:]
         raise TTSError(f"{cmd[0]} failed:\n" + "\n".join(tail))

@@ -236,13 +236,15 @@ class TestRouting:
         assert not ab_y & ba_y
 
 
-def _carry_video(params: dict) -> VideoSpec:
-    """b01 draws `params` and registers it; b02 carries it in."""
+def _carry_video(params: dict, consumer: str) -> VideoSpec:
+    """b01 draws `params` and registers it; b02, the `consumer` (the
+    hold_consumer fixture's), carries it in. A beat that carries an artifact
+    in without acting on it must leave it a free STAGE region (D-G4c-1)."""
     return VideoSpec(video_id="v", beats=(
         BeatSpec(id="b01", narration="placeholder narration",
                  component="BoxFlow", params=params, registers="system"),
         BeatSpec(id="b02", narration="placeholder narration",
-                 component="BulletReveal", params={"items": ["one point"]},
+                 component=consumer, params={"target_id": "system"},
                  carry_in=["system"]),
     ))
 
@@ -251,8 +253,9 @@ class TestCarryIn:
     """A later beat can carry the diagram in (SCENE_SPEC.md §6)."""
 
     def test_carried_diagram_is_the_picture_its_beat_settled_on(self,
-                                                                tmp_path):
-        video = _carry_video(FAN)
+                                                                tmp_path,
+                                                                hold_consumer):
+        video = _carry_video(FAN, hold_consumer)
         recipes = resolve_carry_in(video)["b02"]
         with tempconfig({"media_dir": str(tmp_path)}):
             consumer = LayoutProbe(beat_component(video.beats[1], recipes),
@@ -278,8 +281,8 @@ class TestCarryIn:
         assert len(pa) == len(pb) > 0
         assert all(np.array_equal(x, y) for x, y in zip(pa, pb))
 
-    def test_carry_in_beat_validates_clean(self):
-        video = _carry_video(LOOP)
+    def test_carry_in_beat_validates_clean(self, hold_consumer):
+        video = _carry_video(LOOP, hold_consumer)
         report = validate_beat(video.beats[1], duration=4.0,
                                recipes=resolve_carry_in(video)["b02"])
         assert report.ok, f"\n{report}"

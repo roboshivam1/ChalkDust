@@ -265,14 +265,16 @@ def test_artifact_is_deterministic(tmp_path):
     assert boxes[0] == boxes[1]
 
 
-def test_trace_carries_into_a_later_beat(tmp_path):
+def test_trace_carries_into_a_later_beat(tmp_path, hold_consumer):
     # A trace registered by one beat resolves as a carry-in for the next, and
     # the consuming beat validates clean with it on screen.
+    # Carried into _Hold, a consumer: a beat that carries an artifact in
+    # without acting on it must leave it a free STAGE region (D-G4c-1).
     video = VideoSpec(video_id="v", beats=(
         BeatSpec(id="b01", narration="placeholder narration",
                  component="StepTrace", params=BINARY_SEARCH, registers="trace"),
         BeatSpec(id="b02", narration="placeholder narration",
-                 component="TitleCard", params={"title": "Found it"},
+                 component=hold_consumer, params={"target_id": "trace"},
                  carry_in=["trace"]),
     ))
     recipes = resolve_carry_in(video)["b02"]

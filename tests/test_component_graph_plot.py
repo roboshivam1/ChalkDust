@@ -379,6 +379,11 @@ class _Target(Component):
     def regions(self) -> set[Region]:
         return {Region.STAGE}
 
+    def carried_targets(self) -> list[str]:
+        # Declared, as ZoomHighlight declares it: a consumer gets its carried
+        # artifacts centred in STAGE (continuity.CarryIn).
+        return [self.params.target_id]
+
     def build(self, scene) -> None:
         scene.play(Restore(carried(scene, self.params.target_id)),
                    run_time=scene.budget(1)[0])

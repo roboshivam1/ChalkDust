@@ -4,7 +4,7 @@ A beat may not depend on mobject state left behind by the previous beat, so
 persistence is declarative:
 
     b02: DataStructureViz, registers="bucket_array"
-    b03: SplitCompare,     carry_in=["bucket_array"]   (rendered in STAGE, dimmed)
+    b03: SplitCompare,     carry_in=["bucket_array"]   (refused: see below)
     b04: ZoomHighlight,    carry_in=["bucket_array"], target_id="bucket_array"
 
 A carried artifact is never serialised. It is RE-BUILT in the consuming beat
@@ -20,6 +20,21 @@ Flow:
     scene   = ChalkdustScene(beat_component(spec, recipes), ...)
     # inside a component's build():  target = carried(scene, "bucket_array")
 
+Where a carried artifact goes depends on whether the beat's component acts
+on it (register D-G4c-1):
+
+  - A consumer (a component whose carried_targets() is non-empty: Callout,
+    ZoomHighlight) gets every carried artifact centred in STAGE, dimmed, and
+    lays the frame out around them itself.
+  - Any other component does not know the artifact is there, so it would
+    draw over it. Its carried artifacts go, dimmed, into the STAGE region it
+    does not claim (carry_region): STAGE_RIGHT beside a STAGE_LEFT
+    component, and the reverse. SCENE_SPEC.md §4 (no two claimants share a
+    region) and §11 rule 1 (never render broken) govern §6's illustrative
+    "rendered in STAGE, dimmed". A component that claims STAGE, or both
+    halves, leaves no region free, and the semantic rung refuses the beat as
+    a region_conflict before any speech or render (carry_region_problems).
+
 This module deliberately does not import the component package at load time:
 components import `artifact_builder` and `carried` from here, so a top-level
 import the other way would be circular.
@@ -27,7 +42,7 @@ import the other way would be circular.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from typing import TYPE_CHECKING, Any
 
 from manim import Mobject
@@ -36,7 +51,7 @@ from pydantic import BaseModel
 from chalkdust.core.cache import content_hash
 from chalkdust.core.models import BeatSpec, CarryInError, Region, VideoSpec
 from chalkdust.core.version import COMPONENT_LIBRARY_VERSION
-from chalkdust.scenes.regions import fit_to_region
+from chalkdust.scenes.regions import LayoutError, Rect, fit_to_region, region_rect
 from chalkdust.scenes.theme import Theme
 
 if TYPE_CHECKING:
@@ -47,6 +62,12 @@ if TYPE_CHECKING:
 # its subject; a component that wants it back at full strength plays
 # Restore(target) -- the undimmed state is saved before dimming.
 DIM_DARKNESS = 0.65
+
+# Names the placement rule for the render key (carry_in_fingerprint). Where a
+# carried artifact lands is a function of the consuming beat's component and
+# params -- already in the key -- and of this rule. Change the rule, change
+# this, and every carry-in render re-keys (D-004).
+PLACEMENT_RULE = "consumer:stage/other:free-stage-region"
 
 ArtifactBuilder = Callable[["ComponentParams", Theme], Mobject]
 
@@ -202,13 +223,93 @@ def carry_in_fingerprint(recipes: Sequence[ArtifactRecipe]) -> str:
 
     Covers the producing component, its construction params, and the library
     version whose builder code turns them into a mobject. Order is kept:
-    carry_in order is draw order.
+    carry_in order is draw order, and row order in a free region.
+
+    Placement is the rest of what decides the frame. It is a function of the
+    consuming beat's component and params (whether it is a consumer, and
+    carry_region of its regions()), which beat_render_key already hashes as
+    the beat's own spec, and of the rule itself: PLACEMENT_RULE.
     """
     return content_hash(
         "carry_in",
         [r.model_dump(mode="json") for r in recipes],
         COMPONENT_LIBRARY_VERSION,
+        PLACEMENT_RULE,
     )
+
+
+# --- placement --------------------------------------------------------------
+
+
+def is_consumer(component: Component) -> bool:
+    """Whether `component` acts on what it carries in (Callout, ZoomHighlight).
+
+    Declared, not detected: carried_targets() is every name build() fetches
+    with carried(). A consumer lays the frame out around all of its carried
+    artifacts itself (ZoomHighlight bands the others, Callout refuses them);
+    every other component gets them placed clear of its own regions.
+    """
+    return bool(component.carried_targets())
+
+
+def carry_region(claimed: Iterable[Region]) -> Region | None:
+    """The STAGE region a component claiming `claimed` leaves free, or None.
+
+    STAGE_RIGHT beside a STAGE_LEFT component and the reverse; all of STAGE
+    for a component that claims neither half (one that lives in TITLE_BAR or
+    LOWER_THIRD only). None when it claims STAGE or both halves: there is
+    nowhere on the stage the artifact would not sit under the component
+    (SCENE_SPEC.md §4).
+    """
+    claimed = set(claimed)
+    if Region.STAGE in claimed:
+        return None
+    left, right = Region.STAGE_LEFT in claimed, Region.STAGE_RIGHT in claimed
+    if left and right:
+        return None
+    if left:
+        return Region.STAGE_RIGHT
+    if right:
+        return Region.STAGE_LEFT
+    return Region.STAGE
+
+
+def carry_slots(region: Region, count: int) -> list[Rect]:
+    """`count` equal rows of `region`, top to bottom, one per carried
+    artifact in carry_in order. §6 keeps the carry-in set small; past one
+    artifact each gets a share of the free region, and the legibility floor
+    decides whether that share is enough."""
+    rect = region_rect(region)
+    h = rect.height / count
+    return [Rect(rect.x, rect.top - (i + 0.5) * h, rect.width, h)
+            for i in range(count)]
+
+
+def carry_region_problems(component: Component, carry_in: Sequence[str]) -> list[str]:
+    """Why `component` cannot have `carry_in` drawn beside it; [] when it can.
+
+    The semantic rung's half of the placement rule (CarryIn.build is the
+    other half): a component that does not act on its carried artifacts and
+    claims the whole stage leaves them nowhere to go but underneath it --
+    the overlap register D-G4c-1 found in every such beat.
+    """
+    if not carry_in or is_consumer(component):
+        return []
+    claimed = component.regions()
+    if carry_region(claimed) is not None:
+        return []
+    names = ", ".join(repr(n) for n in carry_in)
+    regions = ", ".join(sorted(r.value for r in claimed))
+    one = len(carry_in) == 1
+    return [
+        f"{component.name} carries in {names} but does not act on "
+        f"{'it' if one else 'them'}. A carried artifact the component does "
+        f"not act on is drawn dimmed in a STAGE region the component leaves "
+        f"free (stage_left or stage_right), and {component.name} claims "
+        f"{regions}, which leaves none: {names} would sit under it. Drop "
+        f"{names} from this beat's carry_in, or act on "
+        f"{'it' if one else 'them'} with ZoomHighlight or Callout."
+    ]
 
 
 # --- scene level ------------------------------------------------------------
@@ -231,24 +332,62 @@ class CarryIn:
     goes straight into ChalkdustScene or LayoutProbe. Artifacts appear at
     t=0 with no animation: the previous beat already showed them, and a cut
     should feel like the picture persisted.
+
+    Placement (see the module docstring): a consumer's artifacts are centred
+    in STAGE; anyone else's are fitted, one row each, into the STAGE region
+    the component leaves free (carry_region), and tagged
+    `_chalk_carry_clear` so the geometric probe checks that nothing of the
+    component's is drawn over them (geometric.LayoutProbe.settle).
     """
 
     def __init__(self, component: Component, recipes: Sequence[ArtifactRecipe]) -> None:
         self.component = component
         self.recipes = tuple(recipes)
 
+    def placement(self) -> Region | None:
+        """Where the carried artifacts go: STAGE for a consumer, else the
+        region the component leaves free; None when it leaves none."""
+        if is_consumer(self.component):
+            return Region.STAGE
+        return carry_region(self.component.regions())
+
     def regions(self) -> set[Region]:
-        return self.component.regions() | {Region.STAGE}
+        return self.component.regions() | {self.placement() or Region.STAGE}
 
     def build(self, scene: ChalkdustScene) -> None:
+        consumer = is_consumer(self.component)
+        region = self.placement()
+        if region is None:
+            # The semantic rung refuses this beat before anything is built;
+            # this is the backstop for a caller that skipped it, typed as
+            # that rung types it.
+            names = [r.name for r in self.recipes]
+            raise LayoutError(carry_region_problems(self.component, names)[0],
+                              kind="region_conflict")
+        slots = ([region_rect(region)] * len(self.recipes) if consumer
+                 else carry_slots(region, len(self.recipes)))
         artifacts: dict[str, Mobject] = {}
-        for recipe in self.recipes:
+        for recipe, slot in zip(self.recipes, slots, strict=True):
             mob = build_artifact(recipe, scene.theme)
-            fit_to_region(mob, Region.STAGE)
+            try:
+                fit_to_region(mob, slot)
+            except LayoutError as exc:
+                if consumer:
+                    raise
+                # Same kind (overflow: a clean refusal), but naming the
+                # artifact and the region it was given, not just the text.
+                raise LayoutError(
+                    f"carried {recipe.name!r} ({recipe.producer}) does not fit "
+                    f"legibly in {region.value}, the STAGE region "
+                    f"{self.component.name} leaves free for it: {exc}",
+                    kind=exc.kind,
+                ) from exc
             mob.save_state()  # full strength, for Restore(target)
             # fade() scales each part's existing opacity; set_opacity() would
             # flatten them and fill in shapes that are meant to be outlines.
             mob.fade(DIM_DARKNESS)
+            if not consumer:
+                mob._chalk_carry_clear = True  # type: ignore[attr-defined]
             scene.add(mob)
             artifacts[recipe.name] = mob
         scene._chalk_carried = artifacts  # type: ignore[attr-defined]
@@ -264,7 +403,7 @@ def beat_component(spec: BeatSpec, recipes: Sequence[ArtifactRecipe]) -> Compone
 
 
 def carried(scene: ChalkdustScene, name: str) -> Mobject:
-    """The carried artifact `name`, already placed in STAGE and dimmed.
+    """The carried artifact `name`, already placed and dimmed (CarryIn).
 
     For components that act on something already on screen (ZoomHighlight,
     Callout): their `target_id` is a carry-in name. Raises CarryInError if

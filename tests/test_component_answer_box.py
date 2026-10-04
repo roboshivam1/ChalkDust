@@ -297,16 +297,18 @@ def test_carried_artifact_is_the_settled_answer(params):
             getattr(seen[name], "_chalk_font_size", None)), name
 
 
-def test_answer_carries_into_a_later_beat():
+def test_answer_carries_into_a_later_beat(hold_consumer):
     # An AnswerBox beat can register its answer and a later beat carry it in:
     # the spec resolves (an AnswerBox producer has a builder), and the carried
     # answer passes the layout ladder in the consuming beat, at its own font
     # sizes. Where the consumer draws relative to it is the consumer's job.
+    # Carried into _Hold, a consumer: a beat that carries an artifact in
+    # without acting on it must leave it a free STAGE region (D-G4c-1).
     video = VideoSpec(video_id="v", beats=(
         BeatSpec(id="b01", narration="placeholder narration", component=NAME,
                  params=EXAMPLES[0], registers="answer"),
         BeatSpec(id="b02", narration="placeholder narration",
-                 component="BulletReveal", params={"items": ["check the units"]},
+                 component=hold_consumer, params={"target_id": "answer"},
                  carry_in=["answer"]),
     ))
     recipes = resolve_carry_in(video)["b02"]

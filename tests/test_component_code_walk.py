@@ -558,12 +558,14 @@ class TestCarryIn:
             self._artifact(params)
         assert info.value.kind == UNRENDERABLE_TEXT
 
-    def test_carried_listing_validates_in_a_later_beat(self):
+    def test_carried_listing_validates_in_a_later_beat(self, hold_consumer):
+        # Carried into _Hold, a consumer: a beat that carries an artifact in
+        # without acting on it must leave it a free STAGE region (D-G4c-1).
         video = VideoSpec(video_id="v", beats=(
             BeatSpec(id="b01", narration="placeholder narration",
                      component="CodeWalk", params=EXAMPLES[1], registers="listing"),
             BeatSpec(id="b02", narration="placeholder narration",
-                     component="BulletReveal", params={"items": ["one point"]},
+                     component=hold_consumer, params={"target_id": "listing"},
                      carry_in=["listing"]),
         ))
         recipes = resolve_carry_in(video)["b02"]

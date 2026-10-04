@@ -1,0 +1,1925 @@
+{
+ "component": "SolutionStep",
+ "manim_version": "0.21.0",
+ "reasons": [
+  "SolutionStep merged"
+ ],
+ "cases": [
+  {
+   "params": {
+    "n": 2,
+    "claim": "Find the acceleration of the block along the incline",
+    "work": [
+     "mg\\sin\\theta = ma",
+     "a = g\\sin\\theta = 9.8 \\times \\tfrac{1}{2} = 4.9\\ \\mathrm{m\\,s^{-2}}"
+    ],
+    "justification": "Newton's second law along the incline; the surface is smooth, so no friction acts"
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.75
+     },
+     {
+      "op": "settle",
+      "label": "claim",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "header",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "badge",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "2",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Text",
+          "label": "claim",
+          "text": "Find the acceleration of the block along the\nincline",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "title_bar"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Write"
+      ],
+      "run_time": 1.75
+     },
+     {
+      "op": "settle",
+      "label": "work[0]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "header",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "badge",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "2",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Text",
+          "label": "claim",
+          "text": "Find the acceleration of the block along the\nincline",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "title_bar"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "work[0]",
+        "tex": "mg\\sin\\theta = ma",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.867
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Write"
+      ],
+      "run_time": 1.733
+     },
+     {
+      "op": "settle",
+      "label": "work[1]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "header",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "badge",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "2",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Text",
+          "label": "claim",
+          "text": "Find the acceleration of the block along the\nincline",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "title_bar"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "work[0]",
+        "tex": "mg\\sin\\theta = ma",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "work[1]",
+        "tex": "a = g\\sin\\theta = 9.8 \\times \\tfrac{1}{2} = 4.9\\ \\mathrm{m\\,s^{-2}}",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.867
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.3
+     },
+     {
+      "op": "settle",
+      "label": "justification",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "header",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "badge",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "2",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Text",
+          "label": "claim",
+          "text": "Find the acceleration of the block along the\nincline",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "title_bar"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "work[0]",
+        "tex": "mg\\sin\\theta = ma",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "work[1]",
+        "tex": "a = g\\sin\\theta = 9.8 \\times \\tfrac{1}{2} = 4.9\\ \\mathrm{m\\,s^{-2}}",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "justification",
+        "text": "Newton's second law along the incline; the surface is smooth, so\nno friction acts",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.733
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "header",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "badge",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "2",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Text",
+          "label": "claim",
+          "text": "Find the acceleration of the block along the\nincline",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "title_bar"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "work[0]",
+        "tex": "mg\\sin\\theta = ma",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "work[1]",
+        "tex": "a = g\\sin\\theta = 9.8 \\times \\tfrac{1}{2} = 4.9\\ \\mathrm{m\\,s^{-2}}",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "justification",
+        "text": "Newton's second law along the incline; the surface is smooth, so\nno friction acts",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        -0.62,
+        3.0,
+        11.683,
+        0.9
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.15,
+        3.0,
+        0.623,
+        0.623
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.15,
+        3.0,
+        0.623,
+        0.623
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.15,
+        3.0,
+        0.252,
+        0.377
+       ],
+       "font_size": 37.78
+      },
+      {
+       "bbox": [
+        -0.158,
+        3.0,
+        10.759,
+        0.9
+       ],
+       "font_size": 37.78
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.62,
+        3.0,
+        11.683,
+        0.9
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.15,
+        3.0,
+        0.623,
+        0.623
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.15,
+        3.0,
+        0.623,
+        0.623
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.15,
+        3.0,
+        0.252,
+        0.377
+       ],
+       "font_size": 37.78
+      },
+      {
+       "bbox": [
+        -0.158,
+        3.0,
+        10.759,
+        0.9
+       ],
+       "font_size": 37.78
+      },
+      {
+       "bbox": [
+        0.0,
+        0.489,
+        3.359,
+        0.499
+       ],
+       "font_size": 44.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.62,
+        3.0,
+        11.683,
+        0.9
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.15,
+        3.0,
+        0.623,
+        0.623
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.15,
+        3.0,
+        0.623,
+        0.623
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.15,
+        3.0,
+        0.252,
+        0.377
+       ],
+       "font_size": 37.78
+      },
+      {
+       "bbox": [
+        -0.158,
+        3.0,
+        10.759,
+        0.9
+       ],
+       "font_size": 37.78
+      },
+      {
+       "bbox": [
+        0.0,
+        0.489,
+        3.359,
+        0.499
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.604,
+        7.771,
+        0.67
+       ],
+       "font_size": 44.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.62,
+        3.0,
+        11.683,
+        0.9
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.15,
+        3.0,
+        0.623,
+        0.623
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.15,
+        3.0,
+        0.623,
+        0.623
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.15,
+        3.0,
+        0.252,
+        0.377
+       ],
+       "font_size": 37.78
+      },
+      {
+       "bbox": [
+        -0.158,
+        3.0,
+        10.759,
+        0.9
+       ],
+       "font_size": 37.78
+      },
+      {
+       "bbox": [
+        0.0,
+        0.489,
+        3.359,
+        0.499
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.604,
+        7.771,
+        0.67
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        11.605,
+        0.7
+       ],
+       "font_size": 29.38
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.62,
+        3.0,
+        11.683,
+        0.9
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.15,
+        3.0,
+        0.623,
+        0.623
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.15,
+        3.0,
+        0.623,
+        0.623
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.15,
+        3.0,
+        0.252,
+        0.377
+       ],
+       "font_size": 37.78
+      },
+      {
+       "bbox": [
+        -0.158,
+        3.0,
+        10.759,
+        0.9
+       ],
+       "font_size": 37.78
+      },
+      {
+       "bbox": [
+        0.0,
+        0.489,
+        3.359,
+        0.499
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.604,
+        7.771,
+        0.67
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        11.605,
+        0.7
+       ],
+       "font_size": 29.38
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "n": 3,
+    "claim": "Substitute the roots into the sum",
+    "work": [
+     "\\alpha + \\beta = -\\frac{b}{a} = -\\frac{-7}{2} = \\frac{7}{2}"
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 2.867
+     },
+     {
+      "op": "settle",
+      "label": "claim",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "header",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "badge",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "3",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Text",
+          "label": "claim",
+          "text": "Substitute the roots into the sum",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "title_bar"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Write"
+      ],
+      "run_time": 2.85
+     },
+     {
+      "op": "settle",
+      "label": "work[0]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "header",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "badge",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "3",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Text",
+          "label": "claim",
+          "text": "Substitute the roots into the sum",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "title_bar"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "work[0]",
+        "tex": "\\alpha + \\beta = -\\frac{b}{a} = -\\frac{-7}{2} = \\frac{7}{2}",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.433
+     },
+     {
+      "op": "wait",
+      "duration": 2.85
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "header",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "badge",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "3",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Text",
+          "label": "claim",
+          "text": "Substitute the roots into the sum",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "title_bar"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "work[0]",
+        "tex": "\\alpha + \\beta = -\\frac{b}{a} = -\\frac{-7}{2} = \\frac{7}{2}",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        -1.163,
+        3.0,
+        10.595,
+        0.733
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.095,
+        3.0,
+        0.733,
+        0.733
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.095,
+        3.0,
+        0.733,
+        0.733
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.095,
+        3.0,
+        0.291,
+        0.447
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -0.622,
+        3.0,
+        9.512,
+        0.453
+       ],
+       "font_size": 44.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -1.163,
+        3.0,
+        10.595,
+        0.733
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.095,
+        3.0,
+        0.733,
+        0.733
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.095,
+        3.0,
+        0.733,
+        0.733
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.095,
+        3.0,
+        0.291,
+        0.447
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -0.622,
+        3.0,
+        9.512,
+        0.453
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.975,
+        1.133
+       ],
+       "font_size": 44.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -1.163,
+        3.0,
+        10.595,
+        0.733
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.095,
+        3.0,
+        0.733,
+        0.733
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.095,
+        3.0,
+        0.733,
+        0.733
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.095,
+        3.0,
+        0.291,
+        0.447
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        -0.622,
+        3.0,
+        9.512,
+        0.453
+       ],
+       "font_size": 44.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.1,
+        5.975,
+        1.133
+       ],
+       "font_size": 44.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "n": 1,
+    "claim": "Decide whether friction is static or kinetic",
+    "work": [
+     "The applied force is 8 N.",
+     "Limiting friction is mu N = 0.5 x 20 = 10 N.",
+     "8 N < 10 N, so the block stays at rest."
+    ],
+    "work_format": "text",
+    "justification": "Friction only becomes kinetic once the applied force exceeds the limiting value"
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.383
+     },
+     {
+      "op": "settle",
+      "label": "claim",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "header",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "badge",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "1",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Text",
+          "label": "claim",
+          "text": "Decide whether friction is static or kinetic",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "title_bar"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.383
+     },
+     {
+      "op": "settle",
+      "label": "work[0]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "header",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "badge",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "1",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Text",
+          "label": "claim",
+          "text": "Decide whether friction is static or kinetic",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "title_bar"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "work[0]",
+        "text": "The applied force is 8 N.",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.683
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.383
+     },
+     {
+      "op": "settle",
+      "label": "work[1]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "header",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "badge",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "1",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Text",
+          "label": "claim",
+          "text": "Decide whether friction is static or kinetic",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "title_bar"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "work[0]",
+        "text": "The applied force is 8 N.",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "work[1]",
+        "text": "Limiting friction is mu N = 0.5 x 20 = 10 N.",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.683
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.383
+     },
+     {
+      "op": "settle",
+      "label": "work[2]",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "header",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "badge",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "1",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Text",
+          "label": "claim",
+          "text": "Decide whether friction is static or kinetic",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "title_bar"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "work[0]",
+        "text": "The applied force is 8 N.",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "work[1]",
+        "text": "Limiting friction is mu N = 0.5 x 20 = 10 N.",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "work[2]",
+        "text": "8 N < 10 N, so the block stays at rest.",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 0.683
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.033
+     },
+     {
+      "op": "settle",
+      "label": "justification",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "header",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "badge",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "1",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Text",
+          "label": "claim",
+          "text": "Decide whether friction is static or kinetic",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "title_bar"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "work[0]",
+        "text": "The applied force is 8 N.",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "work[1]",
+        "text": "Limiting friction is mu N = 0.5 x 20 = 10 N.",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "work[2]",
+        "text": "8 N < 10 N, so the block stays at rest.",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "justification",
+        "text": "Friction only becomes kinetic once the applied force exceeds the\nlimiting value",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.383
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "header",
+        "children": [
+         {
+          "type": "VGroup",
+          "label": "badge",
+          "children": [
+           {
+            "type": "Circle",
+            "color": "#58A6FF",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Text",
+            "text": "1",
+            "color": "#58A6FF",
+            "fill_opacity": 1.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         },
+         {
+          "type": "Text",
+          "label": "claim",
+          "text": "Decide whether friction is static or kinetic",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "title_bar"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "work[0]",
+        "text": "The applied force is 8 N.",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "work[1]",
+        "text": "Limiting friction is mu N = 0.5 x 20 = 10 N.",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "work[2]",
+        "text": "8 N < 10 N, so the block stays at rest.",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "justification",
+        "text": "Friction only becomes kinetic once the applied force exceeds the\nlimiting value",
+        "color": "#8B949E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "lower_third"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        3.0,
+        12.922,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.103,
+        3.0,
+        0.715,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.103,
+        3.0,
+        0.715,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.103,
+        3.0,
+        0.189,
+        0.433
+       ],
+       "font_size": 43.38
+      },
+      {
+       "bbox": [
+        0.53,
+        3.0,
+        11.862,
+        0.446
+       ],
+       "font_size": 43.38
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        3.0,
+        12.922,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.103,
+        3.0,
+        0.715,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.103,
+        3.0,
+        0.715,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.103,
+        3.0,
+        0.189,
+        0.433
+       ],
+       "font_size": 43.38
+      },
+      {
+       "bbox": [
+        0.53,
+        3.0,
+        11.862,
+        0.446
+       ],
+       "font_size": 43.38
+      },
+      {
+       "bbox": [
+        -1.705,
+        0.824,
+        4.768,
+        0.412
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        3.0,
+        12.922,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.103,
+        3.0,
+        0.715,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.103,
+        3.0,
+        0.715,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.103,
+        3.0,
+        0.189,
+        0.433
+       ],
+       "font_size": 43.38
+      },
+      {
+       "bbox": [
+        0.53,
+        3.0,
+        11.862,
+        0.446
+       ],
+       "font_size": 43.38
+      },
+      {
+       "bbox": [
+        -1.705,
+        0.824,
+        4.768,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.099,
+        8.179,
+        0.417
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        3.0,
+        12.922,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.103,
+        3.0,
+        0.715,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.103,
+        3.0,
+        0.715,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.103,
+        3.0,
+        0.189,
+        0.433
+       ],
+       "font_size": 43.38
+      },
+      {
+       "bbox": [
+        0.53,
+        3.0,
+        11.862,
+        0.446
+       ],
+       "font_size": 43.38
+      },
+      {
+       "bbox": [
+        -1.705,
+        0.824,
+        4.768,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.099,
+        8.179,
+        0.417
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.419,
+        -1.024,
+        7.342,
+        0.413
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        3.0,
+        12.922,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.103,
+        3.0,
+        0.715,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.103,
+        3.0,
+        0.715,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.103,
+        3.0,
+        0.189,
+        0.433
+       ],
+       "font_size": 43.38
+      },
+      {
+       "bbox": [
+        0.53,
+        3.0,
+        11.862,
+        0.446
+       ],
+       "font_size": 43.38
+      },
+      {
+       "bbox": [
+        -1.705,
+        0.824,
+        4.768,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.099,
+        8.179,
+        0.417
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.419,
+        -1.024,
+        7.342,
+        0.413
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        10.432,
+        0.7
+       ],
+       "font_size": 26.33
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        3.0,
+        12.922,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.103,
+        3.0,
+        0.715,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.103,
+        3.0,
+        0.715,
+        0.715
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -6.103,
+        3.0,
+        0.189,
+        0.433
+       ],
+       "font_size": 43.38
+      },
+      {
+       "bbox": [
+        0.53,
+        3.0,
+        11.862,
+        0.446
+       ],
+       "font_size": 43.38
+      },
+      {
+       "bbox": [
+        -1.705,
+        0.824,
+        4.768,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.099,
+        8.179,
+        0.417
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.419,
+        -1.024,
+        7.342,
+        0.413
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -3.1,
+        10.432,
+        0.7
+       ],
+       "font_size": 26.33
+      }
+     ]
+    ]
+   }
+  }
+ ]
+}

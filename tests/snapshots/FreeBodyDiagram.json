@@ -1,0 +1,3204 @@
+{
+ "component": "FreeBodyDiagram",
+ "manim_version": "0.21.0",
+ "reasons": [
+  "FreeBodyDiagram merged"
+ ],
+ "cases": [
+  {
+   "params": {
+    "body": "2 kg block",
+    "forces": [
+     {
+      "label": "mg",
+      "angle": 270,
+      "magnitude": 19.6
+     },
+     {
+      "label": "N",
+      "angle": 90,
+      "magnitude": 19.6
+     },
+     {
+      "label": "T",
+      "angle": 0,
+      "magnitude": 10
+     },
+     {
+      "label": "f_k",
+      "angle": 180,
+      "magnitude": 4
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "body",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2 kg block",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "force 0",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2 kg block",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "force 1",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2 kg block",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "N",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "force 2",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2 kg block",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "N",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "tex": "T",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.567
+     },
+     {
+      "op": "settle",
+      "label": "force 3",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2 kg block",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "N",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "tex": "T",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[3]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[3]",
+        "tex": "f_k",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.1
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2 kg block",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "N",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "tex": "T",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[3]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[3]",
+        "tex": "f_k",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.325,
+        1.128
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.325,
+        1.128
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        1.76,
+        0.366
+       ],
+       "font_size": 28.36
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.325,
+        1.128
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.325,
+        1.128
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        1.76,
+        0.366
+       ],
+       "font_size": 28.36
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.375,
+        0.226,
+        1.41
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.968,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -2.336,
+        0.467,
+        0.229
+       ],
+       "font_size": 28.36
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.325,
+        1.128
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.325,
+        1.128
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        1.76,
+        0.366
+       ],
+       "font_size": 28.36
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.375,
+        0.226,
+        1.41
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.968,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -2.336,
+        0.467,
+        0.229
+       ],
+       "font_size": 28.36
+      },
+      {
+       "bbox": [
+        -0.086,
+        1.163,
+        0.226,
+        1.41
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        1.755,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        2.129,
+        0.297,
+        0.241
+       ],
+       "font_size": 28.36
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.325,
+        1.128
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.325,
+        1.128
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        1.76,
+        0.366
+       ],
+       "font_size": 28.36
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.375,
+        0.226,
+        1.41
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.968,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -2.336,
+        0.467,
+        0.229
+       ],
+       "font_size": 28.36
+      },
+      {
+       "bbox": [
+        -0.086,
+        1.163,
+        0.226,
+        1.41
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        1.755,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        2.129,
+        0.297,
+        0.241
+       ],
+       "font_size": 28.36
+      },
+      {
+       "bbox": [
+        1.436,
+        -0.106,
+        0.719,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.683,
+        -0.106,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.057,
+        -0.106,
+        0.24,
+        0.239
+       ],
+       "font_size": 28.36
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.325,
+        1.128
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.325,
+        1.128
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        1.76,
+        0.366
+       ],
+       "font_size": 28.36
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.375,
+        0.226,
+        1.41
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.968,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -2.336,
+        0.467,
+        0.229
+       ],
+       "font_size": 28.36
+      },
+      {
+       "bbox": [
+        -0.086,
+        1.163,
+        0.226,
+        1.41
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        1.755,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        2.129,
+        0.297,
+        0.241
+       ],
+       "font_size": 28.36
+      },
+      {
+       "bbox": [
+        1.436,
+        -0.106,
+        0.719,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.683,
+        -0.106,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.057,
+        -0.106,
+        0.24,
+        0.239
+       ],
+       "font_size": 28.36
+      },
+      {
+       "bbox": [
+        -1.495,
+        -0.106,
+        0.494,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.629,
+        -0.106,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.03,
+        -0.106,
+        0.294,
+        0.321
+       ],
+       "font_size": 28.36
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.325,
+        1.128
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.325,
+        1.128
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        1.76,
+        0.366
+       ],
+       "font_size": 28.36
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.375,
+        0.226,
+        1.41
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.968,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -2.336,
+        0.467,
+        0.229
+       ],
+       "font_size": 28.36
+      },
+      {
+       "bbox": [
+        -0.086,
+        1.163,
+        0.226,
+        1.41
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        1.755,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        2.129,
+        0.297,
+        0.241
+       ],
+       "font_size": 28.36
+      },
+      {
+       "bbox": [
+        1.436,
+        -0.106,
+        0.719,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.683,
+        -0.106,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.057,
+        -0.106,
+        0.24,
+        0.239
+       ],
+       "font_size": 28.36
+      },
+      {
+       "bbox": [
+        -1.495,
+        -0.106,
+        0.494,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.629,
+        -0.106,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.03,
+        -0.106,
+        0.294,
+        0.321
+       ],
+       "font_size": 28.36
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "body": "m",
+    "forces": [
+     {
+      "label": "mg",
+      "angle": -90,
+      "magnitude": 10
+     },
+     {
+      "label": "N",
+      "angle": 120,
+      "magnitude": 8.66
+     },
+     {
+      "label": "f_s",
+      "angle": 30,
+      "magnitude": 5
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.883
+     },
+     {
+      "op": "settle",
+      "label": "body",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "m",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.883
+     },
+     {
+      "op": "settle",
+      "label": "force 0",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "m",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.867
+     },
+     {
+      "op": "settle",
+      "label": "force 1",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "m",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "N",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.867
+     },
+     {
+      "op": "settle",
+      "label": "force 2",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "m",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "N",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "tex": "f_s",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "m",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "N",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "tex": "f_s",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        -0.193,
+        0.075,
+        1.215,
+        1.215
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.075,
+        1.215,
+        1.215
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.075,
+        0.298,
+        0.225
+       ],
+       "font_size": 30.56
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.193,
+        0.075,
+        1.215,
+        1.215
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.075,
+        1.215,
+        1.215
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.075,
+        0.298,
+        0.225
+       ],
+       "font_size": 30.56
+      },
+      {
+       "bbox": [
+        -0.193,
+        -1.292,
+        0.243,
+        1.519
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        -1.93,
+        0.243,
+        0.243
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        -2.327,
+        0.503,
+        0.246
+       ],
+       "font_size": 30.56
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.193,
+        0.075,
+        1.215,
+        1.215
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.075,
+        1.215,
+        1.215
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.075,
+        0.298,
+        0.225
+       ],
+       "font_size": 30.56
+      },
+      {
+       "bbox": [
+        -0.193,
+        -1.292,
+        0.243,
+        1.519
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        -1.93,
+        0.243,
+        0.243
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        -2.327,
+        0.503,
+        0.246
+       ],
+       "font_size": 30.56
+      },
+      {
+       "bbox": [
+        -0.873,
+        1.252,
+        0.658,
+        1.139
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.088,
+        1.686,
+        0.227,
+        0.271
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.374,
+        2.12,
+        0.32,
+        0.26
+       ],
+       "font_size": 30.56
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.193,
+        0.075,
+        1.215,
+        1.215
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.075,
+        1.215,
+        1.215
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.075,
+        0.298,
+        0.225
+       ],
+       "font_size": 30.56
+      },
+      {
+       "bbox": [
+        -0.193,
+        -1.292,
+        0.243,
+        1.519
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        -1.93,
+        0.243,
+        0.243
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        -2.327,
+        0.503,
+        0.246
+       ],
+       "font_size": 30.56
+      },
+      {
+       "bbox": [
+        -0.873,
+        1.252,
+        0.658,
+        1.139
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.088,
+        1.686,
+        0.227,
+        0.271
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.374,
+        2.12,
+        0.32,
+        0.26
+       ],
+       "font_size": 30.56
+      },
+      {
+       "bbox": [
+        0.744,
+        0.615,
+        0.658,
+        0.38
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.937,
+        0.692,
+        0.271,
+        0.227
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.388,
+        0.988,
+        0.291,
+        0.346
+       ],
+       "font_size": 30.56
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.193,
+        0.075,
+        1.215,
+        1.215
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.075,
+        1.215,
+        1.215
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.075,
+        0.298,
+        0.225
+       ],
+       "font_size": 30.56
+      },
+      {
+       "bbox": [
+        -0.193,
+        -1.292,
+        0.243,
+        1.519
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        -1.93,
+        0.243,
+        0.243
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        -2.327,
+        0.503,
+        0.246
+       ],
+       "font_size": 30.56
+      },
+      {
+       "bbox": [
+        -0.873,
+        1.252,
+        0.658,
+        1.139
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.088,
+        1.686,
+        0.227,
+        0.271
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.374,
+        2.12,
+        0.32,
+        0.26
+       ],
+       "font_size": 30.56
+      },
+      {
+       "bbox": [
+        0.744,
+        0.615,
+        0.658,
+        0.38
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.937,
+        0.692,
+        0.271,
+        0.227
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.388,
+        0.988,
+        0.291,
+        0.346
+       ],
+       "font_size": 30.56
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "body": "lamp",
+    "forces": [
+     {
+      "label": "T_1",
+      "angle": 135,
+      "magnitude": 7
+     },
+     {
+      "label": "T_2",
+      "angle": 45,
+      "magnitude": 7
+     },
+     {
+      "label": "mg",
+      "angle": 270,
+      "magnitude": 9.8
+     },
+     {
+      "label": "\\vec{F}",
+      "angle": 270
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "body",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "lamp",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "force 0",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "lamp",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "T_1",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "force 1",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "lamp",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "T_1",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "T_2",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "force 2",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "lamp",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "T_1",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "T_2",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.567
+     },
+     {
+      "op": "settle",
+      "label": "force 3",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "lamp",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "T_1",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "T_2",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[3]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[3]",
+        "tex": "\\vec{F}",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.1
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "lamp",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "T_1",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "T_2",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[3]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[3]",
+        "tex": "\\vec{F}",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        -0.003,
+        0.277,
+        1.553,
+        1.273
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.277,
+        1.553,
+        1.273
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.277,
+        0.917,
+        0.406
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.003,
+        0.277,
+        1.553,
+        1.273
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.277,
+        1.553,
+        1.273
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.277,
+        0.917,
+        0.406
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.041,
+        1.315,
+        0.803,
+        0.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.308,
+        1.582,
+        0.27,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.727,
+        2.0,
+        0.355,
+        0.33
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.003,
+        0.277,
+        1.553,
+        1.273
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.277,
+        1.553,
+        1.273
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.277,
+        0.917,
+        0.406
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.041,
+        1.315,
+        0.803,
+        0.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.308,
+        1.582,
+        0.27,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.727,
+        2.0,
+        0.355,
+        0.33
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.035,
+        1.315,
+        0.803,
+        0.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.301,
+        1.582,
+        0.27,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.722,
+        2.003,
+        0.364,
+        0.33
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.003,
+        0.277,
+        1.553,
+        1.273
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.277,
+        1.553,
+        1.273
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.277,
+        0.917,
+        0.406
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.041,
+        1.315,
+        0.803,
+        0.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.308,
+        1.582,
+        0.27,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.727,
+        2.0,
+        0.355,
+        0.33
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.035,
+        1.315,
+        0.803,
+        0.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.301,
+        1.582,
+        0.27,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.722,
+        2.003,
+        0.364,
+        0.33
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.353,
+        -1.155,
+        0.255,
+        1.591
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.353,
+        -1.823,
+        0.255,
+        0.255
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.353,
+        -2.238,
+        0.527,
+        0.258
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.003,
+        0.277,
+        1.553,
+        1.273
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.277,
+        1.553,
+        1.273
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.277,
+        0.917,
+        0.406
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.041,
+        1.315,
+        0.803,
+        0.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.308,
+        1.582,
+        0.27,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.727,
+        2.0,
+        0.355,
+        0.33
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.035,
+        1.315,
+        0.803,
+        0.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.301,
+        1.582,
+        0.27,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.722,
+        2.003,
+        0.364,
+        0.33
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.353,
+        -1.155,
+        0.255,
+        1.591
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.353,
+        -1.823,
+        0.255,
+        0.255
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.353,
+        -2.238,
+        0.527,
+        0.258
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.347,
+        -0.638,
+        0.255,
+        0.557
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.347,
+        -0.789,
+        0.255,
+        0.255
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.347,
+        -1.268,
+        0.293,
+        0.385
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.003,
+        0.277,
+        1.553,
+        1.273
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.277,
+        1.553,
+        1.273
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.277,
+        0.917,
+        0.406
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.041,
+        1.315,
+        0.803,
+        0.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.308,
+        1.582,
+        0.27,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.727,
+        2.0,
+        0.355,
+        0.33
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.035,
+        1.315,
+        0.803,
+        0.803
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.301,
+        1.582,
+        0.27,
+        0.27
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.722,
+        2.003,
+        0.364,
+        0.33
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.353,
+        -1.155,
+        0.255,
+        1.591
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.353,
+        -1.823,
+        0.255,
+        0.255
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.353,
+        -2.238,
+        0.527,
+        0.258
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.347,
+        -0.638,
+        0.255,
+        0.557
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.347,
+        -0.789,
+        0.255,
+        0.255
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.347,
+        -1.268,
+        0.293,
+        0.385
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,675 @@
+{
+ "component": "AnswerBox",
+ "manim_version": "0.21.0",
+ "reasons": [
+  "AnswerBox merged"
+ ],
+ "cases": [
+  {
+   "params": {
+    "value": "T = 24",
+    "units": "N",
+    "option": "B"
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "Write"
+      ],
+      "run_time": 3.083
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowFromCenter"
+      ],
+      "run_time": 1.533
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "FadeIn"
+      ],
+      "run_time": 2.3
+     },
+     {
+      "op": "settle",
+      "label": "answer boxed",
+      "mobjects": [
+       {
+        "type": "MathTex",
+        "label": "answer",
+        "tex": "T = 24 \\; \\mathrm{N}",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "option",
+        "children": [
+         {
+          "type": "Circle",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "B",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "SurroundingRectangle",
+        "label": "box",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "label",
+        "text": "ANSWER",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 3.083
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "MathTex",
+        "label": "answer",
+        "tex": "T = 24 \\; \\mathrm{N}",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "option",
+        "children": [
+         {
+          "type": "Circle",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "B",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "SurroundingRectangle",
+        "label": "box",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "label",
+        "text": "ANSWER",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.732,
+        -0.367,
+        3.008,
+        0.51
+       ],
+       "font_size": 60.0
+      },
+      {
+       "bbox": [
+        -1.759,
+        -0.367,
+        0.954,
+        0.954
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.759,
+        -0.367,
+        0.954,
+        0.954
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.759,
+        -0.367,
+        0.5,
+        0.596
+       ],
+       "font_size": 60.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.367,
+        5.363,
+        1.845
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.966,
+        1.459,
+        0.247
+       ],
+       "font_size": 24.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.732,
+        -0.367,
+        3.008,
+        0.51
+       ],
+       "font_size": 60.0
+      },
+      {
+       "bbox": [
+        -1.759,
+        -0.367,
+        0.954,
+        0.954
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.759,
+        -0.367,
+        0.954,
+        0.954
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.759,
+        -0.367,
+        0.5,
+        0.596
+       ],
+       "font_size": 60.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.367,
+        5.363,
+        1.845
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.966,
+        1.459,
+        0.247
+       ],
+       "font_size": 24.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "value": "v = \\sqrt{\\frac{2gh}{1 + k^2/r^2}}",
+    "units": "m s^{-1}"
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "Write"
+      ],
+      "run_time": 3.633
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "FadeIn"
+      ],
+      "run_time": 2.733
+     },
+     {
+      "op": "settle",
+      "label": "answer boxed",
+      "mobjects": [
+       {
+        "type": "MathTex",
+        "label": "answer",
+        "tex": "v = \\sqrt{\\frac{2gh}{1 + k^2/r^2}} \\; \\mathrm{m\\,s^{-1}}",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "SurroundingRectangle",
+        "label": "box",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "label",
+        "text": "ANSWER",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 3.633
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "MathTex",
+        "label": "answer",
+        "tex": "v = \\sqrt{\\frac{2gh}{1 + k^2/r^2}} \\; \\mathrm{m\\,s^{-1}}",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "SurroundingRectangle",
+        "label": "box",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "label",
+        "text": "ANSWER",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.367,
+        7.355,
+        2.242
+       ],
+       "font_size": 60.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.367,
+        8.246,
+        3.132
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.609,
+        1.459,
+        0.247
+       ],
+       "font_size": 24.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.367,
+        7.355,
+        2.242
+       ],
+       "font_size": 60.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.367,
+        8.246,
+        3.132
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        1.609,
+        1.459,
+        0.247
+       ],
+       "font_size": 24.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "option": "C"
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "GrowFromCenter"
+      ],
+      "run_time": 3.633
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "FadeIn"
+      ],
+      "run_time": 2.733
+     },
+     {
+      "op": "settle",
+      "label": "answer boxed",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "option",
+        "children": [
+         {
+          "type": "Circle",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "C",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "SurroundingRectangle",
+        "label": "box",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "label",
+        "text": "ANSWER",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 3.633
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "option",
+        "children": [
+         {
+          "type": "Circle",
+          "color": "#58A6FF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "C",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "SurroundingRectangle",
+        "label": "box",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "label",
+        "text": "ANSWER",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.367,
+        0.987,
+        0.987
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.367,
+        0.987,
+        0.987
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.367,
+        0.52,
+        0.617
+       ],
+       "font_size": 60.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.367,
+        1.878,
+        1.878
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.982,
+        1.459,
+        0.247
+       ],
+       "font_size": 24.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.0,
+        -0.367,
+        0.987,
+        0.987
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.367,
+        0.987,
+        0.987
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.367,
+        0.52,
+        0.617
+       ],
+       "font_size": 60.0
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.367,
+        1.878,
+        1.878
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        0.982,
+        1.459,
+        0.247
+       ],
+       "font_size": 24.0
+      }
+     ]
+    ]
+   }
+  }
+ ]
+}

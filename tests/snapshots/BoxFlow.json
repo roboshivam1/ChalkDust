@@ -1,0 +1,3348 @@
+{
+ "component": "BoxFlow",
+ "manim_version": "0.21.0",
+ "reasons": [
+  "BoxFlow merged"
+ ],
+ "cases": [
+  {
+   "params": {
+    "nodes": [
+     {
+      "id": "src",
+      "label": "Source code"
+     },
+     {
+      "id": "lex",
+      "label": "Lexer"
+     },
+     {
+      "id": "parse",
+      "label": "Parser"
+     },
+     {
+      "id": "gen",
+      "label": "Code generator"
+     }
+    ],
+    "edges": [
+     {
+      "source": "src",
+      "target": "lex"
+     },
+     {
+      "source": "lex",
+      "target": "parse"
+     },
+     {
+      "source": "parse",
+      "target": "gen"
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.433
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create"
+      ],
+      "run_time": 0.717
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.433
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create"
+      ],
+      "run_time": 0.717
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.433
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create"
+      ],
+      "run_time": 0.717
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 1.417
+     },
+     {
+      "op": "settle",
+      "label": "diagram built",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "node[src]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Source code",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[0]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[lex]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Lexer",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[1]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[parse]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Parser",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[2]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[gen]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Code generator",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.133
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "node[src]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Source code",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[0]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[lex]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Lexer",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[1]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[parse]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Parser",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[2]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[gen]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Code generator",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        -4.976,
+        -0.1,
+        2.971,
+        0.828
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.976,
+        -0.1,
+        2.971,
+        0.828
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.976,
+        -0.06,
+        2.388,
+        0.32
+       ],
+       "font_size": 31.1
+      },
+      {
+       "bbox": [
+        -3.004,
+        -0.1,
+        0.972,
+        0.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.101,
+        -0.1,
+        0.778,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.615,
+        -0.1,
+        0.194,
+        0.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.699,
+        -0.1,
+        1.638,
+        0.828
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.699,
+        -0.1,
+        1.638,
+        0.828
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.699,
+        -0.057,
+        1.055,
+        0.314
+       ],
+       "font_size": 31.1
+      },
+      {
+       "bbox": [
+        -0.394,
+        -0.1,
+        0.972,
+        0.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.491,
+        -0.1,
+        0.778,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.005,
+        -0.1,
+        0.194,
+        0.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.006,
+        -0.1,
+        1.828,
+        0.828
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.006,
+        -0.1,
+        1.828,
+        0.828
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.006,
+        -0.057,
+        1.245,
+        0.314
+       ],
+       "font_size": 31.1
+      },
+      {
+       "bbox": [
+        2.406,
+        -0.1,
+        0.972,
+        0.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.309,
+        -0.1,
+        0.778,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.795,
+        -0.1,
+        0.194,
+        0.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.676,
+        -0.1,
+        3.569,
+        0.828
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.676,
+        -0.1,
+        3.569,
+        0.828
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.676,
+        -0.103,
+        2.986,
+        0.405
+       ],
+       "font_size": 31.1
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -4.976,
+        -0.1,
+        2.971,
+        0.828
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.976,
+        -0.1,
+        2.971,
+        0.828
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.976,
+        -0.06,
+        2.388,
+        0.32
+       ],
+       "font_size": 31.1
+      },
+      {
+       "bbox": [
+        -3.004,
+        -0.1,
+        0.972,
+        0.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.101,
+        -0.1,
+        0.778,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.615,
+        -0.1,
+        0.194,
+        0.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.699,
+        -0.1,
+        1.638,
+        0.828
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.699,
+        -0.1,
+        1.638,
+        0.828
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.699,
+        -0.057,
+        1.055,
+        0.314
+       ],
+       "font_size": 31.1
+      },
+      {
+       "bbox": [
+        -0.394,
+        -0.1,
+        0.972,
+        0.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.491,
+        -0.1,
+        0.778,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.005,
+        -0.1,
+        0.194,
+        0.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.006,
+        -0.1,
+        1.828,
+        0.828
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.006,
+        -0.1,
+        1.828,
+        0.828
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.006,
+        -0.057,
+        1.245,
+        0.314
+       ],
+       "font_size": 31.1
+      },
+      {
+       "bbox": [
+        2.406,
+        -0.1,
+        0.972,
+        0.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.309,
+        -0.1,
+        0.778,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.795,
+        -0.1,
+        0.194,
+        0.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.676,
+        -0.1,
+        3.569,
+        0.828
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.676,
+        -0.1,
+        3.569,
+        0.828
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.676,
+        -0.103,
+        2.986,
+        0.405
+       ],
+       "font_size": 31.1
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "nodes": [
+     {
+      "id": "client",
+      "label": "Client"
+     },
+     {
+      "id": "lb",
+      "label": "Load balancer"
+     },
+     {
+      "id": "app1",
+      "label": "App server 1"
+     },
+     {
+      "id": "app2",
+      "label": "App server 2"
+     },
+     {
+      "id": "cache",
+      "label": "Cache"
+     },
+     {
+      "id": "db",
+      "label": "Database"
+     }
+    ],
+    "edges": [
+     {
+      "source": "client",
+      "target": "lb"
+     },
+     {
+      "source": "lb",
+      "target": "app1"
+     },
+     {
+      "source": "lb",
+      "target": "app2"
+     },
+     {
+      "source": "app1",
+      "target": "cache"
+     },
+     {
+      "source": "app2",
+      "target": "cache"
+     },
+     {
+      "source": "cache",
+      "target": "db"
+     },
+     {
+      "source": "app1",
+      "target": "db"
+     }
+    ],
+    "animate_flow": true
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.917
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create"
+      ],
+      "run_time": 0.45
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.917
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "Create"
+      ],
+      "run_time": 0.45
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn",
+       "FadeIn"
+      ],
+      "run_time": 0.917
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "Create"
+      ],
+      "run_time": 0.45
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.917
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "Create"
+      ],
+      "run_time": 0.45
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.917
+     },
+     {
+      "op": "play",
+      "animations": [
+       "ShowPassingFlash"
+      ],
+      "run_time": 0.45
+     },
+     {
+      "op": "play",
+      "animations": [
+       "ShowPassingFlash",
+       "ShowPassingFlash"
+      ],
+      "run_time": 0.45
+     },
+     {
+      "op": "play",
+      "animations": [
+       "ShowPassingFlash",
+       "ShowPassingFlash",
+       "ShowPassingFlash",
+       "ShowPassingFlash"
+      ],
+      "run_time": 0.45
+     },
+     {
+      "op": "play",
+      "animations": [
+       "ShowPassingFlash",
+       "ShowPassingFlash",
+       "ShowPassingFlash"
+      ],
+      "run_time": 0.45
+     },
+     {
+      "op": "play",
+      "animations": [
+       "ShowPassingFlash",
+       "ShowPassingFlash",
+       "ShowPassingFlash"
+      ],
+      "run_time": 0.45
+     },
+     {
+      "op": "settle",
+      "label": "diagram built",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "node[client]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Client",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[0]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[lb]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Load balancer",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[1]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[2]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[app1]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "App server 1",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[app2]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "App server 2",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[3]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[4]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[cache]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Cache",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[5]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[6]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[db]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Database",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.367
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "node[client]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Client",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[0]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[lb]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Load balancer",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[1]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[2]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[app1]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "App server 1",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[app2]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "App server 2",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[3]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[4]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[cache]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Cache",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[5]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[6]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[db]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Database",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        -5.791,
+        -0.1,
+        1.341,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.791,
+        -0.1,
+        1.341,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.791,
+        -0.068,
+        0.871,
+        0.258
+       ],
+       "font_size": 25.07
+      },
+      {
+       "bbox": [
+        -4.729,
+        -0.1,
+        0.784,
+        0.141
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.807,
+        -0.1,
+        0.627,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.415,
+        -0.1,
+        0.157,
+        0.141
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.009,
+        -0.1,
+        2.657,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.009,
+        -0.1,
+        2.657,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.009,
+        -0.065,
+        2.186,
+        0.253
+       ],
+       "font_size": 25.07
+      },
+      {
+       "bbox": [
+        -1.289,
+        0.194,
+        0.784,
+        0.432
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.357,
+        0.156,
+        0.646,
+        0.356
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.983,
+        0.341,
+        0.171,
+        0.137
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.289,
+        -0.394,
+        0.784,
+        0.432
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.357,
+        -0.356,
+        0.646,
+        0.356
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.983,
+        -0.541,
+        0.171,
+        0.137
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.316,
+        0.41,
+        2.427,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.316,
+        0.41,
+        2.427,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.316,
+        0.412,
+        1.911,
+        0.32
+       ],
+       "font_size": 25.07
+      },
+      {
+       "bbox": [
+        0.316,
+        -0.61,
+        2.427,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.316,
+        -0.61,
+        2.427,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.316,
+        -0.608,
+        1.956,
+        0.32
+       ],
+       "font_size": 25.07
+      },
+      {
+       "bbox": [
+        1.921,
+        0.018,
+        0.784,
+        0.628
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.86,
+        0.067,
+        0.661,
+        0.53
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.23,
+        -0.219,
+        0.166,
+        0.153
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.921,
+        -0.512,
+        0.784,
+        0.196
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.845,
+        -0.547,
+        0.63,
+        0.127
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.229,
+        -0.483,
+        0.168,
+        0.138
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.036,
+        -0.374,
+        1.445,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.036,
+        -0.374,
+        1.445,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.036,
+        -0.342,
+        0.975,
+        0.258
+       ],
+       "font_size": 25.07
+      },
+      {
+       "bbox": [
+        4.15,
+        -0.261,
+        0.784,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.074,
+        -0.295,
+        0.632,
+        0.158
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.457,
+        -0.216,
+        0.169,
+        0.137
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.036,
+        0.233,
+        3.012,
+        0.51
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.967,
+        0.271,
+        2.875,
+        0.434
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.456,
+        0.047,
+        0.171,
+        0.137
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.501,
+        -0.1,
+        1.919,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.501,
+        -0.1,
+        1.919,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.501,
+        -0.065,
+        1.449,
+        0.253
+       ],
+       "font_size": 25.07
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -5.791,
+        -0.1,
+        1.341,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.791,
+        -0.1,
+        1.341,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.791,
+        -0.068,
+        0.871,
+        0.258
+       ],
+       "font_size": 25.07
+      },
+      {
+       "bbox": [
+        -4.729,
+        -0.1,
+        0.784,
+        0.141
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.807,
+        -0.1,
+        0.627,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.415,
+        -0.1,
+        0.157,
+        0.141
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.009,
+        -0.1,
+        2.657,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.009,
+        -0.1,
+        2.657,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.009,
+        -0.065,
+        2.186,
+        0.253
+       ],
+       "font_size": 25.07
+      },
+      {
+       "bbox": [
+        -1.289,
+        0.194,
+        0.784,
+        0.432
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.357,
+        0.156,
+        0.646,
+        0.356
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.983,
+        0.341,
+        0.171,
+        0.137
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.289,
+        -0.394,
+        0.784,
+        0.432
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.357,
+        -0.356,
+        0.646,
+        0.356
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.983,
+        -0.541,
+        0.171,
+        0.137
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.316,
+        0.41,
+        2.427,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.316,
+        0.41,
+        2.427,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.316,
+        0.412,
+        1.911,
+        0.32
+       ],
+       "font_size": 25.07
+      },
+      {
+       "bbox": [
+        0.316,
+        -0.61,
+        2.427,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.316,
+        -0.61,
+        2.427,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.316,
+        -0.608,
+        1.956,
+        0.32
+       ],
+       "font_size": 25.07
+      },
+      {
+       "bbox": [
+        1.921,
+        0.018,
+        0.784,
+        0.628
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.86,
+        0.067,
+        0.661,
+        0.53
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.23,
+        -0.219,
+        0.166,
+        0.153
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.921,
+        -0.512,
+        0.784,
+        0.196
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.845,
+        -0.547,
+        0.63,
+        0.127
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.229,
+        -0.483,
+        0.168,
+        0.138
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.036,
+        -0.374,
+        1.445,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.036,
+        -0.374,
+        1.445,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.036,
+        -0.342,
+        0.975,
+        0.258
+       ],
+       "font_size": 25.07
+      },
+      {
+       "bbox": [
+        4.15,
+        -0.261,
+        0.784,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.074,
+        -0.295,
+        0.632,
+        0.158
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.457,
+        -0.216,
+        0.169,
+        0.137
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.036,
+        0.233,
+        3.012,
+        0.51
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.967,
+        0.271,
+        2.875,
+        0.434
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.456,
+        0.047,
+        0.171,
+        0.137
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.501,
+        -0.1,
+        1.919,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.501,
+        -0.1,
+        1.919,
+        0.667
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.501,
+        -0.065,
+        1.449,
+        0.253
+       ],
+       "font_size": 25.07
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "nodes": [
+     {
+      "id": "data",
+      "label": "Training data"
+     },
+     {
+      "id": "model",
+      "label": "Model"
+     },
+     {
+      "id": "loss",
+      "label": "Loss"
+     },
+     {
+      "id": "opt",
+      "label": "Optimizer"
+     }
+    ],
+    "edges": [
+     {
+      "source": "data",
+      "target": "model"
+     },
+     {
+      "source": "model",
+      "target": "loss"
+     },
+     {
+      "source": "loss",
+      "target": "opt"
+     },
+     {
+      "source": "opt",
+      "target": "model"
+     },
+     {
+      "source": "opt",
+      "target": "opt"
+     }
+    ],
+    "animate_flow": true
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.983
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create"
+      ],
+      "run_time": 0.483
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.983
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create"
+      ],
+      "run_time": 0.483
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.983
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create"
+      ],
+      "run_time": 0.483
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.983
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "Create"
+      ],
+      "run_time": 0.733
+     },
+     {
+      "op": "play",
+      "animations": [
+       "ShowPassingFlash"
+      ],
+      "run_time": 0.483
+     },
+     {
+      "op": "play",
+      "animations": [
+       "ShowPassingFlash",
+       "ShowPassingFlash"
+      ],
+      "run_time": 0.483
+     },
+     {
+      "op": "play",
+      "animations": [
+       "ShowPassingFlash",
+       "ShowPassingFlash"
+      ],
+      "run_time": 0.483
+     },
+     {
+      "op": "play",
+      "animations": [
+       "ShowPassingFlash",
+       "ShowPassingFlash"
+      ],
+      "run_time": 0.483
+     },
+     {
+      "op": "play",
+      "animations": [
+       "ShowPassingFlash",
+       "ShowPassingFlash",
+       "ShowPassingFlash",
+       "ShowPassingFlash"
+      ],
+      "run_time": 0.483
+     },
+     {
+      "op": "settle",
+      "label": "diagram built",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "node[data]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Training data",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[0]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[model]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Model",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[1]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[loss]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Loss",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[2]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[opt]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Optimizer",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[3]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[4]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.467
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "node[data]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Training data",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[0]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[model]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Model",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[1]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[loss]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Loss",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[2]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "node[opt]",
+        "children": [
+         {
+          "type": "RoundedRectangle",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "Optimizer",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[3]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "edge[4]",
+        "children": [
+         {
+          "type": "VMobject",
+          "color": "#FFFFFF",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Polygon",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        -4.361,
+        -0.125,
+        3.148,
+        0.852
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.361,
+        -0.125,
+        3.148,
+        0.852
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.361,
+        -0.125,
+        2.548,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.286,
+        -0.125,
+        1.0,
+        0.18
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.386,
+        -0.125,
+        0.8,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.886,
+        -0.125,
+        0.2,
+        0.18
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.913,
+        -0.125,
+        1.746,
+        0.852
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.913,
+        -0.125,
+        1.746,
+        0.852
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.913,
+        -0.081,
+        1.146,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.46,
+        0.119,
+        1.0,
+        0.289
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.363,
+        0.076,
+        0.806,
+        0.201
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.852,
+        0.176,
+        0.216,
+        0.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.704,
+        0.225,
+        1.489,
+        0.852
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.704,
+        0.225,
+        1.489,
+        0.852
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.704,
+        0.269,
+        0.889,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.949,
+        -0.05,
+        1.0,
+        0.55
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.861,
+        -0.002,
+        0.825,
+        0.454
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.34,
+        -0.237,
+        0.219,
+        0.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.692,
+        -0.425,
+        2.486,
+        0.852
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.692,
+        -0.425,
+        2.486,
+        0.852
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.692,
+        -0.425,
+        1.886,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.704,
+        -0.5,
+        3.489,
+        0.551
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.792,
+        -0.549,
+        3.314,
+        0.454
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.069,
+        -0.313,
+        0.219,
+        0.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.647,
+        0.25,
+        0.53,
+        0.499
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.692,
+        0.25,
+        0.44,
+        0.499
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.472,
+        0.101,
+        0.18,
+        0.2
+       ],
+       "font_size": null
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -4.361,
+        -0.125,
+        3.148,
+        0.852
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.361,
+        -0.125,
+        3.148,
+        0.852
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.361,
+        -0.125,
+        2.548,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.286,
+        -0.125,
+        1.0,
+        0.18
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.386,
+        -0.125,
+        0.8,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.886,
+        -0.125,
+        0.2,
+        0.18
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.913,
+        -0.125,
+        1.746,
+        0.852
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.913,
+        -0.125,
+        1.746,
+        0.852
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.913,
+        -0.081,
+        1.146,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.46,
+        0.119,
+        1.0,
+        0.289
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.363,
+        0.076,
+        0.806,
+        0.201
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.852,
+        0.176,
+        0.216,
+        0.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.704,
+        0.225,
+        1.489,
+        0.852
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.704,
+        0.225,
+        1.489,
+        0.852
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.704,
+        0.269,
+        0.889,
+        0.323
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        2.949,
+        -0.05,
+        1.0,
+        0.55
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.861,
+        -0.002,
+        0.825,
+        0.454
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.34,
+        -0.237,
+        0.219,
+        0.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.692,
+        -0.425,
+        2.486,
+        0.852
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.692,
+        -0.425,
+        2.486,
+        0.852
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.692,
+        -0.425,
+        1.886,
+        0.412
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.704,
+        -0.5,
+        3.489,
+        0.551
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.792,
+        -0.549,
+        3.314,
+        0.454
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.069,
+        -0.313,
+        0.219,
+        0.175
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.647,
+        0.25,
+        0.53,
+        0.499
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.692,
+        0.25,
+        0.44,
+        0.499
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.472,
+        0.101,
+        0.18,
+        0.2
+       ],
+       "font_size": null
+      }
+     ]
+    ]
+   }
+  }
+ ]
+}

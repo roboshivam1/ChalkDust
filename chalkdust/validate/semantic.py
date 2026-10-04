@@ -16,15 +16,15 @@ from __future__ import annotations
 
 from collections.abc import Collection, Iterable, Mapping
 from itertools import combinations
+from pathlib import Path
 from typing import Any
-
-from manim import MathTex
 
 from chalkdust.core.models import BeatSpec, Region
 from chalkdust.scenes.components import Component, make_component
 from chalkdust.scenes.components.raw_scene import RawScene
-from chalkdust.scenes.regions import MIN_FONT_SIZE, region_rect
-from chalkdust.validate.geometric import Finding, Report
+from chalkdust.scenes.regions import MIN_FONT_SIZE, LayoutError, region_rect
+from chalkdust.scenes.theme import DEFAULT, math
+from chalkdust.validate.geometric import Finding, Report, probe_media
 
 # --- duration ---------------------------------------------------------------
 
@@ -183,23 +183,40 @@ def check_capacity(component: Component) -> list[Finding]:
 # --- LaTeX ------------------------------------------------------------------
 
 
-def check_latex(component: Component) -> list[Finding]:
+def check_latex(component: Component,
+                media_dir: Path | str | None = None) -> list[Finding]:
     """Compile each of the component's LaTeX strings standalone.
 
-    Uses MathTex itself, so the expression is compiled exactly as build() will
-    compile it, and a success lands in Manim's Tex cache for the real build.
+    Through theme.math, the constructor build() uses, so the expression is
+    compiled exactly as the render will compile it, a success lands in
+    Manim's Tex cache for the real build, and a failure is the same refusal
+    the geometric rung would raise: kind "invalid_latex"
+    (theme.refuse_invalid_latex). One vocabulary across rungs, so the repair
+    loop dispatches on one kind whichever rung caught the bad LaTeX.
+
+    Compiling writes .tex/.svg files under Manim's media_dir. They go where
+    the geometric probe's go (geometric.probe_media): `media_dir` when given,
+    else a caller's own redirect (the pipeline's work dir), else
+    work/manim -- never ./media in the cwd.
+
+    A failure that is not the expression's fault (the TeX toolchain itself
+    failing) is a build_error, not invalid_latex: regenerating the spec
+    cannot fix it.
     """
     findings = []
-    for source in component.latex_strings():
-        try:
-            MathTex(source)
-        except Exception as exc:
-            first_line = (str(exc).strip().splitlines() or [""])[0]
-            findings.append(Finding(
-                "latex",
-                f"LaTeX does not compile: {source!r} "
-                f"({type(exc).__name__}: {first_line})",
-            ))
+    with probe_media(media_dir):
+        for i, source in enumerate(component.latex_strings()):
+            try:
+                math(source, DEFAULT, what=f"{component.name} latex_strings()[{i}]")
+            except LayoutError as exc:
+                findings.append(Finding(exc.kind, str(exc)))
+            except Exception as exc:
+                first_line = (str(exc).strip().splitlines() or [""])[0]
+                findings.append(Finding(
+                    "build_error",
+                    f"{component.name} latex_strings()[{i}] {source!r} could "
+                    f"not be compiled ({type(exc).__name__}: {first_line})",
+                ))
     return findings
 
 
@@ -211,6 +228,7 @@ def validate_semantic(
     registered_artifacts: Collection[str] = (),
     duration: float | None = None,
     concurrent: Mapping[str, Iterable[Region]] | None = None,
+    media_dir: Path | str | None = None,
 ) -> Report:
     """Run every rung-2 check on one beat. Never raises.
 
@@ -221,6 +239,8 @@ def validate_semantic(
                             this beat, by name. Today one component owns a
                             beat, so this is empty unless the compiler layers
                             something over it.
+    media_dir            -- where compiling LaTeX writes its scratch (see
+                            check_latex); never the cwd.
     """
     report = Report(beat_id=spec.id)
     try:
@@ -237,5 +257,5 @@ def validate_semantic(
         {spec.component: component.regions(), **(concurrent or {})}
     )
     report.findings += check_capacity(component)
-    report.findings += check_latex(component)
+    report.findings += check_latex(component, media_dir)
     return report

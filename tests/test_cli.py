@@ -232,3 +232,45 @@ def test_a_control_character_in_text_is_refused_every_time(tmp_path, capsys):
     assert [cli.main(argv), cli.main(argv)] == [cli.EXIT_SPEC_INVALID] * 2
     assert "b01.params.title: control character U+0000 at offset 3" in \
         capsys.readouterr().err
+
+
+@pytest.mark.parametrize("narration", [".", "...", " -- !? "])
+def test_narration_with_nothing_to_speak_is_refused_at_rung_1(
+        narration, tmp_path, capsys, fake_tts):
+    # Register N-9: "." passed validation, the voice spoke nothing, and the
+    # render died at speech on ffprobe's "N/A". A narration with no letter or
+    # digit is refused before any speech, naming the beat and the field.
+    spec = example_spec()
+    spec["beats"][1]["narration"] = narration
+    path = write_spec(tmp_path / "spec.json", spec)
+
+    rc = cli.main(["render", str(path), "--cache-dir", str(tmp_path / "cache"),
+                   "--work-dir", str(tmp_path / "work")])
+
+    err = capsys.readouterr().err
+    assert rc == cli.EXIT_SPEC_INVALID
+    assert err.startswith("chalkdust: spec invalid: ")
+    assert "beats.1.narration: Value error, narration has nothing to speak" in err
+    assert fake_tts.calls == []
+
+
+def test_a_work_dir_whose_full_path_has_a_tilde_is_refused_up_front(
+        tmp_path, capsys, fake_tts):
+    # Register N-10: TeX cannot compile under a path holding a literal '~',
+    # and the failure surfaced as misleading invalid-LaTeX findings (rc 8).
+    # An 8.3 short name is fine -- long_path expands it (N-3) -- so only a
+    # '~' that survives expansion is refused, before the spec costs anything.
+    spec = example_spec()
+    spec["beats"] = spec["beats"][:1]
+    path = write_spec(tmp_path / "spec.json", spec)
+    work = tmp_path / "my~scratch" / "work"
+
+    rc = cli.main(["render", str(path), "--cache-dir", str(tmp_path / "cache"),
+                   "--work-dir", str(work)])
+
+    err = capsys.readouterr().err
+    assert rc == cli.EXIT_DIRECTORY_UNUSABLE
+    assert err.startswith(f"chalkdust: directory unusable: --work-dir {work}: ")
+    assert "contains '~'" in err
+    assert not (tmp_path / "my~scratch").exists()
+    assert fake_tts.calls == []

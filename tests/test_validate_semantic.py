@@ -13,6 +13,7 @@ from chalkdust.scenes.components import (
     registered_names,
 )
 from chalkdust.scenes.components.base import MIN_STEP_SECONDS
+from chalkdust.scenes.regions import INVALID_LATEX
 from chalkdust.validate.semantic import (
     MAX_BEAT_SECONDS,
     check_capacity,
@@ -153,26 +154,38 @@ class TestLatex:
     """Needs a working LaTeX install (MiKTeX here). Never skipped: a missing
     toolchain is a real failure of this rung."""
 
-    def test_valid_expression_compiles(self):
-        assert check_latex(_Stepper({"tex": [r"\frac{a}{b} = c"]})) == []
+    def test_valid_expression_compiles(self, tmp_path):
+        assert check_latex(_Stepper({"tex": [r"\frac{a}{b} = c"]}),
+                           media_dir=tmp_path) == []
 
-    def test_malformed_expression_is_refused(self):
+    def test_malformed_expression_is_refused(self, tmp_path):
         # An undefined control sequence. (Unbalanced braces are NOT a good
         # probe: Manim 0.21 wraps each MathTex in dvisvgm \special groups
         # whose closing brace absorbs a missing one, so build() would compile
         # them too.)
         findings = check_latex(_Stepper({"tex": [r"\frac{a}{b} = c",
-                                                  r"\notarealmacro{x}"]}))
+                                                  r"\notarealmacro{x}"]}),
+                               media_dir=tmp_path)
         # Assert the kind, not Manim's wording, which varies by failure mode.
-        assert [f.kind for f in findings] == ["latex"]
+        # The kind is theme.math's, so rungs 2 and 3 share one vocabulary.
+        assert [f.kind for f in findings] == [INVALID_LATEX]
         assert r"\notarealmacro{x}" in findings[0].message
+
+    def test_scratch_never_lands_in_the_cwd(self, tmp_path, monkeypatch):
+        # Register N-12: compiling wrote media/Tex into whatever directory
+        # the rung ran from. Like the geometric probe, it defaults to work/.
+        monkeypatch.chdir(tmp_path)
+        assert check_latex(_Stepper({"tex": [r"x^2 + 1 = 0"]})) == []
+        assert not (tmp_path / "media").exists()
+        assert any((tmp_path / "work" / "manim" / "Tex").glob("*.svg"))
 
 
 class TestLibrary:
     """Every registered component's realistic examples must pass rung 2."""
 
     @pytest.mark.parametrize("name", registered_names())
-    def test_examples_validate_clean(self, name):
+    def test_examples_validate_clean(self, name, tmp_path):
         for params in get_component(name).examples():
-            report = validate_semantic(_spec(name, params), duration=12.0)
+            report = validate_semantic(_spec(name, params), duration=12.0,
+                                       media_dir=tmp_path)
             assert report.ok, f"\n{report}"

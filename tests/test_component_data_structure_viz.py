@@ -280,16 +280,19 @@ BUCKETS = {"kind": "array", "initial": ["-"] * 8,
                           {"op": "set", "at": 4, "value": "cat"}]}
 
 
-def _bucket_video() -> VideoSpec:
-    """b02 registers "bucket_array"; b03 carries it in, as in SCENE_SPEC.md §6."""
+def _bucket_video(consumer: str) -> VideoSpec:
+    """b02 registers "bucket_array"; b03, the `consumer` (the hold_consumer
+    fixture's), carries it in, as in SCENE_SPEC.md §6. A beat that carries an
+    artifact in without acting on it must leave it a free STAGE region
+    (D-G4c-1)."""
     return VideoSpec(video_id="v", beats=(
         BeatSpec(id="b01", narration="placeholder narration", component="TitleCard",
                  params={"title": "Hash tables"}),
         BeatSpec(id="b02", narration="placeholder narration",
                  component="DataStructureViz", params=BUCKETS,
                  registers="bucket_array"),
-        BeatSpec(id="b03", narration="placeholder narration", component="BulletReveal",
-                 params={"items": ["cat hashes to bucket 4"]},
+        BeatSpec(id="b03", narration="placeholder narration", component=consumer,
+                 params={"target_id": "bucket_array"},
                  carry_in=["bucket_array"]),
     ))
 
@@ -299,8 +302,8 @@ def _artifact(params: dict):
     return continuity.build_artifact(recipe, THEME)
 
 
-def test_registered_artifact_is_carried_into_a_later_beat():
-    video = _bucket_video()
+def test_registered_artifact_is_carried_into_a_later_beat(hold_consumer):
+    video = _bucket_video(hold_consumer)
     recipes = resolve_carry_in(video)
     assert recipes["b03"] == (ArtifactRecipe(name="bucket_array",
                                              producer="DataStructureViz",

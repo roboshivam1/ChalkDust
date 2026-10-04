@@ -49,7 +49,7 @@ from chalkdust.scenes.components.raw_scene import (
     check_code,
     degrade_spec,
 )
-from chalkdust.scenes.theme import get_theme
+from chalkdust.scenes.theme import LatexToolchainError, get_theme
 from chalkdust.speech.base import TTSError
 from chalkdust.speech.tts import resolve_voice, synthesize_beat
 from chalkdust.validate.geometric import Report
@@ -98,12 +98,38 @@ class SemanticRefused(RungRefused):
     rung = "2 (semantic)"
 
 
+class CarryInRefused(SemanticRefused):
+    """A beat's carry-in references are broken: it acts on an artifact it does
+    not carry in, or points at a part that artifact does not have
+    (SCENE_SPEC.md §6), or carries one in that its component neither acts on
+    nor leaves a STAGE region free for (kind "region_conflict", register
+    D-G4c-1). Found as rung-2 findings, but the same family
+    of spec error as an unregistered name, which rung 1 refuses: no layout
+    repair or rewording of the beat's content can fix a reference, so the CLI
+    reports it as spec invalid (register D-G4b-1). A SemanticRefused, so
+    callers that already catch rung-2 refusals keep catching it."""
+
+    rung = "2 (semantic: carry-in)"
+
+    def __init__(self, reports: list[Report], rung: str | None = None) -> None:
+        if rung is not None:
+            self.rung = rung
+        super().__init__(reports)
+
+
 class LayoutRefused(RungRefused):
     """Rung 3: a component refused its content, and bounded mechanical repair
     (SCENE_SPEC.md §9 step 1) could not fix it. Nothing was synthesised. The
     findings are the UNREPAIRED ones: a failed repair changes nothing."""
 
     rung = "3 (geometric, after mechanical repair)"
+
+
+class ToolchainFailed(PipelineError):
+    """The TeX toolchain did not finish a compile in time, on every attempt
+    (theme.LatexToolchainError): the machine is loaded or TeX is hung. Not a
+    verdict on the spec -- the same spec may pass on a quieter run -- so it
+    is neither a refusal nor cached (register G4b-N6)."""
 
 
 class SpeechFailed(PipelineError):
@@ -362,6 +388,36 @@ def checked_beats(spec: VideoSpec) -> list[CheckedBeat]:
     return checked
 
 
+# Finding kinds that put a beat's carry_in at fault (refuse_unfit).
+CARRY_IN_KINDS = frozenset({"carry_in", "region_conflict"})
+
+
+def refuse_unfit(failed: list[Report], refusal: type[RungRefused],
+                 carry_in_rung: str | None = None) -> None:
+    """Raise for a rung's failed reports, typed by what failed.
+
+    A "toolchain" finding (TeX timed out, every attempt) is the machine's
+    fault, so it outranks everything else: ToolchainFailed, its own exit
+    code, the spec not blamed (register G4b-N6). Then a "carry_in" finding
+    is a broken reference, a spec error whichever rung found it:
+    CarryInRefused, its header naming `carry_in_rung` when given (register
+    D-G4b-1). So is a "region_conflict": the pipeline layers nothing over a
+    beat's component, so its only source is a carried artifact the
+    component does not act on and leaves no STAGE region free for
+    (continuity.carry_region_problems, register D-G4c-1) -- fixed by the
+    beat's carry_in, never by its content. Only then the rung's own
+    refusal."""
+    if not failed:
+        return
+    slow = [f"{r.beat_id}: {f.message}" for r in failed for f in r.findings
+            if f.kind == "toolchain"]
+    if slow:
+        raise ToolchainFailed("\n".join(slow))
+    if any(f.kind in CARRY_IN_KINDS for r in failed for f in r.findings):
+        raise CarryInRefused(failed, rung=carry_in_rung)
+    raise refusal(failed)
+
+
 def check_semantics(spec: VideoSpec,
                     checked: list[CheckedBeat] | None = None) -> list[Report]:
     """Rung 2 (semantic). Cheap, and before the geometric probe because what
@@ -370,17 +426,20 @@ def check_semantics(spec: VideoSpec,
 
     Runs before speech, so durations are estimated from the narration
     (semantic.estimate_seconds); each beat sees the artifacts registered by
-    the beats before it."""
+    the beats before it, and the recipes of those it carries in, so a part
+    index into one is checked against the artifact the render will build."""
     checked = checked if checked is not None else checked_beats(spec)
+    recipes = carry_in_recipes(spec)
     registered: set[str] = set()
     reports = []
     for beat, check in zip(spec.beats, checked, strict=True):
-        reports.append(validate_semantic(check.spec, registered))
+        # A degraded fallback drops its carry_in, so it carries nothing.
+        carried = recipes.get(check.spec.id, ()) if check.spec.carry_in else ()
+        reports.append(validate_semantic(check.spec, registered, recipes=carried,
+                                         theme=spec.theme))
         if beat.registers is not None:
             registered.add(beat.registers)
-    failed = [r for r in reports if not r.ok]
-    if failed:
-        raise SemanticRefused(failed)
+    refuse_unfit([r for r in reports if not r.ok], SemanticRefused)
     return reports
 
 
@@ -425,9 +484,8 @@ def check_layout(spec: VideoSpec,
                     recipes=recipes.get(s.id, ()) if s.carry_in else ())
         for s in probed
     ]
-    failed = [r.report for r in results if not r.ok]
-    if failed:
-        raise LayoutRefused(failed)
+    refuse_unfit([r.report for r in results if not r.ok], LayoutRefused,
+                 "3 (geometric: carry-in)")
     return results
 
 
@@ -534,6 +592,8 @@ def render(
             before = set(beats_dir.glob("*.mp4"))
             try:
                 render_beat(beat, spec.theme, ctx, cache, manim_dir, recipes[beat.id])
+            except LatexToolchainError as exc:
+                raise ToolchainFailed(f"{beat.id} ({beat.spec.component}): {exc}") from exc
             except Exception as exc:
                 raise RenderFailed(f"{beat.id} ({beat.spec.component}): {exc}") from exc
             cached = beat.render_path in before

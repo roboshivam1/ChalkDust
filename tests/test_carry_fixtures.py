@@ -58,7 +58,10 @@ def test_carried_list_sits_exactly_where_its_beat_left_it():
     shown = _by_label(produced, "bullets")
 
     recipe = ArtifactRecipe(name="causes", producer="BulletReveal", params=PARAMS)
-    consumer = CarryIn(make_component("TitleCard", {"title": "Next"}), [recipe])
+    # Into a consumer: a component that does not act on the list would get
+    # it placed in a free STAGE region, or refused (D-G4c-1). _Lift changes
+    # a row's opacity, never its place.
+    consumer = CarryIn(_Lift({"target_id": "causes", "part": 0}), [recipe])
     consumed = LayoutProbe(consumer, duration=8.0, strict=False)
     consumed.construct()
     carried = _by_label(consumed, "carried[causes]")
@@ -135,12 +138,14 @@ def test_layout_walk_builds_each_case_with_its_target_carried_in(lift):
 
 def test_a_consumer_built_bare_cannot_build(lift):
     # Why the walks need fixture_carry_in at all: without its target on
-    # screen the consumer's build() raises, a build_error on every case.
+    # screen the consumer's build() raises CarryInError on every case --
+    # a spec error the probe types as carry_in, not a build_error crash
+    # (register D-G4b-1).
     spec = BeatSpec(id="b01", narration="placeholder narration", component=lift,
                     params=_Lift.examples()[0])
     report = validate_beat(spec)
-    assert report.kinds() == {"build_error"}
-    assert "CarryInError" in str(report)
+    assert report.kinds() == {"carry_in"}
+    assert "is not carried into this beat" in str(report)
 
 
 def test_snapshot_records_and_matches_the_carried_frame(lift, tmp_path):

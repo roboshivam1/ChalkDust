@@ -352,9 +352,11 @@ class TestCarryIn:
         walker = art[-1]
         assert walker.get_center() == pytest.approx(line.n2p(4), abs=1e-6)
 
-    def test_carried_into_a_beat_validates_clean(self):
-        consumer = BeatSpec(id="b02", narration="placeholder", component="TitleCard",
-                            params={"title": "Where did we land?"}, carry_in=["walk"])
+    def test_carried_into_a_beat_validates_clean(self, hold_consumer):
+        # Carried into _Hold, a consumer: a beat that carries an artifact in
+        # without acting on it must leave it a free STAGE region (D-G4c-1).
+        consumer = BeatSpec(id="b02", narration="placeholder", component=hold_consumer,
+                            params={"target_id": "walk"}, carry_in=["walk"])
         report = validate_beat(consumer, recipes=[
             self._recipe(NumberLineWalk.examples()[0])])
         assert report.ok, f"\n{report}"

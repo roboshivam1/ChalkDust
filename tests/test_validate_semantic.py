@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import subprocess
+import uuid
+
 import pytest
 from pydantic import Field
 
-from chalkdust.continuity import fixture_beat
+from chalkdust.continuity import ArtifactRecipe, fixture_beat
 from chalkdust.core.models import BeatSpec, Region
 from chalkdust.scenes.components import (
     Component,
@@ -13,12 +16,14 @@ from chalkdust.scenes.components import (
     get_component,
     registered_names,
 )
+from chalkdust.scenes import theme as theme_mod
 from chalkdust.scenes.components import base as components_base
 from chalkdust.scenes.components.base import MIN_STEP_SECONDS
 from chalkdust.scenes.regions import INVALID_LATEX
 from chalkdust.validate.semantic import (
     MAX_BEAT_SECONDS,
     check_capacity,
+    check_carried_parts,
     check_carried_targets,
     check_carry_in,
     check_duration,
@@ -155,6 +160,41 @@ class TestCarryIn:
         assert report.kinds() == {"carry_in"}
 
 
+    # Three rows, BulletReveal's artifact: parts 0..2 (register D-G4b-1).
+    THREE = ArtifactRecipe(name="causes", producer="BulletReveal",
+                           params={"items": ["A weak hash", "A high load",
+                                             "Chosen keys"]})
+
+    @pytest.mark.parametrize("name,params,bad", [
+        ("Callout", {"target_id": "causes", "text": "note", "part": 7}, "[7]"),
+        ("ZoomHighlight", {"target_id": "causes", "callout": "note",
+                           "parts": [1, 9]}, "[9]"),
+    ])
+    def test_part_out_of_range_is_refused_before_build(self, name, params, bad,
+                                                       tmp_path):
+        # The part count is the producer's, so only the rebuilt artifact
+        # knows it; build() raised CarryInError, which rungs 3 and repair
+        # reported as build_error. Refused here instead, by index and count.
+        spec = _spec(name, params, carry_in=["causes"])
+        report = validate_semantic(spec, registered_artifacts={"causes"},
+                                   duration=8.0, media_dir=tmp_path,
+                                   recipes=[self.THREE])
+        assert report.kinds() == {"carry_in"}, report
+        assert f"part(s) {bad} of 'causes'" in str(report)
+        assert "3 part(s) (indices 0..2)" in str(report)
+
+    @pytest.mark.parametrize("name,params", [
+        ("Callout", {"target_id": "causes", "text": "note", "part": 2}),
+        ("ZoomHighlight", {"target_id": "causes", "callout": "note",
+                           "parts": [0, 2]}),
+        ("ZoomHighlight", {"target_id": "causes", "callout": "note"}),
+    ])
+    def test_part_in_range_passes(self, name, params, tmp_path):
+        component = get_component(name)(params)
+        assert check_carried_parts(component, [self.THREE],
+                                   media_dir=tmp_path) == []
+
+
 class TestRegionConflicts:
     def test_nested_regions_conflict(self):
         # Different names, same space: STAGE contains STAGE_LEFT.
@@ -214,6 +254,19 @@ class TestLatex:
         # The kind is theme.math's, so rungs 2 and 3 share one vocabulary.
         assert [f.kind for f in findings] == [INVALID_LATEX]
         assert r"\notarealmacro{x}" in findings[0].message
+
+    def test_a_timeout_is_a_toolchain_finding_not_invalid_latex(
+            self, tmp_path, monkeypatch):
+        # Register G4b-N6: a valid label timed out under load and was
+        # refused as invalid_latex, blaming the spec for a slow machine.
+        def hung(command):
+            raise subprocess.TimeoutExpired(command, theme_mod.LATEX_CHECK_TIMEOUT)
+
+        monkeypatch.setattr(theme_mod, "_compile", hung)
+        source = rf"x = {uuid.uuid4().int}"  # never seen: no cached verdict
+        findings = check_latex(_Stepper({"tex": [source]}), media_dir=tmp_path)
+        assert [f.kind for f in findings] == ["toolchain"]
+        assert source in findings[0].message
 
     def test_scratch_never_lands_in_the_cwd(self, tmp_path, monkeypatch):
         # Register N-12: compiling wrote media/Tex into whatever directory

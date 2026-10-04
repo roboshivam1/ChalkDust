@@ -367,11 +367,13 @@ class TestCarryIn:
         assert len(pa) == len(pb) > 0
         assert all(np.array_equal(x, y) for x, y in zip(pa, pb))
 
-    def test_later_beat_carries_the_settled_row_in(self):
+    def test_later_beat_carries_the_settled_row_in(self, hold_consumer):
+        # Carried into _Hold, a consumer: a beat that carries an artifact in
+        # without acting on it must leave it a free STAGE region (D-G4c-1).
         video = VideoSpec(video_id="v", beats=(
             _spec(NEWTON, "b01", registers="newton_units"),
             BeatSpec(id="b02", narration="placeholder narration",
-                     component="TitleCard", params={"title": "Newtons"},
+                     component=hold_consumer, params={"target_id": "newton_units"},
                      carry_in=["newton_units"]),
         ))
         recipes = resolve_carry_in(video)["b02"]

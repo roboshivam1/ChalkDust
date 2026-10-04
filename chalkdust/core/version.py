@@ -12,9 +12,10 @@ CHALKDUST_VERSION = "0.1.0"
 #        ceil(audio * fps) frames long (it drifted by up to a frame per
 #        segment); clips rendered under 0.1.0 must not be reused (D-004).
 # 0.3.0: minor bump for the component wave (SCENE_SPEC.md §10): adds
-#        AnswerBox, BoxFlow, DataStructureViz, FreeBodyDiagram,
-#        GeometryConstruct, GraphPlot, NumberLineWalk, SolutionStep,
-#        SplitCompare, StepTrace and VectorField; existing components'
+#        AnswerBox, BoxFlow, Callout, CodeWalk, DataStructureViz,
+#        FreeBodyDiagram, GeometryConstruct, GraphPlot, NumberLineWalk,
+#        ProblemStatement, SolutionStep, SplitCompare, StepTrace,
+#        UnitBreakdown, VectorField and ZoomHighlight; existing components'
 #        rendering is unchanged.
 COMPONENT_LIBRARY_VERSION = "0.3.0"
 

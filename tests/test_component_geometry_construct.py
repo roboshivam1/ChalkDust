@@ -350,13 +350,18 @@ EUCLID = GeometryConstruct.examples()[0]
 THEME = resolve_fonts(DEFAULT)
 
 
-def _carry_video() -> VideoSpec:
+def _carry_video(consumer: str = "BulletReveal") -> VideoSpec:
+    """b02 carries the figure in. To build, b02 must be a consumer (the
+    hold_consumer fixture's): a beat that carries an artifact in without
+    acting on it must leave it a free STAGE region (D-G4c-1)."""
     return VideoSpec(video_id="v", beats=(
         BeatSpec(id="b01", narration="placeholder narration",
                  component="GeometryConstruct", params=EUCLID,
                  registers="euclid"),
         BeatSpec(id="b02", narration="placeholder narration",
-                 component="BulletReveal", params={"items": ["All sides equal"]},
+                 component=consumer,
+                 params=({"items": ["All sides equal"]} if consumer == "BulletReveal"
+                         else {"target_id": "euclid"}),
                  carry_in=["euclid"]),
     ))
 
@@ -408,8 +413,8 @@ def test_artifact_layers_by_order_not_z_index():
     assert [rank[k] for k in kinds] == sorted(rank[k] for k in kinds)
 
 
-def test_carry_in_beat_builds_with_the_figure():
-    video = _carry_video()
+def test_carry_in_beat_builds_with_the_figure(hold_consumer):
+    video = _carry_video(hold_consumer)
     recipes = resolve_carry_in(video)["b02"]
     report = validate_beat(video.beats[1], recipes=recipes)
     assert report.ok, f"\n{report}"

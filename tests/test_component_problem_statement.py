@@ -399,13 +399,18 @@ class TestCarryIn:
     (SCENE_SPEC.md §6) -- the usual JEE shape: the problem stays on screen,
     dimmed, while the solution is worked."""
 
-    def _video(self) -> VideoSpec:
+    def _video(self, consumer: str = "BulletReveal") -> VideoSpec:
+        # To build, b02 must be a consumer (the hold_consumer fixture's): a
+        # beat that carries an artifact in without acting on it must leave it
+        # a free STAGE region (D-G4c-1).
         return VideoSpec(video_id="v", beats=(
             BeatSpec(id="b01", narration="placeholder narration",
                      component="ProblemStatement", params=INCLINE,
                      registers="problem"),
             BeatSpec(id="b02", narration="placeholder narration",
-                     component="BulletReveal", params={"items": ["resolve forces"]},
+                     component=consumer,
+                     params=({"items": ["resolve forces"]} if consumer == "BulletReveal"
+                             else {"target_id": "problem"}),
                      carry_in=["problem"]),
         ))
 
@@ -427,8 +432,8 @@ class TestCarryIn:
         assert len(pa) == len(pb) > 0
         assert all(np.array_equal(x, y) for x, y in zip(pa, pb))
 
-    def test_carried_problem_is_placed_in_stage_and_dimmed(self):
-        video = self._video()
+    def test_carried_problem_is_placed_in_stage_and_dimmed(self, hold_consumer):
+        video = self._video(hold_consumer)
         probe = LayoutProbe(beat_component(video.beats[1], resolve_carry_in(video)["b02"]),
                             duration=4.0)
         probe.construct()

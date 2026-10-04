@@ -18,6 +18,7 @@ from chalkdust.scenes.components import answer_box  # noqa: F401,E402
 from chalkdust.scenes.components import box_flow  # noqa: F401,E402
 from chalkdust.scenes.components import bullet_reveal  # noqa: F401,E402
 from chalkdust.scenes.components import callout  # noqa: F401,E402
+from chalkdust.scenes.components import code_walk  # noqa: F401,E402
 from chalkdust.scenes.components import data_structure_viz  # noqa: F401,E402
 from chalkdust.scenes.components import equation_derivation  # noqa: F401,E402
 from chalkdust.scenes.components import free_body_diagram  # noqa: F401,E402

@@ -141,9 +141,14 @@ class TestCacheKey:
 
 
 class TestScene:
-    def _probe(self) -> LayoutProbe:
-        recipes = resolve_carry_in(_video(_producer(), _consumer()))["b02"]
-        probe = LayoutProbe(beat_component(_consumer(), recipes),
+    """Built into a consumer (conftest's _Hold), whose carried artifacts are
+    centred in STAGE, or into _LeftNote, which claims STAGE_LEFT and does not
+    act on them; tests/test_carry_placement.py covers placement itself."""
+
+    def _probe(self, component: str, params: dict) -> LayoutProbe:
+        beat = _beat("b02", component, params, carry_in=["bucket_array"])
+        recipes = resolve_carry_in(_video(_producer(), beat))["b02"]
+        probe = LayoutProbe(beat_component(beat, recipes),
                             theme="default", duration=4.0, strict=False)
         probe.construct()
         return probe
@@ -157,8 +162,8 @@ class TestScene:
         assert len(pa) == len(pb) > 0
         assert all(np.array_equal(x, y) for x, y in zip(pa, pb))
 
-    def test_carried_artifact_placed_in_stage_dimmed(self, title_builder):
-        probe = self._probe()
+    def test_carried_artifact_placed_in_stage_dimmed(self, title_builder, hold_consumer):
+        probe = self._probe(hold_consumer, {"target_id": "bucket_array"})
         target = carried(probe, "bucket_array")
         assert target in probe.mobjects
         assert region_rect(Region.STAGE).contains(
@@ -167,15 +172,16 @@ class TestScene:
         assert max(opacities) == pytest.approx(1 - continuity.DIM_DARKNESS)
         assert probe.layout_warnings == []
 
-    def test_beats_own_component_still_builds(self, title_builder):
-        probe = self._probe()
-        # The carried artifact plus BulletReveal's bullets group.
+    def test_beats_own_component_still_builds(self, title_builder, left_note):
+        probe = self._probe(left_note, {"text": "Buckets"})
+        # The carried artifact plus _LeftNote's own text.
         labels = {getattr(m, "_chalk_label", None) for m in probe.mobjects}
-        assert {"carried[bucket_array]", "bullets"} <= labels
+        assert {"carried[bucket_array]", "note"} <= labels
 
-    def test_target_not_carried_is_typed_error(self, title_builder):
+    def test_target_not_carried_is_typed_error(self, title_builder, hold_consumer):
         with pytest.raises(CarryInError, match="no_such_thing"):
-            carried(self._probe(), "no_such_thing")
+            carried(self._probe(hold_consumer, {"target_id": "bucket_array"}),
+                    "no_such_thing")
 
 
 class TestValidationRungs:

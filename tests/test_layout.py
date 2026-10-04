@@ -14,7 +14,7 @@ from chalkdust.scenes.regions import LayoutError, region_rect, safe_area
 from chalkdust.validate.geometric import validate_beat
 
 # Kinds that represent a component correctly refusing overloaded content.
-CLEAN_REFUSALS = {"overflow", "illegible"}
+CLEAN_REFUSALS = {"overflow", "illegible", "invalid_latex"}
 
 
 def _spec(component: str, params: dict, bid: str = "b01") -> BeatSpec:

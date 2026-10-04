@@ -38,6 +38,11 @@ MIN_FONT_SIZE = 22.0
 DEFAULT_PADDING = 0.15
 
 
+# LayoutError kind for LaTeX that cannot be drawn. Named because two modules
+# raise and check it: theme.math() raises it, the stress tests accept it.
+INVALID_LATEX = "invalid_latex"
+
+
 class LayoutError(Exception):
     """Raised when content cannot be placed legibly.
 
@@ -49,6 +54,8 @@ class LayoutError(Exception):
       overlap       -- two mutually-exclusive mobjects intersect
       illegible     -- text below the minimum font size
       overflow      -- content cannot be scaled to fit at all
+      invalid_latex -- maths that does not compile, or compiles to nothing
+                       (theme.refuse_invalid_latex); the fix is the spec
     """
 
     def __init__(self, message: str, kind: str = "layout") -> None:

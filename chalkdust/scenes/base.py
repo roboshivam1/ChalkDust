@@ -13,9 +13,11 @@ checked, so `construct` runs a final settle unconditionally.
 
 from __future__ import annotations
 
+import math
+from collections.abc import Sequence
 from typing import Protocol
 
-from manim import Mobject, Scene
+from manim import Mobject, Scene, config
 
 from chalkdust.scenes.regions import (
     LayoutError,
@@ -62,6 +64,9 @@ class ChalkdustScene(Scene):
         # Audio duration drives animation timing. Components divide this
         # budget; they never hardcode run times (D-002).
         self.beat_duration = float(duration)
+        # Captured with the camera's, from the tier config the worker builds
+        # the scene under; budget() and the frame quantisation below use it.
+        self._chalk_fps = float(config.frame_rate)
         # strict=False downgrades assertion failures to recorded warnings,
         # used when rendering a degraded beat we already know is imperfect.
         self.strict = strict
@@ -79,13 +84,38 @@ class ChalkdustScene(Scene):
 
     # --- timing -------------------------------------------------------------
 
+    @property
+    def fps(self) -> float:
+        """Frame rate of the render tier this scene was built under -- the one
+        its camera writes frames at -- not whatever config holds later."""
+        return self._chalk_fps
+
+    @property
+    def beat_frames(self) -> int:
+        """Whole frames this beat lasts: the audio duration rounded UP.
+
+        Never shorter than the audio (D-002), and at most one frame longer --
+        so the mux pads under one frame of silence instead of clipping
+        narration or holding the last frame for several.
+        """
+        return frames_covering(self.beat_duration, self.fps)
+
     def budget(self, *weights: float) -> list[float]:
-        """Split the beat's audio duration into run times by relative weight.
+        """Split the beat's duration into run times by relative weight.
 
             fade_in, hold, fade_out = scene.budget(1, 4, 1)
+
+        Every run time is a whole number of frames at the active tier's fps,
+        and together they are exactly `beat_frames`. Manim renders a play()
+        or wait() in whole frames; handing it fractions let each one round on
+        its own (plays up, frozen waits down), so a beat drifted from its
+        audio by up to a frame per segment. Here the rounding happens once,
+        for the whole beat, and get_run_time() below makes Manim render each
+        whole-frame run time as exactly that many frames.
         """
-        total = sum(weights)
-        if total <= 0:
+        if any(w < 0 for w in weights):
+            raise ValueError(f"weights must not be negative: {weights}")
+        if sum(weights) <= 0:
             raise ValueError("weights must sum to more than zero")
         if self.beat_duration <= 0:
             # Without this, a zero budget produces run_time=0 and Manim raises
@@ -94,7 +124,30 @@ class ChalkdustScene(Scene):
                 f"beat_duration is {self.beat_duration}; must be positive. "
                 "Was the speech stage run before rendering?"
             )
-        return [self.beat_duration * w / total for w in weights]
+        fps = self.fps
+        return [n / fps for n in split_frames(self.beat_frames, weights)]
+
+    # --- frame quantisation ---------------------------------------------------
+    # Stock Manim turns a run time into frames two different ways: a play()
+    # renders len(arange(0, t, 1/fps)) frames (rounds up), a frozen wait()
+    # writes int(t / (1/fps)) (rounds down), and float error flips both even
+    # for exact multiples of 1/fps (e.g. 23/15 s plays 24 frames). These two
+    # overrides give every play and wait in a beat one rule: round the run
+    # time to the nearest whole frame, at least one.
+
+    def get_run_time(self, animations) -> float:
+        """Snap the run time to whole frames, then hand Manim the MIDDLE of
+        the last frame: (n + 0.5) / fps. Both of Manim's rounding paths land
+        on n from there whatever the float error -- the frozen-wait path
+        truncates it directly, get_time_progression() below handles plays."""
+        run_time = super().get_run_time(animations)
+        return (whole_frames(run_time, self.fps) + 0.5) / self.fps
+
+    def get_time_progression(self, run_time: float, *args, **kwargs):
+        """Exactly n frame times for a run time snapped by get_run_time()."""
+        n = int(run_time * self.fps)
+        # arange(0, (n - 0.5)/fps, 1/fps) has n elements under any float error.
+        return super().get_time_progression((n - 0.5) / self.fps, *args, **kwargs)
 
     # --- validation ---------------------------------------------------------
 
@@ -138,6 +191,41 @@ class ChalkdustScene(Scene):
         """Mark mobjects that must never overlap each other."""
         for m in mobs:
             m._chalk_exclusive = True  # type: ignore[attr-defined]
+
+
+def frames_covering(seconds: float, fps: float) -> int:
+    """Fewest whole frames lasting at least `seconds`. Rounded to 1e-6 of a
+    frame first, so 4.0 s at 15 fps is 60 frames, not 61 from float error."""
+    return max(1, math.ceil(round(seconds * fps, 6)))
+
+
+def whole_frames(seconds: float, fps: float) -> int:
+    """Nearest whole number of frames, at least one."""
+    return max(1, round(seconds * fps))
+
+
+def split_frames(total: int, weights: Sequence[float]) -> list[int]:
+    """Split `total` frames by relative weight into whole frames summing to
+    exactly `total` (largest remainder; ties go to the earlier segment).
+
+    Every positive weight gets at least one frame, since Manim cannot play
+    zero frames. That is taken from the largest share; only when there are
+    more positive weights than frames does the sum exceed `total` -- a beat
+    that short is refused upstream by the duration check (SCENE_SPEC.md §8).
+    """
+    scale = total / sum(weights)
+    shares = [w * scale for w in weights]
+    out = [math.floor(x) for x in shares]
+    by_remainder = sorted(range(len(out)), key=lambda i: (out[i] - shares[i], i))
+    for i in by_remainder[: total - sum(out)]:
+        out[i] += 1
+    for i, w in enumerate(weights):
+        if w > 0 and out[i] == 0:
+            donor = max(range(len(out)), key=lambda j: (out[j], -j))
+            if out[donor] > 1:
+                out[donor] -= 1
+            out[i] = 1
+    return out
 
 
 def _name(mob: Mobject) -> str:

@@ -15,9 +15,12 @@ before compute is spent.
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterator, Mapping, Sequence
+from contextlib import contextmanager
 from dataclasses import dataclass, field
+from pathlib import Path
 
+from manim import config, tempconfig
 from manim.animation.animation import prepare_animation
 
 from chalkdust.continuity import ArtifactRecipe, beat_component
@@ -31,7 +34,8 @@ class Finding:
     """One failure the repair loop can dispatch on (SCENE_SPEC.md §9).
 
     kinds, geometric (rung 3, this module):
-      out_of_bounds | overlap | illegible | overflow | build_error
+      out_of_bounds | overlap | illegible | overflow | invalid_latex |
+      build_error
     kinds, semantic (rung 2, semantic.py):
       duration        -- narration too short for the component's steps, or
                          longer than one beat may run
@@ -65,8 +69,46 @@ class Report:
         return "\n".join(lines)
 
 
+# Where the probe's Manim scratch goes when the caller has not said. Building a
+# scene creates Manim's media tree, and building Text or MathTex writes SVGs
+# into it; left at Manim's default that is ./media in whatever directory the
+# probe happens to run from. This mirrors the pipeline's default work dir
+# (work/, git-ignored) and its media_dir under it.
+DEFAULT_PROBE_MEDIA_DIR = Path("work") / "manim"
+
+
+@contextmanager
+def probe_media(media_dir: Path | str | None = None) -> Iterator[None]:
+    """Scope Manim's media_dir for a probe.
+
+    An explicit `media_dir` wins. Otherwise a caller that already redirected
+    Manim (the pipeline's tempconfig, the worker's) is left alone, and only
+    Manim's own default -- ./media in the cwd -- is replaced by
+    DEFAULT_PROBE_MEDIA_DIR.
+    """
+    if media_dir is None:
+        if Path(config.media_dir) != Path("media"):
+            yield
+            return
+        media_dir = DEFAULT_PROBE_MEDIA_DIR
+    with tempconfig({"media_dir": str(media_dir)}):
+        yield
+
+
 class LayoutProbe(ChalkdustScene):
-    """A ChalkdustScene that applies animations instantly and writes nothing."""
+    """A ChalkdustScene that applies animations instantly and writes nothing
+    into the cwd: its Manim scratch goes to `media_dir` (see probe_media)."""
+
+    def __init__(self, *args, media_dir: Path | str | None = None, **kwargs) -> None:
+        # Scene.__init__ builds the file writer, which creates the media tree.
+        with probe_media(media_dir):
+            super().__init__(*args, **kwargs)
+        self.probe_media_dir = media_dir
+
+    def construct(self) -> None:
+        # build() creates Text and MathTex, which write their SVGs under it.
+        with probe_media(self.probe_media_dir):
+            super().construct()
 
     def play(self, *animations, **kwargs) -> None:  # type: ignore[override]
         # Same order of operations as Scene.play, so the probe adds exactly
@@ -92,12 +134,14 @@ class LayoutProbe(ChalkdustScene):
 
 def validate_beat(spec: BeatSpec, theme: str = "default",
                   duration: float = 8.0,
-                  recipes: Sequence[ArtifactRecipe] = ()) -> Report:
+                  recipes: Sequence[ArtifactRecipe] = (),
+                  media_dir: Path | str | None = None) -> Report:
     """Check one beat's layout. Never raises -- failures come back as findings.
 
     `recipes` are the beat's carried artifacts (SCENE_SPEC.md §6,
     continuity.resolve_carry_in): they are built on screen first, as in the
     render, so a beat is checked against the frame it will actually draw.
+    `media_dir` is where Manim's scratch goes (see probe_media); never the cwd.
     """
     try:
         component = beat_component(spec, recipes)
@@ -106,7 +150,8 @@ def validate_beat(spec: BeatSpec, theme: str = "default",
 
     # strict=False so the scene collects every finding instead of stopping at
     # the first. The repair loop wants the full picture in one pass.
-    probe = LayoutProbe(component, theme=theme, duration=duration, strict=False)
+    probe = LayoutProbe(component, theme=theme, duration=duration, strict=False,
+                        media_dir=media_dir)
     return run_probe(probe, spec.id)
 
 
@@ -138,7 +183,9 @@ def run_probe(probe: LayoutProbe, beat_id: str) -> Report:
 
 def validate_specs(specs: list[BeatSpec], theme: str = "default",
                    recipes: Mapping[str, Sequence[ArtifactRecipe]] | None = None,
+                   media_dir: Path | str | None = None,
                    ) -> list[Report]:
     """validate_beat over `specs`; `recipes` is resolve_carry_in(video_spec)."""
     recipes = recipes or {}
-    return [validate_beat(s, theme=theme, recipes=recipes.get(s.id, ())) for s in specs]
+    return [validate_beat(s, theme=theme, recipes=recipes.get(s.id, ()),
+                          media_dir=media_dir) for s in specs]

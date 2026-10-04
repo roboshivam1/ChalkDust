@@ -8,7 +8,10 @@ See SCENE_SPEC.md §10 for the versioning policy.
 CHALKDUST_VERSION = "0.1.0"
 
 # Bump when a component's layout or visual behaviour changes.
-COMPONENT_LIBRARY_VERSION = "0.1.0"
+# 0.2.0: budget() hands out whole frames, so every beat's clip is exactly
+#        ceil(audio * fps) frames long (it drifted by up to a frame per
+#        segment); clips rendered under 0.1.0 must not be reused (D-004).
+COMPONENT_LIBRARY_VERSION = "0.2.0"
 
 # Bump when a theme's palette, typography, or motion language changes.
 THEME_VERSION = "0.1.0"

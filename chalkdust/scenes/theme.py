@@ -12,7 +12,7 @@ from functools import lru_cache
 
 from manim import MathTex, Mobject, Tex, Text, VMobject
 
-from chalkdust.scenes.regions import tag_font_size
+from chalkdust.scenes.regions import INVALID_LATEX, LayoutError, tag_font_size
 
 
 @dataclass(frozen=True)
@@ -134,12 +134,42 @@ def mono_text(s: str, theme: Theme, color: str | None = None) -> Text:
 
 
 def math(s: str, theme: Theme, size: float | None = None,
-         color: str | None = None) -> MathTex:
+         color: str | None = None, *, what: str = "maths") -> MathTex:
     """LaTeX maths. Note MathTex font_size behaves differently from Text --
-    the same numeric value renders visually smaller, so we bump it."""
+    the same numeric value renders visually smaller, so we bump it.
+
+    Bad LaTeX refuses as LayoutError kind "invalid_latex" (see
+    refuse_invalid_latex); `what` names the content in that message, e.g.
+    "step[2]", so the refusal points at the spec field to regenerate.
+    """
     size = size or theme.type.heading
-    m = MathTex(s, font_size=size * 1.2, color=color or theme.palette.fg)
+    try:
+        m = MathTex(s, font_size=size * 1.2, color=color or theme.palette.fg)
+    except ValueError as exc:
+        raise refuse_invalid_latex(what, s, "does not compile", exc) from exc
+    if m.width == 0 and m.height == 0:
+        # Compiles, draws nothing (e.g. only spacing commands). Placing it
+        # would leave a silent gap where the viewer expects maths.
+        raise refuse_invalid_latex(what, s, "renders nothing")
     return tag_font_size(m, size)
+
+
+def refuse_invalid_latex(what: str, source: str, reason: str,
+                         cause: Exception | None = None) -> LayoutError:
+    """The one way scene code refuses bad LaTeX: kind "invalid_latex".
+
+    Manim reports a LaTeX failure as a bare ValueError from deep inside its
+    compile step. Typing it here gives the repair loop a refusal it can
+    dispatch on (regenerate the spec, SCENE_SPEC.md §9) instead of a crash,
+    and the probe reports it as a finding of that kind rather than as a
+    build_error. Every maths constructor routes its failures through this.
+    """
+    detail = ""
+    if cause is not None:
+        first = (str(cause).strip().splitlines() or [""])[0]
+        detail = f" ({first})" if first else ""
+    return LayoutError(f"{what} is not valid LaTeX, {reason}: {source!r}{detail}",
+                       kind=INVALID_LATEX)
 
 
 def emphasize(mob: VMobject, theme: Theme) -> VMobject:
@@ -157,6 +187,10 @@ FALLBACKS = {
 }
 
 
+# Substitutions already announced in this process, as (role, wanted, used).
+_WARNED: set[tuple[str, str, str]] = set()
+
+
 def _installed_fonts() -> set[str]:
     try:
         import manimpango
@@ -169,9 +203,12 @@ def _installed_fonts() -> set[str]:
 def resolve_fonts(theme: Theme, warn: bool = True) -> Theme:
     """Return a copy of `theme` with any missing font swapped for a fallback.
 
-    Called once per scene construction. If nothing in the fallback chain is
-    installed we leave the original name and let Pango decide -- but by then
-    the warning has already been printed.
+    Called on every scene construction -- every probe, repair attempt and
+    render -- so each substitution is printed once per process, not once per
+    scene: a validation pass over a video would otherwise repeat the same
+    line hundreds of times and bury everything else. If nothing in the
+    fallback chain is installed we leave the original name and let Pango
+    decide -- but by then the warning has already been printed.
     """
     available = _installed_fonts()
     if not available:
@@ -182,7 +219,8 @@ def resolve_fonts(theme: Theme, warn: bool = True) -> Theme:
             return wanted
         for candidate in FALLBACKS[role]:
             if candidate in available:
-                if warn:
+                if warn and (role, wanted, candidate) not in _WARNED:
+                    _WARNED.add((role, wanted, candidate))
                     print(f"[theme] {wanted!r} missing, using {candidate!r} for {role}")
                 return candidate
         return wanted

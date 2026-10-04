@@ -131,3 +131,13 @@ points where you think it does.
 > exist yet, so the installed `chalkdust` command fails with
 > `ModuleNotFoundError: No module named 'chalkdust.cli'`. This section gets real
 > commands when that PR merges.
+
+**Parallel render (`--jobs`).** `python -m chalkdust render <spec> --jobs N` renders the
+beats that miss the cache across N processes (ARCHITECTURE.md §4). The default is one
+process per beat that needs rendering, at most the CPU count, except that a draft render
+with fewer than five beats to render stays in one process (measured: there the pool's
+start-up costs more than it saves); `--jobs 1` renders them one after another in a
+single process. Cache hits never start a worker, and RawScene
+beats always render in the main process, after the pool (a degraded one's cache slot is
+only known once it renders). The clips, cache keys and finished MP4 are the same
+whichever you pick.

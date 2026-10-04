@@ -1,0 +1,3995 @@
+{
+ "component": "NumberLineWalk",
+ "manim_version": "0.21.0",
+ "reasons": [
+  "NumberLineWalk merged",
+  "NumberLineWalk: jump arrow tip detached so the stroke grows under the walker"
+ ],
+ "cases": [
+  {
+   "params": {
+    "range": [
+     -2,
+     8
+    ],
+    "steps": [
+     {
+      "at": 2,
+      "label": "start"
+     },
+     {
+      "to": 7
+     },
+     {
+      "to": 4
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "FadeIn"
+      ],
+      "run_time": 1.767
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn",
+       "FadeIn"
+      ],
+      "run_time": 1.183
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "MoveAlongPath",
+       "FadeIn",
+       "FadeIn"
+      ],
+      "run_time": 2.35
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "MoveAlongPath",
+       "FadeIn",
+       "FadeIn"
+      ],
+      "run_time": 2.35
+     },
+     {
+      "op": "settle",
+      "label": "walk complete",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "number line",
+        "children": [
+         {
+          "type": "NumberLine",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "tick labels",
+        "children": [
+         {
+          "type": "Text",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "−1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "0",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "5",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "6",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "7",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "8",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Dot",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "steps[0] label",
+        "text": "start",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "ArcBetweenPoints",
+        "label": "jump 2->7",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 2->7 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "steps[1] label",
+        "text": "+5",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "ArcBetweenPoints",
+        "label": "jump 7->4",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 7->4 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "steps[2] label",
+        "text": "−3",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.35
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "number line",
+        "children": [
+         {
+          "type": "NumberLine",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "tick labels",
+        "children": [
+         {
+          "type": "Text",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "−1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "0",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "5",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "6",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "7",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "8",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Dot",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "steps[0] label",
+        "text": "start",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "ArcBetweenPoints",
+        "label": "jump 2->7",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 2->7 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "steps[1] label",
+        "text": "+5",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "ArcBetweenPoints",
+        "label": "jump 7->4",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 7->4 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "steps[2] label",
+        "text": "−3",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.047,
+        -0.756,
+        11.722,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.047,
+        -0.756,
+        11.722,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.047,
+        -0.756,
+        11.722,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.814,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.642,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.47,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.298,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.126,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.047,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.219,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.391,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.563,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.736,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.908,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.078,
+        11.973,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.814,
+        -1.076,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -4.642,
+        -1.076,
+        0.3,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.47,
+        -1.078,
+        0.155,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.298,
+        -1.076,
+        0.088,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.126,
+        -1.076,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.047,
+        -1.078,
+        0.156,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.219,
+        -1.075,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        2.391,
+        -1.075,
+        0.158,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        3.563,
+        -1.078,
+        0.158,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        4.736,
+        -1.073,
+        0.154,
+        0.236
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        5.908,
+        -1.078,
+        0.157,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.219,
+        -0.756,
+        0.2,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.126,
+        -1.508,
+        0.848,
+        0.316
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.76,
+        0.12,
+        5.772,
+        1.752
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.652,
+        -0.655,
+        0.167,
+        0.201
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.805,
+        1.306,
+        0.464,
+        0.319
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        3.043,
+        -0.395,
+        3.384,
+        0.721
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.316,
+        -0.662,
+        0.193,
+        0.188
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.977,
+        0.278,
+        0.462,
+        0.325
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.047,
+        -0.756,
+        11.722,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.047,
+        -0.756,
+        11.722,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.047,
+        -0.756,
+        11.722,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.814,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.642,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.47,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.298,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.126,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.047,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.219,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.391,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.563,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.736,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.908,
+        -0.756,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -1.078,
+        11.973,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.814,
+        -1.076,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -4.642,
+        -1.076,
+        0.3,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.47,
+        -1.078,
+        0.155,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.298,
+        -1.076,
+        0.088,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.126,
+        -1.076,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.047,
+        -1.078,
+        0.156,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.219,
+        -1.075,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        2.391,
+        -1.075,
+        0.158,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        3.563,
+        -1.078,
+        0.158,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        4.736,
+        -1.073,
+        0.154,
+        0.236
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        5.908,
+        -1.078,
+        0.157,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.219,
+        -0.756,
+        0.2,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.126,
+        -1.508,
+        0.848,
+        0.316
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.76,
+        0.12,
+        5.772,
+        1.752
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.652,
+        -0.655,
+        0.167,
+        0.201
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.805,
+        1.306,
+        0.464,
+        0.319
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        3.043,
+        -0.395,
+        3.384,
+        0.721
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.316,
+        -0.662,
+        0.193,
+        0.188
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.977,
+        0.278,
+        0.462,
+        0.325
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "range": [
+     0,
+     12,
+     1
+    ],
+    "steps": [
+     {
+      "at": 0
+     },
+     {
+      "to": 3
+     },
+     {
+      "to": 6
+     },
+     {
+      "to": 9
+     },
+     {
+      "to": 12,
+      "label": "4 jumps of 3"
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "FadeIn"
+      ],
+      "run_time": 1.2
+     },
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "run_time": 0.8
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "MoveAlongPath",
+       "FadeIn",
+       "FadeIn"
+      ],
+      "run_time": 1.6
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "MoveAlongPath",
+       "FadeIn",
+       "FadeIn"
+      ],
+      "run_time": 1.6
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "MoveAlongPath",
+       "FadeIn",
+       "FadeIn"
+      ],
+      "run_time": 1.6
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "MoveAlongPath",
+       "FadeIn",
+       "FadeIn"
+      ],
+      "run_time": 1.6
+     },
+     {
+      "op": "settle",
+      "label": "walk complete",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "number line",
+        "children": [
+         {
+          "type": "NumberLine",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "tick labels",
+        "children": [
+         {
+          "type": "Text",
+          "text": "0",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "5",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "6",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "7",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "8",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "9",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "10",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "11",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "12",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Dot",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "ArcBetweenPoints",
+        "label": "jump 0->3",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 0->3 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "steps[1] label",
+        "text": "+3",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "ArcBetweenPoints",
+        "label": "jump 3->6",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 3->6 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "steps[2] label",
+        "text": "+3",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "ArcBetweenPoints",
+        "label": "jump 6->9",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 6->9 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "steps[3] label",
+        "text": "+3",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "ArcBetweenPoints",
+        "label": "jump 9->12",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 9->12 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "steps[4] label",
+        "text": "4 jumps of 3",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 1.6
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "number line",
+        "children": [
+         {
+          "type": "NumberLine",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "tick labels",
+        "children": [
+         {
+          "type": "Text",
+          "text": "0",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "5",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "6",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "7",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "8",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "9",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "10",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "11",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "12",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Dot",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "ArcBetweenPoints",
+        "label": "jump 0->3",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 0->3 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "steps[1] label",
+        "text": "+3",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "ArcBetweenPoints",
+        "label": "jump 3->6",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 3->6 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "steps[2] label",
+        "text": "+3",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "ArcBetweenPoints",
+        "label": "jump 6->9",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 6->9 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "steps[3] label",
+        "text": "+3",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "ArcBetweenPoints",
+        "label": "jump 9->12",
+        "color": "#58A6FF",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "ArrowTriangleFilledTip",
+        "label": "jump 9->12 tip",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "steps[4] label",
+        "text": "4 jumps of 3",
+        "color": "#58A6FF",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        -0.029,
+        -0.628,
+        11.722,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.029,
+        -0.628,
+        11.722,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.029,
+        -0.628,
+        11.722,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.89,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.913,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.937,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.96,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.983,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.006,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.029,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.948,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.925,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.901,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.878,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.855,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.832,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.011,
+        -0.95,
+        11.958,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.89,
+        -0.95,
+        0.155,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -4.913,
+        -0.948,
+        0.088,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.937,
+        -0.948,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.96,
+        -0.95,
+        0.156,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.983,
+        -0.948,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.006,
+        -0.948,
+        0.158,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.029,
+        -0.95,
+        0.158,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.948,
+        -0.946,
+        0.154,
+        0.236
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.925,
+        -0.95,
+        0.157,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        2.901,
+        -0.95,
+        0.157,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        3.878,
+        -0.95,
+        0.318,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        4.855,
+        -0.948,
+        0.248,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        5.832,
+        -0.948,
+        0.317,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        5.832,
+        -0.628,
+        0.2,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.467,
+        -0.162,
+        2.846,
+        0.933
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.042,
+        -0.528,
+        0.164,
+        0.201
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.425,
+        0.618,
+        0.462,
+        0.325
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.537,
+        -0.162,
+        2.846,
+        0.933
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.111,
+        -0.528,
+        0.164,
+        0.201
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.494,
+        0.618,
+        0.462,
+        0.325
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.394,
+        -0.162,
+        2.846,
+        0.933
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.819,
+        -0.528,
+        0.164,
+        0.201
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.436,
+        0.618,
+        0.462,
+        0.325
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        4.324,
+        -0.162,
+        2.846,
+        0.933
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.75,
+        -0.528,
+        0.164,
+        0.201
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.367,
+        0.664,
+        2.395,
+        0.417
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.029,
+        -0.628,
+        11.722,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.029,
+        -0.628,
+        11.722,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.029,
+        -0.628,
+        11.722,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.89,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.913,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.937,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.96,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.983,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.006,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.029,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.948,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.925,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.901,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.878,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.855,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.832,
+        -0.628,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.011,
+        -0.95,
+        11.958,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.89,
+        -0.95,
+        0.155,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -4.913,
+        -0.948,
+        0.088,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.937,
+        -0.948,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.96,
+        -0.95,
+        0.156,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.983,
+        -0.948,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.006,
+        -0.948,
+        0.158,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -0.029,
+        -0.95,
+        0.158,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.948,
+        -0.946,
+        0.154,
+        0.236
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.925,
+        -0.95,
+        0.157,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        2.901,
+        -0.95,
+        0.157,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        3.878,
+        -0.95,
+        0.318,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        4.855,
+        -0.948,
+        0.248,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        5.832,
+        -0.948,
+        0.317,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        5.832,
+        -0.628,
+        0.2,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.467,
+        -0.162,
+        2.846,
+        0.933
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.042,
+        -0.528,
+        0.164,
+        0.201
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.425,
+        0.618,
+        0.462,
+        0.325
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.537,
+        -0.162,
+        2.846,
+        0.933
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.111,
+        -0.528,
+        0.164,
+        0.201
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.494,
+        0.618,
+        0.462,
+        0.325
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.394,
+        -0.162,
+        2.846,
+        0.933
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.819,
+        -0.528,
+        0.164,
+        0.201
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.436,
+        0.618,
+        0.462,
+        0.325
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        4.324,
+        -0.162,
+        2.846,
+        0.933
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.75,
+        -0.528,
+        0.164,
+        0.201
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.367,
+        0.664,
+        2.395,
+        0.417
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ]
+   }
+  },
+  {
+   "params": {
+    "range": [
+     -5,
+     5
+    ],
+    "steps": [
+     {
+      "interval": [
+       1,
+       null
+      ],
+      "closed": [
+       false,
+       false
+      ],
+      "label": "x > 1"
+     },
+     {
+      "interval": [
+       -4,
+       -1
+      ],
+      "label": "−4 ≤ x ≤ −1"
+     }
+    ]
+   },
+   "structure": {
+    "timeline": [
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "FadeIn"
+      ],
+      "run_time": 2.0
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "FadeIn",
+       "FadeIn"
+      ],
+      "run_time": 2.667
+     },
+     {
+      "op": "play",
+      "animations": [
+       "Create",
+       "FadeIn",
+       "FadeIn",
+       "FadeIn"
+      ],
+      "run_time": 2.667
+     },
+     {
+      "op": "settle",
+      "label": "walk complete",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "number line",
+        "children": [
+         {
+          "type": "NumberLine",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "tick labels",
+        "children": [
+         {
+          "type": "Text",
+          "text": "−5",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "−3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "−1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "0",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "5",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Line",
+        "label": "interval",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#F0883E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Circle",
+        "color": "#0E1116",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "steps[0] label",
+        "text": "x > 1",
+        "color": "#F0883E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Line",
+        "label": "interval",
+        "color": "#3FB950",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Dot",
+        "color": "#3FB950",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Dot",
+        "color": "#3FB950",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "steps[1] label",
+        "text": "−4 ≤ x ≤ −1",
+        "color": "#3FB950",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.667
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "number line",
+        "children": [
+         {
+          "type": "NumberLine",
+          "color": "#8B949E",
+          "fill_opacity": 0.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "VGroup",
+          "children": [
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           },
+           {
+            "type": "Line",
+            "color": "#8B949E",
+            "fill_opacity": 0.0,
+            "stroke_opacity": 1.0
+           }
+          ]
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "VGroup",
+        "label": "tick labels",
+        "children": [
+         {
+          "type": "Text",
+          "text": "−5",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "−4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "−3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "−2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "−1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "0",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "1",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "3",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "4",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "5",
+          "color": "#8B949E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Line",
+        "label": "interval",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#F0883E",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Circle",
+        "color": "#0E1116",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "steps[0] label",
+        "text": "x > 1",
+        "color": "#F0883E",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Line",
+        "label": "interval",
+        "color": "#3FB950",
+        "fill_opacity": 0.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Dot",
+        "color": "#3FB950",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Dot",
+        "color": "#3FB950",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Text",
+        "label": "steps[1] label",
+        "text": "−4 ≤ x ≤ −1",
+        "color": "#3FB950",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "geometry": {
+    "win32|Arial|Arial|Courier New": [
+     [
+      {
+       "bbox": [
+        0.047,
+        0.307,
+        11.722,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.047,
+        0.307,
+        11.722,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.047,
+        0.307,
+        11.722,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.814,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.641,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.469,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.297,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.125,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.047,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.22,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.392,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.564,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.736,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.909,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.015,
+        11.975,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.814,
+        -0.013,
+        0.348,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -4.641,
+        -0.013,
+        0.345,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.469,
+        -0.015,
+        0.346,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.297,
+        -0.013,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.125,
+        -0.013,
+        0.3,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.047,
+        -0.015,
+        0.155,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.22,
+        -0.013,
+        0.088,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        2.392,
+        -0.013,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        3.564,
+        -0.015,
+        0.156,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        4.736,
+        -0.013,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        5.909,
+        -0.013,
+        0.158,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        3.564,
+        0.307,
+        4.689,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.809,
+        0.307,
+        0.2,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.22,
+        0.307,
+        0.18,
+        0.18
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.564,
+        -0.447,
+        0.891,
+        0.32
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.883,
+        0.307,
+        3.517,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.641,
+        0.307,
+        0.18,
+        0.18
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.125,
+        0.307,
+        0.18,
+        0.18
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.883,
+        -0.447,
+        2.111,
+        0.32
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        0.047,
+        0.307,
+        11.722,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.047,
+        0.307,
+        11.722,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.047,
+        0.307,
+        11.722,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.814,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.641,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -3.469,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.297,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.125,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.047,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.22,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.392,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.564,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        4.736,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.909,
+        0.307,
+        0.0,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.0,
+        -0.015,
+        11.975,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -5.814,
+        -0.013,
+        0.348,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -4.641,
+        -0.013,
+        0.345,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -3.469,
+        -0.015,
+        0.346,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -2.297,
+        -0.013,
+        0.344,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        -1.125,
+        -0.013,
+        0.3,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        0.047,
+        -0.015,
+        0.155,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        1.22,
+        -0.013,
+        0.088,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        2.392,
+        -0.013,
+        0.158,
+        0.24
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        3.564,
+        -0.015,
+        0.156,
+        0.244
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        4.736,
+        -0.013,
+        0.165,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        5.909,
+        -0.013,
+        0.158,
+        0.239
+       ],
+       "font_size": 24.0
+      },
+      {
+       "bbox": [
+        3.564,
+        0.307,
+        4.689,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        5.809,
+        0.307,
+        0.2,
+        0.2
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.22,
+        0.307,
+        0.18,
+        0.18
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        3.564,
+        -0.447,
+        0.891,
+        0.32
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -2.883,
+        0.307,
+        3.517,
+        0.0
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -4.641,
+        0.307,
+        0.18,
+        0.18
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.125,
+        0.307,
+        0.18,
+        0.18
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.883,
+        -0.447,
+        2.111,
+        0.32
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ]
+   }
+  }
+ ]
+}

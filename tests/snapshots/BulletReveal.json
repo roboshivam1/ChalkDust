@@ -3,7 +3,8 @@
  "manim_version": "0.21.0",
  "reasons": [
   "initial snapshot: seeded with the f4-layout-safety harness",
-  "N-1: budget() hands out whole frames at the tier fps (run times snap to 1/60 s here)"
+  "N-1: budget() hands out whole frames at the tier fps (run times snap to 1/60 s here)",
+  "shipped-audit rc2: reveal='all' budgets its single fade as one segment (weights [2k, 2], was k summed segments of 2), so a beat shorter than k+1 frames no longer overruns; example 2 moves one 60 fps frame from the fade to the hold"
  ],
  "cases": [
   {
@@ -613,7 +614,7 @@
       "animations": [
        "FadeIn"
       ],
-      "run_time": 8.583
+      "run_time": 8.567
      },
      {
       "op": "settle",
@@ -746,7 +747,7 @@
      },
      {
       "op": "wait",
-      "duration": 1.417
+      "duration": 1.433
      },
      {
       "op": "settle",

@@ -16,7 +16,8 @@ shorter excerpt, which is a decision for the script, not the renderer
 from __future__ import annotations
 
 import unicodedata
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
 from functools import lru_cache
 from statistics import median
 
@@ -31,6 +32,7 @@ from manim import (
     VMobject,
     interpolate_color,
 )
+from manim.mobject.text import text_mobject
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 from pygments.lexers import get_lexer_by_name
 from pygments.style import Style
@@ -455,18 +457,68 @@ def _paragraph_config(theme: Theme) -> dict:
             "font": theme.type.mono_font, "font_size": theme.type.mono}
 
 
-def _code(source: str, language: str, theme: Theme) -> Code:
-    """Manim's Code in the theme's colours and mono type, at natural size."""
-    try:
-        return Code(
-            code_string=source,
-            language=language,
-            formatter_style=_code_style(theme.palette),
-            add_line_numbers=True,
-            background="rectangle",
-            background_config={"stroke_color": theme.palette.muted},
-            paragraph_config=_paragraph_config(theme),
+# The OpenType features a listing is drawn with off: every one that lets a
+# font draw several characters as one glyph. Code passes
+# disable_ligatures=True, which ManimPango 0.7 turns into
+# font_features='liga=0,dlig=0,clig=0,hlig=0' -- without 'calt', the
+# contextual alternates through which the theme's JetBrains Mono (like Fira
+# Code and Cascadia Code) draws its programming ligatures. With calt on,
+# `<=`, `===`, `>>` and `->` each shape to fewer glyphs than characters and
+# Code refuses ordinary source; with it off, every character is its own
+# glyph in its own cell, which is what a listing means. A font without
+# these features (Courier New) draws the same with them off.
+CODE_FONT_FEATURES = "calt=0,liga=0,dlig=0,clig=0,hlig=0"
+
+
+class _CodeText(Text):
+    """Text drawn with CODE_FONT_FEATURES off: the one Text every listing
+    glyph and every probe of one goes through.
+
+    ManimPango 0.7's Text path takes no font features. It draws each run as
+    Pango markup, <span color='{colour}'>{escaped text}</span>, with the
+    run's colour written in as given, so the features ride in on the colour
+    as a second attribute of that span. Pango still reads the colour, the
+    text stays escaped, and the features become part of Text's SVG cache key
+    with it, so no listing cached with ligatures on is reused.
+    """
+
+    def _text2svg(self, color):  # type: ignore[override]
+        return super()._text2svg(
+            f"{color}' font_features='{CODE_FONT_FEATURES}"
         )
+
+
+@contextmanager
+def _code_text() -> Iterator[None]:
+    """Build Code's Paragraphs from _CodeText.
+
+    Code takes no Text class: it builds each Paragraph, and Paragraph its
+    Text, through text_mobject's module-global name `Text`. So for the
+    duration of one Code build that name is _CodeText. Building a scene is
+    single-threaded, and the name is restored however the build ends.
+    """
+    saved = text_mobject.Text
+    text_mobject.Text = _CodeText
+    try:
+        yield
+    finally:
+        text_mobject.Text = saved
+
+
+def _code(source: str, language: str, theme: Theme) -> Code:
+    """Manim's Code in the theme's colours and mono type, at natural size,
+    one glyph per character (CODE_FONT_FEATURES off)."""
+    try:
+        with _code_text():
+            return Code(
+                code_string=source,
+                language=language,
+                formatter_style=_code_style(theme.palette),
+                add_line_numbers=True,
+                background="rectangle",
+                background_config={"stroke_color": theme.palette.muted},
+                paragraph_config=_paragraph_config(theme),
+            )
     except ValueError as exc:
         # Backstop behind _refuse_unrenderable, as theme._text keeps one behind
         # check_renderable: Code checks one glyph per non-space character and
@@ -554,10 +606,11 @@ def _clusters(line: str) -> list[str]:
 
 @lru_cache(maxsize=4096)
 def _cluster_paths(cluster: str, font: str) -> int:
-    """How many paths Pango draws for `cluster` alone in `font`, or -1 if it
-    refuses the string: the theme's per-character probe, for a base + marks."""
+    """How many paths Pango draws for `cluster` alone in `font`, as a listing
+    draws it (CODE_FONT_FEATURES off), or -1 if it refuses the string: the
+    theme's per-character probe, for a base + marks."""
     try:
-        return len(Text(cluster, font=font).submobjects)
+        return len(_CodeText(cluster, font=font).submobjects)
     except Exception:
         return -1
 
@@ -568,9 +621,10 @@ def _lines_with(source: str, found: Callable[[str], bool]) -> str:
     return f"line{'s' if len(nums) > 1 else ''} {', '.join(nums)}"
 
 
-class _GlyphCount(Text):
-    """A Text that keeps how many glyphs Pango drew, before Manim maps them
-    onto characters (with disable_ligatures, that mapping drops extras)."""
+class _GlyphCount(_CodeText):
+    """A listing's Text that keeps how many glyphs Pango drew, before Manim
+    maps them onto characters (with disable_ligatures, that mapping drops
+    extras)."""
 
     def _gen_chars(self):  # type: ignore[override]
         self.glyphs = len(self.submobjects)
@@ -603,12 +657,13 @@ def _refuse_unrenderable(source: str, theme: Theme) -> None:
          enclosing ones) -- is drawn whole and must come out as exactly one
          path per non-space character, which is what Code assumes.
       3. Code's assumption itself, so shaping in context cannot slip past the
-         probes: the whole listing, drawn as Code's Paragraph draws it, must
-         come out as exactly one glyph per non-space character. An ASCII
-         listing skips it -- check 1 drew each of its characters as one path,
-         and nothing in a mono font changes that count but the programming
-         ligatures Manim already warns about -- so only a listing that leaves
-         ASCII pays for the extra Text.
+         probes: the whole listing, drawn as Code's Paragraph draws it (the
+         same config, CODE_FONT_FEATURES off), must come out as exactly one
+         glyph per non-space character. An ASCII listing skips it -- check 1
+         drew each of its characters as one path, and nothing in a mono font
+         changes that count but its ligatures and contextual alternates,
+         which _CodeText turns off -- so only a listing that leaves ASCII
+         pays for the extra Text.
     """
     font = theme.type.mono_font
     chars = "".join(dict.fromkeys(c for c in source if not c.isspace()))

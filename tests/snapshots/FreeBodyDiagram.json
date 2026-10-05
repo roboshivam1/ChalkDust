@@ -2,7 +2,8 @@
  "component": "FreeBodyDiagram",
  "manim_version": "0.21.0",
  "reasons": [
-  "FreeBodyDiagram merged"
+  "FreeBodyDiagram merged",
+  "structure/geometry split for cross-font stability; theme fonts now installed on the Windows dev box"
  ],
  "cases": [
   {
@@ -56,6 +57,588 @@
          },
          {
           "type": "Text",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "2kgblock"
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "force 0",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "2kgblock"
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "force 1",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "2kgblock"
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "N",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "force 2",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "2kgblock"
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "N",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.567
+     },
+     {
+      "op": "settle",
+      "label": "force 3",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "2kgblock"
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "N",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[3]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[3]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "f_k",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.1
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "2kgblock"
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "N",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[3]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[3]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "f_k",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "body"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "body",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
           "text": "2 kg block",
           "color": "#E6EDF3",
           "fill_opacity": 1.0,
@@ -73,6 +656,10 @@
       "animations": [
        "GrowArrow",
        "FadeIn"
+      ],
+      "targets": [
+       "force[0]",
+       "label[0]"
       ],
       "run_time": 1.583
      },
@@ -135,6 +722,10 @@
       "animations": [
        "GrowArrow",
        "FadeIn"
+      ],
+      "targets": [
+       "force[1]",
+       "label[1]"
       ],
       "run_time": 1.583
      },
@@ -223,6 +814,10 @@
       "animations": [
        "GrowArrow",
        "FadeIn"
+      ],
+      "targets": [
+       "force[2]",
+       "label[2]"
       ],
       "run_time": 1.583
      },
@@ -339,6 +934,616 @@
       "animations": [
        "GrowArrow",
        "FadeIn"
+      ],
+      "targets": [
+       "force[3]",
+       "label[3]"
+      ],
+      "run_time": 1.567
+     },
+     {
+      "op": "settle",
+      "label": "force 3",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2 kg block",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "N",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "tex": "T",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[3]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[3]",
+        "tex": "f_k",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.1
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2 kg block",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "N",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "tex": "T",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[3]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[3]",
+        "tex": "f_k",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "body"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "body",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2 kg block",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "targets": [
+       "force[0]",
+       "label[0]"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "force 0",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2 kg block",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "targets": [
+       "force[1]",
+       "label[1]"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "force 1",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2 kg block",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "N",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "targets": [
+       "force[2]",
+       "label[2]"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "force 2",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "2 kg block",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "N",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "tex": "T",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "targets": [
+       "force[3]",
+       "label[3]"
       ],
       "run_time": 1.567
      },
@@ -621,6 +1826,560 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.427,
+        1.13
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.427,
+        1.13
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        1.862,
+        0.37
+       ],
+       "font_size": 27.95
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.427,
+        1.13
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.427,
+        1.13
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        1.862,
+        0.37
+       ],
+       "font_size": 27.95
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.377,
+        0.226,
+        1.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.971,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -2.337,
+        0.46,
+        0.225
+       ],
+       "font_size": 27.95
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.427,
+        1.13
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.427,
+        1.13
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        1.862,
+        0.37
+       ],
+       "font_size": 27.95
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.377,
+        0.226,
+        1.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.971,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -2.337,
+        0.46,
+        0.225
+       ],
+       "font_size": 27.95
+      },
+      {
+       "bbox": [
+        -0.086,
+        1.165,
+        0.226,
+        1.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        1.758,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        2.131,
+        0.293,
+        0.238
+       ],
+       "font_size": 27.95
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.427,
+        1.13
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.427,
+        1.13
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        1.862,
+        0.37
+       ],
+       "font_size": 27.95
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.377,
+        0.226,
+        1.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.971,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -2.337,
+        0.46,
+        0.225
+       ],
+       "font_size": 27.95
+      },
+      {
+       "bbox": [
+        -0.086,
+        1.165,
+        0.226,
+        1.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        1.758,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        2.131,
+        0.293,
+        0.238
+       ],
+       "font_size": 27.95
+      },
+      {
+       "bbox": [
+        1.487,
+        -0.106,
+        0.721,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.735,
+        -0.106,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.107,
+        -0.106,
+        0.237,
+        0.236
+       ],
+       "font_size": 27.95
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.427,
+        1.13
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.427,
+        1.13
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        1.862,
+        0.37
+       ],
+       "font_size": 27.95
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.377,
+        0.226,
+        1.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.971,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -2.337,
+        0.46,
+        0.225
+       ],
+       "font_size": 27.95
+      },
+      {
+       "bbox": [
+        -0.086,
+        1.165,
+        0.226,
+        1.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        1.758,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        2.131,
+        0.293,
+        0.238
+       ],
+       "font_size": 27.95
+      },
+      {
+       "bbox": [
+        1.487,
+        -0.106,
+        0.721,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.735,
+        -0.106,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.107,
+        -0.106,
+        0.237,
+        0.236
+       ],
+       "font_size": 27.95
+      },
+      {
+       "bbox": [
+        -1.547,
+        -0.106,
+        0.494,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.681,
+        -0.106,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.081,
+        -0.106,
+        0.29,
+        0.317
+       ],
+       "font_size": 27.95
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.427,
+        1.13
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        2.427,
+        1.13
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -0.106,
+        1.862,
+        0.37
+       ],
+       "font_size": 27.95
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.377,
+        0.226,
+        1.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -1.971,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        -2.337,
+        0.46,
+        0.225
+       ],
+       "font_size": 27.95
+      },
+      {
+       "bbox": [
+        -0.086,
+        1.165,
+        0.226,
+        1.412
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        1.758,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.086,
+        2.131,
+        0.293,
+        0.238
+       ],
+       "font_size": 27.95
+      },
+      {
+       "bbox": [
+        1.487,
+        -0.106,
+        0.721,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.735,
+        -0.106,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        2.107,
+        -0.106,
+        0.237,
+        0.236
+       ],
+       "font_size": 27.95
+      },
+      {
+       "bbox": [
+        -1.547,
+        -0.106,
+        0.494,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.681,
+        -0.106,
+        0.226,
+        0.226
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -2.081,
+        -0.106,
+        0.29,
+        0.317
+       ],
+       "font_size": 27.95
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {
@@ -1223,6 +2982,422 @@
          },
          {
           "type": "Text",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "m"
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.883
+     },
+     {
+      "op": "settle",
+      "label": "force 0",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "m"
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.867
+     },
+     {
+      "op": "settle",
+      "label": "force 1",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "m"
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "N",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.867
+     },
+     {
+      "op": "settle",
+      "label": "force 2",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "m"
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "N",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "f_s",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "m"
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "N",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "f_s",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "body"
+      ],
+      "run_time": 1.883
+     },
+     {
+      "op": "settle",
+      "label": "body",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
           "text": "m",
           "color": "#E6EDF3",
           "fill_opacity": 1.0,
@@ -1240,6 +3415,10 @@
       "animations": [
        "GrowArrow",
        "FadeIn"
+      ],
+      "targets": [
+       "force[0]",
+       "label[0]"
       ],
       "run_time": 1.883
      },
@@ -1302,6 +3481,10 @@
       "animations": [
        "GrowArrow",
        "FadeIn"
+      ],
+      "targets": [
+       "force[1]",
+       "label[1]"
       ],
       "run_time": 1.867
      },
@@ -1392,6 +3575,446 @@
       "animations": [
        "GrowArrow",
        "FadeIn"
+      ],
+      "targets": [
+       "force[2]",
+       "label[2]"
+      ],
+      "run_time": 1.867
+     },
+     {
+      "op": "settle",
+      "label": "force 2",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "m",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "N",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "tex": "f_s",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.5
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "m",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "N",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "tex": "f_s",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "body"
+      ],
+      "run_time": 1.883
+     },
+     {
+      "op": "settle",
+      "label": "body",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "m",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "targets": [
+       "force[0]",
+       "label[0]"
+      ],
+      "run_time": 1.883
+     },
+     {
+      "op": "settle",
+      "label": "force 0",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "m",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "targets": [
+       "force[1]",
+       "label[1]"
+      ],
+      "run_time": 1.867
+     },
+     {
+      "op": "settle",
+      "label": "force 1",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "m",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "N",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "targets": [
+       "force[2]",
+       "label[2]"
       ],
       "run_time": 1.867
      },
@@ -1622,6 +4245,396 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        -0.193,
+        0.076,
+        1.218,
+        1.218
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.076,
+        1.218,
+        1.218
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.076,
+        0.302,
+        0.233
+       ],
+       "font_size": 30.11
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.193,
+        0.076,
+        1.218,
+        1.218
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.076,
+        1.218,
+        1.218
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.076,
+        0.302,
+        0.233
+       ],
+       "font_size": 30.11
+      },
+      {
+       "bbox": [
+        -0.193,
+        -1.294,
+        0.244,
+        1.522
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        -1.933,
+        0.244,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        -2.329,
+        0.496,
+        0.243
+       ],
+       "font_size": 30.11
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.193,
+        0.076,
+        1.218,
+        1.218
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.076,
+        1.218,
+        1.218
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.076,
+        0.302,
+        0.233
+       ],
+       "font_size": 30.11
+      },
+      {
+       "bbox": [
+        -0.193,
+        -1.294,
+        0.244,
+        1.522
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        -1.933,
+        0.244,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        -2.329,
+        0.496,
+        0.243
+       ],
+       "font_size": 30.11
+      },
+      {
+       "bbox": [
+        -0.874,
+        1.255,
+        0.659,
+        1.141
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.09,
+        1.69,
+        0.227,
+        0.272
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.374,
+        2.122,
+        0.316,
+        0.256
+       ],
+       "font_size": 30.11
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.193,
+        0.076,
+        1.218,
+        1.218
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.076,
+        1.218,
+        1.218
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.076,
+        0.302,
+        0.233
+       ],
+       "font_size": 30.11
+      },
+      {
+       "bbox": [
+        -0.193,
+        -1.294,
+        0.244,
+        1.522
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        -1.933,
+        0.244,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        -2.329,
+        0.496,
+        0.243
+       ],
+       "font_size": 30.11
+      },
+      {
+       "bbox": [
+        -0.874,
+        1.255,
+        0.659,
+        1.141
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.09,
+        1.69,
+        0.227,
+        0.272
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.374,
+        2.122,
+        0.316,
+        0.256
+       ],
+       "font_size": 30.11
+      },
+      {
+       "bbox": [
+        0.746,
+        0.617,
+        0.659,
+        0.38
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.939,
+        0.694,
+        0.272,
+        0.227
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.388,
+        0.988,
+        0.287,
+        0.341
+       ],
+       "font_size": 30.11
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.193,
+        0.076,
+        1.218,
+        1.218
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.076,
+        1.218,
+        1.218
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        0.076,
+        0.302,
+        0.233
+       ],
+       "font_size": 30.11
+      },
+      {
+       "bbox": [
+        -0.193,
+        -1.294,
+        0.244,
+        1.522
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        -1.933,
+        0.244,
+        0.244
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.193,
+        -2.329,
+        0.496,
+        0.243
+       ],
+       "font_size": 30.11
+      },
+      {
+       "bbox": [
+        -0.874,
+        1.255,
+        0.659,
+        1.141
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.09,
+        1.69,
+        0.227,
+        0.272
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.374,
+        2.122,
+        0.316,
+        0.256
+       ],
+       "font_size": 30.11
+      },
+      {
+       "bbox": [
+        0.746,
+        0.617,
+        0.659,
+        0.38
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.939,
+        0.694,
+        0.272,
+        0.227
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.388,
+        0.988,
+        0.287,
+        0.341
+       ],
+       "font_size": 30.11
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {
@@ -2064,6 +5077,588 @@
          },
          {
           "type": "Text",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "lamp"
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "force 0",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "lamp"
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T_1",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "force 1",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "lamp"
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T_1",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T_2",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "force 2",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "lamp"
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T_1",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T_2",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "run_time": 1.567
+     },
+     {
+      "op": "settle",
+      "label": "force 3",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "lamp"
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T_1",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T_2",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[3]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[3]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "\\vec{F}",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.1
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0,
+          "text": "lamp"
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T_1",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "T_2",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "mg",
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[3]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[3]",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "tex": "\\vec{F}",
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "layout": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "body"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "body",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
           "text": "lamp",
           "color": "#E6EDF3",
           "fill_opacity": 1.0,
@@ -2081,6 +5676,10 @@
       "animations": [
        "GrowArrow",
        "FadeIn"
+      ],
+      "targets": [
+       "force[0]",
+       "label[0]"
       ],
       "run_time": 1.583
      },
@@ -2145,6 +5744,10 @@
       "animations": [
        "GrowArrow",
        "FadeIn"
+      ],
+      "targets": [
+       "force[1]",
+       "label[1]"
       ],
       "run_time": 1.583
      },
@@ -2237,6 +5840,10 @@
       "animations": [
        "GrowArrow",
        "FadeIn"
+      ],
+      "targets": [
+       "force[2]",
+       "label[2]"
       ],
       "run_time": 1.583
      },
@@ -2356,6 +5963,631 @@
       "animations": [
        "GrowArrow",
        "FadeIn"
+      ],
+      "targets": [
+       "force[3]",
+       "label[3]"
+      ],
+      "run_time": 1.567
+     },
+     {
+      "op": "settle",
+      "label": "force 3",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "lamp",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "T_1",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "T_2",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[3]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[3]",
+        "tex": "\\vec{F}",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "wait",
+      "duration": 2.1
+     },
+     {
+      "op": "settle",
+      "label": "end of beat",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "lamp",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "T_1",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "T_2",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[3]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[3]",
+        "tex": "\\vec{F}",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     }
+    ],
+    "win32|Arial|Arial|Courier New": [
+     {
+      "op": "play",
+      "animations": [
+       "FadeIn"
+      ],
+      "targets": [
+       "body"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "body",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "lamp",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "targets": [
+       "force[0]",
+       "label[0]"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "force 0",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "lamp",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "T_1",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "targets": [
+       "force[1]",
+       "label[1]"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "force 1",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "lamp",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "T_1",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "T_2",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "targets": [
+       "force[2]",
+       "label[2]"
+      ],
+      "run_time": 1.583
+     },
+     {
+      "op": "settle",
+      "label": "force 2",
+      "mobjects": [
+       {
+        "type": "VGroup",
+        "label": "body",
+        "children": [
+         {
+          "type": "Rectangle",
+          "color": "#8B949E",
+          "fill_opacity": 0.2,
+          "stroke_opacity": 1.0
+         },
+         {
+          "type": "Text",
+          "text": "lamp",
+          "color": "#E6EDF3",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[0]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[0]",
+        "tex": "T_1",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[1]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[1]",
+        "tex": "T_2",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage",
+         "stage_right"
+        ]
+       },
+       {
+        "type": "Arrow",
+        "label": "force[2]",
+        "children": [
+         {
+          "type": "ArrowTriangleFilledTip",
+          "color": "#58A6FF",
+          "fill_opacity": 1.0,
+          "stroke_opacity": 1.0
+         }
+        ],
+        "regions": [
+         "stage",
+         "stage_left"
+        ]
+       },
+       {
+        "type": "MathTex",
+        "label": "label[2]",
+        "tex": "mg",
+        "color": "#E6EDF3",
+        "fill_opacity": 1.0,
+        "stroke_opacity": 1.0,
+        "regions": [
+         "stage"
+        ]
+       }
+      ]
+     },
+     {
+      "op": "play",
+      "animations": [
+       "GrowArrow",
+       "FadeIn"
+      ],
+      "targets": [
+       "force[3]",
+       "label[3]"
       ],
       "run_time": 1.567
      },
@@ -2644,6 +6876,560 @@
     ]
    },
    "geometry": {
+    "win32|Archivo|Inter|JetBrains Mono": [
+     [
+      {
+       "bbox": [
+        -0.003,
+        0.284,
+        1.609,
+        1.294
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.284,
+        1.609,
+        1.294
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.284,
+        0.962,
+        0.414
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.003,
+        0.284,
+        1.609,
+        1.294
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.284,
+        1.609,
+        1.294
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.284,
+        0.962,
+        0.414
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.059,
+        1.339,
+        0.817,
+        0.817
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.33,
+        1.61,
+        0.274,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.753,
+        2.033,
+        0.355,
+        0.33
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.003,
+        0.284,
+        1.609,
+        1.294
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.284,
+        1.609,
+        1.294
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.284,
+        0.962,
+        0.414
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.059,
+        1.339,
+        0.817,
+        0.817
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.33,
+        1.61,
+        0.274,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.753,
+        2.033,
+        0.355,
+        0.33
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.052,
+        1.339,
+        0.817,
+        0.817
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.323,
+        1.61,
+        0.274,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.748,
+        2.035,
+        0.364,
+        0.33
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.003,
+        0.284,
+        1.609,
+        1.294
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.284,
+        1.609,
+        1.294
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.284,
+        0.962,
+        0.414
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.059,
+        1.339,
+        0.817,
+        0.817
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.33,
+        1.61,
+        0.274,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.753,
+        2.033,
+        0.355,
+        0.33
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.052,
+        1.339,
+        0.817,
+        0.817
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.323,
+        1.61,
+        0.274,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.748,
+        2.035,
+        0.364,
+        0.33
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.359,
+        -1.172,
+        0.259,
+        1.617
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.359,
+        -1.851,
+        0.259,
+        0.259
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.359,
+        -2.271,
+        0.527,
+        0.258
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.003,
+        0.284,
+        1.609,
+        1.294
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.284,
+        1.609,
+        1.294
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.284,
+        0.962,
+        0.414
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.059,
+        1.339,
+        0.817,
+        0.817
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.33,
+        1.61,
+        0.274,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.753,
+        2.033,
+        0.355,
+        0.33
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.052,
+        1.339,
+        0.817,
+        0.817
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.323,
+        1.61,
+        0.274,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.748,
+        2.035,
+        0.364,
+        0.33
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.359,
+        -1.172,
+        0.259,
+        1.617
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.359,
+        -1.851,
+        0.259,
+        0.259
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.359,
+        -2.271,
+        0.527,
+        0.258
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.352,
+        -0.646,
+        0.259,
+        0.566
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.352,
+        -0.8,
+        0.259,
+        0.259
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.352,
+        -1.284,
+        0.293,
+        0.385
+       ],
+       "font_size": 32.0
+      }
+     ],
+     [
+      {
+       "bbox": [
+        -0.003,
+        0.284,
+        1.609,
+        1.294
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.284,
+        1.609,
+        1.294
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.003,
+        0.284,
+        0.962,
+        0.414
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -1.059,
+        1.339,
+        0.817,
+        0.817
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.33,
+        1.61,
+        0.274,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -1.753,
+        2.033,
+        0.355,
+        0.33
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        1.052,
+        1.339,
+        0.817,
+        0.817
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.323,
+        1.61,
+        0.274,
+        0.274
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        1.748,
+        2.035,
+        0.364,
+        0.33
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        -0.359,
+        -1.172,
+        0.259,
+        1.617
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.359,
+        -1.851,
+        0.259,
+        0.259
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        -0.359,
+        -2.271,
+        0.527,
+        0.258
+       ],
+       "font_size": 32.0
+      },
+      {
+       "bbox": [
+        0.352,
+        -0.646,
+        0.259,
+        0.566
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.352,
+        -0.8,
+        0.259,
+        0.259
+       ],
+       "font_size": null
+      },
+      {
+       "bbox": [
+        0.352,
+        -1.284,
+        0.293,
+        0.385
+       ],
+       "font_size": 32.0
+      }
+     ]
+    ],
     "win32|Arial|Arial|Courier New": [
      [
       {

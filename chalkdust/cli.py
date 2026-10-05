@@ -54,6 +54,16 @@ EXIT_CODES: dict[type[pipeline.PipelineError], tuple[int, str]] = {
 }
 
 
+def _jobs(text: str) -> int:
+    try:
+        value = int(text)
+    except ValueError:
+        value = 0
+    if value < 1:
+        raise argparse.ArgumentTypeError(f"{text!r} is not a whole number >= 1")
+    return value
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="chalkdust",
@@ -79,6 +89,11 @@ def _build_parser() -> argparse.ArgumentParser:
                         help="output MP4 (default: out/<video_id>-<quality>.mp4)")
     render.add_argument("--cache-dir", type=Path, default=pipeline.DEFAULT_CACHE_DIR,
                         help="content-addressed cache (default: %(default)s)")
+    render.add_argument("-j", "--jobs", type=_jobs, default=None, metavar="N",
+                        help="render beats across N processes; 1 renders them one "
+                             "after another in this process (default: one per beat "
+                             "that needs rendering, at most the CPU count; at draft, "
+                             "fewer than 5 beats to render stay in one process)")
     return parser
 
 
@@ -92,7 +107,7 @@ def main(argv: list[str] | None = None) -> int:
             quality = Quality(args.quality)
             print(f"rendering {args.spec} at {quality.value}")
             result = pipeline.render(args.spec, quality, args.out, args.cache_dir,
-                                     args.work_dir, args.verbose)
+                                     args.work_dir, args.verbose, jobs=args.jobs)
             print(f"wrote {result.output}")
     except pipeline.PipelineError as exc:
         code, what = EXIT_CODES[type(exc)]

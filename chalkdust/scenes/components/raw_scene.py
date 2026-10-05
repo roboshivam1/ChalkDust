@@ -27,9 +27,11 @@ code -- the one place generated code runs -- under four constraints:
   4. Any failure DEGRADES to BulletReveal with the narration as content
      (D-010). A degraded beat is always better than a failed video.
 
-Every use is appended to a JSONL usage log, `<work_dir>/raw_scene_usage.jsonl`
-(USAGE_LOG_NAME): one line per render_raw_beat call, with the rationale, the
-outcome, and for a degradation its reason. That log is the roadmap for the
+Every use is appended to a JSONL usage log, USAGE_LOG_NAME in the work_dir
+handed to render_raw_beat. The pipeline hands it the Manim dir, so on disk the
+log is `<--work-dir>/manim/raw_scene_usage.jsonl` (`work/manim/...` by
+default): one line per render_raw_beat call, with the rationale, the outcome,
+and for a degradation its reason. That log is the roadmap for the
 component library -- RawScene firing repeatedly for similar visuals means a
 missing component (ROADMAP.md Phase 3).
 
@@ -76,7 +78,7 @@ from chalkdust.scenes.components.raw_scene_allowlist import (
     vetted_modules,
 )
 from chalkdust.scenes.regions import LayoutError, assert_in_safe_area, assert_legible
-from chalkdust.scenes.theme import get_theme, resolve_fonts
+from chalkdust.scenes.theme import get_theme, resolve_fonts, restricted_tex_env
 
 # Generous for a draft render of one beat; a hang is the only thing that
 # should ever reach it.
@@ -553,6 +555,14 @@ def _run_job(params: RawSceneParams, duration: float, quality: dict[str, int],
     env = dict(os.environ)
     pkg_root = str(Path(chalkdust.__file__).resolve().parent.parent)
     env["PYTHONPATH"] = os.pathsep.join(p for p in (pkg_root, env.get("PYTHONPATH")) if p)
+    # RawScene's allowlist lets code build Tex/MathTex, whose LaTeX could read
+    # host files into the frame (`\input{<path>}`). That compile runs in this
+    # child, in job_dir (cwd below, an isolated scratch dir), so force the TeX
+    # file-access restriction on here too -- the same control theme._compile
+    # uses -- not just a name denylist. On MiKTeX that closes only the braced
+    # `\input{}`/`\include{}`; a plain `Tex(r"\input <abs path>")` still
+    # renders the file (measured). See theme.TEX_FILE_ACCESS_ENV.
+    env = restricted_tex_env(env)
     try:
         proc = subprocess.run(
             [sys.executable, "-c", _CHILD_BOOT, str(job_path)],

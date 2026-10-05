@@ -1,0 +1,148 @@
+{
+  "video_id": "jee-incline-pulley-tension",
+  "channel": "jee_advanced",
+  "theme": "default",
+  "beats": [
+    {
+      "id": "b01",
+      "narration": "A block on a rough ramp is tied to a weight hanging over a pulley. Let go. How hard does the string pull? The tempting answer is the hanging weight, fifty newtons. That is wrong, and two of the other options are each built on a different slip.",
+      "component": "TitleCard",
+      "params": {
+        "kicker": "JEE Advanced · Mechanics",
+        "title": "The Tension Trap",
+        "subtitle": "Rough incline, pulley and hanging block"
+      }
+    },
+    {
+      "id": "b02",
+      "narration": "Blocks A and B each have a mass of five kilograms. A sits on a rough slope whose angle has a sine of three fifths. Static friction has coefficient zero point four, kinetic friction zero point two five, and g is ten. Once released, what is the tension in the string?",
+      "component": "ProblemStatement",
+      "params": {
+        "text": "Block $A$ lies on a rough plane inclined at $\\theta$. A light inextensible string parallel to the plane runs over a smooth pulley at the top to a hanging block $B$. Both start from rest.",
+        "given": [
+          "$m_A = m_B = 5\\,\\mathrm{kg}$",
+          "$\\sin\\theta = 3/5$",
+          "$\\mu_s = 0.4,\\ \\mu_k = 0.25$",
+          "$g = 10\\,\\mathrm{m\\,s^{-2}}$"
+        ],
+        "find": "the tension $T$ in the string: $\\mathrm{(A)}\\ 35\\,\\mathrm{N} \\qquad \\mathrm{(B)}\\ 45\\,\\mathrm{N}$ $\\mathrm{(C)}\\ 48\\,\\mathrm{N} \\qquad \\mathrm{(D)}\\ 50\\,\\mathrm{N}$"
+      },
+      "transition": "cross_fade"
+    },
+    {
+      "id": "b03",
+      "narration": "Friction is the whole difficulty, because its direction and its size both depend on the motion. So first decide which way things would move, then check whether static friction can stop it. Only then write Newton's second law for each block, and solve.",
+      "component": "BulletReveal",
+      "params": {
+        "heading": "The plan",
+        "items": [
+          "Decide which way the blocks would move",
+          "Check whether static friction can hold them",
+          "Write Newton's second law for each block",
+          "Solve for the acceleration, then the tension"
+        ]
+      }
+    },
+    {
+      "id": "b04",
+      "narration": "Step one. Ignore friction for a moment. B's weight pulls the string with fifty newtons. Gravity pulls A back down the slope with its weight times sine theta, thirty newtons. Fifty beats thirty, so if anything moves, B falls and A slides up the slope.",
+      "component": "SolutionStep",
+      "params": {
+        "n": 1,
+        "claim": "Which way would the blocks move?",
+        "work": [
+          "m_B\\,g = 5 \\times 10 = 50\\ \\mathrm{N}",
+          "m_A\\,g\\sin\\theta = 5 \\times 10 \\times \\tfrac{3}{5} = 30\\ \\mathrm{N}"
+        ],
+        "justification": "50 N beats 30 N, so B would fall and A would slide up the slope"
+      }
+    },
+    {
+      "id": "b05",
+      "narration": "Step two. The cosine of theta is four fifths, so the normal force on A is forty newtons. Static friction can supply at most zero point four times forty, sixteen newtons. But the unbalanced pull is twenty newtons, so the blocks really do slide.",
+      "component": "SolutionStep",
+      "params": {
+        "n": 2,
+        "claim": "Can static friction hold them?",
+        "work": [
+          "N = m_A\\,g\\cos\\theta = 5 \\times 10 \\times \\tfrac{4}{5} = 40\\ \\mathrm{N}",
+          "f_{s,\\max} = \\mu_s N = 0.4 \\times 40 = 16\\ \\mathrm{N}",
+          "50 - 30 = 20\\ \\mathrm{N} > 16\\ \\mathrm{N}"
+        ],
+        "justification": "Static friction cannot supply 20 N, so the blocks slide"
+      }
+    },
+    {
+      "id": "b06",
+      "narration": "Now every force on block A. Its weight, fifty newtons, acts straight down. The normal force, forty newtons, pushes out of the slope. The string pulls A up the slope with tension T. And since A slides up the slope, kinetic friction acts down it.",
+      "component": "FreeBodyDiagram",
+      "params": {
+        "body": "block A",
+        "forces": [
+          {"label": "m_A g", "angle": 270, "magnitude": 50},
+          {"label": "N", "angle": 126.87, "magnitude": 40},
+          {"label": "T", "angle": 36.87, "magnitude": 45},
+          {"label": "f_k", "angle": 216.87, "magnitude": 10}
+        ]
+      },
+      "registers": "forces_on_a"
+    },
+    {
+      "id": "b07",
+      "narration": "Look closely at that friction arrow. Once the blocks slide, the static limit of sixteen newtons no longer applies. Kinetic friction is zero point two five times forty, only ten newtons, and it points down the slope. Using sixteen here is one of the traps.",
+      "component": "ZoomHighlight",
+      "params": {
+        "target_id": "forces_on_a",
+        "parts": [4, 8],
+        "callout": "Kinetic friction: 0.25 × 40 N = 10 N, down the slope"
+      },
+      "carry_in": ["forces_on_a"]
+    },
+    {
+      "id": "b08",
+      "narration": "Step three: Newton's second law. Along the slope, tension minus thirty minus ten newtons accelerates block A. For block B, its weight minus the tension accelerates it. Add the two and the tension cancels. Ten newtons drive ten kilograms: one metre per second squared.",
+      "component": "EquationDerivation",
+      "params": {
+        "steps": [
+          "T - m_A g\\sin\\theta - f_k = m_A a",
+          "m_B g - T = m_B a",
+          "m_B g - m_A g\\sin\\theta - f_k = (m_A + m_B)\\,a",
+          "50 - 30 - 10 = 10\\,a",
+          "a = 1\\ \\mathrm{m\\,s^{-2}}"
+        ],
+        "annotations": [
+          {"step": 0, "text": "block A, along the slope"},
+          {"step": 1, "text": "block B, downward"},
+          {"step": 2, "text": "add: the tension cancels"},
+          {"step": 4, "text": "both blocks share it"}
+        ]
+      },
+      "transition": "cross_fade"
+    },
+    {
+      "id": "b09",
+      "narration": "Step four. From block B, the tension is its mass times g minus a: five times nine, forty-five newtons. Check with block A: five newtons to accelerate it, plus thirty, plus ten for friction. Forty-five again.",
+      "component": "SolutionStep",
+      "params": {
+        "n": 4,
+        "claim": "Find the tension",
+        "work": [
+          "T = m_B\\,(g - a) = 5 \\times (10 - 1) = 45\\ \\mathrm{N}",
+          "T = m_A a + m_A g\\sin\\theta + f_k = 5 + 30 + 10 = 45\\ \\mathrm{N}"
+        ],
+        "justification": "Block B and block A give the same tension, so the result checks"
+      }
+    },
+    {
+      "id": "b10",
+      "narration": "So the answer is B, forty-five newtons, less than B's weight because B accelerates downward. Each wrong option is one slip. Fifty ignores the acceleration. Forty-eight uses static friction on a sliding block. Thirty-five points friction the wrong way.",
+      "component": "AnswerBox",
+      "params": {
+        "value": "T = 45",
+        "units": "N",
+        "option": "B"
+      },
+      "transition": "fade_black"
+    }
+  ]
+}

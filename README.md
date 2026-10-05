@@ -47,10 +47,21 @@ What every platform needs:
 - **ffmpeg and ffprobe on PATH.** Manim itself no longer shells out to ffmpeg, but
   ChalkDust does: `ffprobe` measures narration length (the number every animation
   run time derives from, D-002) and `ffmpeg` does mux, concat and loudness.
+  Each beat's mux and the joined file carry uncompressed PCM audio (`.mov`); AAC is
+  encoded once, at the end. `tests/test_mux.py` also writes PCM into `.mp4`, which
+  ffmpeg 8.1 does; an older build may refuse it.
 - **LaTeX with `latex` and `dvisvgm` on PATH**, for anything built with `MathTex`
   (`scenes/theme.py: math()`): `EquationDerivation`, `UnitBreakdown`, `GraphPlot` tick
   labels and friends. The semantic rung compiles every LaTeX string before any speech
   or render, so a spec with maths needs the toolchain even for `validate`.
+- **Only render specs you trust.** LaTeX can read files. Every TeX compile runs with
+  the engine's file-access restriction and no shell escape, in an empty working
+  directory (`scenes/theme.py`). On MiKTeX that refuses braced `\input{}` and
+  `\include{}`, but MiKTeX does not gate TeX's primitive readers. So a spec, or a
+  RawScene `Tex`, can still put the contents of a file on the render machine into the
+  video, and validation reports ok. TeX Live's `openin_any=p` is set too and is meant
+  to gate those readers, but that was not measured. Specs are hand-written today; this
+  matters once specs are generated.
 
 ### Windows
 

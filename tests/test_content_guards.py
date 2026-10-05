@@ -147,6 +147,82 @@ def test_a_latex_timeout_that_finishes_on_retry_passes(tmp_path, monkeypatch):
     assert len(calls) == 2
 
 
+# --- host file reads --------------------------------------------------------
+#
+# A full TeX engine can typeset the contents of a file: `\input{<path>}` and
+# `\include{<path>}` draw the whole file into the frame. Untrusted spec LaTeX
+# reaches `latex` through theme.math (every maths component) and through
+# check_latex_source (the semantic rung and the build), so without a control a
+# spec could read a host file -- source, a key, anything -- into the video.
+# The control is structural (theme.TEX_FILE_ACCESS_ENV + an isolated compile
+# cwd in theme._compile), not a token denylist: the engine refuses a braced
+# `\input{}`/`\include{}` of a file outside the empty per-run scratch dir, so
+# the read fails and the maths is refused as invalid_latex. These tests pin
+# that braced path only. On MiKTeX every primitive reader (`\input <path>`
+# without braces, \InputIfFileExists, \IfFileExists, \pdffiledump,
+# \pdfmdfivesum, \openin/\read) still reads an absolute path and passes both
+# rungs clean: an open residual the engine does not gate, recorded in
+# .run/workers/fc-tex-reads.md (decisions-for-operator), not pinned here.
+
+# Unique, never a cache hit; a word `latex` would happily typeset if it read it.
+_CANARY_WORD = "CanaryExfilSentinelQZX"
+
+
+def _canary_file(tmp_path) -> str:
+    f = tmp_path / "canary_secret.txt"
+    f.write_text(_CANARY_WORD + "\n", encoding="utf-8")
+    return f.as_posix()
+
+
+@pytest.mark.parametrize("make", [
+    pytest.param(lambda p: r"\input{%s}" % p, id="input-abs"),
+    pytest.param(lambda p: r"\input{%s} = x" % p, id="input-inline"),
+])
+def test_check_latex_source_refuses_reading_a_host_file(make, tmp_path, monkeypatch):
+    monkeypatch.setattr(theme_mod, "_latex_verdicts", {})
+    src = make(_canary_file(tmp_path))
+    with tempconfig({"media_dir": str(tmp_path / "m")}), \
+            pytest.raises(LayoutError) as exc:
+        check_latex_source(src, what="step[1]")
+    assert exc.value.kind == INVALID_LATEX
+
+
+def test_math_will_not_draw_a_host_files_contents(tmp_path, monkeypatch):
+    # The build path, not just the check: theme.math must refuse rather than
+    # return a mobject carrying the file's text.
+    monkeypatch.setattr(theme_mod, "_latex_verdicts", {})
+    src = r"\input{%s}" % _canary_file(tmp_path)
+    with tempconfig({"media_dir": str(tmp_path / "m")}), \
+            pytest.raises(LayoutError) as exc:
+        math(src, DEFAULT, what="step[1]")
+    assert exc.value.kind == INVALID_LATEX
+
+
+def test_every_maths_component_refuses_a_file_read(tmp_path, monkeypatch):
+    # The whole maths-taking surface: a braced `\input{}` in any maths field is
+    # refused at the semantic rung and the geometric rung, never silently rendered and
+    # never a build_error.
+    monkeypatch.setattr(theme_mod, "_latex_verdicts", {})
+    payload = r"\input{%s}" % _canary_file(tmp_path)
+    for name, params in _maths_specs(payload):
+        spec = BeatSpec(id="b01", narration="placeholder narration",
+                        component=name, params=params)
+        semantic = check_latex(make_component(name, params), media_dir=tmp_path)
+        assert {f.kind for f in semantic} == {INVALID_LATEX}, (name, semantic)
+        report = validate_beat(spec, media_dir=tmp_path)
+        assert INVALID_LATEX in report.kinds(), (name, report)
+        assert "build_error" not in report.kinds(), (name, report)
+
+
+def test_the_restriction_travels_in_every_tex_compiles_environment():
+    # The structural control, pinned: the file-access restriction is forced on
+    # for the subprocess regardless of the caller's environment.
+    env = theme_mod.restricted_tex_env({"PATH": "x"})
+    assert env["openin_any"] == "p"
+    assert env["MIKTEX_CORE_ALLOWUNSAFEINPUTFILES"] == "false"
+    assert env["PATH"] == "x"  # the rest of the environment is preserved
+
+
 def _maths_specs(bad: str) -> list[tuple[str, dict]]:
     """One spec per maths-taking component with `bad` in its maths field.
     GraphPlot is absent on purpose: its LaTeX is generated from parsed

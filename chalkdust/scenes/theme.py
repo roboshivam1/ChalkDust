@@ -297,6 +297,67 @@ MATH_ENVIRONMENT = "align*"
 LATEX_CHECK_TIMEOUT = 120.0
 LATEX_CHECK_ATTEMPTS = 2
 
+# Untrusted spec text becomes a full TeX document (theme.math -> MathTex, the
+# standalone check below, and RawScene's Tex). A full TeX engine can read host
+# files and draw their contents into the frame: `\input{<path>}` typesets a
+# file, `\IfFileExists`/`\pdffiledump`/`\pdfmdfivesum` read one, `\openin`/`\read`
+# stream one, and `\write18` would run a command. That is a file-disclosure
+# channel out of the render machine, so every TeX compile runs under the
+# engine's own file-access restriction -- not a token denylist, which a spec can
+# evade (`\@@input`, `\csname input\endcsname`, catcodes, and the RawScene name
+# denylist that was already beaten once; see CLAUDE.md).
+#
+# The control is the ENGINE's file-access policy plus an isolated working
+# directory, set as the environment every `latex` child inherits:
+#   - openin_any=p / openout_any=p           -- TeX Live / web2c: paranoid file
+#                                               access for every input open,
+#                                               primitives included (documented
+#                                               web2c behaviour; there is no TeX
+#                                               Live on the dev box to measure it).
+#   - MIKTEX_CORE_ALLOWUNSAFEINPUTFILES=false -- MiKTeX: refuse a braced
+#     MIKTEX_CORE_ALLOWUNSAFEOUTPUTFILES=false   \input{}/\include{} of a file not
+#                                               under the compile's working dir.
+#   - MIKTEX_CORE_SHELLCOMMANDMODE=Forbidden  -- MiKTeX: no \write18 at all.
+# plus `-no-shell-escape` on the command and a fresh empty cwd per compile
+# (_run_latex), so no project or host file is reachable by a relative name.
+#
+# On MiKTeX (25.12, measured) this is NOT a complete control. It closes only the
+# braced LaTeX macros \input{<path>} and \include{<path>}. Every primitive file
+# reader still opens an absolute path outside the compile cwd and draws the data
+# into the frame, and the compile exits 0, so check_latex_source and both
+# validation rungs pass it clean: plain `\input <path>` (LaTeX's \input without
+# a brace falls through to the \@@input primitive), \InputIfFileExists,
+# \IfFileExists (discloses existence), \pdffiledump (bytes as hex),
+# \pdfmdfivesum (the md5), and \openin/\read. MiKTeX ignores openin_any and has
+# no setting that gates these. Closing them needs TeX Live or an OS-level
+# sandbox on the `latex` child: an operator decision recorded in
+# .run/workers/fc-tex-reads.md (decisions-for-operator).
+TEX_FILE_ACCESS_ENV = {
+    "openin_any": "p",
+    "openout_any": "p",
+    "MIKTEX_CORE_ALLOWUNSAFEINPUTFILES": "false",
+    "MIKTEX_CORE_ALLOWUNSAFEOUTPUTFILES": "false",
+    "MIKTEX_CORE_SHELLCOMMANDMODE": "Forbidden",
+}
+
+
+def restricted_tex_env(base: dict[str, str] | None = None) -> dict[str, str]:
+    """`base` (os.environ by default) with the TeX file-access restriction
+    forced on. Passed to every `latex` subprocess (the standalone check here,
+    and the RawScene child), so a spec's LaTeX cannot read host files."""
+    env = dict(os.environ if base is None else base)
+    env.update(TEX_FILE_ACCESS_ENV)
+    return env
+
+
+# Also restrict Manim's own in-process compiles (MathTex at render time), which
+# shell out inheriting this process's environment: set the policy for the whole
+# process, once, without clobbering an operator's explicit override. The
+# standalone check and the RawScene child set it explicitly as well, so the
+# control does not depend on import order.
+for _k, _v in TEX_FILE_ACCESS_ENV.items():
+    os.environ.setdefault(_k, _v)
+
 
 class LatexToolchainError(RuntimeError):
     """The TeX toolchain did not finish a compile in time, on any attempt.
@@ -397,9 +458,20 @@ def _compile_raw(source: str, key: str, template: TexTemplate,
 
 def _compile(command: list[str]) -> subprocess.CompletedProcess:
     """One TeX run, bounded by LATEX_CHECK_TIMEOUT. Its own function so a
-    test can stand in for a slow toolchain without a slow test."""
+    test can stand in for a slow toolchain without a slow test.
+
+    Runs in the per-run scratch dir -- taken from the command's own
+    `-output-directory=`, which holds only the generated .tex -- with the
+    file-access restriction forced on (restricted_tex_env), so no file
+    outside that dir is reachable by a relative name and a braced
+    `\\input{}`/`\\include{}` of one is refused by the engine. On MiKTeX the
+    primitive readers (`\\input <path>`, `\\openin`, `\\pdffiledump`, ...)
+    still read an absolute path: see TEX_FILE_ACCESS_ENV."""
+    cwd = next((arg.split("=", 1)[1] for arg in command
+                if arg.startswith("-output-directory=")), None)
     return subprocess.run(command, stdin=subprocess.DEVNULL,
                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                          cwd=cwd, env=restricted_tex_env(),
                           timeout=LATEX_CHECK_TIMEOUT)
 
 
@@ -413,12 +485,18 @@ def _run_latex(texcode: str, key: str, template: TexTemplate, what: str,
         # source at once must not share a .log or .dvi (Windows locks open
         # files). Per attempt too: a timed-out run's TeX may still hold its
         # files, and a retry tripping over them would read as a LaTeX error.
-        work = _latex_dir() / f".run-{key}-{os.getpid()}-{attempt}"
+        # Absolute: the compile runs with cwd set to this dir (_compile), so
+        # the tex file and -output-directory must not be read relative to it.
+        work = (_latex_dir() / f".run-{key}-{os.getpid()}-{attempt}").resolve()
         work.mkdir(parents=True, exist_ok=True)
         tex_file = work / f"{key}.tex"
         tex_file.write_text(texcode, encoding="utf-8")
         command = make_tex_compilation_command(
             compiler, template.output_format, tex_file, work)
+        # No \write18 even in MiKTeX's restricted mode: the compile never needs
+        # a shell, and a spec must not reach one. (The input-file restriction
+        # travels in the environment, restricted_tex_env.)
+        command.insert(1, "-no-shell-escape")
         try:
             cp = _compile(command)
             break

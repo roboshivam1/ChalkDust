@@ -265,6 +265,35 @@ synthesised, one beat at a time, before any render starts. The `binary_search`
 render at `final` took 41.1 s with its speech already cached (4 beats across 4 processes).
 Re-running `binary_search` at draft with nothing changed took 12.7 s, every beat cached.
 
+### RawScene beats
+
+`RawScene` is the escape hatch: a beat that carries Manim code instead of picking a
+library component (`docs/SCENE_SPEC.md` §7, `chalkdust/scenes/components/raw_scene.py`).
+The code is checked against an import and name allowlist, then rendered in a
+subprocess with a **120 s timeout** (`raw_scene.TIMEOUT_S`), with the usual layout
+assertions after every `play()`. Any failure (a forbidden import or name, a crash, the
+timeout, a layout violation, a carried-in artifact) **degrades** the beat to a
+`BulletReveal` of its narration instead of failing the video (D-010), so the render still
+exits 0. The beat's line says so and gives the full path of the usage log that holds
+the reason (shortened here):
+
+```
+  b01  speech synth   render rebuilt    5.71s  RawScene -> DEGRADED to BulletReveal (reason in ...\work\manim\raw_scene_usage.jsonl)
+  beats: 0 cached, 1 rebuilt, 1 degraded (b01)
+```
+
+Only a RawScene that rendered is cached. **A failed one is not**, since a timeout or a
+crash may be the machine's fault, so its code runs again on every render. The fallback
+`BulletReveal` is cached under its own key, so on a re-run the line reads
+`render cached` even though the RawScene was tried again first. A RawScene that hangs
+therefore costs the full 120 s on every render, not just the first: here, a one-beat
+spec whose code is `while True: pass` took 128.8 s cold and 123.7 s re-run with its
+speech and fallback cached. `validate` never runs the code, so it cannot see a hang. For
+a failure it can see statically (a syntax or allowlist problem, a `carry_in`) it prints
+`RawScene will degrade to BulletReveal (<reason>)` and checks the fallback instead; in
+neither case does it refuse the beat for its code. To stop paying for a failing RawScene, fix the code or swap
+the beat for a library component.
+
 ### What gets written where
 
 | Path (all git-ignored) | Holds |
@@ -273,6 +302,7 @@ Re-running `binary_search` at draft with nothing changed took 12.7 s, every beat
 | `.cache/tts/<key>.wav` | normalised narration, keyed on the text and the *resolved* voice |
 | `.cache/beats/<key>.mp4` | one rendered clip per beat, keyed on everything that determines it: component, params, carry-ins, measured duration, build context, the font-resolved theme, resolution and frame rate, and the mechanical repair plan |
 | `work/manim/` | Manim's scratch, including its text and LaTeX caches (`texts/`, `Tex/`); while a `--jobs` pool runs, `pool/` holds each worker's private copy of those two, removed when the pool is done |
+| `work/manim/raw_scene_usage.jsonl` | the RawScene usage log: one JSON line per RawScene beat per render, with its rationale, outcome (`rendered` or `degraded`), the degradation reason and whether the clip came from the cache. Appended to, never rotated |
 | `work/assemble/<video_id>-<quality>/` | mux and concat intermediates, deleted after a successful render |
 
 Edit one beat's narration and re-run: only that beat's speech and render are rebuilt
@@ -293,8 +323,12 @@ A failure goes to stderr as `chalkdust: <what>: <detail>`.
 | 5 | speech failed | backend unknown, missing or unusable: Kokoro without its extra, no default voice on this OS, a `rate` SAPI cannot speak. A per-beat failure names the beat (`speech failed: b01: ...`); a voice that cannot be resolved does not (`docs/VOICE.md`); observed (Kokoro, unknown backend) |
 | 6 | render failed | Manim raised while rendering a beat, or a `--jobs` worker process died (the message names the beats that were in flight); not reproduced |
 | 7 | assembly failed | the ffmpeg mux, concat or loudness step failed; not reproduced |
-| 8 | semantic refused | rung 2: narration too short for the animation or too long for one beat (`duration`), more text than the regions hold (`capacity`), LaTeX that does not compile (`invalid_latex`); observed (`duration`, `invalid_latex`) |
+| 8 | semantic refused | rung 2: narration too short for the animation or too long for one beat (`duration`: over 25 s estimated at 160 words per minute, so at most 66 words; the schema's 80-word cap is only a sanity bound and never the one you hit), more text than the regions hold (`capacity`), LaTeX that does not compile (`invalid_latex`); observed (`duration`, `invalid_latex`) |
 | 9 | directory unusable | `--work-dir` or `--cache-dir` is a file or cannot be created, or the work dir's full path contains `~`; observed |
 | 10 | toolchain failed | TeX did not finish a compile in time on every attempt: retry, the spec is not at fault; not reproduced |
 
 Codes 6, 7 and 10 are read from `cli.py` and `pipeline.py`, not reproduced.
+
+A `RawScene` beat never sets an exit code of its own: a failure, the 120 s timeout
+included, degrades it and the render exits 0 ([RawScene beats](#rawscene-beats)). Only
+the fallback `BulletReveal` render can fail, as any other beat does.

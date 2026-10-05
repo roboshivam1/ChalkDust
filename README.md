@@ -291,8 +291,8 @@ spec whose code is `while True: pass` took 128.8 s cold and 123.7 s re-run with 
 speech and fallback cached. `validate` never runs the code, so it cannot see a hang. For
 a failure it can see statically (a syntax or allowlist problem, a `carry_in`) it prints
 `RawScene will degrade to BulletReveal (<reason>)` and checks the fallback instead; in
-neither case does it refuse the beat for its code. To stop paying for a failing RawScene, fix the code or swap
-the beat for a library component.
+neither case does it refuse the beat for its code. To stop paying for a failing
+RawScene, fix the code or swap the beat for a library component.
 
 ### What gets written where
 
@@ -323,7 +323,7 @@ A failure goes to stderr as `chalkdust: <what>: <detail>`.
 | 5 | speech failed | backend unknown, missing or unusable: Kokoro without its extra, no default voice on this OS, a `rate` SAPI cannot speak. A per-beat failure names the beat (`speech failed: b01: ...`); a voice that cannot be resolved does not (`docs/VOICE.md`); observed (Kokoro, unknown backend) |
 | 6 | render failed | Manim raised while rendering a beat, or a `--jobs` worker process died (the message names the beats that were in flight); not reproduced |
 | 7 | assembly failed | the ffmpeg mux, concat or loudness step failed; not reproduced |
-| 8 | semantic refused | rung 2: narration too short for the animation or too long for one beat (`duration`: over 25 s estimated at 160 words per minute, so at most 66 words; the schema's 80-word cap is only a sanity bound and never the one you hit), more text than the regions hold (`capacity`), LaTeX that does not compile (`invalid_latex`); observed (`duration`, `invalid_latex`) |
+| 8 | semantic refused | rung 2: narration too short for the animation or too long for one beat (`duration`: over 25 s estimated at 160 words per minute, so at most 66 words; the schema's 80-word cap is only a sanity bound: past it, rung 1 refuses first with exit 3), more text than the regions hold (`capacity`), LaTeX that does not compile (`invalid_latex`); observed (`duration`, `invalid_latex`) |
 | 9 | directory unusable | `--work-dir` or `--cache-dir` is a file or cannot be created, or the work dir's full path contains `~`; observed |
 | 10 | toolchain failed | TeX did not finish a compile in time on every attempt: retry, the spec is not at fault; not reproduced |
 

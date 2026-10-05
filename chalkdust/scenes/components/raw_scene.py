@@ -27,9 +27,11 @@ code -- the one place generated code runs -- under four constraints:
   4. Any failure DEGRADES to BulletReveal with the narration as content
      (D-010). A degraded beat is always better than a failed video.
 
-Every use is appended to a JSONL usage log, `<work_dir>/raw_scene_usage.jsonl`
-(USAGE_LOG_NAME): one line per render_raw_beat call, with the rationale, the
-outcome, and for a degradation its reason. That log is the roadmap for the
+Every use is appended to a JSONL usage log, USAGE_LOG_NAME in the work_dir
+handed to render_raw_beat. The pipeline hands it the Manim dir, so on disk the
+log is `<--work-dir>/manim/raw_scene_usage.jsonl` (`work/manim/...` by
+default): one line per render_raw_beat call, with the rationale, the outcome,
+and for a degradation its reason. That log is the roadmap for the
 component library -- RawScene firing repeatedly for similar visuals means a
 missing component (ROADMAP.md Phase 3).
 

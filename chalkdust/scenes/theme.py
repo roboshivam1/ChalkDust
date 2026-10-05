@@ -310,20 +310,28 @@ LATEX_CHECK_ATTEMPTS = 2
 # The control is the ENGINE's file-access policy plus an isolated working
 # directory, set as the environment every `latex` child inherits:
 #   - openin_any=p / openout_any=p           -- TeX Live / web2c: paranoid file
-#                                               access, gates \input AND \openin.
-#   - MIKTEX_CORE_ALLOWUNSAFEINPUTFILES=false -- MiKTeX: refuse reading a file
-#     MIKTEX_CORE_ALLOWUNSAFEOUTPUTFILES=false   not under the compile's working
-#                                               directory (absolute paths, `..`,
-#                                               and anything not in cwd).
+#                                               access for every input open,
+#                                               primitives included (documented
+#                                               web2c behaviour; there is no TeX
+#                                               Live on the dev box to measure it).
+#   - MIKTEX_CORE_ALLOWUNSAFEINPUTFILES=false -- MiKTeX: refuse a braced
+#     MIKTEX_CORE_ALLOWUNSAFEOUTPUTFILES=false   \input{}/\include{} of a file not
+#                                               under the compile's working dir.
 #   - MIKTEX_CORE_SHELLCOMMANDMODE=Forbidden  -- MiKTeX: no \write18 at all.
 # plus `-no-shell-escape` on the command and a fresh empty cwd per compile
 # (_run_latex), so no project or host file is reachable by a relative name.
 #
-# MiKTeX honours the input-file policy for the kpathsea/search readers (\input,
-# \include, \IfFileExists, \pdffiledump, \pdfmdfivesum). It does NOT honour it
-# for the raw file-stream primitives \openin/\read or raw \@@input, and ignores
-# openin_any; on MiKTeX those remain readable (a documented engine gap, closed
-# on TeX Live by openin_any=p). See .run/workers/fc-tex-reads.md.
+# On MiKTeX (25.12, measured) this is NOT a complete control. It closes only the
+# braced LaTeX macros \input{<path>} and \include{<path>}. Every primitive file
+# reader still opens an absolute path outside the compile cwd and draws the data
+# into the frame, and the compile exits 0, so check_latex_source and both
+# validation rungs pass it clean: plain `\input <path>` (LaTeX's \input without
+# a brace falls through to the \@@input primitive), \InputIfFileExists,
+# \IfFileExists (discloses existence), \pdffiledump (bytes as hex),
+# \pdfmdfivesum (the md5), and \openin/\read. MiKTeX ignores openin_any and has
+# no setting that gates these. Closing them needs TeX Live or an OS-level
+# sandbox on the `latex` child: an operator decision recorded in
+# .run/workers/fc-tex-reads.md (decisions-for-operator).
 TEX_FILE_ACCESS_ENV = {
     "openin_any": "p",
     "openout_any": "p",
@@ -454,9 +462,11 @@ def _compile(command: list[str]) -> subprocess.CompletedProcess:
 
     Runs in the per-run scratch dir -- taken from the command's own
     `-output-directory=`, which holds only the generated .tex -- with the
-    file-access restriction forced on (restricted_tex_env), so a
-    `\\input`/`\\openin` of any file outside that dir is unreachable by a
-    relative name and refused as unsafe by the engine (TEX_FILE_ACCESS_ENV)."""
+    file-access restriction forced on (restricted_tex_env), so no file
+    outside that dir is reachable by a relative name and a braced
+    `\\input{}`/`\\include{}` of one is refused by the engine. On MiKTeX the
+    primitive readers (`\\input <path>`, `\\openin`, `\\pdffiledump`, ...)
+    still read an absolute path: see TEX_FILE_ACCESS_ENV."""
     cwd = next((arg.split("=", 1)[1] for arg in command
                 if arg.startswith("-output-directory=")), None)
     return subprocess.run(command, stdin=subprocess.DEVNULL,

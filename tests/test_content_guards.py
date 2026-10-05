@@ -155,11 +155,14 @@ def test_a_latex_timeout_that_finishes_on_retry_passes(tmp_path, monkeypatch):
 # check_latex_source (the semantic rung and the build), so without a control a
 # spec could read a host file -- source, a key, anything -- into the video.
 # The control is structural (theme.TEX_FILE_ACCESS_ENV + an isolated compile
-# cwd in theme._compile), not a token denylist: the engine refuses to read a
-# file outside the empty per-run scratch dir, so the read fails and the maths
-# is refused as invalid_latex. Probed and recorded in
-# .run/workers/fc-tex-reads.md (MiKTeX's \openin/\read primitive is a residual
-# the engine does not gate; see that file's decisions-for-operator).
+# cwd in theme._compile), not a token denylist: the engine refuses a braced
+# `\input{}`/`\include{}` of a file outside the empty per-run scratch dir, so
+# the read fails and the maths is refused as invalid_latex. These tests pin
+# that braced path only. On MiKTeX every primitive reader (`\input <path>`
+# without braces, \InputIfFileExists, \IfFileExists, \pdffiledump,
+# \pdfmdfivesum, \openin/\read) still reads an absolute path and passes both
+# rungs clean: an open residual the engine does not gate, recorded in
+# .run/workers/fc-tex-reads.md (decisions-for-operator), not pinned here.
 
 # Unique, never a cache hit; a word `latex` would happily typeset if it read it.
 _CANARY_WORD = "CanaryExfilSentinelQZX"
@@ -196,8 +199,8 @@ def test_math_will_not_draw_a_host_files_contents(tmp_path, monkeypatch):
 
 
 def test_every_maths_component_refuses_a_file_read(tmp_path, monkeypatch):
-    # The whole maths-taking surface: a `\input` in any maths field is refused
-    # at the semantic rung and the geometric rung, never silently rendered and
+    # The whole maths-taking surface: a braced `\input{}` in any maths field is
+    # refused at the semantic rung and the geometric rung, never silently rendered and
     # never a build_error.
     monkeypatch.setattr(theme_mod, "_latex_verdicts", {})
     payload = r"\input{%s}" % _canary_file(tmp_path)

@@ -557,7 +557,9 @@ def _run_job(params: RawSceneParams, duration: float, quality: dict[str, int],
     # host files into the frame (`\input{<path>}`). That compile runs in this
     # child, in job_dir (cwd below, an isolated scratch dir), so force the TeX
     # file-access restriction on here too -- the same control theme._compile
-    # uses -- not just a name denylist. See theme.TEX_FILE_ACCESS_ENV.
+    # uses -- not just a name denylist. On MiKTeX that closes only the braced
+    # `\input{}`/`\include{}`; a plain `Tex(r"\input <abs path>")` still
+    # renders the file (measured). See theme.TEX_FILE_ACCESS_ENV.
     env = restricted_tex_env(env)
     try:
         proc = subprocess.run(

@@ -44,6 +44,14 @@ def _latex_to_sympy(s: str):
     s = s.strip()
     if not s:
         raise ValueError("empty")
+    if "\\" not in s:
+        # plain-text maths first: the LaTeX grammar reads 'sin(x)' as s*i*n(x)
+        from research.safe_math import safe_sympify
+        try:
+            t = re.sub(rf"\b{_UNIT_WORDS}\b(\^-?\d)?", " ", s).strip()
+            return safe_sympify(t, {"x": X})
+        except Exception:
+            pass
     try:
         e = parse_latex(s)
     except Exception:

@@ -214,7 +214,7 @@ All are run by `python -m research.run --exp ... --models ... --methods ...`.
   the same way, so the converter and imatrix are not confounded with the tuning.
 - **RL (if within reach):** GRPO on the fill job only. Reward = 1 if the beat is
   clean (else 0.5 for valid-with-flags, 0.05 per rung passed for invalid) x a content floor (narration
-  at least 30 words and params not trivially short), so the model cannot win by saying
+  at least 20 words, the structure check's minimum, and params not trivially short), so the model cannot win by saying
   little. Validator runs in the harness venv as a local service.
 
 ## 7. Experiments

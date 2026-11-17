@@ -43,7 +43,7 @@ def reward_of(sc, beat: dict) -> tuple[float, dict]:
         r = 0.05 * sc.level
     else:
         r = 1.0 if sc.clean else 0.5
-    if words < 30 or sc.text_chars < 20:
+    if words < 20 or sc.text_chars < 20:   # 20 = the structure check's minimum narration
         r *= 0.5
         d["floor"] = True
     return r, d

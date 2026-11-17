@@ -25,7 +25,7 @@ import time
 from collections import Counter
 from pathlib import Path
 
-from research.content import (answer_candidates, check_answer,
+from research.content import (answer_candidates, check_answer, check_spoken,
                               derivation_consistency, structure_checks)
 from research.generate import generate_oneshot, generate_staged
 from research.llm import LlamaServer, ServerConfig
@@ -67,7 +67,7 @@ def summarise(topic, gen: dict, cli: dict | None) -> dict:
     answer = check_answer(topic.key, answer_candidates(beats)) if topic.key else {"status": "n/a"}
     # What the student HEARS: the answer in the last two narrations, checked on its own
     # (the first video showed a correct AnswerBox under narration saying a wrong number).
-    spoken = check_answer(topic.key, [" ".join(str(b.get("narration", "")) for b in beats[-2:])])         if (topic.key and beats) else {"status": "n/a"}
+    spoken = check_spoken(topic.key, " ".join(str(b.get("narration", "")) for b in beats[-2:]))         if (topic.key and beats) else {"status": "n/a"}
     valid = sum(1 for s in scores if s["ok"])
     clean = sum(1 for s in scores if s.get("clean"))
     flags = Counter(f.split(":")[0] for s in scores for f in s.get("flags", []))

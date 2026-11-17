@@ -139,6 +139,109 @@ def check_answer(key: Key, candidates: list[str]) -> dict:
     return {"status": "unparsed", "source": None, "detail": "no parseable answer"}
 
 
+# --- the spoken answer ------------------------------------------------------------
+
+_ONES = {"zero": 0, "oh": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
+         "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13,
+         "fourteen": 14, "fifteen": 15, "sixteen": 16, "seventeen": 17, "eighteen": 18,
+         "nineteen": 19}
+_TENS = {"twenty": 20, "thirty": 30, "forty": 40, "fifty": 50, "sixty": 60, "seventy": 70,
+         "eighty": 80, "ninety": 90}
+_SCALES = {"hundred": 100, "thousand": 1000, "million": 10**6}
+_ORD = {"half": 2, "halves": 2, "third": 3, "thirds": 3, "quarter": 4, "quarters": 4, "fourth": 4,
+        "fourths": 4, "fifth": 5, "fifths": 5, "sixth": 6, "sixths": 6, "seventh": 7, "sevenths": 7,
+        "eighth": 8, "eighths": 8, "ninth": 9, "ninths": 9, "tenth": 10, "tenths": 10,
+        "twelfth": 12, "twelfths": 12, "thirty-sixth": 36, "thirty-sixths": 36}
+
+
+def _word_numbers(text: str) -> list[float]:
+    """Numbers written in words: 'thirty four point six', 'one sixth',
+    'twelve hundred and seventy five', 'minus five'. Deliberately simple."""
+    toks = re.findall(r"[a-z]+(?:-[a-z]+)?", text.lower())
+    vals, i = [], 0
+    while i < len(toks):
+        t = toks[i]
+        neg = t in ("minus", "negative")
+        j = i + 1 if neg else i
+        total, cur, used = 0, 0, False
+        while j < len(toks):
+            w = toks[j]
+            parts = w.split("-")
+            if all(q in _ONES or q in _TENS for q in parts) and not (w in _ORD):
+                cur += sum(_ONES.get(q, 0) + _TENS.get(q, 0) for q in parts)
+                used = True
+            elif w in _SCALES and used:
+                if _SCALES[w] == 100:
+                    cur *= 100
+                else:
+                    total += cur * _SCALES[w]
+                    cur = 0
+            elif w == "and" and used and j + 1 < len(toks) and (toks[j + 1] in _ONES or toks[j + 1] in _TENS
+                                                                 or toks[j + 1].split("-")[0] in _TENS):
+                pass
+            else:
+                break
+            j += 1
+        if not used:
+            i += 1
+            continue
+        v = float(total + cur)
+        # decimal part: 'point six four'
+        if j < len(toks) and toks[j] == "point":
+            k, digs = j + 1, ""
+            while k < len(toks) and toks[k] in _ONES and _ONES[toks[k]] < 10:
+                digs += str(_ONES[toks[k]])
+                k += 1
+            if digs:
+                v = float(f"{int(v)}.{digs}")
+                j = k
+        # fraction: 'one sixth', 'two thirds', 'one in six', 'one over six', 'one out of six'
+        if j < len(toks) and toks[j] in _ORD:
+            vals.append(v / _ORD[toks[j]])
+            j += 1
+        elif j + 1 < len(toks) and toks[j] in ("over", "in") or (j + 2 < len(toks) and toks[j:j + 2] == ["out", "of"]):
+            k = j + (2 if toks[j] == "out" else 1)
+            if k < len(toks) and (toks[k] in _ONES or toks[k] in _TENS or toks[k].split("-")[0] in _TENS):
+                d = sum(_ONES.get(q, 0) + _TENS.get(q, 0) for q in toks[k].split("-"))
+                if d:
+                    vals.append(v / d)
+        vals.append(-v if neg else v)
+        i = j if j > i else i + 1
+    return vals
+
+
+def spoken_numbers(text: str) -> list[float]:
+    r"""Every value the narration states, however it is written: digits,
+    digit fractions ('1/6', '1 over 6'), LaTeX segments ('$20\sqrt{3}$',
+    '\frac{1}{6}'), and number words."""
+    vals: list[float] = []
+    latex = re.findall(r"\$([^$]+)\$", text) + re.findall(
+        r"\\[dt]?frac\s*\{[^{}]*\}\s*\{[^{}]*\}|\d+(?:\.\d+)?\s*\\sqrt\s*\{[^{}]*\}|\\sqrt\s*\{[^{}]*\}", text)
+    for seg in latex:
+        vals += _numbers_in(seg)
+    for a, b in re.findall(r"(-?\d+(?:\.\d+)?)\s*(?:/|over|out of|in)\s*(\d+(?:\.\d+)?)", text):
+        if float(b):
+            vals.append(float(a) / float(b))
+    vals += [float(m.replace(",", "")) for m in re.findall(r"-?\d{1,3}(?:,\d{3})+(?:\.\d+)?|-?\d+(?:\.\d+)?", text)]
+    vals += _word_numbers(text)
+    return vals
+
+
+def check_spoken(key: Key, text: str) -> dict:
+    """Does the narration say the answer? 'correct' if any stated value (or,
+    for a set, every root) matches the key; otherwise 'not_found'. This is a
+    presence check, not a wrong-answer detector: a narration that never says
+    the number is not_found, the same as one that says the wrong number.
+    Expression answers (derivatives, integrals) are spoken in words and are
+    not checked: n/a."""
+    if key.kind in ("expr", "antiderivative"):
+        return {"status": "n/a", "detail": "expression answers are not checked in speech"}
+    vals = spoken_numbers(text)
+    want = [float(v) for v in (key.value if key.kind == "set" else [key.value])]
+    hit = all(any(_close(n, w, key.rel_tol) for n in vals) for w in want)
+    return {"status": "correct" if hit else "not_found", "detail": f"found {sorted(set(vals))[:10]} want {want}"}
+
+
 def answer_candidates(beats: list[dict]) -> list[str]:
     """Answer-bearing strings from an assembled list of beats."""
     out = []

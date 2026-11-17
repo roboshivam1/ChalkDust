@@ -61,6 +61,10 @@ Rules:
 - final_answer: the answer in a few words with units (or "n/a" for a pure explanation). Work it out carefully.
 - {RULES_JSON}
 
+Output shape (exactly these keys):
+{{"title": "...", "objective": "...", "key_insight": "...", "misconception": "...", "final_answer": "...",
+ "beats": [{{"purpose": "hook|problem|intuition|definition|worked_step|misconception|check|answer|recap", "idea": "what this beat must teach", "component": "ComponentName"}}, ...]}}
+
 The component library:
 {catalog_text()}"""
 
@@ -78,7 +82,10 @@ Narration rules:
 Visual rules:
 - Fill only the fields the component has; keep text short so it fits on screen.
 - Maths fields are math-mode LaTeX WITHOUT $ signs unless the card says $...$.
-- {RULES_JSON}"""
+- {RULES_JSON}
+
+Output shape (exactly these two keys; params holds the component's fields from its card):
+{{"narration": "...", "params": {{...}}}}"""
 
 
 @dataclass
@@ -309,11 +316,15 @@ def generate_staged(url: str, topic: Topic, work_dir: Path, *, seed: int = 0,
 
 # --- oneshot -----------------------------------------------------------------------
 
-ONESHOT_SYSTEM = PLAN_SYSTEM.replace(
+_SHAPE = "Output shape ("
+ONESHOT_SYSTEM = PLAN_SYSTEM.split(_SHAPE)[0].rstrip().replace(
     "You do not draw anything. You choose, for each beat, one visual component from a fixed library and say what the beat must teach. Another step writes the narration and fills the component.",
     "You write the whole video at once: for each beat, the narration and one visual component with its params."
-) + "\n\nNarration rules:" + BEAT_SYSTEM.split("Narration rules:", 1)[1] \
-  + "\n\nComponent details:\n" + "\n".join(card_text(c) for c in ALLOWED)
+) + "\n\nThe component library:" + PLAN_SYSTEM.split("The component library:", 1)[1] \
+  + "\n\nNarration rules:" + BEAT_SYSTEM.split("Narration rules:", 1)[1].split(_SHAPE)[0].rstrip() \
+  + "\n\nComponent details:\n" + "\n".join(card_text(c) for c in ALLOWED) \
+  + ("\n\nOutput shape (exactly these keys; params holds the component's fields from its card):\n"
+     '{"title": "...", "beats": [{"component": "ComponentName", "narration": "...", "params": {...}}, ...]}')
 
 
 def generate_oneshot(url: str, topic: Topic, work_dir: Path, *, seed: int = 0,

@@ -47,6 +47,36 @@ def parse_method(s: str) -> tuple[str, dict]:
     return name, kw
 
 
+def probe(url: str) -> dict:
+    """One short request before any experiment: a model whose chat template
+    still thinks (reasoning returned separately, content empty) or that does
+    not stop would otherwise be scored as a bad model, not a bad setup."""
+    from research.llm import chat
+    c = chat(url, [{"role": "user", "content": 'Reply with the JSON {"ok": true} and nothing else.'}],
+             schema={"type": "object", "properties": {"ok": {"type": "boolean"}}, "required": ["ok"]},
+             temperature=0.0, max_tokens=64, timeout=300)
+    ok = c.ok and c.finish_reason == "stop" and bool(c.text.strip()) and c.reasoning_chars == 0
+    return {"ok": ok, "finish": c.finish_reason, "content": c.text[:80], "reasoning_chars": c.reasoning_chars,
+            "error": c.error, "gen_tok_s": c.gen_tok_s}
+
+
+def load_plan(src: str, topic_id: str, seed: int) -> dict | None:
+    """The plan another run made, for the split pipeline. src is
+    EXP/MODEL/METHOD-SLUG, e.g. E2-models/gemma-4-12b/staged-n-4-repair-1-calc-1."""
+    exp, model, mslug = src.split("/")
+    p = RESULTS / f"{exp}.jsonl"
+    if not p.exists():
+        return None
+    for line in p.read_text(encoding="utf-8").splitlines():
+        d = json.loads(line)
+        if (d.get("record") != "server" and d.get("model") == model and slug(d.get("method", "")) == mslug
+                and d.get("topic") == topic_id and d.get("seed") == seed):
+            tr = json.loads((REPO / d["trace_dir"] / "trace.json").read_text(encoding="utf-8"))
+            if tr.get("plan") and tr["plan"].get("beats"):
+                return tr["plan"]
+    return None
+
+
 def git_commit() -> str:
     try:
         return subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=REPO,
@@ -116,7 +146,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--seeds", nargs="+", type=int, default=[0])
     ap.add_argument("--temperature", type=float, default=0.7)
     ap.add_argument("--parallel", type=int, default=4)
-    ap.add_argument("--ngl", type=int, default=999, help="GPU layers; 0 = CPU-only proxy")
+    ap.add_argument("--ngl", type=int, default=None,
+                    help="GPU layers; default: llama.cpp --fit chooses; 0 = CPU-only proxy")
     ap.add_argument("--threads", type=int, default=None)
     ap.add_argument("--ctx", type=int, default=None)
     ap.add_argument("--server-extra", default="", help="extra llama-server flags, space separated")
@@ -132,6 +163,7 @@ def main(argv: list[str] | None = None) -> int:
     topics = topic_set(a.topics)
     out_path = RESULTS / f"{a.exp}.jsonl"
     commit = git_commit()
+    from research.generate import PROMPT_HASH
     done = set()
     if a.resume and out_path.exists():
         for line in out_path.read_text(encoding="utf-8").splitlines():
@@ -152,7 +184,15 @@ def main(argv: list[str] | None = None) -> int:
         _llm.REQUEST_EXTRA.clear()
         _llm.REQUEST_EXTRA.update(entry.chat_extra)
         with LlamaServer(cfg, run_dir / "server.log") as srv:
-            print(f"[{mkey}] loaded in {srv.load_seconds:.1f}s", flush=True)
+            print(f"[{mkey}] loaded in {srv.load_seconds:.1f}s {srv.placement()}", flush=True)
+            pr = probe(srv.url)
+            print(f"[{mkey}] probe: {pr}", flush=True)
+            if not pr["ok"]:
+                with open(out_path, "a", encoding="utf-8") as f:
+                    f.write(json.dumps({"exp": a.exp, "run_id": run_id, "model": mkey, "record": "server",
+                                        "probe": pr, **srv.stats()}) + "\n")
+                print(f"[{mkey}] SKIPPED: probe failed", flush=True)
+                continue
             for mstr in a.methods:
                 mname, kw = parse_method(mstr)
                 for topic in topics:
@@ -163,11 +203,16 @@ def main(argv: list[str] | None = None) -> int:
                         tdir.mkdir(parents=True, exist_ok=True)
                         t0 = time.perf_counter()
                         if mname == "staged":
+                            override = load_plan(str(kw["planfrom"]), topic.id, seed) if kw.get("planfrom") else None
+                            if kw.get("planfrom") and override is None:
+                                print(f"[{mkey}] no saved plan for {topic.id} s{seed} in {kw['planfrom']}; skipped",
+                                      flush=True)
+                                continue
                             gen = generate_staged(srv.url, topic, tdir / "work", seed=seed,
                                                   temperature=a.temperature, n=int(kw.get("n", 1)),
                                                   repair=int(kw.get("repair", 0)),
                                                   constrained=not kw.get("free"), calc=bool(kw.get("calc")),
-                                                  plans=int(kw.get("plans", 1)))
+                                                  plans=int(kw.get("plans", 1)), plan_override=override)
                         elif mname == "oneshot":
                             gen = generate_oneshot(srv.url, topic, tdir / "work", seed=seed,
                                                    temperature=a.temperature, constrained=not kw.get("free"))
@@ -183,7 +228,8 @@ def main(argv: list[str] | None = None) -> int:
                         cli = validate_spec_cli(tdir / "spec.json", tdir / "cli-work") if (all_valid and not a.no_cli) else None
                         rec = {
                             "exp": a.exp, "run_id": run_id, "ts": dt.datetime.now().isoformat(timespec="seconds"),
-                            "commit": commit, "host": platform.node(), "model": mkey, "quant": entry.file,
+                            "commit": commit, "prompt_hash": PROMPT_HASH, "host": platform.node(),
+                            "model": mkey, "quant": entry.file,
                             "method": mstr, "topic": topic.id, "subject": topic.subject, "seed": seed,
                             "temperature": a.temperature, "ngl": a.ngl, "threads": a.threads, "parallel": a.parallel,
                             "trace_dir": str(tdir.relative_to(REPO)),

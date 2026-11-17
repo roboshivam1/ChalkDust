@@ -48,16 +48,26 @@ def _is_plan(text: str) -> bool:
             and any(isinstance(b, dict) and b.get("component") in ALLOWED for b in v["beats"]))
 
 
-def video_ok(rec: dict) -> bool:
+def video_ok(rec: dict, require_spoken: bool = True) -> bool:
+    """The answer shown is right and (for a numeric key) the narration says
+    it. Re-scored from the saved spec with the current checkers, so a record
+    written before a checker fix is judged like every other."""
+    from research.analyze import rescore
+    rec = {**rec, **rescore(rec)}
     a, s = rec["answer"].get("status"), rec.get("answer_spoken", {}).get("status")
     if a == "n/a":
         return True
-    return a == "correct" and s in ("correct", "unparsed")
+    if a != "correct":
+        return False
+    return s in ("correct", "n/a") or not require_spoken
 
 
-def build(exp: str, out: Path, val_families: int = 4, per_beat: int = 2, seed: int = 0) -> dict:
+def build(exp: str, out: Path, val_families: int = 4, per_beat: int = 2, seed: int = 0,
+          require_spoken: bool = True, prompt_hash: str | None = None) -> dict:
     fam_of = {t.id: t.family for t in topic_set("train")}
     recs = load_records(exp)
+    if prompt_hash:   # an SFT set must come from one prompt version
+        recs = [r for r in recs if r.get("prompt_hash") == prompt_hash]
     rows, stats = [], Counter()
     for rec in recs:
         trace_p = REPO / rec["trace_dir"] / "trace.json"
@@ -66,7 +76,7 @@ def build(exp: str, out: Path, val_families: int = 4, per_beat: int = 2, seed: i
             continue
         tr = json.loads(trace_p.read_text(encoding="utf-8"))
         stats["videos"] += 1
-        if not video_ok(rec):
+        if not video_ok(rec, require_spoken):
             stats["videos_dropped_answer"] += 1
             continue
         fam = fam_of.get(rec["topic"], rec["topic"])
@@ -126,5 +136,10 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--exp", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--per-beat", type=int, default=2)
+    ap.add_argument("--val-families", type=int, default=4)
+    ap.add_argument("--no-require-spoken", action="store_true")
+    ap.add_argument("--prompt-hash", default=None)
     a = ap.parse_args()
-    print(json.dumps(build(a.exp, Path(a.out)), indent=2))
+    print(json.dumps(build(a.exp, Path(a.out), val_families=a.val_families, per_beat=a.per_beat,
+                           require_spoken=not a.no_require_spoken, prompt_hash=a.prompt_hash), indent=2))

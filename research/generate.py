@@ -294,11 +294,18 @@ def fill_beat(url: str, topic: Topic, plan: dict, i: int, prev: str | None, trac
 
 def generate_staged(url: str, topic: Topic, work_dir: Path, *, seed: int = 0,
                     temperature: float = 0.7, n: int = 1, repair: int = 0,
-                    constrained: bool = True, calc: bool = False, plans: int = 1) -> dict:
+                    constrained: bool = True, calc: bool = False, plans: int = 1,
+                    plan_override: dict | None = None) -> dict:
+    """plan_override: a plan made earlier (by any model) to fill instead of
+    planning here -- the split pipeline, big model plans / small model fills."""
     trace = Trace()
     t0 = time.perf_counter()
-    plan = make_plan(url, topic, trace, seed=seed, temperature=temperature,
-                     constrained=constrained, calc=calc, k=plans)
+    if plan_override is not None:
+        plan = json.loads(json.dumps(plan_override))
+        trace.add("plan", [], [], {"override": True})
+    else:
+        plan = make_plan(url, topic, trace, seed=seed, temperature=temperature,
+                         constrained=constrained, calc=calc, k=plans)
     beats, scores, per_beat = [], [], []
     if plan:
         prev = None
@@ -350,3 +357,9 @@ def generate_oneshot(url: str, topic: Topic, work_dir: Path, *, seed: int = 0,
     plan = {"title": v.get("title", "") if isinstance(v, dict) else "", "beats": []}
     return {"plan": plan, "beats": beats, "scores": [s.to_dict() for s in scores],
             "per_beat": [], "trace": trace, "wall_s": time.perf_counter() - t0}
+
+
+# Records carry this hash: an SFT set is only valid for the prompts it was made with.
+import hashlib as _hashlib
+PROMPT_HASH = _hashlib.sha256("\x1e".join([PLAN_SYSTEM, PLAN_CALC_ADDENDUM, BEAT_SYSTEM, ONESHOT_SYSTEM])
+                              .encode("utf-8")).hexdigest()[:12]

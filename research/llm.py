@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import threading
 import time
@@ -75,7 +76,7 @@ class GpuSampler:
 class ServerConfig:
     model_path: str
     ctx: int = 16384
-    n_gpu_layers: int = 999        # 0 = CPU only (student-laptop proxy)
+    n_gpu_layers: int | None = None  # None = llama.cpp '--fit' decides; 0 = CPU only (student proxy)
     parallel: int = 4              # slots: concurrent requests are batched
     threads: int | None = None     # CPU threads (None = llama.cpp default)
     port: int = 8091
@@ -84,9 +85,11 @@ class ServerConfig:
 
     def argv(self) -> list[str]:
         a = [str(LLAMA_SERVER), "-m", self.model_path, "-c", str(self.ctx),
-             "-ngl", str(self.n_gpu_layers), "--parallel", str(self.parallel),
+             "--parallel", str(self.parallel),
              "--port", str(self.port), "--host", "127.0.0.1", "--jinja",
              "-fa", self.flash_attn, "--no-webui", "--metrics"]
+        if self.n_gpu_layers is not None:
+            a += ["-ngl", str(self.n_gpu_layers)]
         if self.threads:
             a += ["-t", str(self.threads)]
         return a + list(self.extra)
@@ -139,10 +142,28 @@ class LlamaServer:
         except Exception:
             return 0
 
+    def placement(self) -> dict:
+        """What llama.cpp actually put on the GPU (from its log): with --fit
+        the layer split is chosen at load time, so it must be recorded."""
+        try:
+            log = self.log_path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            return {}
+        out = {}
+        m = re.search(r"offloaded (\d+)/(\d+) layers to GPU", log)
+        if m:
+            out["layers_on_gpu"], out["layers_total"] = int(m.group(1)), int(m.group(2))
+        out["fit_lines"] = [l.strip()[:200] for l in log.splitlines() if "fit" in l.lower() and "llama_params_fit" in l][:8]
+        m = re.search(r"n_cpu_moe\D+(\d+)", log)
+        if m:
+            out["n_cpu_moe"] = int(m.group(1))
+        return out
+
     def stats(self) -> dict:
         s = self.sampler.stop() if self.sampler else {}
         self.sampler = None
-        return {**s, "load_seconds": self.load_seconds, "server_peak_rss_mib": self.peak_rss_mib}
+        return {**s, "load_seconds": self.load_seconds, "server_peak_rss_mib": self.peak_rss_mib,
+                **self.placement()}
 
     def __exit__(self, *exc) -> None:
         if self.proc and self.proc.poll() is None:
@@ -175,6 +196,7 @@ class Completion:
     seed: int
     temperature: float
     constrained: bool
+    reasoning_chars: int = 0     # thinking text returned separately: must be 0 (thinking off)
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -206,12 +228,13 @@ def chat(url: str, messages: list[dict], *, schema: dict | None = None,
         ch = d["choices"][0]
         tm = d.get("timings", {})
         us = d.get("usage", {})
+        rc = len(ch["message"].get("reasoning_content") or "")
         return Completion(ch["message"].get("content") or "", True, None,
                           int(us.get("prompt_tokens", tm.get("prompt_n", 0))),
                           int(us.get("completion_tokens", tm.get("predicted_n", 0))),
                           float(tm.get("prompt_ms", 0)), float(tm.get("predicted_ms", 0)),
                           float(tm.get("predicted_per_second", 0)), wall,
-                          ch.get("finish_reason"), seed, temperature, schema is not None)
+                          ch.get("finish_reason"), seed, temperature, schema is not None, rc)
     except Exception as exc:  # network / timeout: a harness fault, recorded as such
         return Completion("", False, f"{type(exc).__name__}: {exc}", 0, 0, 0, 0, 0,
                           time.perf_counter() - t0, None, seed, temperature, schema is not None)

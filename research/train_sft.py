@@ -60,6 +60,20 @@ def main() -> None:
                                           "val": str(Path(a.data) / "val.jsonl")})
     keep = ["prompt", "completion"]
     ds = ds.remove_columns([c for c in ds["train"].column_names if c not in keep])
+    # A right-truncated row loses its completion and trains on nothing: measure
+    # and drop over-length rows instead of letting the collator cut them.
+    def _len(row):
+        ids = tok.apply_chat_template(row["prompt"] + row["completion"], tokenize=True)
+        ids = ids["input_ids"] if isinstance(ids, dict) else ids
+        return {"n_tok": len(ids)}
+    ds = ds.map(_len)
+    lens = sorted(ds["train"]["n_tok"])
+    length_report = {"train_tokens_p50": lens[len(lens) // 2] if lens else 0,
+                     "train_tokens_p95": lens[int(len(lens) * 0.95)] if lens else 0,
+                     "train_tokens_max": lens[-1] if lens else 0,
+                     "dropped_over_max_len": {s: sum(1 for n in ds[s]["n_tok"] if n > a.max_len) for s in ds}}
+    print("lengths:", length_report, flush=True)
+    ds = ds.filter(lambda r: r["n_tok"] <= a.max_len).remove_columns(["n_tok"])
 
     peft_cfg = LoraConfig(r=a.rank, lora_alpha=a.alpha, lora_dropout=0.0, target_modules="all-linear",
                           use_rslora=True, task_type="CAUSAL_LM")
@@ -81,7 +95,7 @@ def main() -> None:
     trainer.model.save_pretrained(str(out / "adapter"))
     metrics = {"base": a.base, "data": a.data, "train_rows": len(ds["train"]), "val_rows": len(ds["val"]),
                "rank": a.rank, "alpha": a.alpha, "lr": a.lr, "epochs": a.epochs, "qlora": a.qlora,
-               "max_len": a.max_len, "train_seconds": train_s, "train_loss": res.training_loss,
+               "max_len": a.max_len, **length_report, "train_seconds": train_s, "train_loss": res.training_loss,
                "eval": ev, "peak_vram_gib": torch.cuda.max_memory_allocated() / 2**30,
                "log_history": trainer.state.log_history}
     (out / "metrics.json").write_text(json.dumps(metrics, indent=2, default=str), encoding="utf-8")

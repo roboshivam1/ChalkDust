@@ -24,7 +24,7 @@ class ModelEntry:
     active_b: float           # active parameters per token (MoE) or = params_b
     tiers: tuple[str, ...]    # which target machines it is a candidate for (A/B/C)
     ctx: int = 32768
-    extra: tuple[str, ...] = ()           # llama-server flags (e.g. MoE offload)
+    extra: tuple[str, ...] = ()           # llama-server flags (offload is left to llama.cpp --fit)
     chat_extra: dict = field(default_factory=dict)  # per-request extras (e.g. disable thinking)
     note: str = ""
 
@@ -66,7 +66,7 @@ add(ModelEntry("gemma-4-12b", "unsloth/gemma-4-12B-it-GGUF", "gemma-4-12b-it-Q4_
                "apache-2.0", 12.0, 12.0, ("A",)))
 add(ModelEntry("qwen3.6-35b-a3b", "unsloth/Qwen3.6-35B-A3B-GGUF", "Qwen3.6-35B-A3B-UD-Q4_K_M.gguf",
                "apache-2.0", 35.0, 3.0, ("A",), chat_extra=NOTHINK,
-               extra=("--n-cpu-moe", "30"), note="experts of 30 layers in RAM; tune with llama-bench"))
+               note="does not fit 12 GB: --fit moves expert weights to RAM"))
 add(ModelEntry("qwen3.8-27b", "unsloth/Qwen3.8-27B-GGUF", "Qwen3.8-27B-UD-IQ3_XXS.gguf", "apache-2.0",
                27.0, 27.0, ("A",), chat_extra=NOTHINK))
 add(ModelEntry("gpt-oss-20b", "ggml-org/gpt-oss-20b-GGUF", "gpt-oss-20b-MXFP4.gguf", "apache-2.0",

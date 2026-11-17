@@ -26,6 +26,10 @@ REPO = Path(__file__).resolve().parents[1]
 LLAMA_DIR = REPO / ".lab" / "bin" / "llama-b12466"
 LLAMA_SERVER = LLAMA_DIR / "llama-server.exe"
 
+# Per-model request extras (e.g. turn thinking off), set by the runner for the
+# model currently being served.
+REQUEST_EXTRA: dict = {}
+
 
 def gpu_used_mib() -> int | None:
     """Total used VRAM on GPU 0 (all processes). None without nvidia-smi."""
@@ -187,6 +191,8 @@ def chat(url: str, messages: list[dict], *, schema: dict | None = None,
     if schema is not None:
         body["response_format"] = {"type": "json_schema",
                                    "json_schema": {"name": "out", "schema": schema, "strict": True}}
+    if REQUEST_EXTRA:
+        body.update(REQUEST_EXTRA)
     if extra:
         body.update(extra)
     t0 = time.perf_counter()

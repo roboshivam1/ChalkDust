@@ -122,6 +122,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--server-extra", default="", help="extra llama-server flags, space separated")
     ap.add_argument("--no-cli", action="store_true", help="skip chalkdust validate on all-valid specs")
     ap.add_argument("--tag", default="")
+    ap.add_argument("--resume", action="store_true",
+                    help="skip (model, method, topic, seed) already recorded in this exp's results")
     a = ap.parse_args(argv)
 
     ensure_miktex_first()
@@ -130,6 +132,15 @@ def main(argv: list[str] | None = None) -> int:
     topics = topic_set(a.topics)
     out_path = RESULTS / f"{a.exp}.jsonl"
     commit = git_commit()
+    done = set()
+    if a.resume and out_path.exists():
+        for line in out_path.read_text(encoding="utf-8").splitlines():
+            try:
+                d = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if d.get("record") != "server":
+                done.add((d.get("model"), d.get("method"), d.get("topic"), d.get("seed")))
     for mkey in a.models:
         entry = REGISTRY[mkey]
         path = ensure(mkey)
@@ -137,12 +148,17 @@ def main(argv: list[str] | None = None) -> int:
         cfg = ServerConfig(model_path=str(path), ctx=ctx, n_gpu_layers=a.ngl, parallel=a.parallel,
                            threads=a.threads, extra=tuple(entry.extra) + tuple(a.server_extra.split()))
         run_dir = RUNS / run_id / mkey
+        import research.llm as _llm
+        _llm.REQUEST_EXTRA.clear()
+        _llm.REQUEST_EXTRA.update(entry.chat_extra)
         with LlamaServer(cfg, run_dir / "server.log") as srv:
             print(f"[{mkey}] loaded in {srv.load_seconds:.1f}s", flush=True)
             for mstr in a.methods:
                 mname, kw = parse_method(mstr)
                 for topic in topics:
                     for seed in a.seeds:
+                        if (mkey, mstr, topic.id, seed) in done:
+                            continue
                         tdir = run_dir / slug(mstr) / f"{topic.id}_s{seed}"
                         tdir.mkdir(parents=True, exist_ok=True)
                         t0 = time.perf_counter()

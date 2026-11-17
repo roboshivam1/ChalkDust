@@ -155,6 +155,12 @@ def topic_set(name: str) -> tuple[Topic, ...]:
         return DEV
     if name == "heldout":
         return HELDOUT
+    if name == "train" or name.startswith("train:"):
+        from research.train_topics import TRAIN   # inputs for the teacher only
+        if name == "train":
+            return TRAIN
+        a, _, b = name[6:].partition(":")
+        return TRAIN[int(a or 0):int(b) if b else None]
     if name in BY_ID:
         return (BY_ID[name],)
     ids = [s for s in name.split(",") if s]

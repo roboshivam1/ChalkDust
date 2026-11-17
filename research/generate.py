@@ -40,7 +40,7 @@ from research.topics import Topic
 
 RULES_JSON = (
     "Output one JSON object and nothing else. Inside JSON strings every backslash "
-    "must be doubled: write \\\\frac{1}{2}, \\\\theta, \\\\sqrt{3}, \\\\mathrm{m}. "
+    "must be doubled: write \\\\frac{1}{2}, \\\\theta, \\\\sqrt{2}, \\\\mathrm{m}. "
     "A single backslash before t, f, b, r or n turns into an invisible control "
     "character and the beat is refused.")
 
@@ -69,7 +69,7 @@ The component library:
 {catalog_text()}"""
 
 PLAN_CALC_ADDENDUM = """
-- answer_calc: the final numerical answer written as ONE arithmetic expression that a calculator can evaluate, using numbers, + - * / ** ( ), sqrt(), sin() cos() tan() (radians; write 30 degrees as 30*deg), pi, E. Example: "20**2*sin(2*30*deg)/10". Use "" if the answer is not a single number."""
+- answer_calc: the final numerical answer written as ONE arithmetic expression that a calculator can evaluate, using numbers, + - * / ** ( ), sqrt(), sin() cos() tan() (radians; write 30 degrees as 30*deg), pi, E. Example: "15*cos(40*deg)". Use "" if the answer is not a single number."""
 
 PLAN_WORK_ADDENDUM = """
 - working: BEFORE you write final_answer, solve the problem in a few short numbered steps with the actual numbers (formula, substitution, arithmetic). final_answer must be the result of this working. Use "n/a" for a pure explanation."""

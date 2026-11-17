@@ -118,11 +118,11 @@ one of these, recomputed from the saved spec by `research/analyze.py`:
 | Metric | What it is | Code |
 |---|---|---|
 | beat valid | passes rungs 1-3 | `score.BeatScore.ok` |
-| beat clean | valid and no quality flag | `score.BeatScore.clean` |
+| beat clean | valid and no quality flag (LaTeX or `^`/superscripts read aloud; LaTeX drawn literally in a prose field, judged per component by its own `latex_strings()`; stray `$`); re-flagged at analysis time so every run is judged by the same flags | `score.quality_flags`, `analyze.rescore` |
 | video clean | every beat clean | `analyze` |
 | CLI valid | `chalkdust validate` exit 0 on the assembled spec | `score.validate_spec_cli` |
-| answer shown | the AnswerBox (else last working line) equals the sympy-computed key, within 2% | `content.check_answer` |
-| answer spoken | the last two narrations state the key, however written (digits, fractions, LaTeX, number words); a presence check, `n/a` for expression answers | `content.check_spoken` |
+| answer shown | the value the AnswerBox (else the last working line) STATES -- its final side, so `6/36 = 1/5` states 1/5 -- equals the sympy-computed key within 2%; a formula with no value is skipped, never scored; `unparsed` counts as not correct | `content.check_answer` |
+| answer spoken | the last two narrations' final stated value (the last one after 'is/be/about/so...', numbers copied from the request ignored unless asserted) equals the key, however written (digits, fractions, LaTeX, number words); `n/a` for expression answers and when the key is in the request | `content.check_spoken` |
 | derivation | for solve-for-x topics, each working line holds at a true root | `content.derivation_consistency` |
 | structure | 8 checks: 5-9 beats, 20-66 words a beat, at least 3 components, none over half, opens with hook or problem, states the answer, names the misconception, no filler greeting | `content.structure_checks` |
 | speed | LLM seconds (max over concurrent samples), validator seconds, wall, tok/s from llama.cpp's own timings | `llm.chat`, `run.summarise` |
@@ -213,7 +213,7 @@ All are run by `python -m research.run --exp ... --models ... --methods ...`.
   untuned are both converted with the same llama.cpp converter (b12466) and quantised
   the same way, so the converter and imatrix are not confounded with the tuning.
 - **RL (if within reach):** GRPO on the fill job only. Reward = 1 if the beat is
-  clean (else 0.25 for valid-with-flags, 0 for invalid) x a content floor (narration
+  clean (else 0.5 for valid-with-flags, 0.05 per rung passed for invalid) x a content floor (narration
   at least 30 words and params not trivially short), so the model cannot win by saying
   little. Validator runs in the harness venv as a local service.
 

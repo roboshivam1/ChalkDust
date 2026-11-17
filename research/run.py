@@ -25,7 +25,7 @@ import time
 from collections import Counter
 from pathlib import Path
 
-from research.content import (answer_candidates, check_answer, check_spoken,
+from research.content import (answer_candidates, check_answer, check_spoken, final_narration,
                               derivation_consistency, structure_checks)
 from research.generate import generate_oneshot, generate_staged
 from research.llm import LlamaServer, ServerConfig
@@ -63,21 +63,25 @@ def probe(url: str) -> dict:
             "thinking": c.reasoning_chars > 0, "error": c.error, "gen_tok_s": c.gen_tok_s}
 
 
-def load_plan(src: str, topic_id: str, seed: int) -> dict | None:
-    """The plan another run made, for the split pipeline. src is
-    EXP/MODEL/METHOD-SLUG, e.g. E2-models/gemma-4-12b/staged-n-4-repair-1-calc-1."""
+def load_plan(src: str, topic_id: str, seed: int) -> tuple[dict | None, float]:
+    """The plan another run made, for the split pipeline, and what making it
+    cost there (the plan call's wall seconds; concurrent samples overlap, so
+    the max), so E4's time per video includes the big model's planning. src
+    is EXP/MODEL/METHOD-SLUG, e.g. E2-models/gemma-4-12b/staged-n-4-repair-1-calc-1."""
     exp, model, mslug = src.split("/")
     p = RESULTS / f"{exp}.jsonl"
     if not p.exists():
-        return None
+        return None, 0.0
     for line in p.read_text(encoding="utf-8").splitlines():
         d = json.loads(line)
         if (d.get("record") != "server" and d.get("model") == model and slug(d.get("method", "")) == mslug
                 and d.get("topic") == topic_id and d.get("seed") == seed):
             tr = json.loads((REPO / d["trace_dir"] / "trace.json").read_text(encoding="utf-8"))
             if tr.get("plan") and tr["plan"].get("beats"):
-                return tr["plan"]
-    return None
+                secs = max((c.get("wall_s") or 0 for call in tr["calls"] if call["step"] == "plan"
+                            for c in call["completions"]), default=0.0)
+                return tr["plan"], float(secs)
+    return None, 0.0
 
 
 def git_commit() -> str:
@@ -97,10 +101,12 @@ def summarise(topic, gen: dict, cli: dict | None) -> dict:
     p_tok, g_tok = gen["trace"].tokens
     comps = gen["trace"].calls
     tok_s = [c["gen_tok_s"] for call in comps for c in call["completions"] if c["gen_tok_s"]]
-    answer = check_answer(topic.key, answer_candidates(beats)) if topic.key else {"status": "n/a"}
+    answer = check_answer(topic.key, answer_candidates(beats), final_narration(beats), topic.request) \
+        if topic.key else {"status": "n/a"}
     # What the student HEARS: the answer in the last two narrations, checked on its own
     # (the first video showed a correct AnswerBox under narration saying a wrong number).
-    spoken = check_spoken(topic.key, " ".join(str(b.get("narration", "")) for b in beats[-2:]))         if (topic.key and beats) else {"status": "n/a"}
+    spoken = check_spoken(topic.key, final_narration(beats), topic.request) \
+        if (topic.key and beats) else {"status": "n/a"}
     valid = sum(1 for s in scores if s["ok"])
     clean = sum(1 for s in scores if s.get("clean"))
     flags = Counter(f.split(":")[0] for s in scores for f in s.get("flags", []))
@@ -205,8 +211,10 @@ def main(argv: list[str] | None = None) -> int:
                         tdir = run_dir / slug(mstr) / f"{topic.id}_s{seed}"
                         tdir.mkdir(parents=True, exist_ok=True)
                         t0 = time.perf_counter()
+                        borrowed_s = 0.0
                         if mname == "staged":
-                            override = load_plan(str(kw["planfrom"]), topic.id, seed) if kw.get("planfrom") else None
+                            override, borrowed_s = load_plan(str(kw["planfrom"]), topic.id, seed) \
+                                if kw.get("planfrom") else (None, 0.0)
                             if kw.get("planfrom") and override is None:
                                 print(f"[{mkey}] no saved plan for {topic.id} s{seed} in {kw['planfrom']}; skipped",
                                       flush=True)
@@ -241,6 +249,7 @@ def main(argv: list[str] | None = None) -> int:
                             "cli_seconds": cli["seconds"] if cli else None,
                             "cli_output": cli["output"][-600:] if cli and not cli["ok"] else None,
                             "total_seconds": time.perf_counter() - t0,
+                            "borrowed_plan_seconds": borrowed_s,
                         }
                         with open(out_path, "a", encoding="utf-8") as f:
                             f.write(json.dumps(rec, ensure_ascii=False, default=str) + "\n")

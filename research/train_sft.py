@@ -69,7 +69,9 @@ def main() -> None:
     # and drop over-length rows instead of letting the collator cut them.
     def _len(row):
         ids = tok.apply_chat_template(row["prompt"] + row["completion"], tokenize=True, **tkw)
-        ids = ids["input_ids"] if isinstance(ids, dict) else ids
+        # transformers 5 returns a BatchEncoding (a Mapping, not a dict); a
+        # plain isinstance(dict) check measured len(keys) == 2 for every row.
+        ids = ids["input_ids"] if hasattr(ids, "keys") else ids
         return {"n_tok": len(ids)}
     ds = ds.map(_len)
     lens = sorted(ds["train"]["n_tok"])
@@ -87,7 +89,8 @@ def main() -> None:
                           use_rslora=True, task_type="CAUSAL_LM")
     cfg = SFTConfig(output_dir=str(out / "ckpt"), num_train_epochs=a.epochs, max_steps=a.max_steps,
                     per_device_train_batch_size=a.bsz, gradient_accumulation_steps=a.accum,
-                    learning_rate=a.lr, lr_scheduler_type="cosine", warmup_ratio=0.03,
+                    learning_rate=a.lr, lr_scheduler_type="cosine",
+                    warmup_steps=0.03,   # a float < 1 is a ratio in transformers 5 (warmup_ratio is gone)
                     logging_steps=5, eval_strategy="epoch" if a.max_steps < 0 else "no",
                     save_strategy="no", bf16=True, gradient_checkpointing=True,
                     max_length=a.max_len, completion_only_loss=True, report_to="none", seed=a.seed,

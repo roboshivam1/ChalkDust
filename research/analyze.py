@@ -3,10 +3,12 @@
     python -m research.analyze E1-methods [--by model,method] [--md out.md]
 
 The raw records in research/results/*.jsonl are never edited. Content
-metrics (answer shown, answer spoken, derivation, structure) are recomputed
+metrics (answer shown, answer spoken, structure) and beat cleanliness
+(validator level from the trace + the current quality flags) are recomputed
 here from each run's saved spec.json + trace.json, so every row of a table
 is scored by the same checker version even when a checker was fixed after
-the run. Validity, speed and memory come from the record as written.
+the run. Validator levels, speed and memory come from the record as
+written. A record whose artifacts are missing is marked rescored=False.
 
 Columns (all per video, averaged over the group):
   n            videos in the group
@@ -14,8 +16,11 @@ Columns (all per video, averaged over the group):
   clean        share of beats valid AND free of quality flags (LaTeX read
                aloud, LaTeX drawn literally in prose, stray $)
   allclean     share of videos where every beat is clean
-  ans          share of keyed videos whose shown answer is correct
-  spk          share of keyed numeric videos whose narration states the answer
+  ans          share of keyed videos whose shown answer is correct (an answer
+               the checker cannot read counts as not correct: unverified)
+  unp          share of keyed videos whose answer could not be read at all
+  spk          share of keyed numeric videos whose narration's final stated
+               value is the answer (n/a when the key is in the request)
   both         share of keyed videos correct on screen AND (spoken or n/a)
   struct       mean lesson-structure score (8 checks, research/content.py)
   llm_s        mean LLM seconds per video (max over concurrent samples)
@@ -33,7 +38,8 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
-from research.content import answer_candidates, check_answer, check_spoken, structure_checks
+from research.content import answer_candidates, check_answer, check_spoken, final_narration, structure_checks
+from research.score import quality_flags
 from research.topics import BY_ID, topic_set
 
 REPO = Path(__file__).resolve().parents[1]
@@ -57,14 +63,20 @@ def rescore(rec: dict) -> dict:
         spec = json.loads((tdir / "spec.json").read_text(encoding="utf-8"))
         tr = json.loads((tdir / "trace.json").read_text(encoding="utf-8"))
     except FileNotFoundError:
-        return {}
+        return {"rescored": False}
     beats = spec.get("beats", [])
     key = topic.key if topic else None
-    ans = check_answer(key, answer_candidates(beats)) if key else {"status": "n/a"}
-    spk = check_spoken(key, " ".join(str(b.get("narration", "")) for b in beats[-2:])) \
-        if (key and beats) else {"status": "n/a"}
+    req = topic.request if topic else ""
+    ans = check_answer(key, answer_candidates(beats), final_narration(beats), req) if key else {"status": "n/a"}
+    spk = check_spoken(key, final_narration(beats), req) if (key and beats) else {"status": "n/a"}
     struct = structure_checks(tr.get("plan"), beats, key)
-    return {"answer": ans, "answer_spoken": spk, "structure": struct}
+    out = {"answer": ans, "answer_spoken": spk, "structure": struct, "rescored": True}
+    scores = tr.get("scores", [])
+    if beats and len(scores) == len(beats):
+        clean = [s.get("level") == 3 and not quality_flags(b) for s, b in zip(scores, beats)]
+        out.update({"beats_clean_stored": rec.get("beats_clean"), "beats_clean": sum(clean),
+                    "all_beats_clean": all(clean)})
+    return out
 
 
 def load(exp: str) -> tuple[list[dict], list[dict]]:
@@ -95,7 +107,7 @@ def table(recs: list[dict], servers: list[dict], by: list[str]) -> list[dict]:
     rows = []
     for g, rs in sorted(groups.items(), key=lambda kv: tuple(str(x) for x in kv[0])):
         keyed = [r for r in rs if r["answer"]["status"] != "n/a"]
-        spk_app = [r for r in rs if r["answer_spoken"]["status"] in ("correct", "not_found")]
+        spk_app = [r for r in rs if r["answer_spoken"]["status"] in ("correct", "wrong", "not_found")]
         row = dict(zip(by, g))
         row.update({
             "n": len(rs),
@@ -103,6 +115,7 @@ def table(recs: list[dict], servers: list[dict], by: list[str]) -> list[dict]:
             "clean": _mean([r.get("beats_clean", 0) / r["n_beats"] if r["n_beats"] else 0 for r in rs]),
             "allclean": _mean([1.0 if r.get("all_beats_clean") else 0.0 for r in rs]),
             "ans": _mean([1.0 if r["answer"]["status"] == "correct" else 0.0 for r in keyed]),
+            "unp": _mean([1.0 if r["answer"]["status"] == "unparsed" else 0.0 for r in keyed]),
             "spk": _mean([1.0 if r["answer_spoken"]["status"] == "correct" else 0.0 for r in spk_app]),
             "both": _mean([1.0 if (r["answer"]["status"] == "correct"
                                    and r["answer_spoken"]["status"] in ("correct", "n/a")) else 0.0

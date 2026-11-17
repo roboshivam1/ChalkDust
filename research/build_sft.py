@@ -62,13 +62,40 @@ def video_ok(rec: dict, require_spoken: bool = True) -> bool:
     return s in ("correct", "n/a") or not require_spoken
 
 
+def _sample_ok(text: str, component: str | None, topic) -> tuple[bool, str]:
+    """Re-check one clean sample with the CURRENT checks: quality flags (the
+    stored ones may predate a flag fix), and, for an AnswerBox, the answer
+    itself -- every kept sample, not only the one the video selected."""
+    from research.content import check_answer
+    from research.llm import parse_json
+    from research.score import quality_flags
+    v, _ = parse_json(text)
+    if not isinstance(v, dict):
+        return False, "unparsable"
+    beat = {"component": component, "narration": v.get("narration", ""), "params": v.get("params", {})}
+    if quality_flags(beat):
+        return False, "flags"
+    if component == "AnswerBox" and topic is not None and topic.key is not None:
+        st = check_answer(topic.key, [str((v.get("params") or {}).get("value") or "")])["status"]
+        if st != "correct":
+            return False, f"answer_{st}"
+    return True, ""
+
+
 def build(exp: str, out: Path, val_families: int = 4, per_beat: int = 2, seed: int = 0,
-          require_spoken: bool = True, prompt_hash: str | None = None) -> dict:
-    fam_of = {t.id: t.family for t in topic_set("train")}
+          require_spoken: bool = True, prompt_hash: str | None = None, allow_non_train: bool = False) -> dict:
+    from research.generate import PROMPT_HASH
+    train = {t.id: t for t in topic_set("train")}
+    prompt_hash = prompt_hash or PROMPT_HASH
     recs = load_records(exp)
-    if prompt_hash:   # an SFT set must come from one prompt version
+    n_all = len(recs)
+    # an SFT set must come from one prompt version: the one the student will be served
+    if prompt_hash != "any":    # 'any' is for dry runs on traces older than the hash
         recs = [r for r in recs if r.get("prompt_hash") == prompt_hash]
-    rows, stats = [], Counter()
+    stray = sorted({r["topic"] for r in recs if r["topic"] not in train})
+    if stray and not allow_non_train:
+        raise SystemExit(f"topics outside the training pool: {stray[:5]} (use --allow-non-train for a dry run)")
+    rows, stats = [], Counter({"records": n_all, "records_with_hash": len(recs)})
     for rec in recs:
         trace_p = REPO / rec["trace_dir"] / "trace.json"
         if not trace_p.exists():
@@ -79,10 +106,13 @@ def build(exp: str, out: Path, val_families: int = 4, per_beat: int = 2, seed: i
         if not video_ok(rec, require_spoken):
             stats["videos_dropped_answer"] += 1
             continue
-        fam = fam_of.get(rec["topic"], rec["topic"])
-        meta = {"topic": rec["topic"], "family": fam, "teacher": rec["model"]}
+        from research.analyze import rescore
+        topic = train.get(rec["topic"])
+        fam = topic.family if topic else rec["topic"]
+        meta = {"topic": rec["topic"], "family": fam, "teacher": rec["model"], "prompt_hash": prompt_hash}
+        clean_now = rescore(rec).get("beats_clean", rec["beats_clean"])
         # plan
-        if rec["n_beats"] and rec["beats_clean"] / rec["n_beats"] >= 0.8:
+        if rec["n_beats"] and clean_now / rec["n_beats"] >= 0.8:
             for call in tr["calls"]:
                 if call["step"] != "plan":
                     continue
@@ -96,20 +126,25 @@ def build(exp: str, out: Path, val_families: int = 4, per_beat: int = 2, seed: i
                                  "completion": [{"role": "assistant", "content": text}],
                                  "type": "plan", **meta})
                     stats["plan_examples"] += 1
-        # beats
+        # beats: at most per_beat distinct samples per BEAT, across its repair rounds
+        kept, seen = Counter(), set()
         for call in tr["calls"]:
             if not call["step"].startswith("beat"):
                 continue
-            kept, seen = 0, set()
+            beat_key = call["step"].split(".r")[0]
             for c, sc in zip(call["completions"], call.get("scores", [])):
                 stats["beat_samples"] += 1
                 if not (sc.get("clean") and sc.get("escape_repairs", 0) == 0 and c["ok"]):
                     continue
-                key = c["text"].strip()
-                if key in seen or kept >= per_beat:
+                key = (beat_key, c["text"].strip())
+                if key in seen or kept[beat_key] >= per_beat:
+                    continue
+                ok, why = _sample_ok(c["text"], sc.get("component"), topic)
+                if not ok:
+                    stats[f"beat_dropped_{why}"] += 1
                     continue
                 seen.add(key)
-                kept += 1
+                kept[beat_key] += 1
                 rows.append({"prompt": call["messages"],
                              "completion": [{"role": "assistant", "content": c["text"]}],
                              "type": "beat_repair" if ".r0" not in call["step"] else "beat",
@@ -126,8 +161,8 @@ def build(exp: str, out: Path, val_families: int = 4, per_beat: int = 2, seed: i
         with open(out / f"{name}.jsonl", "w", encoding="utf-8") as f:
             for r in rs:
                 f.write(json.dumps(r, ensure_ascii=False) + "\n")
-    summary = {"exp": exp, "train": len(tr_rows), "val": len(va_rows), "val_families": sorted(val_f),
-               **dict(stats)}
+    summary = {"exp": exp, "prompt_hash": prompt_hash, "train": len(tr_rows), "val": len(va_rows),
+               "val_families": sorted(val_f), **dict(stats)}
     (out / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     return summary
 
@@ -139,7 +174,9 @@ if __name__ == "__main__":
     ap.add_argument("--per-beat", type=int, default=2)
     ap.add_argument("--val-families", type=int, default=4)
     ap.add_argument("--no-require-spoken", action="store_true")
-    ap.add_argument("--prompt-hash", default=None)
+    ap.add_argument("--prompt-hash", default=None, help="default: the current research.generate.PROMPT_HASH")
+    ap.add_argument("--allow-non-train", action="store_true", help="dry runs on DEV traces only")
     a = ap.parse_args()
     print(json.dumps(build(a.exp, Path(a.out), val_families=a.val_families, per_beat=a.per_beat,
-                           require_spoken=not a.no_require_spoken, prompt_hash=a.prompt_hash), indent=2))
+                           require_spoken=not a.no_require_spoken, prompt_hash=a.prompt_hash,
+                           allow_non_train=a.allow_non_train), indent=2))

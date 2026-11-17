@@ -7,6 +7,13 @@ laws, series/parallel resistor networks, mass->moles, binary search, stacks,
 arithmetic-series sums, quadratic solving, product or quotient rule). The
 module asserts the separation at import.
 
+Dropped after review (2026-11-17), because they are near-twins of an
+evaluation topic: queue-trace (HELDOUT ho-stack-trace with the structure
+swapped), suvat-final-velocity (HELDOUT ho-free-fall-time's equations),
+percent-composition (DEV moles of water), linear-search-comparisons (DEV
+binary search) and single-loop-step-count (DEV nested loops). Their templates
+stay in _fams so the random draws of every other family are unchanged.
+
 Keys are computed here (python/sympy), so teacher outputs can be filtered on
 answer correctness as well as validity.
 
@@ -26,7 +33,10 @@ from research.topics import FAMILIES, Key, Topic
 x = sp.Symbol("x")
 EXCLUDED_NEAR_TWINS = {"projectile", "incline", "pendulum", "free-fall", "gas", "series", "parallel",
                        "mass-to-moles", "binary-search", "stack", "arithmetic-series", "quadratic",
-                       "product-rule", "quotient-rule"}
+                       "product-rule", "quotient-rule", "queue", "suvat", "percent-composition",
+                       "linear-search", "single-loop"}
+DROPPED = {"queue-trace", "suvat-final-velocity", "percent-composition", "linear-search-comparisons",
+           "single-loop-step-count"}
 
 
 def _fams(rng: random.Random):
@@ -208,6 +218,8 @@ def pool(n_per_family: int = 3, seed: int = 20261117) -> tuple[Topic, ...]:
     out = []
     for i in range(n_per_family):
         for fam, subj, level, req, key in _fams(rng):
+            if fam in DROPPED:      # drawn (to keep the rng stream) but not used
+                continue
             out.append(Topic(f"tr-{fam}-{i}", subj, level, req, fam, key))
     return tuple(out)
 

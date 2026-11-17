@@ -19,6 +19,7 @@ import argparse
 import json
 from pathlib import Path
 
+from research.analyze import rescore
 from research.build_sft import load_records, video_ok
 from research.models import REGISTRY
 
@@ -33,11 +34,17 @@ def score(exp: str, method: str, models: list[str]) -> list[dict]:
         if not rs:
             out.append({"model": m, "n": 0})
             continue
-        usable = sum(1 for r in rs if video_ok(r) and r.get("n_beats")
+        # cleanliness re-flagged with the current checks, as build_sft does
+        now = [{**r, **rescore(r)} for r in rs]
+        usable = sum(1 for r in now if video_ok(r) and r.get("n_beats")
                      and r.get("beats_clean", 0) / r["n_beats"] >= 0.8)
+        # wall_seconds = generation + validation, which is what the T1 run costs
+        # (T1 runs with --no-cli); total adds the CLI double-check, for reference.
         secs = sum(r.get("wall_seconds", 0) for r in rs)
+        tot = sum(r.get("total_seconds") or r.get("wall_seconds", 0) for r in rs)
         out.append({"model": m, "n": len(rs), "usable": usable, "usable_frac": usable / len(rs),
-                    "wall_s_mean": secs / len(rs), "usable_per_hour": usable / secs * 3600 if secs else 0,
+                    "wall_s_mean": secs / len(rs), "total_s_mean": tot / len(rs),
+                    "usable_per_hour": usable / secs * 3600 if secs else 0,
                     "licence": REGISTRY[m].licence})
     return out
 

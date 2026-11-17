@@ -24,14 +24,26 @@ X = sp.Symbol("x")
 _UNIT_WORDS = r"(?:m|s|kg|N|A|V|J|W|Pa|L|mol|K|atm|g|cm|km|h|min|Hz|ohm|C|rad|deg)"
 
 
+def _trig_degrees(m: re.Match) -> str:
+    fn, num = m.group(1), m.group(3)
+    if fn.startswith("\\"):
+        return f"{fn}({num} \\cdot \\frac{{\\pi}}{{180}})"
+    return f"{fn}({num}*pi/180)"
+
+
 def _strip(s: str) -> str:
     s = s.replace("$", " ")
+    s = s.replace("{,}", "")                          # 1{,}275
+    s = re.sub(r"(?<=\d),(?=\d{3}(?!\d))", "", s)     # 1,275
     s = re.sub(r"\\(mathrm|text|textrm|operatorname|mbox)\s*\{[^{}]*\}", " ", s)
     s = re.sub(r"\\(,|;|!|:| |quad|qquad)", " ", s)
     s = s.replace("\\left", "").replace("\\right", "")
     s = s.replace("\\dfrac", "\\frac").replace("\\tfrac", "\\frac")
     s = s.replace("\\times", "\\cdot").replace("×", "\\cdot").replace("−", "-")
     s = s.replace("\\approx", "=").replace("≈", "=").replace("\\simeq", "=")
+    # degrees inside a trig function are converted, not dropped: sin(60°) is not sin(60)
+    s = re.sub(r"(\\?(?:sin|cos|tan))\s*(\()?\s*(-?\d+(?:\.\d+)?)\s*(?:\^\s*\{?\\circ\}?|°)\s*(?(2)\))",
+               _trig_degrees, s)
     s = re.sub(r"\^\s*\{?\\circ\}?", "", s).replace("°", "")
     s = re.sub(r"\\boxed\s*\{(.*)\}", r"\1", s)
     s = s.replace("²", "^2").replace("³", "^3")
@@ -92,32 +104,89 @@ def _close(a: float, b: float, rel: float) -> bool:
     return math.isclose(a, b, rel_tol=rel, abs_tol=1e-6 + rel * 1e-3)
 
 
-def check_answer(key: Key, candidates: list[str]) -> dict:
-    """Compare the answer the video states against the key.
+# A condition after the value ('y = -5 at x = 2', '\text{ when } t = 3') is not
+# the answer; cut it before reading the line's final value.
+_TAIL = re.compile(r"\\text\s*\{\s*(?:at|when|for|where|if|with)\b.*$|\s(?:at|when|for|where)\s+[A-Za-z]\s*=.*$")
+_SET_SPLIT = re.compile(r"\\text\s*\{\s*(?:or|and)\s*\}|\\quad|\bor\b|\band\b|,|;")
 
-    `candidates` are answer-bearing strings, most authoritative first (the
-    AnswerBox value, then the last working line, then the last narration).
-    Returns {status: correct|wrong|unparsed, source, detail}.
+
+def _value_of(piece: str) -> float | None:
+    """A real number if `piece` is a closed numeric expression, else None.
+    Unevaluated integrals/derivatives are not values."""
+    try:
+        e = _latex_to_sympy(piece)
+        if e.free_symbols or e.has(sp.Integral, sp.Derivative):
+            return None
+        v = complex(sp.N(e))
+    except Exception:
+        return None
+    return float(v.real) if abs(v.imag) < 1e-9 else None
+
+
+def final_value(line: str) -> float | None:
+    """The value a line states: its LAST side ('P = 6/36 = 1/5' states 1/5,
+    not 1/6). A line whose last side is a formula ('T = 2\\pi\\sqrt{L/g}')
+    states no value. A plain-words line with no maths ('index 5') falls back
+    to its last number."""
+    line = _TAIL.sub("", str(line))
+    parts = [p for p in re.split(r"(?<![<>!\\])=(?!=)", _strip(line)) if p.strip()]
+    if parts:
+        v = _value_of(parts[-1])
+        if v is not None:
+            return v
+    if "=" in line or "\\" in line or re.search(r"(?<![A-Za-z])[A-Za-z](?![A-Za-z])", _strip(line)):
+        return None
+    raw = re.findall(r"-?\d+(?:\.\d+)?(?:[eE]-?\d+)?", _strip(line))
+    return float(raw[-1]) if raw else None
+
+
+def _set_values(line: str) -> list[float]:
+    """Roots stated on a line ('x = 2 or x = 3', 'x = 2, 3'). A piece whose
+    left side is an expression ('(x-2)(x-3) = 0') is an equation, not a root."""
+    vals = []
+    for piece in _SET_SPLIT.split(str(line)):
+        if piece and piece.strip():
+            sides = [q for q in re.split(r"(?<![<>!\\])=(?!=)", _strip(_TAIL.sub("", piece))) if q.strip()]
+            if len(sides) >= 2 and not re.fullmatch(r"\s*[A-Za-z](?:_\{?\w+\}?)?\s*", sides[-2]):
+                continue
+            v = final_value(piece)
+            if v is not None:
+                vals.append(v)
+    return vals
+
+
+def check_answer(key: Key, candidates: list[str], narration: str = "", request: str = "") -> dict:
+    """Compare the answer the video SHOWS against the key.
+
+    `candidates` are answer-bearing maths lines, most authoritative first
+    (the AnswerBox value, then the last working line). The first one that
+    states a value decides; only if none does is the narration's final
+    asserted value used (check_spoken's rule). Returns {status:
+    correct|wrong|unparsed, source, detail}; a line that states no value is
+    skipped, never scored wrong.
     """
+    want = [float(v) for v in (key.value if key.kind == "set" else [key.value])] \
+        if key.kind in ("number", "set") else []
     for src_i, text in enumerate(candidates):
         if not text or not str(text).strip():
             continue
         text = str(text)
-        if key.kind in ("number", "set"):
-            nums = _numbers_in(text)
-            raw = [float(m) for m in re.findall(r"-?\d+(?:\.\d+)?(?:[eE]-?\d+)?",
-                                                _strip(text).replace(",", " "))]
-            if key.kind == "set" or not nums:
-                nums = nums + [r for r in raw if r not in nums]
+        if key.kind == "number":
+            v = final_value(text)
+            if v is None:
+                continue
+            return {"status": "correct" if _close(v, want[0], key.rel_tol) else "wrong", "source": src_i,
+                    "detail": f"states {v:g} want {want[0]:g}"}
+        if key.kind == "set":
+            nums = _set_values(text)
             if not nums:
                 continue
-            want = [float(v) for v in (key.value if key.kind == "set" else [key.value])]
             hit = all(any(_close(n, w, key.rel_tol) for n in nums) for w in want)
             return {"status": "correct" if hit else "wrong", "source": src_i,
-                    "detail": f"found {nums[:6]} want {want}"}
+                    "detail": f"states {nums[:6]} want {want}"}
         if key.kind in ("expr", "antiderivative"):
             for part in reversed(equation_parts(text)):
-                if X not in part.free_symbols:
+                if X not in part.free_symbols or part.has(sp.Integral, sp.Derivative):
                     continue
                 target = key.value
                 cand = sp.diff(part, X) if key.kind == "antiderivative" else part
@@ -136,6 +205,10 @@ def check_answer(key: Key, candidates: list[str]) -> dict:
                         break
                 return {"status": "correct" if ok else "wrong", "source": src_i,
                         "detail": f"{part} vs {key.value}"}
+    if narration and key.kind in ("number", "set"):
+        s = check_spoken(key, narration, request)
+        if s["status"] in ("correct", "wrong"):
+            return {"status": s["status"], "source": "narration", "detail": s["detail"]}
     return {"status": "unparsed", "source": None, "detail": "no parseable answer"}
 
 
@@ -154,10 +227,13 @@ _ORD = {"half": 2, "halves": 2, "third": 3, "thirds": 3, "quarter": 4, "quarters
         "twelfth": 12, "twelfths": 12, "thirty-sixth": 36, "thirty-sixths": 36}
 
 
-def _word_numbers(text: str) -> list[float]:
-    """Numbers written in words: 'thirty four point six', 'one sixth',
-    'twelve hundred and seventy five', 'minus five'. Deliberately simple."""
-    toks = re.findall(r"[a-z]+(?:-[a-z]+)?", text.lower())
+def _word_numbers(text: str) -> list[tuple[int, float]]:
+    """Numbers written in words, with their character positions: 'thirty four
+    point six', 'one sixth', 'twelve hundred and seventy five', 'minus five',
+    'twenty root three'. 'and' joins only after hundred/thousand ('five and
+    two' is two numbers). Deliberately simple."""
+    found = list(re.finditer(r"[a-z]+(?:-[a-z]+)?", text.lower()))
+    toks = [m.group(0) for m in found]
     vals, i = [], 0
     while i < len(toks):
         t = toks[i]
@@ -176,8 +252,8 @@ def _word_numbers(text: str) -> list[float]:
                 else:
                     total += cur * _SCALES[w]
                     cur = 0
-            elif w == "and" and used and j + 1 < len(toks) and (toks[j + 1] in _ONES or toks[j + 1] in _TENS
-                                                                 or toks[j + 1].split("-")[0] in _TENS):
+            elif w == "and" and used and toks[j - 1] in _SCALES and j + 1 < len(toks) and (
+                    toks[j + 1] in _ONES or toks[j + 1] in _TENS or toks[j + 1].split("-")[0] in _TENS):
                 pass
             else:
                 break
@@ -195,55 +271,132 @@ def _word_numbers(text: str) -> list[float]:
             if digs:
                 v = float(f"{int(v)}.{digs}")
                 j = k
+        def _num_word(k: int) -> float:
+            return float(sum(_ONES.get(q, 0) + _TENS.get(q, 0) for q in toks[k].split("-")))
+
+        def _is_num_word(k: int) -> bool:
+            return k < len(toks) and all(q in _ONES or q in _TENS for q in toks[k].split("-"))
+
+        # 'twenty root three', 'two square root of two'
+        if j < len(toks) and toks[j] == "root" and _is_num_word(j + 1):
+            v, j = v * math.sqrt(_num_word(j + 1)), j + 2
+        elif toks[j:j + 3] == ["square", "root", "of"] and _is_num_word(j + 3):
+            v, j = v * math.sqrt(_num_word(j + 3)), j + 4
         # fraction: 'one sixth', 'two thirds', 'one in six', 'one over six', 'one out of six'
         if j < len(toks) and toks[j] in _ORD:
-            vals.append(v / _ORD[toks[j]])
-            j += 1
-        elif j + 1 < len(toks) and toks[j] in ("over", "in") or (j + 2 < len(toks) and toks[j:j + 2] == ["out", "of"]):
+            v, j = v / _ORD[toks[j]], j + 1
+        elif j < len(toks) and (toks[j] in ("over", "in") and _is_num_word(j + 1)
+                                or toks[j:j + 2] == ["out", "of"] and _is_num_word(j + 2)):
             k = j + (2 if toks[j] == "out" else 1)
-            if k < len(toks) and (toks[k] in _ONES or toks[k] in _TENS or toks[k].split("-")[0] in _TENS):
-                d = sum(_ONES.get(q, 0) + _TENS.get(q, 0) for q in toks[k].split("-"))
-                if d:
-                    vals.append(v / d)
-        vals.append(-v if neg else v)
+            d = _num_word(k)
+            if d:
+                v, j = v / d, k + 1
+        vals.append((found[i].start(), -v if neg else v))
         i = j if j > i else i + 1
     return vals
 
 
+def _blank(s: str, a: int, b: int) -> str:
+    return s[:a] + " " * (b - a) + s[b:]
+
+
+def spoken_values(text: str) -> list[tuple[int, float]]:
+    r"""Every value the narration states, with its position, however it is
+    written: LaTeX segments ('$20\sqrt{3}$', '\frac{1}{6}'), digit fractions
+    ('6/36', '1 in 6'), digits ('1,275'), and number words. Each span is
+    read once (the 6 and 36 of '6/36' are not also values), and exponents
+    ('m/s^2') are not values."""
+    vals: list[tuple[int, float]] = []
+    s = re.sub(r"\^\s*\{?-?\d+\}?", lambda m: " " * len(m.group(0)), text)
+    for m in re.finditer(r"\$([^$]+)\$|\\[dt]?frac\s*\{[^{}]*\}\s*\{[^{}]*\}|\d+(?:\.\d+)?\s*\\sqrt\s*\{[^{}]*\}"
+                         r"|\\sqrt\s*\{[^{}]*\}", s):
+        seg = text[m.start():m.end()].strip("$")
+        nums = _numbers_in(seg)
+        vals += [(m.start(), v) for v in nums[-1:]]
+        s = _blank(s, m.start(), m.end())
+    for m in re.finditer(r"(-?\d+(?:\.\d+)?)\s*(?:/|\bover\b|\bout of\b|\bin\b)\s*(\d+(?:\.\d+)?)", s):
+        if float(m.group(2)):
+            vals.append((m.start(), float(m.group(1)) / float(m.group(2))))
+        s = _blank(s, m.start(), m.end())
+    for m in re.finditer(r"-?\d{1,3}(?:,\d{3})+(?:\.\d+)?|-?\d+(?:\.\d+)?", s):
+        vals.append((m.start(), float(m.group(0).replace(",", ""))))
+        s = _blank(s, m.start(), m.end())
+    vals += _word_numbers(s)
+    return sorted(vals, key=lambda pv: pv[0])
+
+
 def spoken_numbers(text: str) -> list[float]:
-    r"""Every value the narration states, however it is written: digits,
-    digit fractions ('1/6', '1 over 6'), LaTeX segments ('$20\sqrt{3}$',
-    '\frac{1}{6}'), and number words."""
-    vals: list[float] = []
-    latex = re.findall(r"\$([^$]+)\$", text) + re.findall(
-        r"\\[dt]?frac\s*\{[^{}]*\}\s*\{[^{}]*\}|\d+(?:\.\d+)?\s*\\sqrt\s*\{[^{}]*\}|\\sqrt\s*\{[^{}]*\}", text)
-    for seg in latex:
-        vals += _numbers_in(seg)
-    for a, b in re.findall(r"(-?\d+(?:\.\d+)?)\s*(?:/|over|out of|in)\s*(\d+(?:\.\d+)?)", text):
-        if float(b):
-            vals.append(float(a) / float(b))
-    vals += [float(m.replace(",", "")) for m in re.findall(r"-?\d{1,3}(?:,\d{3})+(?:\.\d+)?|-?\d+(?:\.\d+)?", text)]
-    vals += _word_numbers(text)
-    return vals
+    return [v for _, v in spoken_values(text)]
 
 
-def check_spoken(key: Key, text: str) -> dict:
-    """Does the narration say the answer? 'correct' if any stated value (or,
-    for a set, every root) matches the key; otherwise 'not_found'. This is a
-    presence check, not a wrong-answer detector: a narration that never says
-    the number is not_found, the same as one that says the wrong number.
-    Expression answers (derivatives, integrals) are spoken in words and are
-    not checked: n/a."""
+# Words that introduce a stated result: 'the range IS 34.6', 'comes to ABOUT 35',
+# 'it should BE 2.0', 'SO 1/6'. '=' and 'equals' are weak: they also restate
+# givens ('for n equals four', 'g = 10').
+_STRONG_CUES = {"is", "are", "was", "be", "gives", "get", "gets", "got", "comes", "about", "approximately",
+                "roughly", "around", "nearly", "exactly", "so", "therefore", "thus", "makes", "answer", "result"}
+_WEAK_CUES = {"equals", "equal", "=", "≈"}
+
+
+def _cue(text: str, pos: int) -> str | None:
+    toks = re.findall(r"[a-z']+|\d+(?:\.\d+)?|=|≈", text[max(0, pos - 40):pos].lower())[-2:]
+    if any(t in _STRONG_CUES for t in toks):
+        return "strong"
+    if any(t in _WEAK_CUES for t in toks):
+        return "weak"
+    return None
+
+
+def check_spoken(key: Key, text: str, request: str = "") -> dict:
+    """Does the narration SAY the right answer as its result?
+
+    Numbers copied from the request are restated givens, so they are dropped
+    unless asserted as a result ('is', 'be', 'about', 'so' ...). The
+    narration's result is the last value introduced by an answer cue
+    (those, or a weak '='/'equals'), or the last value if none is cued;
+    it is 'correct' if it matches the key, 'wrong' if it does not, and
+    'not_found' if the narration states no value of its own. When the key
+    itself appears in the request (binary search over a list containing the
+    answer), speech cannot show the answer was worked out: 'n/a'. For a set
+    (roots) every root must be stated. Expression answers are spoken in
+    words and are not checked: 'n/a'.
+    """
     if key.kind in ("expr", "antiderivative"):
         return {"status": "n/a", "detail": "expression answers are not checked in speech"}
-    vals = spoken_numbers(text)
     want = [float(v) for v in (key.value if key.kind == "set" else [key.value])]
-    hit = all(any(_close(n, w, key.rel_tol) for n in vals) for w in want)
-    return {"status": "correct" if hit else "not_found", "detail": f"found {sorted(set(vals))[:10]} want {want}"}
+    vals = spoken_values(text)
+    if key.kind == "set":
+        nums = [v for _, v in vals]
+        hit = all(any(_close(n, w, key.rel_tol) for n in nums) for w in want)
+        return {"status": "correct" if hit else "not_found", "detail": f"found {sorted(set(nums))[:10]} want {want}"}
+    req = spoken_numbers(request) if request else []
+    if any(_close(r, want[0], 1e-6) for r in req):
+        return {"status": "n/a", "detail": "the key appears in the request"}
+    # A number from the request is the narration restating a given, unless it
+    # is asserted as a result ('it should be 2.0' when the block is 2 kg is a
+    # wrong answer, and was a real one).
+    own = []
+    for p, v in vals:
+        c = _cue(text, p)
+        if c != "strong" and any(_close(v, r, 1e-6) for r in req):
+            continue
+        own.append((p, v, c))
+    if not own:
+        return {"status": "not_found", "detail": f"no value beyond the request's {req[:6]}"}
+    cued = [x for x in own if x[2]]
+    final = (cued or own)[-1][1]
+    return {"status": "correct" if _close(final, want[0], key.rel_tol) else "wrong",
+            "detail": f"result {final:g} ({'cued' if cued else 'last'}) want {want[0]:g}"}
+
+
+def final_narration(beats: list[dict]) -> str:
+    """What the student hears last: the last two narrations."""
+    return " ".join(str(b.get("narration", "")) for b in beats[-2:])
 
 
 def answer_candidates(beats: list[dict]) -> list[str]:
-    """Answer-bearing strings from an assembled list of beats."""
+    """Answer-bearing maths lines from an assembled list of beats: the
+    AnswerBox value, then the last working line. (The narration is checked
+    separately: check_answer(..., narration=final_narration(beats)).)"""
     out = []
     for b in reversed(beats):
         if b.get("component") == "AnswerBox":
@@ -258,10 +411,6 @@ def answer_candidates(beats: list[dict]) -> list[str]:
         if b.get("component") == "EquationDerivation" and p.get("steps"):
             out.append(str(p["steps"][-1]))
             break
-    if beats:
-        out.append(str(beats[-1].get("narration", "")))
-        if len(beats) > 1:
-            out.append(str(beats[-2].get("narration", "")))
     return out
 
 

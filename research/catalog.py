@@ -45,14 +45,14 @@ CARDS: dict[str, tuple[str, str, str]] = {
         "with optional margin annotations.",
         "Any multi-step algebra or calculus manipulation.",
         "steps: 2-6 lines, each ONE line of math-mode LaTeX without $ signs (e.g. "
-        "'x^2 - 5x + 6 = 0'). Every line must follow correctly from the line before. "
+        "'3x + 4 = 25'). Every line must follow correctly from the line before. "
         "annotations: [{step, text}] where step is the 0-based index of the line it explains; "
         "text is 2-6 plain words."),
     "GraphPlot": (
         "Axes with up to 3 plotted functions of x and up to 4 labelled marker points on a curve.",
         "Showing roots, intercepts, maxima/minima, how a function behaves.",
         "functions: [{expr, name?}] where expr is in the ONE variable x only (no other letters: put numbers in for "
-        "every other quantity), using + - * / ^, sin cos tan exp log sqrt abs, pi, e (e.g. 'x^2 - 5*x + 6'); "
+        "every other quantity), using + - * / ^, sin cos tan exp log sqrt abs, pi, e (e.g. 'x^2 - 4*x + 1'); "
         "always write * for multiplication (5*x, never 5x). x_range: [min, max] "
         "covering the interesting part. markers: [{x, label?}] at points the narration names."),
     "NumberLineWalk": (
@@ -114,7 +114,7 @@ CARDS: dict[str, tuple[str, str, str]] = {
     "AnswerBox": (
         "The final answer written large inside a box.",
         "The last step of a solved problem.",
-        "value: the answer as math-mode LaTeX without $ signs, e.g. 'R = 20\\\\sqrt{3} \\\\approx 34.6'. "
+        "value: the answer as math-mode LaTeX without $ signs, e.g. 'v = 3\\\\sqrt{15} \\\\approx 11.6'. "
         "units: math-mode LaTeX like '\\\\mathrm{m}' or null. option: A-D only for multiple choice, else null."),
 }
 

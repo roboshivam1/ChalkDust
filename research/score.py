@@ -111,15 +111,37 @@ def _outside_dollars(s: str) -> str:
     return re.sub(r"\$[^$]*\$", " ", s)
 
 
+# Narration is spoken: the voice reads '^' as "caret" and drops or misreads
+# Unicode super/subscripts and the radical sign. The beat prompt forbids '^';
+# review found 66 clean E1b beats with '^' and 78 with superscripts.
+_NARR_SYMBOL = re.compile(r"\^|[²³¹⁰-₟√]")
+
+
+def _math_strings(beat: dict) -> set[str]:
+    """The strings the component itself compiles as LaTeX (its own
+    latex_strings() hook, the one the semantic rung uses). A field the
+    component typesets as maths is not prose, whatever it is called:
+    FreeBodyDiagram's force `label` is LaTeX by design ('mg \\sin\\theta')."""
+    try:
+        import chalkdust.scenes.components  # noqa: F401  (fills the registry)
+        from chalkdust.scenes.components.base import make_component
+        return {s.strip() for s in make_component(beat.get("component"), beat.get("params", {})).latex_strings()}
+    except Exception:
+        return set()
+
+
 def quality_flags(beat: dict) -> list[str]:
     flags = []
     narr = str(beat.get("narration", ""))
     if _LATEX_CMD.search(narr):
         flags.append("narration_latex")
+    if _NARR_SYMBOL.search(narr):
+        flags.append("narration_symbol")
 
     # Only ProblemStatement typesets inline $...$ in prose; everywhere else a
     # '$' or a backslash command in a prose field is drawn literally.
     inline_ok = beat.get("component") == "ProblemStatement"
+    math = _math_strings(beat)
 
     def walk(v, key):
         if isinstance(v, dict):
@@ -128,7 +150,7 @@ def quality_flags(beat: dict) -> list[str]:
         elif isinstance(v, list):
             for x in v:
                 walk(x, key)
-        elif isinstance(v, str) and key in _PROSE_FIELDS:
+        elif isinstance(v, str) and key in _PROSE_FIELDS and v.strip() not in math:
             rest = _outside_dollars(v) if inline_ok else v
             if re.search(r"\\[A-Za-z]+|\\[,;!]|\^\{|_\{", rest):
                 flags.append(f"prose_latex:{key}")

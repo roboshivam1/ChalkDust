@@ -37,6 +37,37 @@ def test_check_answer(tid, text, want):
     assert check_answer(BY_ID[tid].key, [text])["status"] == want
 
 
+# (review, 2026-11-17) the shown answer is the line's FINAL value, not any part of it
+REVIEW_CASES = [
+    ("dev-two-dice-seven", r"P = \frac{6}{36} = \frac{1}{5}", "wrong"),
+    ("dev-series-resistors", r"I = \frac{12}{4+6} = 1.5\,\mathrm{A}", "wrong"),
+    ("dev-series-resistors", r"I = \frac{12}{4+6} = 1.2\,\mathrm{A}", "correct"),
+    ("ho-pendulum-period", r"T = 2\pi\sqrt{\frac{L}{g}}", "unparsed"),
+    ("ho-parabola-vertex", r"y_{min} = -5 \text{ at } x = 2", "correct"),
+    ("ho-arithmetic-sum", r"S = 1{,}275", "correct"),
+    ("dev-integration-by-parts", r"\int x e^x\,dx", "unparsed"),
+    ("dev-quadratic-roots", "(x-2)(x-3) = 0", "unparsed"),
+    ("dev-quadratic-roots", "x = 2, 3", "correct"),
+]
+
+
+@pytest.mark.parametrize("tid,text,want", REVIEW_CASES)
+def test_check_answer_reads_the_stated_value(tid, text, want):
+    assert check_answer(BY_ID[tid].key, [text])["status"] == want
+
+
+def test_trig_degrees_are_converted():
+    from research.content import final_value
+    assert abs(final_value(r"2\sin(30^\circ)") - 1.0) < 1e-9
+    assert abs(final_value("2*sin(30°)") - 1.0) < 1e-9
+
+
+def test_narration_fallback_uses_final_stated_value():
+    t = BY_ID["dev-projectile-range"]
+    r = check_answer(t.key, [r"R = \frac{v^2 \sin 2\theta}{g}"], "So the range comes to about 34.6 metres.", t.request)
+    assert (r["status"], r["source"]) == ("correct", "narration")
+
+
 def test_step_consistency_counts_invented_lines():
     beats = [{"component": "EquationDerivation",
               "params": {"steps": ["{{ x^2 - 5x }} + 6 = 0", "(x-2)(x-3) = 0", "x = 2", "x = 7"]}}]

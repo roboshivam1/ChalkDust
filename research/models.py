@@ -54,17 +54,18 @@ add(ModelEntry("granite-4.2-3b", "bartowski/granite-4.2-3b-GGUF", "granite-4.2-3
                "apache-2.0", 3.0, 3.0, ("C",), chat_extra=NOTHINK,
                note="template thinks by default (enable_thinking defaults True)"))
 add(ModelEntry("gemma-4-e2b", "unsloth/gemma-4-E2B-it-GGUF", "gemma-4-E2B-it-Q4_K_M.gguf",
-               "apache-2.0", 5.1, 2.3, ("C",)))
+               "apache-2.0", 5.1, 2.3, ("C",), chat_extra=NOTHINK))
 # Tier B (M1 16 GB)
 add(ModelEntry("qwen3.5-9b", "unsloth/Qwen3.5-9B-GGUF", "Qwen3.5-9B-Q4_K_M.gguf", "apache-2.0",
                9.0, 9.0, ("B",), chat_extra=NOTHINK))
 add(ModelEntry("granite-4.2-8b", "bartowski/granite-4.2-8b-GGUF", "granite-4.2-8b-Q4_K_M.gguf",
                "apache-2.0", 8.0, 8.0, ("B",), chat_extra=NOTHINK))
 add(ModelEntry("gemma-4-e4b", "unsloth/gemma-4-E4B-it-GGUF", "gemma-4-E4B-it-Q4_K_M.gguf",
-               "apache-2.0", 8.0, 4.5, ("B",)))
+               "apache-2.0", 8.0, 4.5, ("B",), chat_extra=NOTHINK))
 # Tier A (12 GB VRAM + 32 GB RAM)
 add(ModelEntry("gemma-4-12b", "unsloth/gemma-4-12B-it-GGUF", "gemma-4-12b-it-Q4_K_M.gguf",
-               "apache-2.0", 12.0, 12.0, ("A",)))
+               "apache-2.0", 12.0, 12.0, ("A",), chat_extra=NOTHINK,
+               note="llama-server turns thinking on unless enable_thinking=false is sent"))
 add(ModelEntry("qwen3.6-35b-a3b", "unsloth/Qwen3.6-35B-A3B-GGUF", "Qwen3.6-35B-A3B-UD-Q4_K_M.gguf",
                "apache-2.0", 35.0, 3.0, ("A",), chat_extra=NOTHINK,
                note="does not fit 12 GB: --fit moves expert weights to RAM"))

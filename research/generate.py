@@ -107,26 +107,62 @@ def _topic_msg(topic: Topic) -> str:
 
 
 def safe_calc(expr: str) -> float | None:
-    """Evaluate a model-written arithmetic expression with sympy, no eval."""
-    if not expr or len(expr) > 200:
+    """Evaluate a model-written arithmetic expression (no eval: safe_math)."""
+    from research.safe_math import safe_sympify
+    if not expr:
         return None
-    allowed = {"sqrt": sp.sqrt, "sin": sp.sin, "cos": sp.cos, "tan": sp.tan, "pi": sp.pi,
-               "E": sp.E, "e": sp.E, "log": sp.log, "exp": sp.exp, "asin": sp.asin,
-               "acos": sp.acos, "atan": sp.atan, "Rational": sp.Rational,
-               "deg": sp.pi / 180, "degrees": sp.pi / 180}
     try:
-        v = sp.sympify(expr.replace("^", "**"), locals=allowed, evaluate=True)
+        v = safe_sympify(expr)
         if v.free_symbols:
             return None
-        return float(sp.N(v))
+        f = complex(sp.N(v))
+        return float(f.real) if abs(f.imag) < 1e-9 else None
     except Exception:
         return None
 
 
 # --- staged ------------------------------------------------------------------------
 
+def _plan_value(plan: dict) -> float | None:
+    """The plan's numerical answer: the calculator value if there is one,
+    else the first number in final_answer."""
+    v = plan.get("answer_calc_value")
+    if isinstance(v, (int, float)) and abs(v) < 1e12:
+        return float(v)
+    import re as _re
+    m = _re.search(r"-?\d+(?:\.\d+)?", str(plan.get("final_answer", "")).replace(",", ""))
+    return float(m.group()) if m else None
+
+
+def vote(plans: list[dict]) -> tuple[dict, dict]:
+    """Self-consistency: cluster the plans' answers (within 1%), take the
+    biggest cluster, and within it the plan with the most beats in range.
+    Returns (chosen plan, vote record)."""
+    vals = [_plan_value(p) for p in plans]
+    clusters: list[list[int]] = []
+    for i, v in enumerate(vals):
+        if v is None:
+            continue
+        for c in clusters:
+            ref = vals[c[0]]
+            if abs(v - ref) <= 0.01 * max(abs(ref), 1e-9) + 1e-9:
+                c.append(i)
+                break
+        else:
+            clusters.append([i])
+    if clusters:
+        best = max(clusters, key=len)
+        pick = max(best, key=lambda i: (5 <= len(plans[i]["beats"]) <= 9, -abs(len(plans[i]["beats"]) - 7)))
+    else:
+        best, pick = [], 0
+    return plans[pick], {"values": vals, "cluster_sizes": sorted((len(c) for c in clusters), reverse=True),
+                         "chosen": pick, "agreement": (len(best) / len(plans)) if plans else 0}
+
+
 def make_plan(url: str, topic: Topic, trace: Trace, *, seed: int, temperature: float,
-              constrained: bool = True, calc: bool = False, max_tokens: int = 1500) -> dict | None:
+              constrained: bool = True, calc: bool = False, k: int = 1,
+              max_tokens: int = 1500) -> dict | None:
+    """One plan, or k plans sampled at once and chosen by answer vote."""
     system = PLAN_SYSTEM + (PLAN_CALC_ADDENDUM if calc else "")
     schema = plan_schema()
     if calc:
@@ -134,18 +170,30 @@ def make_plan(url: str, topic: Topic, trace: Trace, *, seed: int, temperature: f
         schema["properties"]["answer_calc"] = {"type": "string", "maxLength": 200}
         schema["required"].append("answer_calc")
     msgs = [{"role": "system", "content": system}, {"role": "user", "content": _topic_msg(topic)}]
-    c = chat(url, msgs, schema=schema if constrained else None, temperature=temperature,
-             seed=seed, max_tokens=max_tokens)
-    plan, err = parse_json(c.text) if c.ok else (None, c.error)
-    extra = {"parse_error": err}
-    if plan is not None and calc:
-        plan["answer_calc_value"] = safe_calc(str(plan.get("answer_calc", "")))
-        extra["answer_calc_value"] = plan["answer_calc_value"]
-    trace.add("plan", msgs, [c], extra)
-    if not isinstance(plan, dict) or not isinstance(plan.get("beats"), list):
-        return None
-    plan["beats"] = [b for b in plan["beats"] if isinstance(b, dict) and b.get("component") in ALLOWED]
-    return plan if plan["beats"] else None
+    comps = chat_many(url, msgs, k, seed0=seed, schema=schema if constrained else None,
+                      temperature=temperature, max_tokens=max_tokens)
+    plans, errs = [], []
+    for c in comps:
+        plan, err = parse_json(c.text) if c.ok else (None, c.error)
+        errs.append(err)
+        if not isinstance(plan, dict) or not isinstance(plan.get("beats"), list):
+            continue
+        plan["beats"] = [b for b in plan["beats"] if isinstance(b, dict) and b.get("component") in ALLOWED]
+        if not plan["beats"]:
+            continue
+        if calc:
+            plan["answer_calc_value"] = safe_calc(str(plan.get("answer_calc", "")))
+        plans.append(plan)
+    extra = {"parse_errors": errs, "n_plans": len(plans)}
+    chosen = None
+    if plans:
+        chosen, rec = vote(plans) if len(plans) > 1 else (plans[0], {})
+        extra["vote"] = rec
+        extra["answer_calc_value"] = chosen.get("answer_calc_value")
+        if rec:
+            chosen["vote"] = rec
+    trace.add("plan", msgs, comps, extra)
+    return chosen
 
 
 def _beat_user_msg(topic: Topic, plan: dict, i: int, prev_narration: str | None,
@@ -239,11 +287,11 @@ def fill_beat(url: str, topic: Topic, plan: dict, i: int, prev: str | None, trac
 
 def generate_staged(url: str, topic: Topic, work_dir: Path, *, seed: int = 0,
                     temperature: float = 0.7, n: int = 1, repair: int = 0,
-                    constrained: bool = True, calc: bool = False) -> dict:
+                    constrained: bool = True, calc: bool = False, plans: int = 1) -> dict:
     trace = Trace()
     t0 = time.perf_counter()
     plan = make_plan(url, topic, trace, seed=seed, temperature=temperature,
-                     constrained=constrained, calc=calc)
+                     constrained=constrained, calc=calc, k=plans)
     beats, scores, per_beat = [], [], []
     if plan:
         prev = None

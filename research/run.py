@@ -103,6 +103,7 @@ def summarise(topic, gen: dict, cli: dict | None) -> dict:
         "gen_tokens": g_tok,
         "gen_tok_s_mean": (sum(tok_s) / len(tok_s)) if tok_s else 0,
         "answer_calc_value": (gen["plan"] or {}).get("answer_calc_value") if gen["plan"] else None,
+        "plan_vote": (gen["plan"] or {}).get("vote") if gen["plan"] else None,
     }
 
 
@@ -149,7 +150,8 @@ def main(argv: list[str] | None = None) -> int:
                             gen = generate_staged(srv.url, topic, tdir / "work", seed=seed,
                                                   temperature=a.temperature, n=int(kw.get("n", 1)),
                                                   repair=int(kw.get("repair", 0)),
-                                                  constrained=not kw.get("free"), calc=bool(kw.get("calc")))
+                                                  constrained=not kw.get("free"), calc=bool(kw.get("calc")),
+                                                  plans=int(kw.get("plans", 1)))
                         elif mname == "oneshot":
                             gen = generate_oneshot(srv.url, topic, tdir / "work", seed=seed,
                                                    temperature=a.temperature, constrained=not kw.get("free"))

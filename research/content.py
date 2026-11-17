@@ -48,9 +48,9 @@ def _latex_to_sympy(s: str):
         e = parse_latex(s)
     except Exception:
         # plain-text maths ("34.6 m", "1/6", "x**2")
+        from research.safe_math import safe_sympify   # no eval of model text
         t = re.sub(rf"\b{_UNIT_WORDS}\b(\^-?\d)?", " ", s)
-        t = t.replace("^", "**")
-        e = sp.sympify(t, locals={"e": sp.E, "pi": sp.pi})
+        e = safe_sympify(t.strip(), {"x": X})
     return e.subs({sp.Symbol("e"): sp.E, sp.Symbol("pi"): sp.pi})
 
 

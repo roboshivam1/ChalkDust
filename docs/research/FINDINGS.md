@@ -184,7 +184,19 @@ These are vendor numbers; E2 is what measures them here.
 
 ## 7. How to resume
 
-Tell Claude "restart the GPU queue". The queue is
-`.lab/venv-harness/Scripts/python -m research.gpu_queue`, run in the background;
-it skips finished jobs (`.lab/queue/done.txt`). Closing heavy desktop apps first,
-such as Notion and LM Studio, gives the teacher runs more headroom.
+Run the queue in its own PowerShell window. Claude Code stops its own background
+jobs when memory runs low, but it does not stop a window you opened:
+
+    cd C:\dev\chalkdust\ChalkDust
+    .\.lab\venv-harness\Scripts\python.exe -m research.gpu_queue
+
+The queue:
+- skips finished jobs (`.lab/queue/done.txt`);
+- keeps the laptop awake while it runs;
+- waits before each job until no other program holds more than 4.5 GB of the GPU
+  and at least 8 GiB of RAM is free;
+- prints `ALL DONE` at the end.
+
+At the stop, WSL Ubuntu held 15.4 GB of RAM, 12.7 GB of it file cache, and a voice
+job running in Ubuntu held about 5 GB of the GPU. Once Ubuntu's work is finished,
+`wsl --shutdown` frees that memory.

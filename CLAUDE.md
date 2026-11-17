@@ -251,7 +251,8 @@ notes.
 - **No closed-model outputs as training targets.** Teachers are open-weight Apache-2.0
   or MIT models run locally.
 - **One GPU job at a time.** Queue them with `research/gpu_queue.py` (jobs in
-  `.lab/queue/jobs.json`, re-read before each job; finished names in `done.txt`).
+  `.lab/queue/jobs.json`, re-read before each job; finished names in `done.txt`). It waits
+  before each job until the GPU is free of other programs and 8 GiB of RAM is free.
 - **Host RAM.** llama-server keeps up to 8 GiB of prompt cache in system RAM by default;
   `research/llm.py` caps it (`--cache-ram 1024 --ctx-checkpoints 4`). A 32 GB laptop with
   desktop apps open ran out once with the default.

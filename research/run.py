@@ -55,9 +55,12 @@ def probe(url: str) -> dict:
     c = chat(url, [{"role": "user", "content": 'Reply with the JSON {"ok": true} and nothing else.'}],
              schema={"type": "object", "properties": {"ok": {"type": "boolean"}}, "required": ["ok"]},
              temperature=0.0, max_tokens=64, timeout=300)
-    ok = c.ok and c.finish_reason == "stop" and bool(c.text.strip()) and c.reasoning_chars == 0
+    # Fail only when reasoning empties or truncates the answer; a model that
+    # cannot switch reasoning off (gpt-oss) is allowed, and its reasoning is a
+    # recorded cost (reasoning_chars on every completion).
+    ok = c.ok and c.finish_reason == "stop" and bool(c.text.strip())
     return {"ok": ok, "finish": c.finish_reason, "content": c.text[:80], "reasoning_chars": c.reasoning_chars,
-            "error": c.error, "gen_tok_s": c.gen_tok_s}
+            "thinking": c.reasoning_chars > 0, "error": c.error, "gen_tok_s": c.gen_tok_s}
 
 
 def load_plan(src: str, topic_id: str, seed: int) -> dict | None:
@@ -212,7 +215,8 @@ def main(argv: list[str] | None = None) -> int:
                                                   temperature=a.temperature, n=int(kw.get("n", 1)),
                                                   repair=int(kw.get("repair", 0)),
                                                   constrained=not kw.get("free"), calc=bool(kw.get("calc")),
-                                                  plans=int(kw.get("plans", 1)), plan_override=override)
+                                                  plans=int(kw.get("plans", 1)), plan_override=override,
+                                                  work=bool(kw.get("work")))
                         elif mname == "oneshot":
                             gen = generate_oneshot(srv.url, topic, tdir / "work", seed=seed,
                                                    temperature=a.temperature, constrained=not kw.get("free"))

@@ -71,6 +71,9 @@ The component library:
 PLAN_CALC_ADDENDUM = """
 - answer_calc: the final numerical answer written as ONE arithmetic expression that a calculator can evaluate, using numbers, + - * / ** ( ), sqrt(), sin() cos() tan() (radians; write 30 degrees as 30*deg), pi, E. Example: "20**2*sin(2*30*deg)/10". Use "" if the answer is not a single number."""
 
+PLAN_WORK_ADDENDUM = """
+- working: BEFORE you write final_answer, solve the problem in a few short numbered steps with the actual numbers (formula, substitution, arithmetic). final_answer must be the result of this working. Use "n/a" for a pure explanation."""
+
 BEAT_SYSTEM = f"""You write one beat of a ChalkDust explainer video: the narration the student hears, and the params of the one visual component on screen.
 
 Narration rules:
@@ -166,16 +169,31 @@ def vote(plans: list[dict]) -> tuple[dict, dict]:
                          "chosen": pick, "agreement": (len(best) / len(plans)) if plans else 0}
 
 
+def _plan_schema(calc: bool, work: bool) -> dict:
+    """The plan schema with optional fields in GENERATION order: with grammar-
+    constrained decoding the property order is the order the model writes, so
+    'working' (and 'answer_calc') must come before 'final_answer' for the
+    answer to be reasoned rather than guessed (E1b: staged plans guessed)."""
+    base = plan_schema()
+    props, req = {}, list(base["required"])
+    for k, v in base["properties"].items():
+        if k == "final_answer":
+            if work:
+                props["working"] = {"type": "string", "minLength": 10, "maxLength": 700}
+                req.insert(req.index("final_answer"), "working")
+            if calc:
+                props["answer_calc"] = {"type": "string", "maxLength": 200}
+                req.insert(req.index("final_answer"), "answer_calc")
+        props[k] = v
+    return {**base, "properties": props, "required": req}
+
+
 def make_plan(url: str, topic: Topic, trace: Trace, *, seed: int, temperature: float,
-              constrained: bool = True, calc: bool = False, k: int = 1,
-              max_tokens: int = 1500) -> dict | None:
+              constrained: bool = True, calc: bool = False, k: int = 1, work: bool = False,
+              max_tokens: int = 1800) -> dict | None:
     """One plan, or k plans sampled at once and chosen by answer vote."""
-    system = PLAN_SYSTEM + (PLAN_CALC_ADDENDUM if calc else "")
-    schema = plan_schema()
-    if calc:
-        schema = json.loads(json.dumps(schema))
-        schema["properties"]["answer_calc"] = {"type": "string", "maxLength": 200}
-        schema["required"].append("answer_calc")
+    system = PLAN_SYSTEM + (PLAN_CALC_ADDENDUM if calc else "") + (PLAN_WORK_ADDENDUM if work else "")
+    schema = _plan_schema(calc, work)
     msgs = [{"role": "system", "content": system}, {"role": "user", "content": _topic_msg(topic)}]
     comps = chat_many(url, msgs, k, seed0=seed, schema=schema if constrained else None,
                       temperature=temperature, max_tokens=max_tokens)
@@ -216,7 +234,7 @@ def _beat_user_msg(topic: Topic, plan: dict, i: int, prev_narration: str | None,
         _topic_msg(topic),
         f"Lesson: {plan.get('title', '')}\nObjective: {plan.get('objective', '')}\n"
         f"Key insight: {plan.get('key_insight', '')}\nMisconception to address: {plan.get('misconception', '')}\n"
-        f"Final answer: {answer}",
+        f"Final answer: {answer}" + (f"\nWorking: {plan['working']}" if plan.get("working") else ""),
         f"Beat outline (you write the beat marked >>):\n{outline}",
         f"Previous beat's narration: {prev_narration}" if prev_narration else "This is the first beat.",
         f"Write beat {i + 1}: purpose '{b['purpose']}', idea: {b['idea']}",
@@ -295,7 +313,7 @@ def fill_beat(url: str, topic: Topic, plan: dict, i: int, prev: str | None, trac
 def generate_staged(url: str, topic: Topic, work_dir: Path, *, seed: int = 0,
                     temperature: float = 0.7, n: int = 1, repair: int = 0,
                     constrained: bool = True, calc: bool = False, plans: int = 1,
-                    plan_override: dict | None = None) -> dict:
+                    plan_override: dict | None = None, work: bool = False) -> dict:
     """plan_override: a plan made earlier (by any model) to fill instead of
     planning here -- the split pipeline, big model plans / small model fills."""
     trace = Trace()
@@ -305,7 +323,7 @@ def generate_staged(url: str, topic: Topic, work_dir: Path, *, seed: int = 0,
         trace.add("plan", [], [], {"override": True})
     else:
         plan = make_plan(url, topic, trace, seed=seed, temperature=temperature,
-                         constrained=constrained, calc=calc, k=plans)
+                         constrained=constrained, calc=calc, k=plans, work=work)
     beats, scores, per_beat = [], [], []
     if plan:
         prev = None
@@ -361,5 +379,5 @@ def generate_oneshot(url: str, topic: Topic, work_dir: Path, *, seed: int = 0,
 
 # Records carry this hash: an SFT set is only valid for the prompts it was made with.
 import hashlib as _hashlib
-PROMPT_HASH = _hashlib.sha256("\x1e".join([PLAN_SYSTEM, PLAN_CALC_ADDENDUM, BEAT_SYSTEM, ONESHOT_SYSTEM])
+PROMPT_HASH = _hashlib.sha256("\x1e".join([PLAN_SYSTEM, PLAN_CALC_ADDENDUM, PLAN_WORK_ADDENDUM, BEAT_SYSTEM, ONESHOT_SYSTEM])
                               .encode("utf-8")).hexdigest()[:12]

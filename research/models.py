@@ -73,8 +73,34 @@ add(ModelEntry("gpt-oss-20b", "ggml-org/gpt-oss-20b-GGUF", "gpt-oss-20b-MXFP4.gg
                21.0, 3.6, ("A",), chat_extra={"chat_template_kwargs": {"reasoning_effort": "low"}}))
 
 
+def local_entries() -> None:
+    """Models this run converted itself (research/export_gguf.py): keys ending
+    in -self (an untuned base) or containing -sft (tuned). Licence and size
+    are inherited from the base entry named in export.json's key prefix."""
+    import json as _json
+    for d in MODELS_DIR.glob("*"):
+        if not (d.name.endswith("-self") or "-sft" in d.name) or d.name in REGISTRY:
+            continue
+        ggufs = sorted(d.glob("*-Q4_K_M.gguf"))
+        if not ggufs:
+            continue
+        base = next((REGISTRY[k] for k in sorted(REGISTRY, key=len, reverse=True) if d.name.startswith(k)), None)
+        meta = {}
+        if (d / "export.json").exists():
+            meta = _json.loads((d / "export.json").read_text(encoding="utf-8"))
+        add(ModelEntry(d.name, "local", ggufs[0].name, base.licence if base else "?",
+                       base.params_b if base else 0, base.active_b if base else 0,
+                       base.tiers if base else (), chat_extra=base.chat_extra if base else {},
+                       note=f"converted locally from {meta.get('hf_dir', '?')}"))
+
+
+local_entries()
+
+
 def ensure(key: str) -> Path:
     e = REGISTRY[key]
+    if e.repo == "local":
+        return e.path
     if e.path.exists():
         return e.path
     from huggingface_hub import hf_hub_download, list_repo_files

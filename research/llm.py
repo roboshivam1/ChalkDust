@@ -81,13 +81,22 @@ class ServerConfig:
     threads: int | None = None     # CPU threads (None = llama.cpp default)
     port: int = 8091
     flash_attn: str = "on"
+    # Host-RAM caps. llama-server b12466 keeps a cross-request prompt cache of
+    # up to 8 GiB in system RAM by default (--cache-ram 8192) and up to 32
+    # context checkpoints per slot for SWA/hybrid models (Gemma 4, Qwen3.5).
+    # qwen3-4b-2507's server peaked at 11.1 GB RSS for a 2.4 GB model (E1c),
+    # and Claude Code stopped the run for low system memory at ~21:05 while
+    # Gemma 4 12B was serving. Each slot still reuses its own KV prefix.
+    cache_ram_mib: int = 1024
+    ctx_checkpoints: int = 4
     extra: tuple[str, ...] = ()    # e.g. ("--n-cpu-moe", "20") or draft-model flags
 
     def argv(self) -> list[str]:
         a = [str(LLAMA_SERVER), "-m", self.model_path, "-c", str(self.ctx),
              "--parallel", str(self.parallel),
              "--port", str(self.port), "--host", "127.0.0.1", "--jinja",
-             "-fa", self.flash_attn, "--no-webui", "--metrics"]
+             "-fa", self.flash_attn, "--no-webui", "--metrics",
+             "--cache-ram", str(self.cache_ram_mib), "--ctx-checkpoints", str(self.ctx_checkpoints)]
         if self.n_gpu_layers is not None:
             a += ["-ngl", str(self.n_gpu_layers)]
         if self.threads:

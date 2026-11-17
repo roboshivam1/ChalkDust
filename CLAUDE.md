@@ -216,6 +216,47 @@ macOS: `.venv/bin/python -m pytest`.
   enter the render key and the snapshot fingerprint.
 - ffmpeg/ffprobe must be on PATH everywhere: duration probing, mux, concat, loudnorm.
 
+## Research harness (`research/`): small local models
+
+Experiments on making small local LLMs fill ChalkDust specs well. It is not part of the
+app: `chalkdust/` never imports `research/`, and the harness only calls the validator
+and the CLI. Outcome and numbers: `docs/research/FINDINGS.md`. Method:
+`docs/research/METHODOLOGY.md`. Background research: the four `docs/research/*-2026-11.md`
+notes.
+
+- **Environments.** Use `.lab/venv-harness` for generation, validation, analysis and
+  rendering (chalkdust editable install, sympy, antlr4). Use `.lab/venv-train` for
+  training (torch cu132, transformers, peft, TRL, bitsandbytes). `.lab/` is git-ignored
+  and holds the GGUFs, HF weights, run traces, datasets and videos. Its `STATE.md`
+  lists what was installed.
+- **Run and read.** Run with `python -m research.run --exp <id> --models <keys>
+  --methods <m> --topics dev|heldout|train`. Summarise with
+  `python -m research.analyze <id>`, which re-scores content from the saved specs with
+  the current checkers.
+- **Results are append-only.** Never edit `research/results/*.jsonl`. A fixed bug gets
+  a new experiment id, and the old file stays as the record. Every record carries the
+  commit and `prompt_hash`; an SFT set is only valid for one prompt hash.
+- **Topics are frozen.** In `research/topics.py`, add topics with new ids. HELDOUT never
+  goes near training. `research/train_topics.py` asserts at import that no training
+  family is an evaluation family or a near-twin of one.
+- **Thinking is on by default.** Qwen3.5/3.6, Granite 4.2 and Gemma 4 all think under
+  llama-server unless `enable_thinking=false` is sent (`models.py` `chat_extra`). Train
+  with the same template kwargs (`train_sft.py --template-kwargs`), and confirm with
+  `research/check_template.py` that the trained prompt is the served prompt. Every model
+  gets a probe request before an experiment; a failed probe skips the model rather than
+  scoring it.
+- **Schema order is generation order.** Under grammar-constrained decoding, put any
+  reasoning field (`working`, `answer_calc`) before the field it should determine
+  (`final_answer`).
+- **No closed-model outputs as training targets.** Teachers are open-weight Apache-2.0
+  or MIT models run locally.
+- **One GPU job at a time.** Queue them with `research/gpu_queue.py` (jobs in
+  `.lab/queue/jobs.json`, re-read before each job; finished names in `done.txt`).
+- **Host RAM.** llama-server keeps up to 8 GiB of prompt cache in system RAM by default;
+  `research/llm.py` caps it (`--cache-ram 1024 --ctx-checkpoints 4`). A 32 GB laptop with
+  desktop apps open ran out once with the default.
+- **Tests:** `.lab/venv-harness/Scripts/python -m pytest research/tests -o addopts="" -q -p no:cacheprovider`.
+
 ## Conventions
 
 - Docstrings explain *why* and cite the law: `(D-004)`, `(SCENE_SPEC.md §11)`.

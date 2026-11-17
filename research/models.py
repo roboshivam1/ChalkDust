@@ -51,14 +51,15 @@ add(ModelEntry("qwen3.5-2b", "unsloth/Qwen3.5-2B-GGUF", "Qwen3.5-2B-Q4_K_M.gguf"
 add(ModelEntry("qwen3.5-4b", "unsloth/Qwen3.5-4B-GGUF", "Qwen3.5-4B-Q4_K_M.gguf", "apache-2.0",
                4.0, 4.0, ("C", "B"), chat_extra=NOTHINK))
 add(ModelEntry("granite-4.2-3b", "bartowski/granite-4.2-3b-GGUF", "granite-4.2-3b-Q4_K_M.gguf",
-               "apache-2.0", 3.0, 3.0, ("C",)))
+               "apache-2.0", 3.0, 3.0, ("C",), chat_extra=NOTHINK,
+               note="template thinks by default (enable_thinking defaults True)"))
 add(ModelEntry("gemma-4-e2b", "unsloth/gemma-4-E2B-it-GGUF", "gemma-4-E2B-it-Q4_K_M.gguf",
                "apache-2.0", 5.1, 2.3, ("C",)))
 # Tier B (M1 16 GB)
 add(ModelEntry("qwen3.5-9b", "unsloth/Qwen3.5-9B-GGUF", "Qwen3.5-9B-Q4_K_M.gguf", "apache-2.0",
                9.0, 9.0, ("B",), chat_extra=NOTHINK))
 add(ModelEntry("granite-4.2-8b", "bartowski/granite-4.2-8b-GGUF", "granite-4.2-8b-Q4_K_M.gguf",
-               "apache-2.0", 8.0, 8.0, ("B",)))
+               "apache-2.0", 8.0, 8.0, ("B",), chat_extra=NOTHINK))
 add(ModelEntry("gemma-4-e4b", "unsloth/gemma-4-E4B-it-GGUF", "gemma-4-E4B-it-Q4_K_M.gguf",
                "apache-2.0", 8.0, 4.5, ("B",)))
 # Tier A (12 GB VRAM + 32 GB RAM)

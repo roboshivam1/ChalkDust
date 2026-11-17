@@ -84,7 +84,7 @@ def main() -> None:
                      num_generations=a.gens, max_completion_length=a.max_completion,
                      temperature=0.8, beta=0.0, bf16=True, gradient_checkpointing=True,
                      logging_steps=1, save_strategy="no", report_to="none", seed=a.seed,
-                     log_completions=False)
+                     log_completions=False, chat_template_kwargs={"enable_thinking": False})
     peft_cfg = LoraConfig(r=a.rank, lora_alpha=2 * a.rank, target_modules="all-linear", use_rslora=True,
                           task_type="CAUSAL_LM")
     trainer = GRPOTrainer(model=model, reward_funcs=validator_reward, args=cfg, train_dataset=ds,

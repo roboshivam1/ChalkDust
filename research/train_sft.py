@@ -44,7 +44,11 @@ def main() -> None:
     ap.add_argument("--max-steps", type=int, default=-1, help="smoke test: stop after N steps")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--no-merge", action="store_true")
+    ap.add_argument("--template-kwargs", default='{"enable_thinking": false}',
+                    help="chat-template kwargs, JSON; must match what llama-server is sent at inference "
+                         "(research/models.py chat_extra)")
     a = ap.parse_args()
+    tkw = json.loads(a.template_kwargs)
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
 
@@ -63,7 +67,7 @@ def main() -> None:
     # A right-truncated row loses its completion and trains on nothing: measure
     # and drop over-length rows instead of letting the collator cut them.
     def _len(row):
-        ids = tok.apply_chat_template(row["prompt"] + row["completion"], tokenize=True)
+        ids = tok.apply_chat_template(row["prompt"] + row["completion"], tokenize=True, **tkw)
         ids = ids["input_ids"] if isinstance(ids, dict) else ids
         return {"n_tok": len(ids)}
     ds = ds.map(_len)
@@ -74,6 +78,9 @@ def main() -> None:
                      "dropped_over_max_len": {s: sum(1 for n in ds[s]["n_tok"] if n > a.max_len) for s in ds}}
     print("lengths:", length_report, flush=True)
     ds = ds.filter(lambda r: r["n_tok"] <= a.max_len).remove_columns(["n_tok"])
+    # TRL's SFT tokenizer passes a per-row chat_template_kwargs column to
+    # apply_chat_template (trl/trainer/sft_trainer.py tokenize_fn).
+    ds = ds.map(lambda r: {"chat_template_kwargs": tkw})
 
     peft_cfg = LoraConfig(r=a.rank, lora_alpha=a.alpha, lora_dropout=0.0, target_modules="all-linear",
                           use_rslora=True, task_type="CAUSAL_LM")
@@ -94,7 +101,7 @@ def main() -> None:
     ev = trainer.evaluate() if len(ds["val"]) and a.max_steps < 0 else {}
     trainer.model.save_pretrained(str(out / "adapter"))
     metrics = {"base": a.base, "data": a.data, "train_rows": len(ds["train"]), "val_rows": len(ds["val"]),
-               "rank": a.rank, "alpha": a.alpha, "lr": a.lr, "epochs": a.epochs, "qlora": a.qlora,
+               "template_kwargs": tkw, "rank": a.rank, "alpha": a.alpha, "lr": a.lr, "epochs": a.epochs, "qlora": a.qlora,
                "max_len": a.max_len, **length_report, "train_seconds": train_s, "train_loss": res.training_loss,
                "eval": ev, "peak_vram_gib": torch.cuda.max_memory_allocated() / 2**30,
                "log_history": trainer.state.log_history}

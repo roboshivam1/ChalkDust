@@ -25,13 +25,16 @@ def main() -> int:
     ap.add_argument("--url", required=True)
     ap.add_argument("--data", required=True)
     ap.add_argument("-n", type=int, default=5)
+    ap.add_argument("--template-kwargs", default='{"enable_thinking": false}')
     a = ap.parse_args()
+    tkw = json.loads(a.template_kwargs)
     tok = AutoTokenizer.from_pretrained(a.hf)
     rows = [json.loads(l) for l in open(a.data, encoding="utf-8")][: a.n]
     bad = 0
     for i, r in enumerate(rows):
-        hf = tok.apply_chat_template(r["prompt"], tokenize=False, add_generation_prompt=True)
-        srv = requests.post(a.url + "/apply-template", json={"messages": r["prompt"]}, timeout=60).json()["prompt"]
+        hf = tok.apply_chat_template(r["prompt"], tokenize=False, add_generation_prompt=True, **tkw)
+        srv = requests.post(a.url + "/apply-template", json={"messages": r["prompt"], "chat_template_kwargs": tkw},
+                            timeout=60).json()["prompt"]
         if hf == srv:
             print(f"row {i}: identical ({len(hf)} chars)")
             continue

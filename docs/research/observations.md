@@ -37,3 +37,23 @@ Staged runs with a wrong answer (qwen3-4b-2507, seed 0), plan `final_answer` vs 
 
 One-shot got all four right: there the model writes the working beats before the
 AnswerBox, so the answer follows the working. The fix under test is `work=1`.
+
+
+## E1c: reasoning before the answer (2026-11-17, qwen3-4b-2507, 10 DEV topics, seed 0)
+
+The fix for the guessed answers above was to make the plan schema put a
+`working` field (numbered steps with the actual numbers) BEFORE
+`final_answer`. Under grammar-constrained decoding the schema's property
+order is the generation order, so the model now works the problem before it
+commits to a number.
+
+| arm (re-scored with the fixed checkers) | ans | allclean |
+|---|---|---|
+| staged | 0.60 | 0.10 |
+| staged:work=1 | 0.90 | 0.10 |
+| staged:n=4,repair=1,calc=1 | 0.60 | 0.40 |
+| staged:n=4,repair=1,calc=1,work=1 | 0.90 | 0.60 |
+
+calc=1 (a calculator expression the harness evaluates) did nothing without
+`working`: the expression was written from the guess. n = 10 topics, one
+seed: a direction, not a measured effect size.

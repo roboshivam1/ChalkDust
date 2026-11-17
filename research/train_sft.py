@@ -44,6 +44,7 @@ def main() -> None:
     ap.add_argument("--max-steps", type=int, default=-1, help="smoke test: stop after N steps")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--no-merge", action="store_true")
+    ap.add_argument("--force-merge", action="store_true", help="merge even after a --max-steps smoke run")
     ap.add_argument("--template-kwargs", default='{"enable_thinking": false}',
                     help="chat-template kwargs, JSON; must match what llama-server is sent at inference "
                          "(research/models.py chat_extra)")
@@ -108,7 +109,7 @@ def main() -> None:
     (out / "metrics.json").write_text(json.dumps(metrics, indent=2, default=str), encoding="utf-8")
     print(json.dumps({k: v for k, v in metrics.items() if k != "log_history"}, indent=2, default=str))
 
-    if a.no_merge or a.max_steps > 0:
+    if a.no_merge or (a.max_steps > 0 and not a.force_merge):
         return
     # Merge into a bf16 copy of the base (never into the 4-bit one).
     del trainer, model

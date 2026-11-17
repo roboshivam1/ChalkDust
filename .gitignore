@@ -8,3 +8,11 @@ media/
 out/
 work/
 scratch_*.py
+
+# research lab (weights, datasets, videos, raw traces) and run state
+.lab/
+.run/
+
+# research lab (weights, datasets, videos, raw traces) and run state
+.lab/
+.run/

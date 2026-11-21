@@ -181,9 +181,12 @@ def check_answer(key: Key, candidates: list[str], narration: str = "", request: 
             nums = _set_values(text)
             if not nums:
                 continue
+            # The shown set must EQUAL the key. A superset passed before
+            # 2026-11-21: 'x = 2, 3, 7' was correct for roots {2, 3} (mutation test, 8/9).
             hit = all(any(_close(n, w, key.rel_tol) for n in nums) for w in want)
-            return {"status": "correct" if hit else "wrong", "source": src_i,
-                    "detail": f"states {nums[:6]} want {want}"}
+            extra = [n for n in nums if not any(_close(n, w, key.rel_tol) for w in want)]
+            return {"status": "correct" if hit and not extra else "wrong", "source": src_i,
+                    "detail": f"states {nums[:6]} want {want}" + (f" extra {extra[:4]}" if extra else "")}
         if key.kind in ("expr", "antiderivative"):
             for part in reversed(equation_parts(text)):
                 if X not in part.free_symbols or part.has(sp.Integral, sp.Derivative):
@@ -363,11 +366,9 @@ def check_spoken(key: Key, text: str, request: str = "") -> dict:
     if key.kind in ("expr", "antiderivative"):
         return {"status": "n/a", "detail": "expression answers are not checked in speech"}
     want = [float(v) for v in (key.value if key.kind == "set" else [key.value])]
-    vals = spoken_values(text)
     if key.kind == "set":
-        nums = [v for _, v in vals]
-        hit = all(any(_close(n, w, key.rel_tol) for n in nums) for w in want)
-        return {"status": "correct" if hit else "not_found", "detail": f"found {sorted(set(nums))[:10]} want {want}"}
+        return _spoken_set(key, want, text, request)
+    vals = spoken_values(text)
     req = spoken_numbers(request) if request else []
     if any(_close(r, want[0], 1e-6) for r in req):
         return {"status": "n/a", "detail": "the key appears in the request"}
@@ -386,6 +387,41 @@ def check_spoken(key: Key, text: str, request: str = "") -> dict:
     final = (cued or own)[-1][1]
     return {"status": "correct" if _close(final, want[0], key.rel_tol) else "wrong",
             "detail": f"result {final:g} ({'cued' if cued else 'last'}) want {want[0]:g}"}
+
+
+def _spoken_set(key: Key, want: list[float], text: str, request: str) -> dict:
+    """A set (roots) is correct only if the narration's closing statement is
+    exactly the roots. That statement is the trailing run of sentences that
+    state values of their own; request givens that are not roots are dropped
+    unless strongly cued, as in the number branch.
+
+    Before 2026-11-21, any narration that mentioned every root passed, whatever
+    else it said. 'The roots are 2 and 3. So the answer is 7.' was correct
+    (mutation test, 9/34). Known limit: a numeric check sentence after the roots
+    ('check: 4 minus 10 plus 6 is 0') counts as extra values and scores wrong."""
+    req = spoken_numbers(request) if request else []
+
+    def near(v: float, ws: list[float]) -> bool:
+        return any(_close(v, w, key.rel_tol) for w in ws)
+
+    def own(sent: str) -> list[float]:
+        return [v for p, v in spoken_values(sent)
+                if near(v, want) or _cue(sent, p) == "strong" or not any(_close(v, r, 1e-6) for r in req)]
+
+    vals: list[float] = []
+    for sent in reversed([s for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]):
+        o = own(sent)
+        if o:
+            vals = o + vals
+        elif vals:
+            break
+    if not vals:
+        return {"status": "not_found", "detail": f"no value beyond the request's {req[:6]}"}
+    hit = all(near(w, vals) for w in want)
+    extra = [v for v in vals if not near(v, want)]
+    status = "correct" if hit and not extra else ("wrong" if (hit or extra) else "not_found")
+    return {"status": status, "detail": f"closing values {sorted(set(vals))[:10]} want {want}"
+                                        + (f" extra {extra[:4]}" if extra else "")}
 
 
 def final_narration(beats: list[dict]) -> str:

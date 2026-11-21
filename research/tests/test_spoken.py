@@ -20,6 +20,11 @@ CASES = [
     ("dev-two-dice-seven", "favorable = 6, total = 36, so 6/36", "correct"),
     ("dev-quadratic-roots", "the roots are where it crosses the x-axis, which happens when $y = 0$.", "not_found"),
     ("dev-quadratic-roots", "So x equals two or x equals three.", "correct"),
+    # (mutation test, 2026-11-21) the closing statement must be exactly the roots
+    ("dev-quadratic-roots", "The roots are 2 and 3. So the answer is 7.", "wrong"),
+    ("dev-quadratic-roots", "So the roots are 2, 3 and 7.", "wrong"),
+    ("dev-quadratic-roots", "The roots are 2 and 3. Both satisfy the equation.", "correct"),
+    ("dev-quadratic-roots", "So x equals three.", "not_found"),
     ("dev-nested-loop-big-o", "For n equals four, the inner loop runs sixteen times.", "correct"),
     ("dev-moles-water", "36 grams of water is 2 moles.", "correct"),
     ("ho-arithmetic-sum", "The sum is one thousand two hundred and seventy five.", "correct"),

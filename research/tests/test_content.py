@@ -22,6 +22,9 @@ CASES = [
     ("dev-quadratic-roots", "x = 2 or x = 3", "correct"),
     ("dev-quadratic-roots", r"x = 2 \text{ or } x = 3", "correct"),
     ("dev-quadratic-roots", "x = 2", "wrong"),
+    # (mutation test, 2026-11-21) a shown set must equal the key, not contain it
+    ("dev-quadratic-roots", "x = 2, x = 3, x = 7", "wrong"),
+    ("dev-quadratic-roots", "x = 3 or x = 2", "correct"),
     ("dev-integration-by-parts", "e^x(x-1) + C", "correct"),
     ("dev-integration-by-parts", "x*exp(x) + exp(x)", "wrong"),
     ("dev-moles-water", "2 mol", "correct"),

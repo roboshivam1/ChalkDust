@@ -15,8 +15,8 @@ exception is the optional Qwen3.6-35B-A3B row of E2, which its RAM gate skipped
     (items 9 and 11, section 2c).
 - **The training result in two lines:**
   - SFT fixed the form and broke some of the maths (item 11).
-  - GRPO with a validity-only reward pushed further the same way: cleaner videos,
-    fewer right answers (section 2c, T3).
+  - GRPO with a validity-only reward was followed by the same trade, larger:
+    cleaner videos and fewer right answers (section 2c, T3).
 
 Every number below comes from `research/results/*.jsonl` through
 `python -m research.analyze` or `python -m research.report`. Both re-score every run
@@ -266,17 +266,21 @@ T2. Read the E numbers as directions, not effect sizes.
         spoken check.
       - Blind graders then read every T2 video the checker did not pass, plus 24
         controls. For the tuned model they confirm every shown verdict.
-      - They do not confirm the spoken ones. For the tuned model, 3 spoken
+      - The spoken verdicts are less reliable. For the tuned model, 3 spoken
         "wrong" are right and 4 unchecked (`n/a`) are wrong; for the untuned, 2
-        "wrong" are right. The spoken drop is checker-only and not corrected by
-        the audit.
+        "wrong" are right. Corrected with the same rule as the shown answers,
+        spoken is 0.82 untuned against 0.66 tuned.
       - For the untuned model they find 8 right answers among the 12 the checker
         failed. Its answers come in looser formats, such as an unevaluated product
         or an answer only in the narration.
-      - Audited, shown answers are 0.87 to 0.93 untuned against 0.68 tuned. The
-        range comes from scaling the untuned model's checker passes by its control
-        false-pass rate (1 of 12, a control with no answer on screen). That rate is
-        estimated from 12 videos.
+      - Audited, shown answers are 0.87 to 0.92 untuned against 0.68 tuned.
+        - The rule, the same for every arm: take the checker's passes, remove
+          the audited ones the graders reject, and add the failures they accept.
+        - The lower bound also scales the unaudited passes by the control
+          false-pass rate. For the untuned model that is 1 of 12, a control with no
+          answer on screen.
+        - The audit read 17 of the tuned model's 41 passes and rejected none.
+        - Script: `research/audit/scripts/audited_rates.py`.
       - Among checker-passed videos, both graders flag a false working line in 5 of
         12 tuned and 0 of 12 untuned.
     - **The likely mechanism: the student copied the teacher's style, not its
@@ -342,7 +346,7 @@ wrong one. `spk` is out of the 7 topics whose key is not in the question.
 Speed: 69 to 121 tok/s per request. E1c's server used 7.4 GB of VRAM for the model
 with a 32k context over 4 slots, and peaked at 11.1 GB of host RAM before the cap.
 
-## 2b. E2 so far: the teacher candidates (2026-11-21)
+## 2b. E2: the teacher candidates (2026-11-21)
 
 The table covers 10 DEV topics with seed 0 and the recommended method
 (`staged:n=4,repair=1,calc=1,work=1`), from `python -m research.report --exp E2-models`.
@@ -410,8 +414,13 @@ Paired, SFT minus untuned. Both methods are averaged into one pair per (topic, s
 | spk (checker) | 0.600 | 0.780 | −0.180 | [−0.340, −0.020] | 0.12 | [−0.400, 0.000] |
 | field leak | 0.000 | 0.233 | −0.233 | [−0.333, −0.133] | 0.0002 | [−0.317, −0.150] |
 
-- **Audited shown answers** (`research/audit/t2-heldout/`): 0.87 to 0.93 untuned
-  against 0.68 tuned (item 11).
+- **Audited answers** (`research/audit/scripts/audited_rates.py`):
+  - shown: 0.87 to 0.92 untuned against 0.68 tuned;
+  - spoken: 0.82 against 0.66 (item 11).
+- **All three Granite arms are the same Q4_K_M export** (`export_gguf.py`; the files
+  are within 64 bytes of each other), so quantisation does not confound T2 or T3. The
+  VRAM column (peak minus baseline over a run) varies by about 1 GB between runs of
+  one model.
 - **The teacher's own leak is 0.75 to 0.83**, and the student's is 0.00. The SFT
   trim (item 10) removed it from the student's targets, and the student never learned
   it.
@@ -456,20 +465,29 @@ Paired, SFT minus untuned. Both methods are averaged into one pair per (topic, s
   - GRPO wrote a right calculator value less often (38 of 60, against 45 for SFT).
     It also overrode one with a wrong shown answer more often (13 times, against
     10).
-  - The reward never asked for a right answer. The validator cannot tell right from
-    wrong (item 4). The content floor in `reward_of` only halves the reward for a
-    narration under 20 words or under 12 characters of shown text. So the policy drifted toward what was paid for. This is the
-    reward-hacking pattern section 6 item 2 is about: put the answer check in the
-    reward.
+  - Why, as far as this run can tell: the reward never asked for a right answer.
+    - The validator cannot tell right from wrong (item 4).
+    - The content floor in `reward_of` only halves the reward for a narration under
+      20 words or under 12 characters of shown text.
+  - The loss is not direct optimisation against the answer. GRPO trained on fill
+    (beat) prompts only (`train_grpo.py` keeps `type == "beat"`), and no plan
+    prompt was ever rewarded. Yet the plans got worse: right calculator values fell
+    from 45 to 38.
+  - So this is collateral drift of the shared LoRA weights. It came from few
+    updates. Each step is one group, and 77% of groups had no reward spread, so
+    only about 28 of 120 steps had a non-zero gradient.
+  - The result is consistent with a reward that pays for form and is blind to
+    correctness. It does not show that GRPO itself hurts. Section 6 item 2 tests
+    the obvious fix: the answer check in the reward, with plan prompts included.
   - **Blind audit of the GRPO answers** (`research/audit/t3-heldout/`). Two Sonnet
     graders read all 40 videos the checker did not pass, plus 6 controls.
     - Shown: the graders rescue 3 and find 1 checker pass with no answer on screen.
-      Audited, GRPO shows 32 of 60 right (0.53), against 0.68 for SFT, which the
-      T2 audit confirmed in full.
+      Audited, GRPO shows 32 of 60 right (0.53), against 0.68 for SFT (same rule,
+      `audited_rates.py`).
     - Spoken: the checker is noisier here. The graders find 8 right answers among
       its 34 spoken "wrong", and 5 wrong among the unchecked. Corrected, spoken is
-      about 0.48 for GRPO against about 0.66 for SFT. The drop holds but is smaller
-      than the checker's −0.28.
+      0.48 for GRPO against 0.66 for SFT. The drop holds, at −0.18 against the
+      checker's −0.28.
     - Typical failures are plain arithmetic slips on screen: `25 × 51 = 2525`,
       `V = 2 · 0.0821 · 300 = 216`, a pendulum at 0.67 s.
 

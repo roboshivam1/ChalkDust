@@ -79,7 +79,8 @@ not filter it.
   method, seed, the checker's verdict and the graders' verdict.
   - Tuned: the checker matches the graders on every shown verdict.
   - Untuned: 8 of 12 checker failures are right answers in looser formats.
-  - Audited shown-correct: untuned 0.87 to 0.93, tuned 0.68.
+  - Audited shown-correct: untuned 0.87 to 0.92, tuned 0.68. Spoken: 0.82 and 0.66.
+    Computed by `scripts/audited_rates.py`, with one rule for every arm.
 - `t1-wave2/`: the 35 SFT-eligible T1 videos not graded in wave 1. The graders agree
   with the checks on every answer. One video, the Fibonacci StepTrace, has a confirmed
   error-teaching line.

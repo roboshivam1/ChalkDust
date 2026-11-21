@@ -84,10 +84,15 @@ class ServerConfig:
     # Host-RAM caps. llama-server b12466 keeps a cross-request prompt cache of
     # up to 8 GiB in system RAM by default (--cache-ram 8192) and up to 32
     # context checkpoints per slot for SWA/hybrid models (Gemma 4, Qwen3.5).
-    # qwen3-4b-2507's server peaked at 11.1 GB RSS for a 2.4 GB model (E1c),
-    # and Claude Code stopped the run for low system memory at ~21:05 while
-    # Gemma 4 12B was serving. Each slot still reuses its own KV prefix.
-    cache_ram_mib: int = 1024
+    # The cache is off: under Gemma 4 12B one idle slot's saved state is
+    # 0.9-1.2 GB, so a 1 GiB cap held at most one entry and copied ~1 GB out of
+    # the GPU on almost every request (2026-11-21 server.log), while system
+    # commit reached 51.3 of 53.4 GB. Each slot still reuses its own KV prefix.
+    # Note: llama-server's private bytes sit near its VRAM use even when
+    # everything is on the GPU (10.1 GB after loading Gemma 4 12B, with 0.6 GB
+    # of host buffers in the load log); our inference is that Windows charges
+    # GPU allocations to commit, so judge memory by growth after load.
+    cache_ram_mib: int = 0
     ctx_checkpoints: int = 4
     extra: tuple[str, ...] = ()    # e.g. ("--n-cpu-moe", "20") or draft-model flags
 

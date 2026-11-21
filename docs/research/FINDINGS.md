@@ -140,6 +140,36 @@ directions, not effect sizes.
      modes, not a precision figure. Labels, the agreement script and the mutation
      script are in `research/audit/`.
 
+10. **The same schema-order trap hit the title card, and the validator cannot see
+    it** (found 2026-11-21 while checking the teacher's first videos).
+    - **The cause.** TitleCard's params are generated in class order: title, then
+      an optional `subtitle`, then an optional `kicker`. The prompt (`catalog.py`)
+      describes them as title, kicker, subtitle, and unconstrained models write
+      that order (6 of 6 E1 "free" samples).
+    - **What happens.** Under the grammar, models skip `subtitle` and write the
+      kicker. They then put the subtitle, a `Subtitle:` label or JSON punctuation
+      inside the kicker, and it is drawn on screen: `JEE MAIN - CALCULUS",`. Some
+      samples loop inside the kicker until the token limit.
+    - **How often**, as leaky clean TitleCard samples:
+
+      | model | leaky |
+      |---|---|
+      | Qwen3-4B | 40 of 40 |
+      | Gemma 4 12B | 24 of 25 |
+      | gpt-oss-20b | 5 of 12 |
+
+      No other component leaked in about 800 samples. Per video (`leak` column):
+      - 0.00 for oneshot and staged:free;
+      - 0.50 to 0.80 for Qwen's constrained staged methods;
+      - 1.00 for Gemma;
+      - 0.40 for gpt-oss.
+    - **What changed and what did not.** Generation is frozen until the study ends,
+      so nothing changed there.
+      - The rate is reported as `leak`, defined before any T2 output.
+      - SFT targets get the kicker trimmed (METHODOLOGY section 6).
+      - The fix belongs in `generate.beat_schema`: put `kicker` before `subtitle`,
+        or follow the prompt's order. It is item 6 in section 6.
+
 ## 2. E1: how to ask a small model (Qwen3-4B-Instruct-2507, Q4_K_M)
 
 The table covers 10 DEV topics with seed 0, re-scored. Columns:
@@ -293,7 +323,8 @@ These are vendor numbers; E2 is what measures them here.
    - filter, then QLoRA SFT of Granite 4.2 3B;
    - held-out comparison, tuned against untuned, over 6 topics × 5 seeds, paired.
      The primary metric is the first-sample clean rate.
-   - GRPO from the SFT model with the validator reward, time-boxed to 60 steps.
+   - GRPO from the SFT model with the validator reward, 120 steps
+     (`T3-grpo --steps 120`).
 2. **E2 small models** (Qwen3.5-2B and 4B, Granite 4.2 3B, Gemma 4 E2B) for the
    student laptops, and E5 on the CPU only.
 3. **E4, the split pipeline:** a big model's plans filled by a small model.
@@ -301,6 +332,11 @@ These are vendor numbers; E2 is what measures them here.
    RAM).
 5. **Qwen3.5-4B as a second student.** Unsloth lists bf16 LoRA at 10 GB. It has
    vision and linear-attention layers, so expect a slower path on Windows.
+6. **After the study: fix the TitleCard field order** (item 10).
+   - Generate `kicker` before `subtitle` in `generate.beat_schema`.
+   - Audit every component's optional fields for the same trap.
+   - This changes the prompt hash, so it starts a new SFT data version. The `leak`
+     column measures the effect.
 
 ## 7. How to resume
 

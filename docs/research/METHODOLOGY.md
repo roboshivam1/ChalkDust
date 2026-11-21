@@ -125,6 +125,7 @@ one of these, recomputed from the saved spec by `research/analyze.py`:
 | answer spoken | the last two narrations' final stated value (the last one after 'is/be/about/so...', numbers copied from the request ignored unless asserted) equals the key, however written (digits, fractions, LaTeX, number words, scientific notation); `n/a` for expression answers and when the key is in the request. With a unit-bearing key, a value in another unit is set aside and a value in the key's unit counts as asserted. A set must be the closing statement exactly | `content.check_spoken` |
 | derivation | for solve-for-x topics, each working line holds at a true root | `content.derivation_consistency` |
 | structure | 8 checks: 5-9 beats, 20-66 words a beat, at least 3 components, none over half, opens with hook or problem, states the answer, names the misconception, no filler greeting | `content.structure_checks` |
+| leak | the video draws a leaked field: a TitleCard kicker holding the subtitle, a field label or JSON punctuation (`JEE Main - Calculus", `). Lower is better. Added 2026-11-21, before any T2 output, as a separate column: changing `quality_flags` would change best-of-N selection and the GRPO reward mid-study | `leaks.beat_leaks`, `analyze.rescore` |
 | speed | LLM seconds (max over concurrent samples), validator seconds, wall, tok/s from llama.cpp's own timings | `llm.chat`, `run.summarise` |
 | memory | VRAM peak minus pre-load baseline; server RSS; layers on GPU as chosen by `--fit` | `llm.GpuSampler`, `LlamaServer.placement` |
 
@@ -237,6 +238,15 @@ All are run by `python -m research.run --exp ... --models ... --methods ...`.
   repair, and comes from a video whose answer is right on screen and (for numeric
   keys) in speech; at most 2 distinct samples per beat. The validation split holds out
   whole families.
+- **One edit to teacher outputs.** Nearly every TitleCard sample has a leaked kicker
+  (FINDINGS item 10). Dropping those samples would remove the opening beat from the
+  data, so the kicker is trimmed to its first line without the stray tail instead.
+  - The edit replaces only the JSON-escaped kicker in the raw completion, then
+    re-parses it to check that nothing else changed. A sample that cannot be
+    trimmed safely is dropped.
+  - Edited rows carry `"edited": "kicker_trim"`, and `summary.json` counts them.
+  - These rows are therefore edited teacher outputs, not verbatim validator-passed
+    ones. Every other row is verbatim.
 - **Student:** a text-only dense model first (Granite 4.2 3B, `GraniteForCausalLM`,
   Apache-2.0). Qwen3.5 small models are vision-bearing and mostly linear-attention
   (18 of 24 layers in the 2B), which makes LoRA targets, kernels on Windows and GGUF

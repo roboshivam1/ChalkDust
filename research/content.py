@@ -172,11 +172,13 @@ def check_answer(key: Key, candidates: list[str], narration: str = "", request: 
             continue
         text = str(text)
         if key.kind == "number":
-            v = final_value(text)
+            v, note = final_value(text), ""
+            if key_unit(key):
+                v, note = _in_key_units(key, text, v)
             if v is None:
                 continue
             return {"status": "correct" if _close(v, want[0], key.rel_tol) else "wrong", "source": src_i,
-                    "detail": f"states {v:g} want {want[0]:g}"}
+                    "detail": f"states {v:g} want {want[0]:g}{note}"}
         if key.kind == "set":
             nums = _set_values(text)
             if not nums:
@@ -215,6 +217,119 @@ def check_answer(key: Key, candidates: list[str], narration: str = "", request: 
     return {"status": "unparsed", "source": None, "detail": "no parseable answer"}
 
 
+# --- units: which of several asked quantities is the key ----------------------------
+# A request can ask for several quantities ('find the current, and the voltage across
+# each resistor'); the key is one of them. Before 2026-11-21 the checkers took the
+# LAST value, so a full answer 'I = 1.2 A, V_4 = 4.8 V, V_6 = 7.2 V' was wrong
+# (blind audit: 5 shown and 12 spoken false fails on 3 topics). Now, when the key
+# names its unit, a value written with a DIFFERENT unit is set aside. An untagged
+# value still counts, so a closing 'it should be 2.0' after '3.27 m/s^2' is still
+# the answer, and still wrong.
+_UNIT_RX = [(u, re.compile(rx)) for u, rx in (
+    ("m/s^2", r"m\s*/\s*s\s*(?:\^\s*\{?\s*2\s*\}?|²)|m\s*s\^\{?-2\}?"
+              r"|(?i:met(?:er|re)s?\s+per\s+second\s+(?:squared|per\s+second))"),
+    ("m/s", r"m\s*/\s*s\b|(?i:met(?:er|re)s?\s+per\s+second)\b"),
+    ("molecules", r"(?i:molecules)\b"),
+    ("mol", r"mol\b|(?i:moles?)\b"),
+    ("kg", r"kg\b|(?i:kilo?grams?)\b"),
+    ("g", r"g\b|(?i:grams?)\b"),
+    ("m", r"m\b(?!\s*/)|(?i:met(?:er|re)s?)\b"),
+    ("s", r"s\b|(?i:seconds?|secs?)\b"),
+    ("A", r"A\b|(?i:amps?|amperes?)\b"),
+    ("V", r"V\b|(?i:volts?)\b"),
+    ("ohm", r"Ω|\\Omega\b|(?i:ohms?)\b"),
+    ("N", r"N\b|(?i:newtons?)\b"),
+    ("J", r"J\b|(?i:joules?)\b"),
+    ("W", r"W\b|(?i:watts?)\b"),
+    ("L", r"L\b|(?i:lit(?:er|re)s?)\b"),
+    ("K", r"K\b|(?i:kelvin)\b"),
+    ("atm", r"atm\b|(?i:atmospheres?)\b"),
+    ("deg", r"°|\\circ\b|(?i:degrees?)\b"),
+)]
+_NUM_WORDS = None   # filled lazily from the number-word tables below
+_SUPERSCRIPTS = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹⁻", "0123456789-")
+
+
+_UNIT_ALIASES = {"degrees": "deg", "°": "deg", "ohms": "ohm", "Ω": "ohm"}
+
+
+def key_unit(key: Key) -> str | None:
+    """The key's unit in the tagger's vocabulary, or None: a unit the tagger does
+    not know ('cm^2', 'Pa', 'Rs' in the training pool) turns the filter off, since
+    a value in it could not be told apart from a value in another unit."""
+    u = _UNIT_ALIASES.get(key.units, key.units) if key.units else None
+    return u if u in {name for name, _ in _UNIT_RX} else None
+
+
+def unit_at(text: str) -> str | None:
+    """The unit written at the start of `text`, the text that follows a value:
+    '\\,\\mathrm{A}', ' amperes', '-ohm', ' m/s²'. None if no known unit."""
+    t = re.sub(r"^(?:\s+|\\[,;:! ]|~|-|\{|\}|\$|\\\)|\\(?:mathrm|text|rm|operatorname)\s*\{)*", "", text)
+    for u, rx in _UNIT_RX:
+        if rx.match(t):
+            return u
+    return None
+
+
+def _unit_after_value(text: str, pos: int, end: int) -> str | None:
+    """The unit of the value starting at `pos` in narration `text`: what follows
+    the value's own token, before `end` (the next value) and the sentence's end."""
+    global _NUM_WORDS
+    if _NUM_WORDS is None:
+        _NUM_WORDS = set(_ONES) | set(_TENS) | set(_SCALES) | set(_ORD) | {
+            "point", "and", "minus", "negative", "root", "over", "in", "out", "of"}
+    w = text[pos:end]
+    stop = re.search(r"[.!?](?=\s|$)", w)
+    w = w[:stop.start()] if stop else w
+    m = re.match(r"\s*(?:\$[^$]*\$|-?[\d.,]+(?:\s*(?:×|\\times|\\cdot|x|\*)\s*10\s*"
+                 r"(?:\^\s*\{?\s*-?\d+\s*\}?|[⁻⁰¹²³⁴⁵⁶⁷⁸⁹]+))?(?:\s*/\s*\d+(?:\.\d+)?)?)", w)
+    rest = w[m.end():] if m and m.end() else w
+    while True:
+        mw = re.match(r"\s*([A-Za-z]+(?:-[A-Za-z]+)*)", rest)
+        if not (mw and all(q.lower() in _NUM_WORDS for q in mw.group(1).split("-"))):
+            break
+        rest = rest[mw.end():]
+    return unit_at(rest)
+
+
+def _top_level_parts(text: str) -> list[str]:
+    """Split an answer line into its separate statements: top-level commas (not
+    the '{,}' of '1{,}275' or the thin space '\\,'), semicolons, '\\quad', '\\\\'
+    and '\\text{ and }'."""
+    t = re.sub(r"\\q?quad\b|\\\\|;|\\text\s*\{\s*(?:and|,)\s*\}", "\x00", str(text))
+    parts, depth, cur = [], 0, ""
+    for ch in t:
+        depth += ch == "{"
+        depth -= ch == "}"
+        if (ch == "\x00") or (ch == "," and depth == 0 and not cur.endswith("\\")):
+            parts.append(cur)
+            cur = ""
+        else:
+            cur += ch
+    parts.append(cur)
+    return [p for p in parts if p.strip()]
+
+
+def _part_unit(part: str) -> str | None:
+    nums = list(re.finditer(r"\d+(?:\.\d+)?\}?", part))
+    return unit_at(part[nums[-1].end():]) if nums else None
+
+
+def _in_key_units(key: Key, text: str, v: float | None) -> tuple[float | None, str]:
+    """For a shown answer line with several statements, the final value of the
+    last statement not written in another unit (see the block comment above)."""
+    parts = _top_level_parts(text)
+    if len(parts) < 2:
+        return v, ""
+    u = key_unit(key)
+    keep = [p for p in parts if _part_unit(p) in (None, u)]
+    if not keep or len(keep) == len(parts):
+        return v, ""
+    kv = final_value(keep[-1])
+    return (kv, f" (in {u}; {len(parts) - len(keep)} other-unit values set aside)") if kv is not None \
+        else (v, "")
+
+
 # --- the spoken answer ------------------------------------------------------------
 
 _ONES = {"zero": 0, "oh": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
@@ -234,9 +349,21 @@ def _word_numbers(text: str) -> list[tuple[int, float]]:
     """Numbers written in words, with their character positions: 'thirty four
     point six', 'one sixth', 'twelve hundred and seventy five', 'minus five',
     'twenty root three'. 'and' joins only after hundred/thousand ('five and
-    two' is two numbers). Deliberately simple."""
-    found = list(re.finditer(r"[a-z]+(?:-[a-z]+)?", text.lower()))
-    toks = [m.group(0) for m in found]
+    two' is two numbers). Deliberately simple.
+
+    A hyphenated cardinal + ordinal ('one-sixth', 'two-thirds') is read as two
+    words. Before 2026-11-21 it was one unknown token, so 'exactly one-sixth'
+    stated no value (audit: 2 dice videos marked wrong)."""
+    pos, toks = [], []
+    for m in re.finditer(r"[a-z]+(?:-[a-z]+)?", text.lower()):
+        w, parts = m.group(0), m.group(0).split("-")
+        if len(parts) == 2 and w not in _ORD and parts[0] in _ONES and parts[1] in _ORD:
+            # not 'twenty-fourth' (an ordinal: 'ten to the twenty-fourth'), which stays one word
+            pos += [m.start(), m.start() + len(parts[0]) + 1]
+            toks += parts
+        else:
+            pos.append(m.start())
+            toks.append(w)
     vals, i = [], 0
     while i < len(toks):
         t = toks[i]
@@ -294,7 +421,7 @@ def _word_numbers(text: str) -> list[tuple[int, float]]:
             d = _num_word(k)
             if d:
                 v, j = v / d, k + 1
-        vals.append((found[i].start(), -v if neg else v))
+        vals.append((pos[i], -v if neg else v))
         i = j if j > i else i + 1
     return vals
 
@@ -310,9 +437,20 @@ def spoken_values(text: str) -> list[tuple[int, float]]:
     read once (the 6 and 36 of '6/36' are not also values), and exponents
     ('m/s^2') are not values."""
     vals: list[tuple[int, float]] = []
-    s = re.sub(r"\^\s*\{?-?\d+\}?", lambda m: " " * len(m.group(0)), text)
+    # Scientific notation is one value: '1.2044 × 10²⁴', '6.02 \times 10^{23}'. Before
+    # 2026-11-21 it read as 1.2044 and 10 (blind audit: moles-water).
+    s = text
+    for m in re.finditer(r"(-?\d+(?:\.\d+)?)\s*(?:×|\\times|\\cdot|x|\*)\s*10\s*"
+                         r"(?:\^\s*\{?\s*(-?\d+)\s*\}?|([⁻]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+))", s):
+        e = int(m.group(2) or m.group(3).translate(_SUPERSCRIPTS))
+        if abs(e) < 300:
+            vals.append((m.start(), float(m.group(1)) * 10.0 ** e))
+        s = _blank(s, m.start(), m.end())
+    s = re.sub(r"\^\s*\{?-?\d+\}?", lambda m: " " * len(m.group(0)), s)
     for m in re.finditer(r"\$([^$]+)\$|\\[dt]?frac\s*\{[^{}]*\}\s*\{[^{}]*\}|\d+(?:\.\d+)?\s*\\sqrt\s*\{[^{}]*\}"
                          r"|\\sqrt\s*\{[^{}]*\}", s):
+        if not s[m.start():m.end()].strip("$").strip():
+            continue    # a '$...$' whose content was read as scientific notation above
         seg = text[m.start():m.end()].strip("$")
         nums = _numbers_in(seg)
         vals += [(m.start(), v) for v in nums[-1:]]
@@ -383,22 +521,42 @@ def check_spoken(key: Key, text: str, request: str = "") -> dict:
         own.append((p, v, c))
     if not own:
         return {"status": "not_found", "detail": f"no value beyond the request's {req[:6]}"}
+    note = ""
+    u = key_unit(key)
+    if u:   # set aside values written in another unit (block comment above unit_at)
+        starts = [p for p, _ in vals]
+        tagged = [(x, _unit_after_value(text, x[0], next((q for q in starts if q > x[0]), len(text))))
+                  for x in own]
+        keep = [(x, t) for x, t in tagged if t in (None, u)]
+        if keep and len(keep) < len(own):
+            note = f"; in {u}, {len(own) - len(keep)} other-unit values set aside"
+            tagged = keep
+        # A value stated in the key's unit counts as asserted, like a cue word
+        # ('= 1.2044 x 10^24. So 36 g contains 2 moles'), and the last asserted
+        # value is the answer as before: a later cued value still wins ('3.27 m/s^2.
+        # Wait, it should be 2.0' stays wrong).
+        own = [(p, v, c or ("unit" if t == u else None)) for (p, v, c), t in tagged]
     cued = [x for x in own if x[2]]
     final = (cued or own)[-1][1]
     return {"status": "correct" if _close(final, want[0], key.rel_tol) else "wrong",
-            "detail": f"result {final:g} ({'cued' if cued else 'last'}) want {want[0]:g}"}
+            "detail": f"result {final:g} ({'cued' if cued else 'last'}) want {want[0]:g}{note}"}
 
 
 def _spoken_set(key: Key, want: list[float], text: str, request: str) -> dict:
     """A set (roots) is correct only if the narration's closing statement is
-    exactly the roots. That statement is the trailing run of sentences that
-    state values of their own; request givens that are not roots are dropped
+    exactly the roots. The closing statement is the last sentence that states
+    values of its own. It extends back over earlier sentences only while they
+    add roots and nothing else ('x equals two. And x equals three.'), and only
+    until every root is stated. Request givens that are not roots are dropped
     unless strongly cued, as in the number branch.
 
     Before 2026-11-21, any narration that mentioned every root passed, whatever
     else it said. 'The roots are 2 and 3. So the answer is 7.' was correct
-    (mutation test, 9/34). Known limit: a numeric check sentence after the roots
-    ('check: 4 minus 10 plus 6 is 0') counts as extra values and scores wrong."""
+    (mutation test, 9/34). A first fix merged the whole trailing run, so a
+    verification sentence before the answer ('the height is zero, confirming
+    these are our roots') made a correct Gemma narration wrong (audit). Known
+    limit: a numeric check AFTER the roots ('check: 4 minus 10 plus 6 is 0') is
+    the closing statement and scores wrong."""
     req = spoken_numbers(request) if request else []
 
     def near(v: float, ws: list[float]) -> bool:
@@ -411,9 +569,14 @@ def _spoken_set(key: Key, want: list[float], text: str, request: str) -> dict:
     vals: list[float] = []
     for sent in reversed([s for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]):
         o = own(sent)
-        if o:
-            vals = o + vals
-        elif vals:
+        if not o:
+            if vals:
+                break
+            continue
+        if vals and any(not near(v, want) for v in o):
+            break      # an earlier sentence with other values is not part of the closing statement
+        vals = o + vals
+        if all(near(w, vals) for w in want):
             break
     if not vals:
         return {"status": "not_found", "detail": f"no value beyond the request's {req[:6]}"}

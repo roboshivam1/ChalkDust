@@ -51,7 +51,19 @@ REVIEW_CASES = [
     ("dev-integration-by-parts", r"\int x e^x\,dx", "unparsed"),
     ("dev-quadratic-roots", "(x-2)(x-3) = 0", "unparsed"),
     ("dev-quadratic-roots", "x = 2, 3", "correct"),
+    # (audit, 2026-11-21) several asked quantities on one line: the key's unit picks
+    ("dev-series-resistors", r"I = 1.2\,\mathrm{A},\ V_4 = 4.8\,\mathrm{V},\ V_6 = 7.2\,\mathrm{V}", "correct"),
+    ("dev-series-resistors", r"I = 1.5\,\mathrm{A},\ V_4 = 6\,\mathrm{V},\ V_6 = 9\,\mathrm{V}", "wrong"),
+    ("dev-series-resistors", r"I = 1.2 A, V_{4Ω} = 4.8 V, V_{6Ω} = 7.2 V", "correct"),
 ]
+
+
+def test_key_unit_known_alias_and_unknown():
+    from research.content import key_unit
+    from research.topics import Key
+    assert key_unit(Key("number", 30.0, "degrees")) == "deg"
+    assert key_unit(Key("number", 1.0, "cm^2")) is None      # unknown: the filter stays off
+    assert key_unit(Key("number", 1.0)) is None
 
 
 @pytest.mark.parametrize("tid,text,want", REVIEW_CASES)

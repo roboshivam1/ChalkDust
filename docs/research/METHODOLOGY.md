@@ -269,6 +269,8 @@ All are run by `python -m research.run --exp ... --models ... --methods ...`.
   - **Prompts** come from the validation families first (families SFT never trained
     on), then from training rows. On rows SFT had just fitted, every sample in a
     group scored the same, so there was nothing to learn.
+    - The set is capped at one prompt per step. TRL's sampler shuffles the set, so a
+      larger set would undo the order.
   - **Settings:** LoRA weights are kept in fp32 under the 4-bit base; 120 steps of 4
     samples; learning rate 2e-5.
   - A run whose groups mostly have equal rewards (mean `frac_reward_zero_std` above

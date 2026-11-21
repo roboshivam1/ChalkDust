@@ -90,7 +90,11 @@ def main() -> None:
         if k not in seen:
             seen.add(k)
             keep.append(i)
-    ds = ds.select(keep[: a.max_prompts])
+    # One prompt per step (batch = num_generations), and TRL's sampler shuffles the set,
+    # so only a set of `steps` prompts keeps the priority order: with 400 prompts, 120
+    # steps drew from all of them and about 70% were train-split prompts SFT had fitted
+    # (code review, 2026-11-21). The cap makes one epoch of the first `steps`.
+    ds = ds.select(keep[: min(a.max_prompts, a.steps)])
     print("prompts:", len(ds), "from", split_counts, flush=True)
 
     qcfg = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4",

@@ -1,17 +1,22 @@
 # Findings: making small local models good at ChalkDust specs
 
-**Status: 2026-11-21, 23:00. Everything has run except GRPO (T3, running) and the
-optional Qwen3.6-35B-A3B row of E2.**
+**Status: FINAL for this run, 2026-11-22 00:30.** Every queued job finished. The one
+exception is the optional Qwen3.6-35B-A3B row of E2, which its RAM gate skipped
+(15.8 GiB free, 22 GiB needed).
 
 - **Done:**
   - the research notes and the method;
   - E1b and E1c, E2 (teachers and small models), E4 (split pipeline), E5 (CPU only);
-  - T1 (70 teacher videos), SFT of Granite 4.2 3B, and T2 (tuned against untuned
-    on HELDOUT, 6 topics × 5 seeds × 2 methods);
-  - two independent reviews with fixes, and blind audits of the answer checks, the
-    teacher data and the T2 answers (items 9 and 11).
-- **The training result in one line:** SFT fixed the form and broke some of the
-  maths (item 11).
+  - T1 (70 teacher videos), SFT of Granite 4.2 3B, T2 (tuned against untuned on
+    HELDOUT, 6 topics × 5 seeds × 2 methods), and T3 (GRPO from the SFT model,
+    evaluated the same way);
+  - two independent reviews and a final fresh review, with fixes;
+  - blind audits of the answer checks, the teacher data and the T2 and T3 answers
+    (items 9 and 11, section 2c).
+- **The training result in two lines:**
+  - SFT fixed the form and broke some of the maths (item 11).
+  - GRPO with a validity-only reward pushed further the same way: cleaner videos,
+    fewer right answers (section 2c, T3).
 
 Every number below comes from `research/results/*.jsonl` through
 `python -m research.analyze` or `python -m research.report`. Both re-score every run
@@ -248,6 +253,12 @@ T2. Read the E numbers as directions, not effect sizes.
         arithmetic-sum, seed 3, at −0.07. Resampling topics instead of pairs gives
         +0.33 to +0.70, and all 6 topics favour it.
       - Field leaks fall from 0.23 to 0.00.
+      - The leak metric also misses a kind of leak, found while reading the watch
+        list, so this is not a pre-registered metric. The untuned model writes
+        stringified structure such as `[{step: 0, text: 'PV = nRT'}]` into
+        EquationDerivation steps, and LaTeX draws it as italic maths. This happens
+        in 20 of 60 untuned videos (4 of them "all clean"), against 0 of 60 tuned
+        and 0 of 24 teacher videos.
     - **Answers get worse, and the audit says the checker understated by how much.**
       - By the checker, shown answers fall from 0.80 to 0.68 (95% CI −0.28 to
         +0.05; topic bootstrap −0.33 to +0.05) and spoken answers from 0.78 to 0.60.
@@ -412,6 +423,56 @@ Paired, SFT minus untuned. Both methods are averaged into one pair per (topic, s
   5.2 GiB peak VRAM. Train loss went from 0.77 to 0.13; eval loss on the 4 held-out
   training families is 0.48.
 
+### T3: GRPO from the SFT model
+
+- **The run:** 120 steps, 4 samples per prompt, lr 2e-5, QLoRA with fp32 LoRA weights.
+  The reward is the validator × the content floor (`reward_server.py`). It took 52
+  minutes at 8.1 GiB peak VRAM.
+  - Prompts: 120 fill prompts, one per step (105 from the validation families SFT
+    never trained on, 15 from training rows). The order is shuffled, so each prompt
+    is seen once.
+- **The signal was thin.** In 77% of groups all 4 samples scored the same, just
+  under the 0.8 guard, so the run counts as evaluated.
+  - That share fell over the run: 0.85, 0.78, 0.68 by thirds.
+  - Mean reward fell too, from 0.95 in the first 20 steps to 0.86 in the last 20.
+    The share of samples at the validator's top level fell from 0.97 to 0.88.
+  - With each prompt seen once, a falling reward is either the policy getting worse
+    or the later prompts being harder. The held-out evaluation decides.
+- **Held-out result: RL on a validity-only reward made the videos cleaner and the
+  answers worse.** GRPO minus SFT, same 6 HELDOUT topics × 5 seeds × 2 methods,
+  paired:
+
+  | metric | GRPO | SFT | diff | 95% CI | sign p | topic CI |
+  |---|---|---|---|---|---|---|
+  | first-sample clean, per beat | 0.939 | 0.897 | +0.041 | [+0.010, +0.073] | 0.029 | [−0.015, +0.090] |
+  | first-sample all-clean, per video | 0.600 | 0.317 | +0.283 | [+0.100, +0.467] | 0.0075 | [−0.033, +0.550] |
+  | allclean (final video) | 0.700 | 0.550 | +0.150 | [0.000, +0.300] | 0.17 | [−0.100, +0.383] |
+  | ans (checker) | 0.500 | 0.683 | −0.183 | [−0.350, −0.017] | 0.12 | [−0.267, −0.100] |
+  | spk (checker) | 0.320 | 0.600 | −0.280 | [−0.460, −0.100] | 0.021 | [−0.380, −0.180] |
+
+  - The answer losses are the robust part. Shown answers fall on 5 of 6 topics and
+    rise on none; spoken answers fall on all 5 checkable topics. The validity gain
+    is real per pair but not clear of noise once topics are resampled.
+  - GRPO wrote a right calculator value less often (38 of 60, against 45 for SFT).
+    It also overrode one with a wrong shown answer more often (13 times, against
+    10).
+  - The reward never asked for a right answer. The validator cannot tell right from
+    wrong (item 4). The content floor in `reward_of` only halves the reward for a
+    narration under 20 words or under 12 characters of shown text. So the policy drifted toward what was paid for. This is the
+    reward-hacking pattern section 6 item 2 is about: put the answer check in the
+    reward.
+  - **Blind audit of the GRPO answers** (`research/audit/t3-heldout/`). Two Sonnet
+    graders read all 40 videos the checker did not pass, plus 6 controls.
+    - Shown: the graders rescue 3 and find 1 checker pass with no answer on screen.
+      Audited, GRPO shows 32 of 60 right (0.53), against 0.68 for SFT, which the
+      T2 audit confirmed in full.
+    - Spoken: the checker is noisier here. The graders find 8 right answers among
+      its 34 spoken "wrong", and 5 wrong among the unchecked. Corrected, spoken is
+      about 0.48 for GRPO against about 0.66 for SFT. The drop holds but is smaller
+      than the checker's −0.28.
+    - Typical failures are plain arithmetic slips on screen: `25 × 51 = 2525`,
+      `V = 2 · 0.0821 · 300 = 216`, a pendulum at 0.67 s.
+
 ## 2d. E2 small models, E4 split pipeline, E5 CPU only (DEV, seed 0)
 
 E2, 10 DEV topics:
@@ -443,7 +504,7 @@ E2, 10 DEV topics:
   laptop without a GPU can draft a video in a few minutes. Quality at n=3 is too noisy
   to rank.
 
-## 3. Recommended method (provisional: E2 picks the model per machine)
+## 3. Recommended method
 
 Plan first, then fill each beat:
 1. **Plan:** grammar-constrained. Fields in order: title, objective, key insight,
@@ -461,13 +522,24 @@ Plan first, then fill each beat:
 5. **Model settings:** thinking off. Turn llama-server's prompt cache off
    (`--cache-ram 0`).
 
-The method is laid out in full in `docs/research/METHODOLOGY.md`, and the background
-research in the four `docs/research/*-2026-11.md` notes. In short:
-- Machine A: Qwen3.6-35B-A3B or Gemma 4 12B.
-- Machine B: Qwen3.5-9B.
-- Machine C: Qwen3.5-4B or Granite 4.2 3B, all Apache-2.0.
+6. **When the plan has a calculator value, let it decide the answer.** This is not
+   built yet (section 6 item 1). T2 shows why: a model can write the right
+   expression and then show its own wrong arithmetic.
 
-These are vendor numbers; E2 is what measures them here.
+**Which model, as measured here** (all Apache-2.0; E2 and T2 on this laptop):
+- **12 GB GPU:** Gemma 4 12B, 10 of 10 shown answers right on DEV, at about 2.5 minutes
+  per video under best-of-4. It is the slowest and the most correct.
+- **4 to 6 GB GPU:** untuned Qwen3.5-4B with best-of-4 and repair. Every beat was clean
+  in 10 of 10 DEV videos, with 0.90 shown, at 65 s.
+- **Don't use the tuned Granite 3B checkpoints** from this run for content. SFT and
+  GRPO made them cleaner but less often right (item 11).
+- **CPU only:** Qwen3.5-2B can draft a video in a minute or two (E5). Expect wrong
+  answers about 4 times in 10 (E2).
+- **Not measured:** Qwen3.5-9B and Qwen3.6-35B-A3B. The 35B row was skipped by its RAM
+  gate, and the 9B never downloaded.
+
+The method is laid out in full in `docs/research/METHODOLOGY.md`, and the background
+research is in the four `docs/research/*-2026-11.md` notes.
 
 ## 4. Licences and risks found
 
@@ -513,7 +585,10 @@ These are vendor numbers; E2 is what measures them here.
   - 2026-11-21: the queue, relaunched in its own window, was stopped by hand after
     2 minutes at 51.3 of 53.4 GB commit (item 7).
   - It was relaunched at 11:50 with the cache off, 2 scoring workers and a memory guard.
-- **Not run:** the Qwen3.6-35B-A3B row of E2 (queued last). The T2 held-out set is
+- **Not run:** the Qwen3.6-35B-A3B row of E2. Its RAM gate skipped it at 00:13 on
+  2026-11-22, with 15.8 GiB available against 22 GiB needed. To run it, close the
+  desktop apps and start the queue again; `--resume` skips everything already
+  done. The T2 held-out set is
   6 topics. Its intervals are honest about that, but a second held-out set would make
   item 11's effect sizes firmer.
 - **Checker errors are not symmetric across models.** On T2 they fell on the
@@ -584,7 +659,7 @@ These are vendor numbers; E2 is what measures them here.
    - Audit every component's optional fields for the same trap.
    - This changes the prompt hash, so it starts a new SFT data version. The `leak`
      column measures the effect.
-6. **Qwen3.6-35B-A3B** (E2): queued last, behind a 22 GiB RAM gate.
+6. **Qwen3.6-35B-A3B** (E2): skipped by its 22 GiB RAM gate (section 5).
 7. **After the study: fix the checker limits in item 9** (the asked variable in
    sentences and narration, same-variable corrections, exponent units). Pin each case
    in `research/tests/test_train_checks.py`, re-run `diff_checkers` over every saved

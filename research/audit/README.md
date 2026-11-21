@@ -85,3 +85,12 @@ not filter it.
   error-teaching line.
 - Scripts: `scripts/make_slices_t2.py` builds the slices and the private id map, and
   `scripts/t2_summary.py` writes the labels and the summary.
+
+## T3 held-out answers (2026-11-22)
+
+`t3-heldout/` covers all 40 GRPO videos the frozen checker did not pass, plus 6
+controls, graded the same way as T2.
+- Shown: the graders rescue 3 and find 1 checker pass with no answer on screen.
+  Audited, 32 of 60 are right (0.53).
+- Spoken: 8 of the checker's 34 "wrong" are right, and 5 unchecked videos are wrong.
+- Scripts: `scripts/make_slices_t3.py` and `scripts/t3_summary.py`.

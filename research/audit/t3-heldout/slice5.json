@@ -1,0 +1,37 @@
+[
+ {
+  "id": "T3-005",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-232253-t3\\granite-4.2-3b-sft-v1-grpo\\staged-calc-1-work-1\\ho-pendulum-period_s3\\spec.json",
+  "topic": "ho-pendulum-period"
+ },
+ {
+  "id": "T3-011",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-232253-t3\\granite-4.2-3b-sft-v1-grpo\\staged-calc-1-work-1\\ho-arithmetic-sum_s0\\spec.json",
+  "topic": "ho-arithmetic-sum"
+ },
+ {
+  "id": "T3-017",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-232253-t3\\granite-4.2-3b-sft-v1-grpo\\staged-n-4-repair-1-calc-1-work-1\\ho-parabola-vertex_s0\\spec.json",
+  "topic": "ho-parabola-vertex"
+ },
+ {
+  "id": "T3-023",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-232253-t3\\granite-4.2-3b-sft-v1-grpo\\staged-n-4-repair-1-calc-1-work-1\\ho-parabola-vertex_s2\\spec.json",
+  "topic": "ho-parabola-vertex"
+ },
+ {
+  "id": "T3-029",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-232253-t3\\granite-4.2-3b-sft-v1-grpo\\staged-n-4-repair-1-calc-1-work-1\\ho-pendulum-period_s4\\spec.json",
+  "topic": "ho-pendulum-period"
+ },
+ {
+  "id": "T3-035",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-232253-t3\\granite-4.2-3b-sft-v1-grpo\\staged-n-4-repair-1-calc-1-work-1\\ho-stack-trace_s0\\spec.json",
+  "topic": "ho-stack-trace"
+ },
+ {
+  "id": "T3-041",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-232253-t3\\granite-4.2-3b-sft-v1-grpo\\staged-calc-1-work-1\\ho-ideal-gas-volume_s3\\spec.json",
+  "topic": "ho-ideal-gas-volume"
+ }
+]

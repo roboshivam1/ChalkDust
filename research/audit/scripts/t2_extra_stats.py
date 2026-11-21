@@ -23,7 +23,9 @@ from research.content import _key_close            # noqa: E402
 from research.report import video_metrics          # noqa: E402
 from research.topics import BY_ID                  # noqa: E402
 
-TUNED, BASE = "granite-4.2-3b-sft-v1", "granite-4.2-3b-self"
+# Optional: `t2_extra_stats.py <arm A> <arm B>` (default SFT vs untuned; GRPO vs SFT:
+# granite-4.2-3b-sft-v1-grpo granite-4.2-3b-sft-v1).
+TUNED, BASE = (sys.argv[1], sys.argv[2]) if len(sys.argv) == 3 else ("granite-4.2-3b-sft-v1", "granite-4.2-3b-self")
 recs, _ = an.load("T2-heldout")
 recs = [r for r in recs if r.get("rescored")]
 
@@ -33,7 +35,7 @@ for r in recs:
     if r["model"] in side:
         side[r["model"]][(r["topic"], r["seed"], r["method"])] = video_metrics(r)
 keys = sorted(set(side[TUNED]) & set(side[BASE]))
-print("Topic-clustered bootstrap, SFT minus untuned")
+print(f"Topic-clustered bootstrap, {TUNED} minus {BASE}")
 for m in ("fs", "fs_all", "allclean", "ans", "spk", "leak"):
     unit = defaultdict(list)
     for k in keys:

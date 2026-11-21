@@ -1,0 +1,8 @@
+{"slice": 8, "id": "T2-040", "field": "shown", "verdict": "correct", "why": "AnswerBox is empty; last working line b06 is y = 2(x-2)^2 - 5 with marker minimum y = -5, matching key -5."}
+{"slice": 8, "id": "T2-040", "field": "spoken", "verdict": "correct", "why": "Final substantive narration b06 commits to y = 2(x-2)^2 - 5 after b05 and b02 self-correct from -2 to -5; the trailing 'vertex is at' is truncated but no competing final value is stated."}
+{"slice": 8, "id": "T2-048", "field": "shown", "verdict": "correct", "why": "No AnswerBox; StepTrace final frame shows stack 3, 7 with top 7, matching key 7."}
+{"slice": 8, "id": "T2-048", "field": "spoken", "verdict": "correct", "why": "Final narration b05 states 'The top value is 7'."}
+{"slice": 8, "id": "T2-056", "field": "shown", "verdict": "wrong", "why": "AnswerBox value is 3; key is 7."}
+{"slice": 8, "id": "T2-056", "field": "spoken", "verdict": "wrong", "why": "Final narration says 'the final value on top is three'; key is 7."}
+{"slice": 8, "id": "T2-064", "field": "shown", "verdict": "correct", "why": "AnswerBox shows 25 x 51, which equals 1275, matching the key."}
+{"slice": 8, "id": "T2-064", "field": "spoken", "verdict": "correct", "why": "Final narration says 25 multiplied by 51 'equals 1275'."}

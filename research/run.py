@@ -30,7 +30,7 @@ from research.content import (answer_candidates, check_answer, check_spoken, fin
 from research.generate import generate_oneshot, generate_staged
 from research.llm import LlamaServer, ServerConfig
 from research.models import REGISTRY, ensure
-from research.score import assemble_spec, ensure_miktex_first, slug, validate_spec_cli
+from research.score import SCORE_WORKERS, assemble_spec, ensure_miktex_first, slug, validate_spec_cli
 from research.topics import topic_set
 
 REPO = Path(__file__).resolve().parents[1]
@@ -244,6 +244,7 @@ def main(argv: list[str] | None = None) -> int:
                             "model": mkey, "quant": entry.file,
                             "method": mstr, "topic": topic.id, "subject": topic.subject, "seed": seed,
                             "temperature": a.temperature, "ngl": a.ngl, "threads": a.threads, "parallel": a.parallel,
+                            "score_workers": SCORE_WORKERS, "cache_ram_mib": cfg.cache_ram_mib,
                             "trace_dir": str(tdir.relative_to(REPO)),
                             **summarise(topic, gen, cli),
                             "cli_seconds": cli["seconds"] if cli else None,

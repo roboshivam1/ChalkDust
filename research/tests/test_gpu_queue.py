@@ -15,9 +15,11 @@ def _job(name: str, code: str) -> dict:
     return {"name": name, "cmd": [sys.executable, "-c", code]}
 
 
-def _run_queue(qdir: Path) -> subprocess.CompletedProcess:
+def _run_queue(qdir: Path, **extra_env: str) -> subprocess.CompletedProcess:
     env = {**os.environ, "QUEUE_DIR": str(qdir),
-           "QUEUE_GPU_BUSY_MIB": str(10**9), "QUEUE_MIN_RAM_GIB": "0"}
+           "QUEUE_GPU_BUSY_MIB": str(10**9), "QUEUE_MIN_RAM_GIB": "0",
+           "QUEUE_GUARD_MIN_AVAIL_GIB": "0", "QUEUE_GUARD_MIN_COMMIT_GIB": "0",
+           "QUEUE_POLL_SECS": "0.2", **extra_env}
     return subprocess.run([sys.executable, "-m", "research.gpu_queue"], cwd=REPO, env=env,
                           capture_output=True, text=True, timeout=120)
 
@@ -42,3 +44,22 @@ def test_failure_stops_queue_and_rerun_retries_it(tmp_path):
     assert (tmp_path / "done.txt").read_text(encoding="utf-8").split() == ["ok", "bad", "after"]
     assert marker.exists()
     assert "ALL DONE" in (tmp_path / "queue.log").read_text(encoding="utf-8")
+
+
+def test_memory_guard_kills_job_tree_and_stops_queue(tmp_path):
+    """A job whose machine stays short of memory is killed with its children
+    (llama-server, scoring workers) and left out of done.txt."""
+    import psutil
+    pidfile = tmp_path / "child.pid"
+    code = ("import subprocess, sys, time; "
+            "c = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(120)']); "
+            f"open({str(pidfile)!r}, 'w').write(str(c.pid)); time.sleep(120)")
+    (tmp_path / "jobs.json").write_text(json.dumps([_job("hog", code)]), encoding="utf-8")
+
+    r = _run_queue(tmp_path, QUEUE_GUARD_MIN_AVAIL_GIB="1e9", QUEUE_GUARD_SECS="2")
+    assert r.returncode == 1, r.stdout + r.stderr
+    log = (tmp_path / "queue.log").read_text(encoding="utf-8")
+    assert "FAILED hog" in log and "memory guard" in log
+    assert not (tmp_path / "done.txt").exists()
+    child = int(pidfile.read_text())
+    assert not psutil.pid_exists(child)             # the grandchild died with the job

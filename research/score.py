@@ -277,11 +277,18 @@ def _score_job(args):
     return score_beat(beat, beat_id, Path(work_dir))
 
 
-def score_many(jobs: list[tuple[dict, str, Path]], workers: int = 4) -> list[BeatScore]:
+# Each pool worker holds about 1.7 GB of RAM (Manim + chalkdust + TeX caches).
+# Four of them beside gpt-oss-20b, whose expert weights live in host RAM, would
+# overcommit a 32 GB laptop, so the queue sets SCORE_WORKERS=2 from E2 on (E1 used 4).
+SCORE_WORKERS = int(os.environ.get("SCORE_WORKERS", "4"))
+
+
+def score_many(jobs: list[tuple[dict, str, Path]], workers: int | None = None) -> list[BeatScore]:
     """Score several candidates at once in a persistent spawned process pool.
     Each job has its own work dir, so Manim's text/Tex caches never collide
     (CLAUDE.md: shared caches tore SVGs). One job runs in-process."""
     global _POOL
+    workers = workers or SCORE_WORKERS
     if len(jobs) <= 1 or workers <= 1:
         return [score_beat(b, i, Path(w)) for b, i, w in jobs]
     if _POOL is None:

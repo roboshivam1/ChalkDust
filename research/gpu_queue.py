@@ -10,6 +10,13 @@ A job that exits non-zero stops the queue and stays out of done.txt, so the
 next start retries it. Later jobs depend on earlier ones (teacher -> SFT set ->
 train -> export -> held-out eval), and before this change a single failure
 let every later job run on missing inputs and be marked done.
+
+Memory guard: while a job runs, if available RAM or commit headroom stays under
+its floor for QUEUE_GUARD_SECS, the job's whole process tree is killed and the
+queue stops the same way. On 2026-11-21 E2 took system commit to 51.3 of
+53.4 GB within two minutes; unattended, that ends in Windows paging hard or
+refusing allocations to the user's own apps. Jobs run with --resume, so a
+restart continues from the last saved record.
 """
 import json, os, subprocess, sys, time
 from pathlib import Path
@@ -74,6 +81,78 @@ def wait_for_room() -> None:
         time.sleep(30)
 
 
+GUARD_MIN_AVAIL_GIB = float(os.environ.get("QUEUE_GUARD_MIN_AVAIL_GIB", "1.5"))
+GUARD_MIN_COMMIT_GIB = float(os.environ.get("QUEUE_GUARD_MIN_COMMIT_GIB", "2"))
+GUARD_SECS = float(os.environ.get("QUEUE_GUARD_SECS", "60"))
+POLL_SECS = float(os.environ.get("QUEUE_POLL_SECS", "15"))
+
+
+def commit_headroom_gib() -> float | None:
+    """CommitLimit - CommitTotal (Windows). The limit grows if the page file is
+    system-managed, so this is read live rather than once."""
+    if os.name != "nt":
+        return None
+    import ctypes
+    from ctypes import wintypes
+
+    class PerfInfo(ctypes.Structure):
+        _fields_ = [("cb", wintypes.DWORD), ("CommitTotal", ctypes.c_size_t),
+                    ("CommitLimit", ctypes.c_size_t), ("CommitPeak", ctypes.c_size_t),
+                    ("PhysicalTotal", ctypes.c_size_t), ("PhysicalAvailable", ctypes.c_size_t),
+                    ("SystemCache", ctypes.c_size_t), ("KernelTotal", ctypes.c_size_t),
+                    ("KernelPaged", ctypes.c_size_t), ("KernelNonpaged", ctypes.c_size_t),
+                    ("PageSize", ctypes.c_size_t), ("HandleCount", wintypes.DWORD),
+                    ("ProcessCount", wintypes.DWORD), ("ThreadCount", wintypes.DWORD)]
+    pi = PerfInfo(cb=ctypes.sizeof(PerfInfo))
+    if not ctypes.windll.psapi.GetPerformanceInfo(ctypes.byref(pi), pi.cb):
+        return None
+    return (pi.CommitLimit - pi.CommitTotal) * pi.PageSize / 2**30
+
+
+def memory_short() -> str | None:
+    avail = psutil.virtual_memory().available / 2**30
+    if avail < GUARD_MIN_AVAIL_GIB:
+        return f"{avail:.1f} GiB RAM available (floor {GUARD_MIN_AVAIL_GIB:g})"
+    head = commit_headroom_gib()
+    if head is not None and head < GUARD_MIN_COMMIT_GIB:
+        return f"{head:.1f} GiB commit headroom (floor {GUARD_MIN_COMMIT_GIB:g})"
+    return None
+
+
+def kill_tree(pid: int) -> None:
+    try:
+        root = psutil.Process(pid)
+        procs = root.children(recursive=True) + [root]
+    except psutil.NoSuchProcess:
+        return
+    for p in procs:
+        try:
+            p.kill()
+        except psutil.NoSuchProcess:
+            pass
+    psutil.wait_procs(procs, timeout=30)
+
+
+def run_guarded(cmd: list[str], log, env: dict) -> tuple[int, str | None]:
+    """Run one job; return (rc, reason) where reason is set if the guard killed it."""
+    proc = subprocess.Popen(cmd, cwd=REPO, stdout=log, stderr=subprocess.STDOUT, env=env)
+    short_since = None
+    while True:
+        try:
+            return proc.wait(timeout=POLL_SECS), None
+        except subprocess.TimeoutExpired:
+            pass
+        why = memory_short()
+        if why is None:
+            short_since = None
+            continue
+        short_since = short_since or time.time()
+        if time.time() - short_since >= GUARD_SECS:
+            kill_tree(proc.pid)
+            proc.wait()
+            return proc.returncode, f"memory guard: {why} for {GUARD_SECS:g} s; killed the job's process tree"
+
+
 if os.name == "nt":   # keep the laptop awake while the queue lives (not the display)
     import ctypes
     ctypes.windll.kernel32.SetThreadExecutionState(0x80000000 | 0x00000001)
@@ -97,13 +176,12 @@ while True:
         cmd = list(j["cmd"])
         if not Path(cmd[0]).is_absolute() and (REPO / cmd[0]).exists():
             cmd[0] = str(REPO / cmd[0])   # Windows CreateProcess ignores cwd= when resolving argv[0]
-        rc = subprocess.run(cmd, cwd=REPO, stdout=f, stderr=subprocess.STDOUT,
-                            env={**os.environ, "PYTHONUNBUFFERED": "1", "PYTHONIOENCODING": "utf-8",
-                                 **j.get("env", {})}).returncode
-        f.write(f"=== end rc={rc} {time.time() - t:.0f}s\n")
-    if rc != 0:
-        say(f"FAILED {j['name']}: rc={rc} after {time.time() - t:.0f}s. Queue stopped; "
-            f"see {Q / (j['name'] + '.log')}. Start the queue again to retry this job.")
+        rc, guard = run_guarded(cmd, f, {**os.environ, "PYTHONUNBUFFERED": "1", "PYTHONIOENCODING": "utf-8",
+                                         **j.get("env", {})})
+        f.write(f"=== end rc={rc} {time.time() - t:.0f}s{' ' + guard if guard else ''}\n")
+    if rc != 0 or guard:
+        say(f"FAILED {j['name']}: rc={rc} after {time.time() - t:.0f}s{' (' + guard + ')' if guard else ''}. "
+            f"Queue stopped; see {Q / (j['name'] + '.log')}. Start the queue again to retry this job.")
         sys.exit(1)   # not rc: Windows crash codes (0xC0000005) overflow sys.exit
     with open(DONE, "a", encoding="utf-8") as f:
         f.write(j["name"] + "\n")

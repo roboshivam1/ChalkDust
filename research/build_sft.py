@@ -25,8 +25,11 @@ from __future__ import annotations
 import argparse
 import json
 import random
+import re
 from collections import Counter
 from pathlib import Path
+
+from research.leaks import field_leaks, kicker_leaks, trim_kicker
 
 from research.topics import topic_set
 
@@ -60,6 +63,41 @@ def video_ok(rec: dict, require_spoken: bool = True) -> bool:
     if a != "correct":
         return False
     return s in ("correct", "n/a") or not require_spoken
+
+
+# TitleCard kicker leaks (research/leaks.py): SFT targets get the kicker trimmed to
+# its first line, so the student is not trained on the frozen schema-order defect.
+_KICKER_RAW = re.compile(r'"kicker"\s*:\s*"((?:[^"\\]|\\.)*)"')
+
+
+def trim_titlecard(text: str) -> tuple[str | None, str]:
+    """Rewrite a TitleCard completion so its kicker is clean, changing nothing else.
+
+    Returns (text, "") unchanged when the kicker is clean, (new_text, "trimmed") after
+    a trim, and (None, why) when no safe trim exists. The JSON-escaped kicker in the
+    raw text is replaced, which keeps the teacher's own formatting, and the result
+    is re-parsed to check that only the kicker changed."""
+    from research.llm import parse_json
+    v, _ = parse_json(text)
+    params = v.get("params") if isinstance(v, dict) else None
+    if not isinstance(params, dict):
+        return None, "unparsable"
+    k = params.get("kicker")
+    if not kicker_leaks(k):
+        return text, ""
+    t = trim_kicker(k)
+    if t is None:
+        return None, "kicker_untrimmable"
+    hits = list(_KICKER_RAW.finditer(text))
+    if len(hits) != 1 or json.loads(f'"{hits[0].group(1)}"') != k:
+        return None, "kicker_not_located"
+    m = hits[0]
+    new = text[:m.start(1)] + json.dumps(t, ensure_ascii=False)[1:-1] + text[m.end(1):]
+    w, _ = parse_json(new)
+    if not (isinstance(w, dict) and w.get("params", {}).get("kicker") == t
+            and {**w["params"], "kicker": k} == params and {**w, "params": params} == v):
+        return None, "kicker_trim_changed_more"
+    return new, "trimmed"
 
 
 def _sample_ok(text: str, component: str | None, topic) -> tuple[bool, str]:
@@ -136,19 +174,33 @@ def build(exp: str, out: Path, val_families: int = 4, per_beat: int = 2, seed: i
                 stats["beat_samples"] += 1
                 if not (sc.get("clean") and sc.get("escape_repairs", 0) == 0 and c["ok"]):
                     continue
-                key = (beat_key, c["text"].strip())
+                text, trim = c["text"], ""
+                if sc.get("component") == "TitleCard":
+                    text, trim = trim_titlecard(text)
+                    if text is None:
+                        stats[f"beat_dropped_{trim}"] += 1
+                        continue
+                key = (beat_key, text.strip())
                 if key in seen or kept[beat_key] >= per_beat:
                     continue
-                ok, why = _sample_ok(c["text"], sc.get("component"), topic)
+                ok, why = _sample_ok(text, sc.get("component"), topic)
                 if not ok:
                     stats[f"beat_dropped_{why}"] += 1
                     continue
                 seen.add(key)
                 kept[beat_key] += 1
+                if trim:
+                    stats["titlecard_kicker_trimmed"] += 1
+                else:
+                    from research.llm import parse_json
+                    pv, _ = parse_json(text)
+                    if isinstance(pv, dict) and field_leaks(pv.get("params", {})):
+                        stats[f"field_leak_kept:{sc.get('component')}"] += 1
                 rows.append({"prompt": call["messages"],
-                             "completion": [{"role": "assistant", "content": c["text"]}],
+                             "completion": [{"role": "assistant", "content": text}],
                              "type": "beat_repair" if ".r0" not in call["step"] else "beat",
-                             "component": sc.get("component"), **meta})
+                             "component": sc.get("component"), **({"edited": "kicker_trim"} if trim else {}),
+                             **meta})
                 stats["beat_examples"] += 1
                 stats[f"component:{sc.get('component')}"] += 1
     fams = sorted({r["family"] for r in rows})

@@ -153,36 +153,68 @@ def run_guarded(cmd: list[str], log, env: dict) -> tuple[int, str | None]:
             return proc.returncode, f"memory guard: {why} for {GUARD_SECS:g} s; killed the job's process tree"
 
 
-if os.name == "nt":   # keep the laptop awake while the queue lives (not the display)
-    import ctypes
-    ctypes.windll.kernel32.SetThreadExecutionState(0x80000000 | 0x00000001)
+def other_queue() -> int | None:
+    """PID of another live queue on the same queue dir, else None.
 
-while WAIT_FOR and running(WAIT_FOR):
-    time.sleep(20)
-while True:
-    done = set(DONE.read_text(encoding="utf-8").split()) if DONE.exists() else set()
-    jobs = json.loads(JOBS.read_text(encoding="utf-8"))
-    todo = [j for j in jobs if j["name"] not in done]
-    if not todo:
-        say("ALL DONE - every queued job has finished.")
-        break
-    wait_for_room()
-    j = todo[0]
-    say(f"starting {j['name']} ({len(todo)} jobs left)")
-    t = time.time()
-    with open(Q / f"{j['name']}.log", "a", encoding="utf-8") as f:
-        f.write(f"=== start {time.strftime('%H:%M:%S')} {j['cmd']}\n")
-        f.flush()
-        cmd = list(j["cmd"])
-        if not Path(cmd[0]).is_absolute() and (REPO / cmd[0]).exists():
-            cmd[0] = str(REPO / cmd[0])   # Windows CreateProcess ignores cwd= when resolving argv[0]
-        rc, guard = run_guarded(cmd, f, {**os.environ, "PYTHONUNBUFFERED": "1", "PYTHONIOENCODING": "utf-8",
-                                         **j.get("env", {})})
-        f.write(f"=== end rc={rc} {time.time() - t:.0f}s{' ' + guard if guard else ''}\n")
-    if rc != 0 or guard:
-        say(f"FAILED {j['name']}: rc={rc} after {time.time() - t:.0f}s{' (' + guard + ')' if guard else ''}. "
-            f"Queue stopped; see {Q / (j['name'] + '.log')}. Start the queue again to retry this job.")
-        sys.exit(1)   # not rc: Windows crash codes (0xC0000005) overflow sys.exit
-    with open(DONE, "a", encoding="utf-8") as f:
-        f.write(j["name"] + "\n")
-    say(f"{j['name']}: rc={rc} {time.time() - t:.0f}s")
+    On 2026-11-21 a review agent imported this module (it used to run the queue at
+    import) and the second queue re-ran a job beside the real one. The check is per
+    queue dir, so a test with its own QUEUE_DIR runs while the real queue is live."""
+    me = psutil.Process()
+    mine = {me.pid} | {p.pid for p in me.parents()}
+    for p in psutil.process_iter(["pid", "cmdline", "name"]):
+        if p.info["pid"] in mine or not (p.info["name"] or "").lower().startswith("python"):
+            continue
+        args = p.info["cmdline"] or []
+        if not any(a == "research.gpu_queue" or Path(a).name == "gpu_queue.py" for a in args):
+            continue
+        try:
+            qd = p.environ().get("QUEUE_DIR")
+        except psutil.Error:
+            qd = None   # unreadable: assume the default dir (refusing is the safe side)
+        if Path(qd or REPO / ".lab/queue").resolve() == Q.resolve():
+            return p.info["pid"]
+    return None
+
+
+def main() -> None:
+    other = other_queue()
+    if other:
+        say(f"REFUSED: another queue (PID {other}) is already running on {Q}; not starting a second.")
+        sys.exit(2)
+    if os.name == "nt":   # keep the laptop awake while the queue lives (not the display)
+        import ctypes
+        ctypes.windll.kernel32.SetThreadExecutionState(0x80000000 | 0x00000001)
+
+    while WAIT_FOR and running(WAIT_FOR):
+        time.sleep(20)
+    while True:
+        done = set(DONE.read_text(encoding="utf-8").split()) if DONE.exists() else set()
+        jobs = json.loads(JOBS.read_text(encoding="utf-8"))
+        todo = [j for j in jobs if j["name"] not in done]
+        if not todo:
+            say("ALL DONE - every queued job has finished.")
+            break
+        wait_for_room()
+        j = todo[0]
+        say(f"starting {j['name']} ({len(todo)} jobs left)")
+        t = time.time()
+        with open(Q / f"{j['name']}.log", "a", encoding="utf-8") as f:
+            f.write(f"=== start {time.strftime('%H:%M:%S')} {j['cmd']}\n")
+            f.flush()
+            cmd = list(j["cmd"])
+            if not Path(cmd[0]).is_absolute() and (REPO / cmd[0]).exists():
+                cmd[0] = str(REPO / cmd[0])   # Windows CreateProcess ignores cwd= when resolving argv[0]
+            rc, guard = run_guarded(cmd, f, {**os.environ, "PYTHONUNBUFFERED": "1", "PYTHONIOENCODING": "utf-8",
+                                             **j.get("env", {})})
+            f.write(f"=== end rc={rc} {time.time() - t:.0f}s{' ' + guard if guard else ''}\n")
+        if rc != 0 or guard:
+            say(f"FAILED {j['name']}: rc={rc} after {time.time() - t:.0f}s{' (' + guard + ')' if guard else ''}. "
+                f"Queue stopped; see {Q / (j['name'] + '.log')}. Start the queue again to retry this job.")
+            sys.exit(1)   # not rc: Windows crash codes (0xC0000005) overflow sys.exit
+        with open(DONE, "a", encoding="utf-8") as f:
+            f.write(j["name"] + "\n")
+        say(f"{j['name']}: rc={rc} {time.time() - t:.0f}s")
+
+
+if __name__ == "__main__":
+    main()

@@ -23,6 +23,9 @@ Columns (all per video, averaged over the group):
                value is the answer (n/a when the key is in the request)
   both         share of keyed videos correct on screen AND (spoken or n/a)
   struct       mean lesson-structure score (8 checks, research/content.py)
+  leak         share of videos with a leaked field drawn on screen (a TitleCard
+               kicker holding the subtitle or JSON punctuation; research/leaks.py).
+               Lower is better; the validator and `clean` do not see it.
   llm_s        mean LLM seconds per video (max over concurrent samples)
   val_s        mean validator seconds per video
   wall_s       mean wall seconds per video
@@ -39,6 +42,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from research.content import answer_candidates, check_answer, check_spoken, final_narration, structure_checks
+from research.leaks import beat_leaks
 from research.score import quality_flags
 from research.topics import BY_ID, topic_set
 
@@ -70,7 +74,8 @@ def rescore(rec: dict) -> dict:
     ans = check_answer(key, answer_candidates(beats), final_narration(beats), req) if key else {"status": "n/a"}
     spk = check_spoken(key, final_narration(beats), req) if (key and beats) else {"status": "n/a"}
     struct = structure_checks(tr.get("plan"), beats, key)
-    out = {"answer": ans, "answer_spoken": spk, "structure": struct, "rescored": True}
+    out = {"answer": ans, "answer_spoken": spk, "structure": struct, "rescored": True,
+           "field_leak": any(beat_leaks(b) for b in beats)}
     scores = tr.get("scores", [])
     if beats and len(scores) == len(beats):
         clean = [s.get("level") == 3 and not quality_flags(b) for s, b in zip(scores, beats)]
@@ -121,6 +126,7 @@ def table(recs: list[dict], servers: list[dict], by: list[str]) -> list[dict]:
                                    and r["answer_spoken"]["status"] in ("correct", "n/a")) else 0.0
                            for r in keyed]),
             "struct": _mean([r["structure"]["score"] for r in rs]),
+            "leak": _mean([1.0 if r["field_leak"] else 0.0 for r in rs if "field_leak" in r]),
             "llm_s": _mean([r["llm_seconds"] for r in rs]),
             "val_s": _mean([r["validator_seconds"] for r in rs]),
             "wall_s": _mean([r["wall_seconds"] for r in rs]),

@@ -31,9 +31,10 @@ from research.llm import parse_json               # noqa: E402
 from research.models import REGISTRY              # noqa: E402
 from research.score import quality_flags          # noqa: E402
 
-COLS = ["n", "valid", "clean", "allclean", "ans", "spk", "struct", "wall_s", "tok/s", "vram"]
+COLS = ["n", "valid", "clean", "allclean", "ans", "spk", "struct", "leak", "wall_s", "tok/s", "vram"]
 METRICS = [("first-sample clean, per beat (primary)", "fs"),
-           ("first-sample all-clean, per video", "fs_all"),("allclean", "allclean"), ("ans", "ans"), ("spk", "spk")]
+           ("first-sample all-clean, per video", "fs_all"),("allclean", "allclean"), ("ans", "ans"), ("spk", "spk"),
+           ("field leak (lower is better; added 2026-11-21 before T2)", "leak")]
 
 
 def get(exp):
@@ -131,7 +132,8 @@ def video_metrics(r):
             "allclean": 1.0 if r.get("all_beats_clean") else 0.0,
             "ans": None if r["answer"]["status"] == "n/a" else float(r["answer"]["status"] == "correct"),
             "spk": float(r["answer_spoken"]["status"] == "correct")
-            if r["answer_spoken"]["status"] in ("correct", "wrong", "not_found") else None}
+            if r["answer_spoken"]["status"] in ("correct", "wrong", "not_found") else None,
+            "leak": float(r["field_leak"]) if "field_leak" in r else None}
 
 
 def sign_p(diffs):

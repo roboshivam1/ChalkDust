@@ -268,6 +268,7 @@ What the installed 0.21.0 source shows (`manim/mobject/text/typst_mobject.py`, `
   - The same DLL's licence string reads "LGPL version 3 or later".
   - Its encoder list includes `h264_mf`, `hevc_mf`, `av1_mf`, `h264_nvenc`, `h264_qsv`, `h264_amf`, `h264_d3d12va`, `libsvtav1` and `libx264`.
   - The upstream build script (`pyav-ffmpeg/scripts/build-ffmpeg.py`) matches: it appends `--enable-libx265`, and `--enable-libx264` on all but 32-bit ARM, without `--enable-gpl`.
+  - [checked 2026-11-21] FFmpeg's configure normally refuses `--enable-libx264` without `--enable-gpl`; why this build does not is unresolved. It does not change the conclusion: x264 itself is GPL, so the "LGPL" label on the DLL does not make the wheel LGPL.
 - **The PyAV maintainer's position, from issue #2270** (closed, then locked 28 Oct 2026):
   - "The license is for the source code, not the binary wheels."
   - The wheels are "'LGPLv2.1 or later + Commercial exceptions' OR 'GPLv2 or later'".

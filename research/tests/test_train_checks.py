@@ -91,3 +91,21 @@ def test_request_number_listed_with_the_roots_is_a_root(text, status):
 def test_large_integer_valued_key_keeps_its_tolerance():
     t = "So, 36 g of water contains 2 moles and 1.2044 × 10^{24} molecules."
     assert check_spoken(Key("number", 1.2044e24, "molecules"), t)["status"] == "correct"
+
+
+def test_asked_variable_decides_a_pair_of_unknowns():
+    req = "Solve the simultaneous equations x + y = 4 and x - y = 2. What is x?"
+    key = Key("number", 3.0)
+    assert check_answer(key, ["x = 3, y = 1"], request=req)["status"] == "correct"
+    assert check_answer(key, ["x = 1, y = 3"], request=req)["status"] == "wrong"      # swapped
+    assert check_answer(key, [r"x = 1,\ y = 3"], request=req)["status"] == "wrong"
+
+
+@pytest.mark.parametrize("line,key,status", [
+    (r"v = 572\,\mathrm{m/s},\ f = 440\,\mathrm{Hz}", Key("number", 572.0, "m/s"), "correct"),
+    (r"v = 572\,\mathrm{m/s} \quad (f = 440\,\mathrm{Hz})", Key("number", 572.0, "m/s"), "correct"),
+    (r"r = 32.1^\circ,\ n = 1.5", Key("number", 32.1176, "degrees"), "correct"),
+    (r"f = 440\,\mathrm{Hz},\ v = 338.5\,\mathrm{m/s}", Key("number", 572.0, "m/s"), "wrong"),
+])
+def test_statement_in_the_key_unit_wins_over_a_later_given(line, key, status):
+    assert check_answer(key, [line])["status"] == status

@@ -195,6 +195,9 @@ def check_answer(key: Key, candidates: list[str], narration: str = "", request: 
             v, note = final_value(text), ""
             if key_unit(key):
                 v, note = _in_key_units(key, text, v)
+            var = asked_var(request)
+            if var and (vv := _value_of_var(text, var)) is not None:
+                v, note = vv, f" (the asked {var})"
             if v is None:
                 continue
             return {"status": "correct" if _key_close(v, want[0], key) else "wrong", "source": src_i,
@@ -284,7 +287,7 @@ def key_unit(key: Key) -> str | None:
 def unit_at(text: str) -> str | None:
     """The unit written at the start of `text`, the text that follows a value:
     '\\,\\mathrm{A}', ' amperes', '-ohm', ' m/s²'. None if no known unit."""
-    t = re.sub(r"^(?:\s+|\\[,;:! ]|~|-|\{|\}|\$|\\\)|\\(?:mathrm|text|rm|operatorname)\s*\{)*", "", text)
+    t = re.sub(r"^(?:\s+|\\[,;:! ]|~|-|\^|\{|\}|\$|\\\)|\\(?:mathrm|text|rm|operatorname)\s*\{)*", "", text)   # '^\circ'
     for u, rx in _UNIT_RX:
         if rx.match(t):
             return u
@@ -333,6 +336,24 @@ def _top_level_parts(text: str) -> list[str]:
     return [p for p in parts if p.strip()]
 
 
+def asked_var(request: str) -> str | None:
+    """The single-letter variable a request asks for ('... What is x?'), else None."""
+    m = re.search(r"\bWhat is ([A-Za-z])\s*\?", request or "")
+    return m.group(1) if m else None
+
+
+def _value_of_var(text: str, var: str) -> float | None:
+    """The value a shown line gives the asked variable: 'x = 1, y = 3' gives x = 1.
+    Before 2026-11-21 the line's last value decided, so swapped roots of a pair of
+    simultaneous equations passed (check review). None when no statement names it."""
+    out = None
+    for part in _top_level_parts(text):
+        sides = re.split(r"(?<![<>!\\])=(?!=)", part)
+        if len(sides) >= 2 and _strip(sides[0]).strip() == var:
+            out = final_value(part) if final_value(part) is not None else out
+    return out
+
+
 def _part_unit(part: str) -> str | None:
     nums = list(re.finditer(r"\d+(?:\.\d+)?\}?", part))
     return unit_at(part[nums[-1].end():]) if nums else None
@@ -345,12 +366,19 @@ def _in_key_units(key: Key, text: str, v: float | None) -> tuple[float | None, s
     if len(parts) < 2:
         return v, ""
     u = key_unit(key)
-    keep = [p for p in parts if _part_unit(p) in (None, u)]
-    if not keep or len(keep) == len(parts):
+    units = [_part_unit(p) for p in parts]
+    keep = [p for p, pu in zip(parts, units) if pu in (None, u)]
+    inu = [p for p, pu in zip(parts, units) if pu == u]
+    # A statement written in the key's unit wins over a later untagged or unknown-unit
+    # given ('v = 572 m/s, f = 440 Hz', 'r = 32.1°, n = 1.5'; check review sweep).
+    pick = inu[-1] if inu else (keep[-1] if keep and len(keep) < len(parts) else None)
+    if pick is None or pick is parts[-1]:
         return v, ""
-    kv = final_value(keep[-1])
-    return (kv, f" (in {u}; {len(parts) - len(keep)} other-unit values set aside)") if kv is not None \
-        else (v, "")
+    kv = final_value(pick)
+    aside = len(parts) - len(keep)
+    if kv is None:
+        return v, ""
+    return kv, (f" (in {u}; {aside} other-unit values set aside)" if aside else f" (the statement in {u})")
 
 
 # --- the spoken answer ------------------------------------------------------------

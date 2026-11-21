@@ -114,7 +114,7 @@ def _sample_ok(text: str, component: str | None, topic) -> tuple[bool, str]:
     if quality_flags(beat):
         return False, "flags"
     if component == "AnswerBox" and topic is not None and topic.key is not None:
-        st = check_answer(topic.key, [str((v.get("params") or {}).get("value") or "")])["status"]
+        st = check_answer(topic.key, [str((v.get("params") or {}).get("value") or "")], request=topic.request)["status"]
         if st != "correct":
             return False, f"answer_{st}"
     return True, ""

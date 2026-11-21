@@ -1,0 +1,37 @@
+[
+ {
+  "id": "T1|gemma-4-12b|tr-fibonacci-iterative-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-fibonacci-iterative-0_s0\\spec.json",
+  "topic": "tr-fibonacci-iterative-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-simultaneous-linear-2x2-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-simultaneous-linear-2x2-1_s0\\spec.json",
+  "topic": "tr-simultaneous-linear-2x2-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-pythagoras-hypotenuse-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-pythagoras-hypotenuse-1_s0\\spec.json",
+  "topic": "tr-pythagoras-hypotenuse-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-distance-two-points-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-distance-two-points-1_s0\\spec.json",
+  "topic": "tr-distance-two-points-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-kinetic-energy-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-kinetic-energy-1_s0\\spec.json",
+  "topic": "tr-kinetic-energy-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-snells-law-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-snells-law-1_s0\\spec.json",
+  "topic": "tr-snells-law-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-dilution-m1v1-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-dilution-m1v1-1_s0\\spec.json",
+  "topic": "tr-dilution-m1v1-1"
+ }
+]

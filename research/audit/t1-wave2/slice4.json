@@ -1,0 +1,37 @@
+[
+ {
+  "id": "T1|gemma-4-12b|tr-bubble-sort-explain-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-bubble-sort-explain-0_s0\\spec.json",
+  "topic": "tr-bubble-sort-explain-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-definite-integral-polynomial-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-definite-integral-polynomial-1_s0\\spec.json",
+  "topic": "tr-definite-integral-polynomial-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-probability-without-replacement-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-probability-without-replacement-1_s0\\spec.json",
+  "topic": "tr-probability-without-replacement-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-mean-median-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-mean-median-1_s0\\spec.json",
+  "topic": "tr-mean-median-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-hookes-law-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-hookes-law-1_s0\\spec.json",
+  "topic": "tr-hookes-law-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-coulombs-law-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-coulombs-law-1_s0\\spec.json",
+  "topic": "tr-coulombs-law-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-half-life-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-half-life-1_s0\\spec.json",
+  "topic": "tr-half-life-1"
+ }
+]

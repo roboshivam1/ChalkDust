@@ -1,0 +1,282 @@
+{
+ "tr-recursion-factorial-0": {
+  "set": "train",
+  "request": "Trace the recursive factorial function for n = 5. What does it return?",
+  "key_kind": "number",
+  "key_value": "120.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-fibonacci-iterative-0": {
+  "set": "train",
+  "request": "Trace an iterative Fibonacci function (F(0) = 0, F(1) = 1) up to F(7). What is F(7)?",
+  "key_kind": "number",
+  "key_value": "13.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-hash-mod-index-0": {
+  "set": "train",
+  "request": "A hash table of size 11 uses h(k) = k mod 11. Which bucket does key 92 go to?",
+  "key_kind": "number",
+  "key_value": "4.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-bubble-sort-explain-0": {
+  "set": "train",
+  "request": "Explain one pass of bubble sort on [6, 4, 17, 9, 13]: why does the largest value end up last?",
+  "key_kind": "none",
+  "key_value": "",
+  "units": null,
+  "rel_tol": null
+ },
+ "tr-bfs-vs-dfs-explain-0": {
+  "set": "train",
+  "request": "Explain the difference between breadth-first and depth-first search on a small tree.",
+  "key_kind": "none",
+  "key_value": "",
+  "units": null,
+  "rel_tol": null
+ },
+ "tr-linear-equation-solve-1": {
+  "set": "train",
+  "request": "Solve 4x + 10 = 26 and explain each step as keeping a balance level.",
+  "key_kind": "number",
+  "key_value": "4.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-simultaneous-linear-2x2-1": {
+  "set": "train",
+  "request": "Solve the simultaneous equations x + y = 4 and x - y = 2. What is x?",
+  "key_kind": "number",
+  "key_value": "3.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-derivative-chain-rule-1": {
+  "set": "train",
+  "request": "Differentiate sin(5x^2) using the chain rule, and explain the 'outside then inside' idea.",
+  "key_kind": "expr",
+  "key_value": "10*x*cos(5*x**2)",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-definite-integral-polynomial-1": {
+  "set": "train",
+  "request": "Evaluate the definite integral of 3x^2 from x = 0 to x = 3, and explain it as an area.",
+  "key_kind": "number",
+  "key_value": "27.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-limit-sinx-over-x-1": {
+  "set": "train",
+  "request": "Find the limit of sin(2x)/x as x approaches 0.",
+  "key_kind": "number",
+  "key_value": "2.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-logarithm-solve-1": {
+  "set": "train",
+  "request": "Solve log base 10 of x = 3. What does a logarithm ask?",
+  "key_kind": "number",
+  "key_value": "1000.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-pythagoras-hypotenuse-1": {
+  "set": "train",
+  "request": "A right triangle has legs 5 cm and 12 cm. Find the hypotenuse and explain why Pythagoras' theorem holds.",
+  "key_kind": "number",
+  "key_value": "13.0",
+  "units": "cm",
+  "rel_tol": 0.02
+ },
+ "tr-triangle-area-sine-1": {
+  "set": "train",
+  "request": "Find the area of a triangle with sides 7 cm and 10 cm and the angle 150 degrees between them.",
+  "key_kind": "number",
+  "key_value": "17.499999999999996",
+  "units": "cm^2",
+  "rel_tol": 0.02
+ },
+ "tr-probability-without-replacement-1": {
+  "set": "train",
+  "request": "A bag has 5 red and 2 blue balls. Two are drawn without replacement. What is the probability both are red?",
+  "key_kind": "number",
+  "key_value": "0.47619047619047616",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-combinations-ncr-1": {
+  "set": "train",
+  "request": "In how many ways can a team of 2 be chosen from 8 students? Explain why order does not matter.",
+  "key_kind": "number",
+  "key_value": "28.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-matrix-determinant-2x2-1": {
+  "set": "train",
+  "request": "Find the determinant of the matrix [[2, 2], [1, 6]] and explain what it says about area.",
+  "key_kind": "number",
+  "key_value": "10.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-distance-two-points-1": {
+  "set": "train",
+  "request": "Find the distance between the points (0, -1) and (7, 7).",
+  "key_kind": "number",
+  "key_value": "10.63014581273465",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-slope-two-points-1": {
+  "set": "train",
+  "request": "Find the slope of the line through (0, -1) and (7, 7), and explain slope as rise over run.",
+  "key_kind": "number",
+  "key_value": "1.1428571428571428",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-mean-median-1": {
+  "set": "train",
+  "request": "Find the mean of the data [2, 8, 9, 15, 18], and explain how it differs from the median.",
+  "key_kind": "number",
+  "key_value": "10.4",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-trig-identity-explain-1": {
+  "set": "train",
+  "request": "Explain why sin^2 x + cos^2 x = 1 using the unit circle.",
+  "key_kind": "none",
+  "key_value": "",
+  "units": null,
+  "rel_tol": null
+ },
+ "tr-electric-power-1": {
+  "set": "train",
+  "request": "A 6 ohm heater is connected to a 12 V supply. What power does it use?",
+  "key_kind": "number",
+  "key_value": "24.0",
+  "units": "W",
+  "rel_tol": 0.02
+ },
+ "tr-kinetic-energy-1": {
+  "set": "train",
+  "request": "Find the kinetic energy of a 1200 kg car moving at 25 m/s. Why does doubling speed quadruple it?",
+  "key_kind": "number",
+  "key_value": "375000.0",
+  "units": "J",
+  "rel_tol": 0.02
+ },
+ "tr-momentum-inelastic-collision-1": {
+  "set": "train",
+  "request": "A 2 kg trolley moving at 8 m/s sticks to a stationary 1 kg trolley. What is their common speed?",
+  "key_kind": "number",
+  "key_value": "5.333333333333333",
+  "units": "m/s",
+  "rel_tol": 0.02
+ },
+ "tr-hookes-law-1": {
+  "set": "train",
+  "request": "A spring of stiffness 100 N/m is pulled with 10 N. How far does it stretch?",
+  "key_kind": "number",
+  "key_value": "0.1",
+  "units": "m",
+  "rel_tol": 0.02
+ },
+ "tr-centripetal-force-1": {
+  "set": "train",
+  "request": "A 3 kg ball on a string moves in a circle of radius 1 m at 5 m/s. What tension provides the centripetal force?",
+  "key_kind": "number",
+  "key_value": "75.0",
+  "units": "N",
+  "rel_tol": 0.02
+ },
+ "tr-wave-speed-1": {
+  "set": "train",
+  "request": "A sound wave has frequency 256 Hz and wavelength 0.75 m. What is its speed?",
+  "key_kind": "number",
+  "key_value": "192.0",
+  "units": "m/s",
+  "rel_tol": 0.02
+ },
+ "tr-snells-law-1": {
+  "set": "train",
+  "request": "Light enters glass of refractive index 1.5 from air at 30 degrees to the normal. Find the angle of refraction.",
+  "key_kind": "number",
+  "key_value": "19.47122063449069",
+  "units": "degrees",
+  "rel_tol": 0.02
+ },
+ "tr-specific-heat-1": {
+  "set": "train",
+  "request": "How much heat raises 2 kg of water by 37 degrees C? (c = 4200 J/kg K)",
+  "key_kind": "number",
+  "key_value": "310800",
+  "units": "J",
+  "rel_tol": 0.02
+ },
+ "tr-coulombs-law-1": {
+  "set": "train",
+  "request": "Two charges of 4 microcoulomb and 4 microcoulomb are 0.5 m apart. Find the force between them (k = 9 x 10^9).",
+  "key_kind": "number",
+  "key_value": "0.576",
+  "units": "N",
+  "rel_tol": 0.02
+ },
+ "tr-power-work-time-1": {
+  "set": "train",
+  "request": "A 60 kg student climbs 3 m of stairs in 20 s. What power do they develop? (g = 10)",
+  "key_kind": "number",
+  "key_value": "90.0",
+  "units": "W",
+  "rel_tol": 0.02
+ },
+ "tr-newtons-third-law-explain-1": {
+  "set": "train",
+  "request": "Explain Newton's third law with a person pushing a wall, and why the forces do not cancel.",
+  "key_kind": "none",
+  "key_value": "",
+  "units": null,
+  "rel_tol": null
+ },
+ "tr-dilution-m1v1-1": {
+  "set": "train",
+  "request": "50 mL of 1 M acid is diluted to 250 mL. What is the new concentration?",
+  "key_kind": "number",
+  "key_value": "0.2",
+  "units": "M",
+  "rel_tol": 0.02
+ },
+ "tr-ph-strong-acid-1": {
+  "set": "train",
+  "request": "What is the pH of a 10^-1 M solution of hydrochloric acid? Why is the scale logarithmic?",
+  "key_kind": "number",
+  "key_value": "1.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-half-life-1": {
+  "set": "train",
+  "request": "A sample has a half-life of 5 days. What fraction remains after 15 days?",
+  "key_kind": "number",
+  "key_value": "0.125",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-covalent-vs-ionic-explain-1": {
+  "set": "train",
+  "request": "Explain the difference between ionic and covalent bonding with sodium chloride and water.",
+  "key_kind": "none",
+  "key_value": "",
+  "units": null,
+  "rel_tol": null
+ }
+}

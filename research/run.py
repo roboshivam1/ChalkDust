@@ -1,0 +1,279 @@
+"""Run an experiment: models x methods x topics x seeds.
+
+    python -m research.run --exp E1 --models qwen3-4b-2507 \
+        --methods staged staged:n=4 oneshot --topics dev --seeds 0 1
+
+Each (model, method, topic, seed) appends ONE record to
+research/results/<exp>.jsonl (committed; append-only, so runs stay
+comparable) and writes its raw trace -- every prompt, every sample, every
+validator finding -- under .lab/runs/<run_id>/ (git-ignored).
+
+Method strings: "staged", "staged:n=4,repair=1,calc=1", "oneshot",
+"oneshot:free=1" (free=1 turns grammar-constrained decoding off).
+"""
+
+from __future__ import annotations
+
+import argparse
+import datetime as dt
+import json
+import os
+import platform
+import subprocess
+import sys
+import time
+from collections import Counter
+from pathlib import Path
+
+from research.content import (answer_candidates, check_answer, check_spoken, final_narration,
+                              derivation_consistency, structure_checks)
+from research.generate import generate_oneshot, generate_staged
+from research.llm import LlamaServer, ServerConfig
+from research.models import REGISTRY, ensure
+from research.score import SCORE_WORKERS, assemble_spec, ensure_miktex_first, slug, validate_spec_cli
+from research.topics import topic_set
+
+REPO = Path(__file__).resolve().parents[1]
+RESULTS = REPO / "research" / "results"
+RUNS = REPO / ".lab" / "runs"
+
+
+def parse_method(s: str) -> tuple[str, dict]:
+    name, _, opts = s.partition(":")
+    kw = {}
+    for kv in filter(None, opts.split(",")):
+        k, _, v = kv.partition("=")
+        kw[k] = int(v) if v.lstrip("-").isdigit() else float(v) if v.replace(".", "", 1).isdigit() else v
+    return name, kw
+
+
+def probe(url: str) -> dict:
+    """One short request before any experiment: a model whose chat template
+    still thinks (reasoning returned separately, content empty) or that does
+    not stop would otherwise be scored as a bad model, not a bad setup."""
+    from research.llm import chat
+    c = chat(url, [{"role": "user", "content": 'Reply with the JSON {"ok": true} and nothing else.'}],
+             schema={"type": "object", "properties": {"ok": {"type": "boolean"}}, "required": ["ok"]},
+             temperature=0.0, max_tokens=64, timeout=300)
+    # Fail only when reasoning empties or truncates the answer; a model that
+    # cannot switch reasoning off (gpt-oss) is allowed, and its reasoning is a
+    # recorded cost (reasoning_chars on every completion).
+    ok = c.ok and c.finish_reason == "stop" and bool(c.text.strip())
+    return {"ok": ok, "finish": c.finish_reason, "content": c.text[:80], "reasoning_chars": c.reasoning_chars,
+            "thinking": c.reasoning_chars > 0, "error": c.error, "gen_tok_s": c.gen_tok_s}
+
+
+def load_plan(src: str, topic_id: str, seed: int) -> tuple[dict | None, float]:
+    """The plan another run made, for the split pipeline, and what making it
+    cost there (the plan call's wall seconds; concurrent samples overlap, so
+    the max), so E4's time per video includes the big model's planning. src
+    is EXP/MODEL/METHOD-SLUG, e.g. E2-models/gemma-4-12b/staged-n-4-repair-1-calc-1."""
+    exp, model, mslug = src.split("/")
+    p = RESULTS / f"{exp}.jsonl"
+    if not p.exists():
+        return None, 0.0
+    for line in p.read_text(encoding="utf-8").splitlines():
+        d = json.loads(line)
+        if (d.get("record") != "server" and d.get("model") == model and slug(d.get("method", "")) == mslug
+                and d.get("topic") == topic_id and d.get("seed") == seed):
+            tr = json.loads((REPO / d["trace_dir"] / "trace.json").read_text(encoding="utf-8"))
+            if tr.get("plan") and tr["plan"].get("beats"):
+                secs = max((c.get("wall_s") or 0 for call in tr["calls"] if call["step"] == "plan"
+                            for c in call["completions"]), default=0.0)
+                return tr["plan"], float(secs)
+    return None, 0.0
+
+
+def git_commit() -> str:
+    try:
+        return subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=REPO,
+                              capture_output=True, text=True).stdout.strip()
+    except Exception:
+        return "?"
+
+
+def summarise(topic, gen: dict, cli: dict | None) -> dict:
+    scores = gen["scores"]
+    beats = gen["beats"]
+    levels = Counter(s["level"] for s in scores)
+    r1 = Counter(e.split(":")[0].split(".")[0] if e else "?" for s in scores for e in s["rung1_errors"])
+    kinds = Counter(f["kind"] for s in scores for f in s["findings"])
+    p_tok, g_tok = gen["trace"].tokens
+    comps = gen["trace"].calls
+    tok_s = [c["gen_tok_s"] for call in comps for c in call["completions"] if c["gen_tok_s"]]
+    answer = check_answer(topic.key, answer_candidates(beats), final_narration(beats), topic.request) \
+        if topic.key else {"status": "n/a"}
+    # What the student HEARS: the answer in the last two narrations, checked on its own
+    # (the first video showed a correct AnswerBox under narration saying a wrong number).
+    spoken = check_spoken(topic.key, final_narration(beats), topic.request) \
+        if (topic.key and beats) else {"status": "n/a"}
+    valid = sum(1 for s in scores if s["ok"])
+    clean = sum(1 for s in scores if s.get("clean"))
+    flags = Counter(f.split(":")[0] for s in scores for f in s.get("flags", []))
+    return {
+        "plan_ok": gen["plan"] is not None and bool(gen["plan"].get("beats") if gen["plan"] else False) or (bool(beats)),
+        "n_beats": len(beats),
+        "beats_valid": valid,
+        "beat_valid_rate": valid / len(beats) if beats else 0.0,
+        "all_beats_valid": bool(beats) and valid == len(beats),
+        "beats_clean": clean,
+        "all_beats_clean": bool(beats) and clean == len(beats),
+        "flag_counts": dict(flags),
+        "spec_valid_cli": None if cli is None else cli["ok"],
+        "levels": {str(k): v for k, v in sorted(levels.items())},
+        "rung1_error_fields": dict(r1.most_common(8)),
+        "finding_kinds": dict(kinds),
+        "harness_faults": sum(1 for s in scores if s["harness_fault"]),
+        "escape_repairs": sum(s["escape_repairs"] for s in scores),
+        "mech_repaired_beats": sum(1 for s in scores if s["repaired_mechanically"]),
+        "components": [s["component"] for s in scores],
+        "text_chars_mean": (sum(s["text_chars"] for s in scores) / len(scores)) if scores else 0,
+        "narration_words_mean": (sum(s["narration_words"] for s in scores) / len(scores)) if scores else 0,
+        "answer": answer,
+        "answer_spoken": spoken,
+        "derivation": derivation_consistency(beats, topic.key),
+        "structure": structure_checks(gen["plan"], beats, topic.key),
+        "samples": sum(p.get("samples", 1) for p in gen["per_beat"]) or len(beats),
+        "repair_rounds": sum(p.get("repair_rounds", 0) for p in gen["per_beat"]),
+        "llm_seconds": gen["trace"].llm_seconds,
+        "validator_seconds": sum(p.get("validator_seconds", 0) for p in gen["per_beat"]) or sum(s["seconds"] for s in scores),
+        "wall_seconds": gen["wall_s"],
+        "prompt_tokens": p_tok,
+        "gen_tokens": g_tok,
+        "gen_tok_s_mean": (sum(tok_s) / len(tok_s)) if tok_s else 0,
+        "answer_calc_value": (gen["plan"] or {}).get("answer_calc_value") if gen["plan"] else None,
+        "plan_vote": (gen["plan"] or {}).get("vote") if gen["plan"] else None,
+    }
+
+
+def main(argv: list[str] | None = None) -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--exp", required=True)
+    ap.add_argument("--models", nargs="+", required=True)
+    ap.add_argument("--methods", nargs="+", default=["staged"])
+    ap.add_argument("--topics", default="dev")
+    ap.add_argument("--seeds", nargs="+", type=int, default=[0])
+    ap.add_argument("--temperature", type=float, default=0.7)
+    ap.add_argument("--parallel", type=int, default=4)
+    ap.add_argument("--ngl", type=int, default=None,
+                    help="GPU layers; default: llama.cpp --fit chooses; 0 = CPU-only proxy")
+    ap.add_argument("--threads", type=int, default=None)
+    ap.add_argument("--ctx", type=int, default=None)
+    ap.add_argument("--server-extra", default="", help="extra llama-server flags, space separated")
+    ap.add_argument("--no-cli", action="store_true", help="skip chalkdust validate on all-valid specs")
+    ap.add_argument("--tag", default="")
+    ap.add_argument("--resume", action="store_true",
+                    help="skip (model, method, topic, seed) already recorded in this exp's results")
+    a = ap.parse_args(argv)
+
+    ensure_miktex_first()
+    RESULTS.mkdir(parents=True, exist_ok=True)
+    run_id = dt.datetime.now().strftime("%Y%m%d-%H%M%S") + (f"-{a.tag}" if a.tag else "")
+    topics = topic_set(a.topics)
+    out_path = RESULTS / f"{a.exp}.jsonl"
+    commit = git_commit()
+    from research.generate import PROMPT_HASH
+    done = set()
+    if a.resume and out_path.exists():
+        for line in out_path.read_text(encoding="utf-8").splitlines():
+            try:
+                d = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if d.get("record") != "server":
+                done.add((d.get("model"), d.get("method"), d.get("topic"), d.get("seed")))
+    for mkey in a.models:
+        entry = REGISTRY[mkey]
+        path = ensure(mkey)
+        ctx = a.ctx or max(8192 * a.parallel, 16384)
+        cfg = ServerConfig(model_path=str(path), ctx=ctx, n_gpu_layers=a.ngl, parallel=a.parallel,
+                           threads=a.threads, extra=tuple(entry.extra) + tuple(a.server_extra.split()))
+        run_dir = RUNS / run_id / mkey
+        import research.llm as _llm
+        _llm.REQUEST_EXTRA.clear()
+        _llm.REQUEST_EXTRA.update(entry.chat_extra)
+        with LlamaServer(cfg, run_dir / "server.log") as srv:
+            print(f"[{mkey}] loaded in {srv.load_seconds:.1f}s {srv.placement()}", flush=True)
+            pr = probe(srv.url)
+            print(f"[{mkey}] probe: {pr}", flush=True)
+            if not pr["ok"]:
+                with open(out_path, "a", encoding="utf-8") as f:
+                    f.write(json.dumps({"exp": a.exp, "run_id": run_id, "model": mkey, "record": "server",
+                                        "probe": pr, **srv.stats()}) + "\n")
+                print(f"[{mkey}] SKIPPED: probe failed", flush=True)
+                continue
+            for mstr in a.methods:
+                mname, kw = parse_method(mstr)
+                for topic in topics:
+                    for seed in a.seeds:
+                        if (mkey, mstr, topic.id, seed) in done:
+                            continue
+                        tdir = run_dir / slug(mstr) / f"{topic.id}_s{seed}"
+                        tdir.mkdir(parents=True, exist_ok=True)
+                        t0 = time.perf_counter()
+                        borrowed_s = 0.0
+                        if mname == "staged":
+                            override, borrowed_s = load_plan(str(kw["planfrom"]), topic.id, seed) \
+                                if kw.get("planfrom") else (None, 0.0)
+                            if kw.get("planfrom") and override is None:
+                                print(f"[{mkey}] no saved plan for {topic.id} s{seed} in {kw['planfrom']}; skipped",
+                                      flush=True)
+                                continue
+                            gen = generate_staged(srv.url, topic, tdir / "work", seed=seed,
+                                                  temperature=a.temperature, n=int(kw.get("n", 1)),
+                                                  repair=int(kw.get("repair", 0)),
+                                                  constrained=not kw.get("free"), calc=bool(kw.get("calc")),
+                                                  plans=int(kw.get("plans", 1)), plan_override=override,
+                                                  work=bool(kw.get("work")))
+                        elif mname == "oneshot":
+                            gen = generate_oneshot(srv.url, topic, tdir / "work", seed=seed,
+                                                   temperature=a.temperature, constrained=not kw.get("free"))
+                        else:
+                            raise SystemExit(f"unknown method {mname}")
+                        if srv.proc is not None and srv.proc.poll() is not None:
+                            # A dead server turns every remaining video into an instant failure
+                            # record, and --resume would then skip them for good (code review,
+                            # 2026-11-21). Write nothing for this video and stop: the queue
+                            # stops too, and a restart with --resume redoes it.
+                            raise SystemExit(f"[{mkey}] llama-server exited (code {srv.proc.returncode}) "
+                                             f"during {topic.id} s{seed}; no record written. Rerun with --resume.")
+                        srv.rss_mib()
+                        spec = assemble_spec(slug(f"{topic.id}-{mkey}-s{seed}"), gen["beats"])
+                        (tdir / "spec.json").write_text(json.dumps(spec, indent=2, ensure_ascii=False), encoding="utf-8")
+                        (tdir / "trace.json").write_text(json.dumps(
+                            {"plan": gen["plan"], "scores": gen["scores"], "per_beat": gen["per_beat"],
+                             "calls": gen["trace"].calls}, indent=1, ensure_ascii=False, default=str), encoding="utf-8")
+                        all_valid = bool(gen["scores"]) and all(s["ok"] for s in gen["scores"])
+                        cli = validate_spec_cli(tdir / "spec.json", tdir / "cli-work") if (all_valid and not a.no_cli) else None
+                        rec = {
+                            "exp": a.exp, "run_id": run_id, "ts": dt.datetime.now().isoformat(timespec="seconds"),
+                            "commit": commit, "prompt_hash": PROMPT_HASH, "host": platform.node(),
+                            "model": mkey, "quant": entry.file,
+                            "method": mstr, "topic": topic.id, "subject": topic.subject, "seed": seed,
+                            "temperature": a.temperature, "ngl": a.ngl, "threads": a.threads, "parallel": a.parallel,
+                            "score_workers": SCORE_WORKERS, "cache_ram_mib": cfg.cache_ram_mib,
+                            "trace_dir": str(tdir.relative_to(REPO)),
+                            **summarise(topic, gen, cli),
+                            "cli_seconds": cli["seconds"] if cli else None,
+                            "cli_output": cli["output"][-600:] if cli and not cli["ok"] else None,
+                            "total_seconds": time.perf_counter() - t0,
+                            "borrowed_plan_seconds": borrowed_s,
+                        }
+                        with open(out_path, "a", encoding="utf-8") as f:
+                            f.write(json.dumps(rec, ensure_ascii=False, default=str) + "\n")
+                        print(f"[{mkey}] {mstr} {topic.id} s{seed}: beats {rec['beats_valid']}/{rec['n_beats']} "
+                              f"clean {rec['beats_clean']} cli={rec['spec_valid_cli']} answer={rec['answer'].get('status')}/{rec['answer_spoken'].get('status')} "
+                              f"struct={rec['structure']['score']:.2f} llm={rec['llm_seconds']:.0f}s "
+                              f"val={rec['validator_seconds']:.0f}s tok/s={rec['gen_tok_s_mean']:.0f}", flush=True)
+            st = srv.stats()
+        # server-level stats as a separate record type
+        with open(out_path, "a", encoding="utf-8") as f:
+            f.write(json.dumps({"exp": a.exp, "run_id": run_id, "model": mkey, "record": "server",
+                                "ngl": a.ngl, "threads": a.threads, "ctx": ctx, "parallel": a.parallel,
+                                **st}) + "\n")
+        print(f"[{mkey}] server stats: {st}", flush=True)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,22 @@
+[
+ {
+  "id": "T1|gemma-4-12b|tr-logarithm-solve-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-logarithm-solve-0_s0\\spec.json",
+  "topic": "tr-logarithm-solve-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-slope-two-points-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-slope-two-points-0_s0\\spec.json",
+  "topic": "tr-slope-two-points-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-centripetal-force-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-centripetal-force-0_s0\\spec.json",
+  "topic": "tr-centripetal-force-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-newtons-third-law-explain-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-newtons-third-law-explain-0_s0\\spec.json",
+  "topic": "tr-newtons-third-law-explain-0"
+ }
+]

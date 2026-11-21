@@ -1,0 +1,27 @@
+[
+ {
+  "id": "T1|gemma-4-12b|tr-definite-integral-polynomial-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-definite-integral-polynomial-0_s0\\spec.json",
+  "topic": "tr-definite-integral-polynomial-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-combinations-ncr-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-combinations-ncr-0_s0\\spec.json",
+  "topic": "tr-combinations-ncr-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-momentum-inelastic-collision-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-momentum-inelastic-collision-0_s0\\spec.json",
+  "topic": "tr-momentum-inelastic-collision-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-coulombs-law-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-coulombs-law-0_s0\\spec.json",
+  "topic": "tr-coulombs-law-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-covalent-vs-ionic-explain-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-covalent-vs-ionic-explain-0_s0\\spec.json",
+  "topic": "tr-covalent-vs-ionic-explain-0"
+ }
+]

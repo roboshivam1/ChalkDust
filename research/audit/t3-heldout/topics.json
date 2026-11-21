@@ -1,0 +1,50 @@
+{
+ "ho-pendulum-period": {
+  "set": "heldout",
+  "request": "Find the period of a simple pendulum of length 1 m, taking g = 9.8 m/s^2, and explain why the mass of the bob does not matter.",
+  "key_kind": "number",
+  "key_value": "2.007089923154493",
+  "units": "s",
+  "rel_tol": 0.02
+ },
+ "ho-arithmetic-sum": {
+  "set": "heldout",
+  "request": "Find the sum of the first 50 positive integers, and explain Gauss's pairing trick.",
+  "key_kind": "number",
+  "key_value": "1275.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "ho-stack-trace": {
+  "set": "heldout",
+  "request": "Start with an empty stack. Push 3, push 5, pop, push 7, push 2, pop. What value is on top of the stack, and why is a stack 'last in, first out'?",
+  "key_kind": "number",
+  "key_value": "7.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "ho-parabola-vertex": {
+  "set": "heldout",
+  "request": "Find the vertex of the parabola y = 2x^2 - 8x + 3 by completing the square. What is the minimum value of y?",
+  "key_kind": "number",
+  "key_value": "-5.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "ho-ideal-gas-volume": {
+  "set": "heldout",
+  "request": "What volume do 2 moles of an ideal gas occupy at 300 K and 1 atm? Use R = 0.0821 L atm / (mol K).",
+  "key_kind": "number",
+  "key_value": "49.260000000000005",
+  "units": "L",
+  "rel_tol": 0.02
+ },
+ "ho-free-fall-time": {
+  "set": "heldout",
+  "request": "A stone is dropped from rest from a height of 45 m. Taking g = 10 m/s^2, how long does it take to reach the ground?",
+  "key_kind": "number",
+  "key_value": "3.0",
+  "units": "s",
+  "rel_tol": 0.02
+ }
+}

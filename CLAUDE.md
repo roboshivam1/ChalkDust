@@ -216,6 +216,71 @@ macOS: `.venv/bin/python -m pytest`.
   enter the render key and the snapshot fingerprint.
 - ffmpeg/ffprobe must be on PATH everywhere: duration probing, mux, concat, loudnorm.
 
+## Research harness (`research/`): small local models
+
+Experiments on making small local LLMs fill ChalkDust specs well. It is not part of the
+app: `chalkdust/` never imports `research/`, and the harness only calls the validator
+and the CLI. Outcome and numbers: `docs/research/FINDINGS.md`. Method:
+`docs/research/METHODOLOGY.md`. Background research: the four `docs/research/*-2026-11.md`
+notes.
+
+- **Environments.** Use `.lab/venv-harness` for generation, validation, analysis and
+  rendering (chalkdust editable install, sympy, antlr4). Use `.lab/venv-train` for
+  training (torch cu132, transformers, peft, TRL, bitsandbytes). `.lab/` is git-ignored
+  and holds the GGUFs, HF weights, run traces, datasets and videos. Its `STATE.md`
+  lists what was installed.
+- **Run and read.** Run with `python -m research.run --exp <id> --models <keys>
+  --methods <m> --topics dev|heldout|train`. Summarise with
+  `python -m research.analyze <id>`, which re-scores content from the saved specs with
+  the current checkers.
+- **Results are append-only.** Never edit `research/results/*.jsonl`. A fixed bug gets
+  a new experiment id, and the old file stays as the record. Every record carries the
+  commit and `prompt_hash`; an SFT set is only valid for one prompt hash.
+- **Topics are frozen.** In `research/topics.py`, add topics with new ids. HELDOUT never
+  goes near training. `research/train_topics.py` asserts at import that no training
+  family is an evaluation family or a near-twin of one.
+- **Thinking is on by default.** Qwen3.5/3.6, Granite 4.2 and Gemma 4 all think under
+  llama-server unless `enable_thinking=false` is sent (`models.py` `chat_extra`). Train
+  with the same template kwargs (`train_sft.py --template-kwargs`), and confirm with
+  `research/check_template.py` that the trained prompt is the served prompt. Every model
+  gets a probe request before an experiment; a failed probe skips the model rather than
+  scoring it.
+- **Schema order is generation order.** Under grammar-constrained decoding, put any
+  reasoning field (`working`, `answer_calc`) before the field it should determine
+  (`final_answer`).
+- **No closed-model outputs as training targets.** Teachers are open-weight Apache-2.0
+  or MIT models run locally.
+- **One GPU job at a time.** Queue them with `research/gpu_queue.py` (jobs in
+  `.lab/queue/jobs.json`, re-read before each job; finished names in `done.txt`). It waits
+  before each job until the GPU is free of other programs and 8 GiB of RAM is free.
+  - A job that exits non-zero stops the queue and is left out of `done.txt`.
+  - So is a job the memory guard kills: available RAM under 1.5 GiB or commit headroom
+    under 2 GiB for 60 s.
+  - Status lines go to `.lab/queue/queue.log`.
+  - Run it in its own PowerShell window, not as a Claude Code background task, which
+    is stopped when memory runs low.
+  - One queue per queue directory: a second `python -m research.gpu_queue` on the same
+    `QUEUE_DIR` logs `REFUSED` and exits 2. Importing the module starts nothing.
+  - A gate job waits for a marker file (for example `.lab/queue/go-sft`) or its
+    timeout. Use one to hold a step until a check outside the queue is done.
+  - `research.run` exits non-zero, with no record for that video, if llama-server
+    dies mid-run. Restart the queue; `--resume` redoes the video.
+- **Checks freeze before held-out output.** Fix the answer checks (`research/content.py`)
+  on DEV, TRAIN and saved runs only, never in response to T2 or T3 held-out output
+  (METHODOLOGY section 3). Pin each fix with a case in `research/tests/test_train_checks.py`.
+- **Field leaks.** `research/leaks.py` flags JSON and label text that leaked into a
+  component's text field (the TitleCard kicker, FINDINGS item 10). `analyze` and
+  `report` show it as the `leak` column. `build_sft` trims leaked kickers and marks
+  those rows `"edited": "kicker_trim"`; no other teacher output is edited.
+- **Host RAM.** `research/llm.py` turns llama-server's prompt cache off
+  (`--cache-ram 0`). Under Gemma 4 a saved slot state is about 1 GB, and the default
+  cache is up to 8 GiB. Scoring workers are about 1.7 GB each; the queue sets
+  `SCORE_WORKERS=2`.
+  - On Windows, llama-server's private bytes sit near its VRAM use even fully offloaded,
+    so judge memory by growth after load and by system commit.
+  - A 32 GB laptop with desktop apps open has run out twice.
+- **Tests:** `.lab/venv-harness/Scripts/python -m pytest research/tests -o addopts="" -q -p no:cacheprovider`.
+
 ## Conventions
 
 - Docstrings explain *why* and cite the law: `(D-004)`, `(SCENE_SPEC.md §11)`.

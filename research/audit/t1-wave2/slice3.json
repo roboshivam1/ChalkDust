@@ -1,0 +1,37 @@
+[
+ {
+  "id": "T1|gemma-4-12b|tr-hash-mod-index-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-hash-mod-index-0_s0\\spec.json",
+  "topic": "tr-hash-mod-index-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-derivative-chain-rule-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-derivative-chain-rule-1_s0\\spec.json",
+  "topic": "tr-derivative-chain-rule-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-triangle-area-sine-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-triangle-area-sine-1_s0\\spec.json",
+  "topic": "tr-triangle-area-sine-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-slope-two-points-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-slope-two-points-1_s0\\spec.json",
+  "topic": "tr-slope-two-points-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-momentum-inelastic-collision-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-momentum-inelastic-collision-1_s0\\spec.json",
+  "topic": "tr-momentum-inelastic-collision-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-specific-heat-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-specific-heat-1_s0\\spec.json",
+  "topic": "tr-specific-heat-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-ph-strong-acid-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-ph-strong-acid-1_s0\\spec.json",
+  "topic": "tr-ph-strong-acid-1"
+ }
+]

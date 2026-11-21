@@ -1,0 +1,37 @@
+[
+ {
+  "id": "T1|gemma-4-12b|tr-recursion-factorial-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-recursion-factorial-0_s0\\spec.json",
+  "topic": "tr-recursion-factorial-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-linear-equation-solve-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-linear-equation-solve-1_s0\\spec.json",
+  "topic": "tr-linear-equation-solve-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-logarithm-solve-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-logarithm-solve-1_s0\\spec.json",
+  "topic": "tr-logarithm-solve-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-matrix-determinant-2x2-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-matrix-determinant-2x2-1_s0\\spec.json",
+  "topic": "tr-matrix-determinant-2x2-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-electric-power-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-electric-power-1_s0\\spec.json",
+  "topic": "tr-electric-power-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-wave-speed-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-wave-speed-1_s0\\spec.json",
+  "topic": "tr-wave-speed-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-newtons-third-law-explain-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-newtons-third-law-explain-1_s0\\spec.json",
+  "topic": "tr-newtons-third-law-explain-1"
+ }
+]

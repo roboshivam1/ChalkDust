@@ -1,0 +1,42 @@
+[
+ {
+  "id": "T2-008",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-sft-v1\\staged-n-4-repair-1-calc-1-work-1\\ho-ideal-gas-volume_s1\\spec.json",
+  "topic": "ho-ideal-gas-volume"
+ },
+ {
+  "id": "T2-016",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-self\\staged-n-4-repair-1-calc-1-work-1\\ho-arithmetic-sum_s1\\spec.json",
+  "topic": "ho-arithmetic-sum"
+ },
+ {
+  "id": "T2-024",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-self\\staged-n-4-repair-1-calc-1-work-1\\ho-parabola-vertex_s4\\spec.json",
+  "topic": "ho-parabola-vertex"
+ },
+ {
+  "id": "T2-032",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-self\\staged-n-4-repair-1-calc-1-work-1\\ho-stack-trace_s3\\spec.json",
+  "topic": "ho-stack-trace"
+ },
+ {
+  "id": "T2-040",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-self\\staged-calc-1-work-1\\ho-parabola-vertex_s0\\spec.json",
+  "topic": "ho-parabola-vertex"
+ },
+ {
+  "id": "T2-048",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-self\\staged-n-4-repair-1-calc-1-work-1\\ho-stack-trace_s2\\spec.json",
+  "topic": "ho-stack-trace"
+ },
+ {
+  "id": "T2-056",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-sft-v1\\staged-n-4-repair-1-calc-1-work-1\\ho-stack-trace_s0\\spec.json",
+  "topic": "ho-stack-trace"
+ },
+ {
+  "id": "T2-064",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-self\\staged-calc-1-work-1\\ho-arithmetic-sum_s3\\spec.json",
+  "topic": "ho-arithmetic-sum"
+ }
+]

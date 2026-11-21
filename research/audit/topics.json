@@ -1,0 +1,130 @@
+{
+ "dev-quadratic-roots": {
+  "set": "dev",
+  "subject": "maths",
+  "request": "Solve x^2 - 5x + 6 = 0 by factoring, and show why the roots are where the graph of y = x^2 - 5x + 6 crosses the x-axis.",
+  "key_kind": "set",
+  "key_value": "[2, 3]",
+  "rel_tol": 0.02
+ },
+ "dev-product-rule": {
+  "set": "dev",
+  "subject": "maths",
+  "request": "Differentiate f(x) = x^2 sin x using the product rule, and explain why the product rule has two terms.",
+  "key_kind": "expr",
+  "key_value": "x**2*cos(x) + 2*x*sin(x)",
+  "rel_tol": 0.02
+ },
+ "dev-integration-by-parts": {
+  "set": "dev",
+  "subject": "maths",
+  "request": "Evaluate the integral of x e^x dx using integration by parts.",
+  "key_kind": "antiderivative",
+  "key_value": "(x - 1)*exp(x)",
+  "rel_tol": 0.02
+ },
+ "dev-projectile-range": {
+  "set": "dev",
+  "subject": "physics",
+  "request": "A ball is thrown at 20 m/s at 30 degrees above the horizontal. Taking g = 10 m/s^2 and ignoring air resistance, find its horizontal range.",
+  "key_kind": "number",
+  "key_value": "34.64101615137755",
+  "rel_tol": 0.02
+ },
+ "dev-incline-friction": {
+  "set": "dev",
+  "subject": "physics",
+  "request": "A 2 kg block slides down a rough 30 degree incline. The coefficient of kinetic friction is 0.2 and g = 10 m/s^2. Find its acceleration.",
+  "key_kind": "number",
+  "key_value": "3.267949192431123",
+  "rel_tol": 0.02
+ },
+ "dev-series-resistors": {
+  "set": "dev",
+  "subject": "physics",
+  "request": "Resistors of 4 ohms and 6 ohms are connected in series across a 12 V battery. Find the current, and the voltage across each resistor.",
+  "key_kind": "number",
+  "key_value": "1.2",
+  "rel_tol": 0.02
+ },
+ "dev-moles-water": {
+  "set": "dev",
+  "subject": "chemistry",
+  "request": "How many moles of water, and how many molecules, are in 36 g of water? (H = 1, O = 16, Avogadro's number = 6.022 x 10^23)",
+  "key_kind": "number",
+  "key_value": "2.0",
+  "rel_tol": 0.02
+ },
+ "dev-binary-search": {
+  "set": "dev",
+  "subject": "cs",
+  "request": "Explain binary search, and trace it finding 23 in the sorted list [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]. At which index (counting from 0) is 23 found?",
+  "key_kind": "number",
+  "key_value": "5.0",
+  "rel_tol": 0.02
+ },
+ "dev-nested-loop-big-o": {
+  "set": "dev",
+  "subject": "cs",
+  "request": "Why does a loop nested inside another loop over the same n items take O(n^2) steps? Count the inner-loop steps for n = 4.",
+  "key_kind": "number",
+  "key_value": "16.0",
+  "rel_tol": 0.02
+ },
+ "dev-two-dice-seven": {
+  "set": "dev",
+  "subject": "maths",
+  "request": "Two fair dice are rolled. What is the probability that the sum is 7?",
+  "key_kind": "number",
+  "key_value": "0.16666666666666666",
+  "rel_tol": 0.02
+ },
+ "ho-parabola-vertex": {
+  "set": "heldout",
+  "subject": "maths",
+  "request": "Find the vertex of the parabola y = 2x^2 - 8x + 3 by completing the square. What is the minimum value of y?",
+  "key_kind": "number",
+  "key_value": "-5.0",
+  "rel_tol": 0.02
+ },
+ "ho-pendulum-period": {
+  "set": "heldout",
+  "subject": "physics",
+  "request": "Find the period of a simple pendulum of length 1 m, taking g = 9.8 m/s^2, and explain why the mass of the bob does not matter.",
+  "key_kind": "number",
+  "key_value": "2.007089923154493",
+  "rel_tol": 0.02
+ },
+ "ho-arithmetic-sum": {
+  "set": "heldout",
+  "subject": "maths",
+  "request": "Find the sum of the first 50 positive integers, and explain Gauss's pairing trick.",
+  "key_kind": "number",
+  "key_value": "1275.0",
+  "rel_tol": 0.02
+ },
+ "ho-ideal-gas-volume": {
+  "set": "heldout",
+  "subject": "chemistry",
+  "request": "What volume do 2 moles of an ideal gas occupy at 300 K and 1 atm? Use R = 0.0821 L atm / (mol K).",
+  "key_kind": "number",
+  "key_value": "49.260000000000005",
+  "rel_tol": 0.02
+ },
+ "ho-stack-trace": {
+  "set": "heldout",
+  "subject": "cs",
+  "request": "Start with an empty stack. Push 3, push 5, pop, push 7, push 2, pop. What value is on top of the stack, and why is a stack 'last in, first out'?",
+  "key_kind": "number",
+  "key_value": "7.0",
+  "rel_tol": 0.02
+ },
+ "ho-free-fall-time": {
+  "set": "heldout",
+  "subject": "physics",
+  "request": "A stone is dropped from rest from a height of 45 m. Taking g = 10 m/s^2, how long does it take to reach the ground?",
+  "key_kind": "number",
+  "key_value": "3.0",
+  "rel_tol": 0.02
+ }
+}

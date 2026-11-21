@@ -1,14 +1,17 @@
 # Findings: making small local models good at ChalkDust specs
 
-**Status: INTERIM, 2026-11-17 ~21:20.** At about 21:05, Claude Code stopped the
-run's background jobs (the GPU queue, the model downloads and the keep-awake lock)
-because the laptop was critically low on system memory. Its rule is not to restart
-them without the owner's go-ahead, so they are stopped.
+**Status: INTERIM, 2026-11-21 ~12:30. The run is in progress.** The GPU queue
+restarted on 2026-11-21 (section 5 has the two memory stops before that).
 
-What is done: the research notes, the method, experiments E1b and E1c, the whole
-training path tested end to end, and an independent code review with fixes. What is
-not run yet: E2 (model sweep), T1 to T3 (teacher data, SFT, held-out evaluation,
-GRPO), E4 (split pipeline) and E5 (CPU only). Section 7 says how to resume.
+- **Done:** the research notes, the method, E1b and E1c, the whole training path
+  tested end to end, two independent reviews with fixes, and a blind audit of the
+  answer checks (item 9).
+- **Running:** E2 on the teacher candidates.
+- **Queued, in order:** the teacher pick, T1 (teacher data), SFT, the held-out
+  evaluation, the rest of E2, E4 (split pipeline), E5 (CPU only), and T3 (GRPO)
+  last.
+
+Numbers below change as results land.
 
 Every number below comes from `research/results/*.jsonl` through
 `python -m research.analyze`. That command re-scores every run with the current
@@ -29,7 +32,8 @@ directions, not effect sizes.
 2. **With grammar-constrained decoding, the schema's field order is the order the
    model thinks in.** The staged planner wrote `final_answer` before any working, so
    it guessed. Staged answers were 0.60 correct against 0.90 for oneshot. Adding a
-   `working` field before `final_answer` brings staged to 0.90 (E1c).
+   `working` field before `final_answer` brings staged to 1.00 shown and 0.86 spoken
+   (E1c; re-scored after the audit in item 9).
    - A calculator expression (`calc=1`) without the working did nothing, because it
      was written from the guess.
    - A 5-plan vote did nothing and cost 6 s.
@@ -91,6 +95,40 @@ directions, not effect sizes.
    The E1 numbers here are re-scored with the fixed checks. That is why their clean
    rates are lower than the first report: narration containing `^` now counts as
    unclean, because the voice reads it as "caret".
+9. **A blind audit of the answer checks found they missed right answers, never passed
+   a wrong one on a real video, and are now fixed (2026-11-21).**
+   - Two graders per video labelled 127 saved videos from the spec and the key,
+     without seeing the checkers. The videos came from E1 to E1c, the smoke runs and
+     E2's first Gemma videos.
+   - The graders agreed on every final-answer label. Their notes and step-level flags
+     differ, so they did not copy each other; a final answer against a known key is
+     an easy call.
+   - A mutation test planted wrong answers into real specs. It found two false-pass
+     routes: a shown set with an extra root, and narration that states the roots
+     and then closes on another value. Both are fixed (`20eb828`).
+   - Against the graders' consensus:
+
+     | Checker | shown: false pass / false fail | spoken: false pass / false fail |
+     |---|---|---|
+     | Before the audit (used for the first E1 report) | 1 / 5 of 127 | 0 / 19 of 89 |
+     | After `1a0b4f0` | 1 / 0 of 127 | 0 / 4 of 89 |
+
+   - **Main cause:** a question that asks for several quantities was scored on the
+     last value stated. "Find the current, and the voltage across each resistor" was
+     scored on the last voltage. The fix uses the unit the key already names: a value
+     in another unit is set aside.
+   - **Two more causes:** scientific notation was read as two numbers, and
+     "one-sixth" as no number.
+   - **What is left:**
+     - The one shown false pass: an AnswerBox showing `n^2` has no number, so the
+       working line's 16 decides.
+     - Two videos never restate the answer in their last two narrations. The
+       graders looked further back.
+     - Two narrations end on a justification ("as there are 6 favorable
+       outcomes"), whose cued 6 is read as the answer.
+   - The audit covers 10 topics and is mostly one model, so read these as failure
+     modes, not a precision figure. Labels, the agreement script and the mutation
+     script are in `research/audit/`.
 
 ## 2. E1: how to ask a small model (Qwen3-4B-Instruct-2507, Q4_K_M)
 
@@ -103,15 +141,19 @@ The table covers 10 DEV topics with seed 0, re-scored. Columns:
 
 | method | valid | clean | allclean | ans | spk | struct | wall_s |
 |---|---|---|---|---|---|---|---|
-| oneshot | 0.90 | 0.42 | 0.00 | 0.90 | 0.86 | 0.95 | 23 |
-| oneshot, free decoding | 0.69 | 0.34 | 0.00 | 0.90 | 0.71 | 0.89 | 20 |
-| staged | 0.87 | 0.65 | 0.10 | 0.60 | 0.43 | 0.89 | 28 |
-| staged, free decoding | 0.61 | 0.46 | 0.00 | 0.60 | 0.43 | 0.89 | 28 |
-| staged + work | 0.93 | 0.62 | 0.10 | 0.90 | 0.43 | 0.89 | 33 |
+| oneshot | 0.90 | 0.42 | 0.00 | 0.90 | 1.00 | 0.95 | 23 |
+| oneshot, free decoding | 0.69 | 0.34 | 0.00 | 1.00 | 1.00 | 0.89 | 20 |
+| staged | 0.87 | 0.65 | 0.10 | 0.60 | 0.57 | 0.89 | 28 |
+| staged, free decoding | 0.61 | 0.46 | 0.00 | 0.60 | 0.57 | 0.89 | 28 |
+| staged + work | 0.93 | 0.62 | 0.10 | 1.00 | 0.86 | 0.89 | 33 |
 | staged, best-of-4 + repair | 0.97 | 0.77 | 0.30 | 0.60 | 0.57 | 0.93 | 45 |
-| + calc | 1.00 | 0.83 | 0.40 | 0.60 | 0.43 | 0.90 | 46 |
-| + calc + 5-plan vote | 1.00 | 0.76 | 0.30 | 0.60 | 0.43 | 0.95 | 52 |
-| **+ calc + work** | **1.00** | **0.82** | **0.60** | **0.90** | **0.57** | 0.90 | 45 |
+| + calc | 1.00 | 0.83 | 0.40 | 0.70 | 0.57 | 0.90 | 46 |
+| + calc + 5-plan vote | 1.00 | 0.76 | 0.30 | 0.60 | 0.57 | 0.95 | 52 |
+| **+ calc + work** | **1.00** | **0.82** | **0.60** | **1.00** | **0.86** | 0.90 | 45 |
+
+`ans` and `spk` were re-scored on 2026-11-21 with the audited checkers (item 9). Every
+change is upward, because the earlier checkers missed right answers and passed no
+wrong one. `spk` is out of the 7 topics whose key is not in the question.
 
 Speed: 69 to 121 tok/s per request. E1c's server used 7.4 GB of VRAM for the model
 with a 32k context over 4 slots, and peaked at 11.1 GB of host RAM before the cap.

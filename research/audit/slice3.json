@@ -1,0 +1,212 @@
+[
+ {
+  "id": "E0-thin|qwen3-4b-2507|staged:n=4,repair=1,calc=1|dev-projectile-range|s1",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-192241\\qwen3-4b-2507\\staged-n-4-repair-1-calc-1\\dev-projectile-range_s1\\spec.json",
+  "topic": "dev-projectile-range"
+ },
+ {
+  "id": "E0-thin|qwen3-4b-2507|staged:n=4,repair=1,calc=1,plans=5|dev-incline-friction|s1",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-192604\\qwen3-4b-2507\\staged-n-4-repair-1-calc-1-plans-5\\dev-incline-friction_s1\\spec.json",
+  "topic": "dev-incline-friction"
+ },
+ {
+  "id": "E1-methods|qwen3-4b-2507|oneshot|dev-integration-by-parts|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-193233-e1\\qwen3-4b-2507\\oneshot\\dev-integration-by-parts_s0\\spec.json",
+  "topic": "dev-integration-by-parts"
+ },
+ {
+  "id": "E1-methods|qwen3-4b-2507|oneshot|dev-series-resistors|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-193233-e1\\qwen3-4b-2507\\oneshot\\dev-series-resistors_s0\\spec.json",
+  "topic": "dev-series-resistors"
+ },
+ {
+  "id": "E1-methods|qwen3-4b-2507|oneshot|dev-nested-loop-big-o|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-193233-e1\\qwen3-4b-2507\\oneshot\\dev-nested-loop-big-o_s0\\spec.json",
+  "topic": "dev-nested-loop-big-o"
+ },
+ {
+  "id": "E1-methods|qwen3-4b-2507|oneshot:free=1|dev-product-rule|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-193233-e1\\qwen3-4b-2507\\oneshot-free-1\\dev-product-rule_s0\\spec.json",
+  "topic": "dev-product-rule"
+ },
+ {
+  "id": "E1-methods|qwen3-4b-2507|oneshot:free=1|dev-incline-friction|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-193233-e1\\qwen3-4b-2507\\oneshot-free-1\\dev-incline-friction_s0\\spec.json",
+  "topic": "dev-incline-friction"
+ },
+ {
+  "id": "E1-methods|qwen3-4b-2507|oneshot:free=1|dev-binary-search|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-193233-e1\\qwen3-4b-2507\\oneshot-free-1\\dev-binary-search_s0\\spec.json",
+  "topic": "dev-binary-search"
+ },
+ {
+  "id": "E1-methods|qwen3-4b-2507|staged|dev-quadratic-roots|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-193233-e1\\qwen3-4b-2507\\staged\\dev-quadratic-roots_s0\\spec.json",
+  "topic": "dev-quadratic-roots"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|oneshot|dev-product-rule|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\oneshot\\dev-product-rule_s0\\spec.json",
+  "topic": "dev-product-rule"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|oneshot|dev-incline-friction|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\oneshot\\dev-incline-friction_s0\\spec.json",
+  "topic": "dev-incline-friction"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|oneshot|dev-binary-search|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\oneshot\\dev-binary-search_s0\\spec.json",
+  "topic": "dev-binary-search"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|oneshot:free=1|dev-quadratic-roots|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\oneshot-free-1\\dev-quadratic-roots_s0\\spec.json",
+  "topic": "dev-quadratic-roots"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|oneshot:free=1|dev-projectile-range|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\oneshot-free-1\\dev-projectile-range_s0\\spec.json",
+  "topic": "dev-projectile-range"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|oneshot:free=1|dev-moles-water|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\oneshot-free-1\\dev-moles-water_s0\\spec.json",
+  "topic": "dev-moles-water"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|oneshot:free=1|dev-two-dice-seven|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\oneshot-free-1\\dev-two-dice-seven_s0\\spec.json",
+  "topic": "dev-two-dice-seven"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|staged|dev-integration-by-parts|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\staged\\dev-integration-by-parts_s0\\spec.json",
+  "topic": "dev-integration-by-parts"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|staged|dev-series-resistors|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\staged\\dev-series-resistors_s0\\spec.json",
+  "topic": "dev-series-resistors"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|staged|dev-nested-loop-big-o|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\staged\\dev-nested-loop-big-o_s0\\spec.json",
+  "topic": "dev-nested-loop-big-o"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|staged:free=1|dev-product-rule|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\staged-free-1\\dev-product-rule_s0\\spec.json",
+  "topic": "dev-product-rule"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|staged:free=1|dev-incline-friction|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\staged-free-1\\dev-incline-friction_s0\\spec.json",
+  "topic": "dev-incline-friction"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|staged:free=1|dev-binary-search|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\staged-free-1\\dev-binary-search_s0\\spec.json",
+  "topic": "dev-binary-search"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|staged:n=4,repair=1|dev-quadratic-roots|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\staged-n-4-repair-1\\dev-quadratic-roots_s0\\spec.json",
+  "topic": "dev-quadratic-roots"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|staged:n=4,repair=1|dev-projectile-range|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\staged-n-4-repair-1\\dev-projectile-range_s0\\spec.json",
+  "topic": "dev-projectile-range"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|staged:n=4,repair=1|dev-moles-water|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\staged-n-4-repair-1\\dev-moles-water_s0\\spec.json",
+  "topic": "dev-moles-water"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|staged:n=4,repair=1|dev-two-dice-seven|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\staged-n-4-repair-1\\dev-two-dice-seven_s0\\spec.json",
+  "topic": "dev-two-dice-seven"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|staged:n=4,repair=1,calc=1|dev-integration-by-parts|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\staged-n-4-repair-1-calc-1\\dev-integration-by-parts_s0\\spec.json",
+  "topic": "dev-integration-by-parts"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|staged:n=4,repair=1,calc=1|dev-series-resistors|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\staged-n-4-repair-1-calc-1\\dev-series-resistors_s0\\spec.json",
+  "topic": "dev-series-resistors"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|staged:n=4,repair=1,calc=1|dev-nested-loop-big-o|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\staged-n-4-repair-1-calc-1\\dev-nested-loop-big-o_s0\\spec.json",
+  "topic": "dev-nested-loop-big-o"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|staged:n=4,repair=1,calc=1,plans=5|dev-product-rule|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\staged-n-4-repair-1-calc-1-plans-5\\dev-product-rule_s0\\spec.json",
+  "topic": "dev-product-rule"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|staged:n=4,repair=1,calc=1,plans=5|dev-incline-friction|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\staged-n-4-repair-1-calc-1-plans-5\\dev-incline-friction_s0\\spec.json",
+  "topic": "dev-incline-friction"
+ },
+ {
+  "id": "E1b-methods|qwen3-4b-2507|staged:n=4,repair=1,calc=1,plans=5|dev-binary-search|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-194059-e1b\\qwen3-4b-2507\\staged-n-4-repair-1-calc-1-plans-5\\dev-binary-search_s0\\spec.json",
+  "topic": "dev-binary-search"
+ },
+ {
+  "id": "E1c-work|qwen3-4b-2507|staged:work=1|dev-quadratic-roots|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-203253-e1c\\qwen3-4b-2507\\staged-work-1\\dev-quadratic-roots_s0\\spec.json",
+  "topic": "dev-quadratic-roots"
+ },
+ {
+  "id": "E1c-work|qwen3-4b-2507|staged:work=1|dev-projectile-range|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-203253-e1c\\qwen3-4b-2507\\staged-work-1\\dev-projectile-range_s0\\spec.json",
+  "topic": "dev-projectile-range"
+ },
+ {
+  "id": "E1c-work|qwen3-4b-2507|staged:work=1|dev-moles-water|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-203253-e1c\\qwen3-4b-2507\\staged-work-1\\dev-moles-water_s0\\spec.json",
+  "topic": "dev-moles-water"
+ },
+ {
+  "id": "E1c-work|qwen3-4b-2507|staged:work=1|dev-two-dice-seven|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-203253-e1c\\qwen3-4b-2507\\staged-work-1\\dev-two-dice-seven_s0\\spec.json",
+  "topic": "dev-two-dice-seven"
+ },
+ {
+  "id": "E1c-work|qwen3-4b-2507|staged:n=4,repair=1,calc=1,work=1|dev-integration-by-parts|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-203253-e1c\\qwen3-4b-2507\\staged-n-4-repair-1-calc-1-work-1\\dev-integration-by-parts_s0\\spec.json",
+  "topic": "dev-integration-by-parts"
+ },
+ {
+  "id": "E1c-work|qwen3-4b-2507|staged:n=4,repair=1,calc=1,work=1|dev-series-resistors|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-203253-e1c\\qwen3-4b-2507\\staged-n-4-repair-1-calc-1-work-1\\dev-series-resistors_s0\\spec.json",
+  "topic": "dev-series-resistors"
+ },
+ {
+  "id": "E1c-work|qwen3-4b-2507|staged:n=4,repair=1,calc=1,work=1|dev-nested-loop-big-o|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-203253-e1c\\qwen3-4b-2507\\staged-n-4-repair-1-calc-1-work-1\\dev-nested-loop-big-o_s0\\spec.json",
+  "topic": "dev-nested-loop-big-o"
+ },
+ {
+  "id": "smoke-pipeline|granite-4.2-3b-sft-smoke|staged:calc=1,work=1|dev-binary-search|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261117-205400-smoke\\granite-4.2-3b-sft-smoke\\staged-calc-1-work-1\\dev-binary-search_s0\\spec.json",
+  "topic": "dev-binary-search"
+ },
+ {
+  "id": "E2-models|gemma-4-12b|staged:n=4,repair=1,calc=1,work=1|dev-quadratic-roots|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-113840-e2a\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\dev-quadratic-roots_s0\\spec.json",
+  "topic": "dev-quadratic-roots"
+ },
+ {
+  "id": "E2-models|gemma-4-12b|staged:n=4,repair=1,calc=1,work=1|dev-projectile-range|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-115024-e2a\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\dev-projectile-range_s0\\spec.json",
+  "topic": "dev-projectile-range"
+ }
+]

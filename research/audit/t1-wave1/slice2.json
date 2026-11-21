@@ -1,0 +1,27 @@
+[
+ {
+  "id": "T1|gemma-4-12b|tr-simultaneous-linear-2x2-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-simultaneous-linear-2x2-0_s0\\spec.json",
+  "topic": "tr-simultaneous-linear-2x2-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-triangle-area-sine-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-triangle-area-sine-0_s0\\spec.json",
+  "topic": "tr-triangle-area-sine-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-electric-power-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-electric-power-0_s0\\spec.json",
+  "topic": "tr-electric-power-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-snells-law-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-snells-law-0_s0\\spec.json",
+  "topic": "tr-snells-law-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-ph-strong-acid-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-ph-strong-acid-0_s0\\spec.json",
+  "topic": "tr-ph-strong-acid-0"
+ }
+]

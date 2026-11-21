@@ -55,3 +55,17 @@ exists only on the lab machine.
   step-level flags (`wrong_steps`, `unspeakable`) differ, which shows they worked
   independently. Final-answer correctness against a known key is simply an easy call.
 - The `wrong_steps` and `unspeakable` labels are not used by any checker yet.
+
+## T1 teacher data (2026-11-21)
+
+`t1-wave1/` applies the same blind procedure to the first 29 T1 teacher videos (Gemma
+4 12B, training topics) that pass `build_sft.video_ok`:
+
+- `slice{1..6}.json` and `topics.json` are built by the scratch slice builder from
+  `T1-teacher.jsonl`;
+- `labels_slice{N}_{A,B}.jsonl` hold the graders' labels;
+- `adjudicated.jsonl` holds an adjudicator's sympy check of every flagged line.
+
+Run `python research/audit/t1_summary.py research/audit/t1-wave1` for the summary.
+The result is FINDINGS item 9. The wrong-step count measures the SFT data and does
+not filter it.

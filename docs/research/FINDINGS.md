@@ -136,6 +136,20 @@ directions, not effect sizes.
      - So SFT data filtered on the final answer can still teach a false line. Its
        share in the T1 teacher data is measured by blind graders, not filtered by
        them: hard checks decide what is kept.
+     - **The T1 teacher data (wave 1, 2026-11-21)**, using the same blind procedure
+       on the first 29 Gemma 4 12B videos that pass the SFT filter
+       (`research/audit/t1-wave1`, `t1_summary.py`):
+       - The graders agreed on every shown and spoken label.
+       - The current checkers matched them on every video they could score: no false
+         pass and no false fail (26 shown, 23 spoken).
+       - 4 of 29 show a line at least one grader called false (3 by both graders).
+         An adjudicator re-checked each line with sympy:
+         - 1 teaches an error: a unit-circle diagram labels the sine leg
+           "Horizontal" and the radius "y-axis".
+         - 3 are harmless slips, such as swapped leg letters with the right
+           lengths.
+       - So about 1 teacher video in 30 carries an error-teaching line into SFT,
+         against about 1 in 8 for Qwen3-4B on DEV.
    - The audit covers 10 topics and is mostly one model, so read these as failure
      modes, not a precision figure. Labels, the agreement script and the mutation
      script are in `research/audit/`.

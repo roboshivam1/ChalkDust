@@ -1,0 +1,27 @@
+[
+ {
+  "id": "T1|gemma-4-12b|tr-linear-equation-solve-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-linear-equation-solve-0_s0\\spec.json",
+  "topic": "tr-linear-equation-solve-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-pythagoras-hypotenuse-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-pythagoras-hypotenuse-0_s0\\spec.json",
+  "topic": "tr-pythagoras-hypotenuse-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-trig-identity-explain-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-trig-identity-explain-0_s0\\spec.json",
+  "topic": "tr-trig-identity-explain-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-wave-speed-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-wave-speed-0_s0\\spec.json",
+  "topic": "tr-wave-speed-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-dilution-m1v1-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-dilution-m1v1-0_s0\\spec.json",
+  "topic": "tr-dilution-m1v1-0"
+ }
+]

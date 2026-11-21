@@ -598,8 +598,18 @@ def _spoken_set(key: Key, want: list[float], text: str, request: str) -> dict:
         return any(_key_close(v, w, key) for w in ws)
 
     def own(sent: str) -> list[float]:
-        return [v for p, v in spoken_values(sent)
-                if near(v, want) or _cue(sent, p) == "strong" or not any(_close(v, r, 1e-6) for r in req)]
+        # A request number listed with the roots ('the roots are 2, 3 and 6' for
+        # x^2 - 5x + 6) is claimed as a root, not restated: it is kept, so the
+        # extra root makes the set wrong (check review, 2026-11-21).
+        vs, out = spoken_values(sent), []
+        for i, (p, v) in enumerate(vs):
+            listed = i > 0 and near(vs[i - 1][1], want) and re.fullmatch(
+                r"\S+\s*(?:,\s*(?:and\s+|or\s+)?|and\s+|or\s+|&\s*)", sent[vs[i - 1][0]:p])
+            # by magnitude: a restated coefficient carries its sign in words ('minus five x')
+            if near(v, want) or _cue(sent, p) == "strong" or listed or not any(
+                    _close(abs(v), abs(r), 1e-6) for r in req):
+                out.append(v)
+        return out
 
     vals: list[float] = []
     for sent in reversed([s for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]):

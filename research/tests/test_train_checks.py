@@ -72,6 +72,17 @@ def test_unicode_minus_is_a_sign():
     assert check_spoken(Key("number", -21.0), "So the determinant is −21.")["status"] == "correct"
 
 
+@pytest.mark.parametrize("text,status", [
+    ("So the roots are 2, 3 and 6.", "wrong"),                  # 6 is from the request, claimed as a root
+    ("So the roots are two, three and six.", "wrong"),
+    ("So, for x squared minus five x plus six, the roots are 2 and 3.", "correct"),
+    ("The roots are 2 and 3.", "correct"),
+])
+def test_request_number_listed_with_the_roots_is_a_root(text, status):
+    key = Key("set", [2.0, 3.0])
+    assert check_spoken(key, text, "Find the roots of x^2 - 5x + 6 = 0.")["status"] == status
+
+
 def test_large_integer_valued_key_keeps_its_tolerance():
     t = "So, 36 g of water contains 2 moles and 1.2044 × 10^{24} molecules."
     assert check_spoken(Key("number", 1.2044e24, "molecules"), t)["status"] == "correct"

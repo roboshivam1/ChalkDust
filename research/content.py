@@ -21,7 +21,12 @@ X = sp.Symbol("x")
 
 # --- LaTeX -> sympy -------------------------------------------------------------
 
-_UNIT_WORDS = r"(?:m|s|kg|N|A|V|J|W|Pa|L|mol|K|atm|g|cm|km|h|min|Hz|ohm|C|rad|deg)"
+_UNIT_WORDS = r"(?:m|s|kg|N|A|V|J|W|Pa|L|mol|K|atm|g|cm|km|h|min|Hz|ohm|C|rad|deg|M|Rs)"
+# A unit after a value, compound or with a power: 'm/s', 'm/s^2', 'km/h', 'cm^2', 'm s^-1'.
+# Before 2026-11-21 only a bare unit word was dropped, so '338.5 m/s' did not parse and the
+# narration decided the shown answer (check review: a wrong wave speed passed that way).
+_POW = r"(?:\s*\^\s*\{?-?\d+\}?)?"
+_UNIT_RUN = rf"\b{_UNIT_WORDS}\b{_POW}(?:\s*(?:/|\*|·|\s)\s*\b{_UNIT_WORDS}\b{_POW})*"
 
 
 def _trig_degrees(m: re.Match) -> str:
@@ -35,7 +40,10 @@ def _strip(s: str) -> str:
     s = s.replace("$", " ")
     s = s.replace("{,}", "")                          # 1{,}275
     s = re.sub(r"(?<=\d),(?=\d{3}(?!\d))", "", s)     # 1,275
-    s = re.sub(r"\\(mathrm|text|textrm|operatorname|mbox)\s*\{[^{}]*\}", " ", s)
+    # inline-maths delimiters '\( \)' / '\[ \]'
+    s = re.sub(r"\\[()\[\]]", " ", s).replace("₹", " ")
+    # a text unit takes its power with it: '9\,\text{cm}^2' is 9, not 81
+    s = re.sub(r"\\(mathrm|text|textrm|operatorname|mbox)\s*\{[^{}]*\}(?:\s*\^\s*(?:\{[^{}]*\}|-?\d))?", " ", s)
     s = re.sub(r"\\(,|;|!|:| |quad|qquad)", " ", s)
     s = s.replace("\\left", "").replace("\\right", "")
     s = s.replace("\\dfrac", "\\frac").replace("\\tfrac", "\\frac")
@@ -60,7 +68,7 @@ def _latex_to_sympy(s: str):
         # plain-text maths first: the LaTeX grammar reads 'sin(x)' as s*i*n(x)
         from research.safe_math import safe_sympify
         try:
-            t = re.sub(rf"\b{_UNIT_WORDS}\b(\^-?\d)?", " ", s).strip()
+            t = re.sub(_UNIT_RUN, " ", s).strip()
             return safe_sympify(t, {"x": X})
         except Exception:
             pass
@@ -69,7 +77,7 @@ def _latex_to_sympy(s: str):
     except Exception:
         # plain-text maths ("34.6 m", "1/6", "x**2")
         from research.safe_math import safe_sympify   # no eval of model text
-        t = re.sub(rf"\b{_UNIT_WORDS}\b(\^-?\d)?", " ", s)
+        t = re.sub(_UNIT_RUN, " ", s)
         e = safe_sympify(t.strip(), {"x": X})
     return e.subs({sp.Symbol("e"): sp.E, sp.Symbol("pi"): sp.pi})
 
@@ -102,6 +110,18 @@ def _numbers_in(line: str) -> list[float]:
 
 def _close(a: float, b: float, rel: float) -> bool:
     return math.isclose(a, b, rel_tol=rel, abs_tol=1e-6 + rel * 1e-3)
+
+
+def _key_close(v: float, want: float, key: Key) -> bool:
+    """Does a stated value match a key value? Within the key's tolerance, except:
+    - an integer key stated as an integer must be exact (a count: 58 steps is not 57,
+      and 122 is not 5! = 120, which 2% passed);
+    - money keys (Rs) are within 0.2%: simple interest (2480) is not compound
+      interest (2519.42), which 2% passed.
+    Added 2026-11-21 after a false-pass sweep over the training topics."""
+    if abs(want) < 1e6 and float(want).is_integer() and float(v).is_integer():
+        return v == want        # (not 1.2044e24, which is an integer as a float)
+    return _close(v, want, 0.002 if key.units == "Rs" else key.rel_tol)
 
 
 # A condition after the value ('y = -5 at x = 2', '\text{ when } t = 3') is not
@@ -177,7 +197,7 @@ def check_answer(key: Key, candidates: list[str], narration: str = "", request: 
                 v, note = _in_key_units(key, text, v)
             if v is None:
                 continue
-            return {"status": "correct" if _close(v, want[0], key.rel_tol) else "wrong", "source": src_i,
+            return {"status": "correct" if _key_close(v, want[0], key) else "wrong", "source": src_i,
                     "detail": f"states {v:g} want {want[0]:g}{note}"}
         if key.kind == "set":
             nums = _set_values(text)
@@ -185,8 +205,8 @@ def check_answer(key: Key, candidates: list[str], narration: str = "", request: 
                 continue
             # The shown set must EQUAL the key. A superset passed before
             # 2026-11-21: 'x = 2, 3, 7' was correct for roots {2, 3} (mutation test, 8/9).
-            hit = all(any(_close(n, w, key.rel_tol) for n in nums) for w in want)
-            extra = [n for n in nums if not any(_close(n, w, key.rel_tol) for w in want)]
+            hit = all(any(_key_close(n, w, key) for n in nums) for w in want)
+            extra = [n for n in nums if not any(_key_close(n, w, key) for w in want)]
             return {"status": "correct" if hit and not extra else "wrong", "source": src_i,
                     "detail": f"states {nums[:6]} want {want}" + (f" extra {extra[:4]}" if extra else "")}
         if key.kind in ("expr", "antiderivative"):
@@ -239,8 +259,8 @@ _UNIT_RX = [(u, re.compile(rx)) for u, rx in (
     ("V", r"V\b|(?i:volts?)\b"),
     ("ohm", r"Ω|\\Omega\b|(?i:ohms?)\b"),
     ("N", r"N\b|(?i:newtons?)\b"),
+    ("W", r"W\b|J\s*/\s*s\b|(?i:watts?|joules?\s+per\s+second)\b"),   # before J: 'joules per second' is a power
     ("J", r"J\b|(?i:joules?)\b"),
-    ("W", r"W\b|(?i:watts?)\b"),
     ("L", r"L\b|(?i:lit(?:er|re)s?)\b"),
     ("K", r"K\b|(?i:kelvin)\b"),
     ("atm", r"atm\b|(?i:atmospheres?)\b"),
@@ -298,10 +318,12 @@ def _top_level_parts(text: str) -> list[str]:
     and '\\text{ and }'."""
     t = re.sub(r"\\q?quad\b|\\\\|;|\\text\s*\{\s*(?:and|,)\s*\}", "\x00", str(text))
     parts, depth, cur = [], 0, ""
-    for ch in t:
+    for i, ch in enumerate(t):
         depth += ch == "{"
         depth -= ch == "}"
-        if (ch == "\x00") or (ch == "," and depth == 0 and not cur.endswith("\\")):
+        # a thousands comma ('60,000') is not a separator (check review: 'KE = 60,000 J' read as 0)
+        thousands = ch == "," and cur[-1:].isdigit() and re.match(r"\d{3}(?!\d)", t[i + 1:])
+        if (ch == "\x00") or (ch == "," and depth == 0 and not cur.endswith("\\") and not thousands):
             parts.append(cur)
             cur = ""
         else:
@@ -437,6 +459,7 @@ def spoken_values(text: str) -> list[tuple[int, float]]:
     read once (the 6 and 36 of '6/36' are not also values), and exponents
     ('m/s^2') are not values."""
     vals: list[tuple[int, float]] = []
+    text = text.replace("−", "-")   # the Unicode minus: '−10' is -10 (same length, positions kept)
     # Scientific notation is one value: '1.2044 × 10²⁴', '6.02 \times 10^{23}'. Before
     # 2026-11-21 it read as 1.2044 and 10 (blind audit: moles-water).
     s = text
@@ -473,6 +496,8 @@ def spoken_numbers(text: str) -> list[float]:
 # Words that introduce a stated result: 'the range IS 34.6', 'comes to ABOUT 35',
 # 'it should BE 2.0', 'SO 1/6'. '=' and 'equals' are weak: they also restate
 # givens ('for n equals four', 'g = 10').
+_MISCONCEPTION = re.compile(r"(?i)\b(?:mistakes?|mistaken(?:ly)?|wrong(?:ly)?|incorrect(?:ly)?|errors?|erroneous"
+                            r"|misconceptions?|trap|tempt(?:ed|ing)|forget(?:s|ting)?|forgot|confus\w*)\b")
 _STRONG_CUES = {"is", "are", "was", "be", "gives", "get", "gets", "got", "comes", "about", "approximately",
                 "roughly", "around", "nearly", "exactly", "so", "therefore", "thus", "makes", "answer", "result"}
 _WEAK_CUES = {"equals", "equal", "=", "≈"}
@@ -522,6 +547,16 @@ def check_spoken(key: Key, text: str, request: str = "") -> dict:
     if not own:
         return {"status": "not_found", "detail": f"no value beyond the request's {req[:6]}"}
     note = ""
+    # A value in a sentence about the misconception ('A common mistake is to forget the
+    # half, which would give 120,000 joules') is not the narration's result. Before
+    # 2026-11-21 it was the last value, so a wrong video whose misconception value
+    # equalled the key passed, and a right one that ended on its misconception failed
+    # (check review on the training topics). It is set aside only if a value remains.
+    wrongs = [m.span() for m in re.finditer(r"[^.!?]*[.!?]?", text) if _MISCONCEPTION.search(m.group(0))]
+    kept = [x for x in own if not any(a <= x[0] < b for a, b in wrongs)]
+    if kept and len(kept) < len(own):
+        note = f"; {len(own) - len(kept)} misconception values set aside"
+        own = kept
     u = key_unit(key)
     if u:   # set aside values written in another unit (block comment above unit_at)
         starts = [p for p, _ in vals]
@@ -529,7 +564,7 @@ def check_spoken(key: Key, text: str, request: str = "") -> dict:
                   for x in own]
         keep = [(x, t) for x, t in tagged if t in (None, u)]
         if keep and len(keep) < len(own):
-            note = f"; in {u}, {len(own) - len(keep)} other-unit values set aside"
+            note += f"; in {u}, {len(own) - len(keep)} other-unit values set aside"
             tagged = keep
         # A value stated in the key's unit counts as asserted, like a cue word
         # ('= 1.2044 x 10^24. So 36 g contains 2 moles'), and the last asserted
@@ -538,7 +573,7 @@ def check_spoken(key: Key, text: str, request: str = "") -> dict:
         own = [(p, v, c or ("unit" if t == u else None)) for (p, v, c), t in tagged]
     cued = [x for x in own if x[2]]
     final = (cued or own)[-1][1]
-    return {"status": "correct" if _close(final, want[0], key.rel_tol) else "wrong",
+    return {"status": "correct" if _key_close(final, want[0], key) else "wrong",
             "detail": f"result {final:g} ({'cued' if cued else 'last'}) want {want[0]:g}{note}"}
 
 
@@ -560,7 +595,7 @@ def _spoken_set(key: Key, want: list[float], text: str, request: str) -> dict:
     req = spoken_numbers(request) if request else []
 
     def near(v: float, ws: list[float]) -> bool:
-        return any(_close(v, w, key.rel_tol) for w in ws)
+        return any(_key_close(v, w, key) for w in ws)
 
     def own(sent: str) -> list[float]:
         return [v for p, v in spoken_values(sent)

@@ -96,8 +96,9 @@ T2. Read the E numbers as directions, not effect sizes.
    The E1 numbers here are re-scored with the fixed checks. That is why their clean
    rates are lower than the first report: narration containing `^` now counts as
    unclean, because the voice reads it as "caret".
-9. **A blind audit of the answer checks found they missed right answers, never passed
-   a wrong one on a real video, and are now fixed (2026-11-21).**
+9. **A blind audit of the answer checks found they missed right answers and passed a
+   wrong one on only 1 of 127 real videos (an AnswerBox showing `n^2`; see "What is
+   left"). The misses are fixed (2026-11-21).**
    - Two graders per video labelled 127 saved videos from the spec and the key,
      without seeing the checkers. The videos came from E1 to E1c, the smoke runs and
      E2's first Gemma videos.
@@ -175,8 +176,24 @@ T2. Read the E numbers as directions, not effect sizes.
          asked variable now decides);
        - a statement in the key's unit losing to a later given (`v = 572 m/s,
          f = 440 Hz`).
-     - Across 182 saved videos, only one verdict changed, the intended fix. One
-       known limit remains: a mean/median line is read by its last statement.
+     - Across 182 saved videos, only one verdict changed, the intended fix.
+     - **Known limits, found by the final review and not fixed.** The checks froze
+       before T2, so fixing these would re-score held-out output after the fact.
+       They are queued for after the study (section 6 item 7):
+       - The asked-variable rule splits only on commas, `;`, `\quad`, `\\` and
+         `\text{ and }`, and needs a bare `x =`. So `x = 2 and y = 3` still passes
+         for x = 3, and `So x = 3, y = 2` fails.
+       - `check_spoken` does not use the asked variable: "x is two and y is three"
+         passes for x = 3.
+       - A statement in the key's unit now beats a later untagged one, even when
+         both name the same variable. `F = 5 N, so F = 10` fails for 10 N; before
+         `d4f605b` it passed.
+       - `_part_unit` reads an exponent digit as the value, so `m/s^2` statements
+         are never tagged.
+       - A mean/median line is read by its last statement.
+       - None of these touches a HELDOUT topic's question form except the
+         same-variable correction, and the T2 answer audit (item 11) does not use
+         the checker.
    - **T1 teacher data, all of it** (wave 2, 2026-11-21 evening). 64 of 70 teacher
      videos pass the SFT filter, and two blind graders read all 64. They agree with
      the checks on every answer.
@@ -218,50 +235,70 @@ T2. Read the E numbers as directions, not effect sizes.
         or follow the prompt's order. It is item 6 in section 6.
 
 11. **SFT fixed the form and broke some of the maths** (T2, section 2c). The student
-    is Granite 4.2 3B after QLoRA SFT on 932 rows from 70 Gemma 4 12B videos. It is
-    compared with the same model untuned on 6 HELDOUT topics, 5 seeds and 2 methods,
-    paired.
+    is Granite 4.2 3B after QLoRA SFT.
+    - Its training data: 932 rows (57 plans and 875 beat and beat-repair rows) from
+      57 Gemma 4 12B videos. Of 70 generated videos, 64 passed the filter; the
+      other 7 that passed went into the 114-row validation set.
+    - It is compared with the same model untuned on 6 HELDOUT topics, 5 seeds and
+      2 methods, paired.
     - **Form, the primary metric, improves a lot.**
       - First-sample clean beats rise from 0.38 to 0.90 (+0.52, 95% CI +0.42 to
         +0.62).
-      - Every one of the 30 (topic, seed) pairs favours the tuned model. Resampling
-        topics instead of pairs gives +0.33 to +0.70, and all 6 topics favour it.
+      - 29 of the 30 (topic, seed) pairs favour the tuned model. The exception is
+        arithmetic-sum, seed 3, at −0.07. Resampling topics instead of pairs gives
+        +0.33 to +0.70, and all 6 topics favour it.
       - Field leaks fall from 0.23 to 0.00.
     - **Answers get worse, and the audit says the checker understated by how much.**
       - By the checker, shown answers fall from 0.80 to 0.68 (95% CI −0.28 to
         +0.05; topic bootstrap −0.33 to +0.05) and spoken answers from 0.78 to 0.60.
+        The spoken figures cover 25 pairs on 5 topics; the stack topic has no
+        spoken check.
       - Blind graders then read every T2 video the checker did not pass, plus 24
-        controls. For the tuned model they confirm every verdict.
+        controls. For the tuned model they confirm every shown verdict.
+      - They do not confirm the spoken ones. For the tuned model, 3 spoken
+        "wrong" are right and 4 unchecked (`n/a`) are wrong; for the untuned, 2
+        "wrong" are right. The spoken drop is checker-only and not corrected by
+        the audit.
       - For the untuned model they find 8 right answers among the 12 the checker
         failed. Its answers come in looser formats, such as an unevaluated product
         or an answer only in the narration.
-      - Audited, shown answers are 0.87 to 0.93 untuned against 0.68 tuned.
+      - Audited, shown answers are 0.87 to 0.93 untuned against 0.68 tuned. The
+        range comes from scaling the untuned model's checker passes by its control
+        false-pass rate (1 of 12, a control with no answer on screen). That rate is
+        estimated from 12 videos.
       - Among checker-passed videos, both graders flag a false working line in 5 of
         12 tuned and 0 of 12 untuned.
-    - **The mechanism: the student copied the teacher's style, not its accuracy.**
-      Gemma 4 12B writes `working` as long hand arithmetic, and the student does the
-      same (`T = 2π × 0.3266 = 0.69`), with wrong numbers. The untuned model writes
-      one line (`≈ 2.006 s`).
-      - The student's calculator expression (`answer_calc`) is usually right: 0.77
-        of the time, against 0.50 untuned.
+    - **The likely mechanism: the student copied the teacher's style, not its
+      accuracy.** No ablation tested it, but the traces are consistent with it.
+      - Gemma 4 12B writes `working` as long hand arithmetic, and the student does
+        the same (`T = 2π × 0.3266 = 0.69`), with wrong numbers. The untuned model
+        writes one line (`≈ 2.006 s`).
+      - SFT made the student write a calculator expression (`answer_calc`) far more
+        often: 53 of 60 videos against 31 untuned. It got the value right 45 times
+        (0.85 of those it wrote), against 30 of 31 untuned.
       - The beat prompt gives the plan's final answer with "(calculator check: X)"
-        beside it. The student copies the final answer, even when it disagrees with
-        the calculator (11 of 60 videos, against 5 untuned).
-      - In the teacher data the two always agreed, because only correct videos were
-        kept. So the student never saw a case where the calculator should win.
+        beside it. In 10 of the 53 tuned videos the calculator was right and the
+        shown answer wrong, and the audit confirms every one of those shown
+        verdicts.
+      - In the teacher data the two always agreed, because only correct videos
+        were kept. So the student never saw a case where the calculator should
+        win.
       - Counterfactual, computed after the run and not a result: if the calculator
         value decided whenever there was one, untuned would score 0.88 and tuned
-        0.83.
-    - **What it means:** for this job at 3B, SFT on teacher outputs buys validity and
-      polish. It costs correctness unless the arithmetic is taken out of the model's
-      hands. Section 6 item 1 is the experiment that would test that.
+        0.82. The untuned figure leans on the checker's false fails, because the
+        untuned model rarely wrote an expression.
+      - Script: `research/audit/scripts/t2_extra_stats.py`. It also computes the
+        topic bootstrap.
+    - **What it suggests:** at 3B, SFT on teacher outputs bought validity and
+      polish here, and cost correctness. Taking the arithmetic out of the model's
+      hands may close the gap. That is a prediction, and section 6 item 1 tests it.
     - The losses concentrate on one topic: pendulum period, −0.6 shown. Parabola
       vertex and ideal-gas volume each lose about 0.1 to 0.2. So "−0.2" is a few
       topics, not a uniform shift.
 
 12. **Without any training, Qwen3.5-4B with best-of-4 and repair is the best small
     model** (E2, section 2d). On DEV it has every beat clean in 10 of 10 videos,
-    0.90 shown and 0.86 spoken, at 65 s per video and 4.7 GB of VRAM. Tuned Granite
+    0.90 shown and 0.86 spoken, at 65 s per video and 4.6 GiB of VRAM. Tuned Granite
     3B scores 0.63 shown on HELDOUT with the same method. Those are different topic
     sets, so it is not a paired comparison, but it is the obvious next student (section
     6 item 3). It is a tier C/B model.
@@ -350,7 +387,8 @@ topics × 5 seeds. Methods: `staged:calc=1,work=1` (one sample, no repair) and
 | Gemma 4 12B (teacher) | best-of-4 + repair | 12 | 0.98 | 0.96 | 0.67 | 1.00 | 1.00 | 0.75 | 110 |
 
 Paired, SFT minus untuned. Both methods are averaged into one pair per (topic, seed):
-30 units, bootstrap 95% CI, exact sign test. Topic CI resamples the 6 topics.
+30 units, bootstrap 95% CI, exact sign test. Topic CI resamples the 6 topics
+(`research/audit/scripts/t2_extra_stats.py`; `report.py` gives the rest).
 
 | metric | SFT | untuned | diff | 95% CI | sign p | topic CI |
 |---|---|---|---|---|---|---|
@@ -366,10 +404,11 @@ Paired, SFT minus untuned. Both methods are averaged into one pair per (topic, s
 - **The teacher's own leak is 0.75 to 0.83**, and the student's is 0.00. The SFT
   trim (item 10) removed it from the student's targets, and the student never learned
   it.
-- **Speed:** the tuned model writes longer working. At n=1 that makes it slower
-  (34 s against 24 s); under best-of-4 it is faster (49 s against 69 s), because it
-  needs less repair.
-- **SFT run:** QLoRA r16, 2 epochs over 932 rows (64 plans and 868 beats), 49 minutes,
+- **Speed:** at n=1 the tuned model is slower (34 s against 24 s), and it writes
+  longer working. Under best-of-4 it is faster (49 s against 69 s). Repair rounds
+  were not counted per arm, so the cause of that difference is not measured.
+- **SFT run:** QLoRA r16, 2 epochs over 932 rows (57 plans and 875 beat and
+  beat-repair rows, from 57 videos), 49 minutes,
   5.2 GiB peak VRAM. Train loss went from 0.77 to 0.13; eval loss on the 4 held-out
   training families is 0.48.
 
@@ -377,15 +416,15 @@ Paired, SFT minus untuned. Both methods are averaged into one pair per (topic, s
 
 E2, 10 DEV topics:
 
-| model | VRAM GB | method | allclean | ans | spk | wall_s |
+| model | VRAM GiB | method | allclean | ans | spk | wall_s |
 |---|---|---|---|---|---|---|
-| Qwen3.5-4B | 4.7 | best-of-4 + repair | **1.00** | **0.90** | **0.86** | 65 |
-| Qwen3.5-4B | 4.7 | staged, n=1 | 0.10 | **1.00** | **1.00** | 29 |
-| Qwen3.5-2B | 2.6 | best-of-4 + repair | **1.00** | 0.60 | 0.71 | 52 |
-| Gemma 4 E2B | 2.9 | best-of-4 + repair | 0.60 | 0.50 | 0.29 | 50 |
-| Granite 4.2 3B | 5.4 | best-of-4 + repair | 0.20 | 0.80 | 0.57 | 62 |
-| Gemma 4 12B | 9.7 | best-of-4 + repair | 0.80 | 1.00 | 0.86 | 154 |
-| gpt-oss-20b | 10.1 | best-of-4 + repair | 1.00 | 0.80 | 0.57 | 132 |
+| Qwen3.5-4B | 4.6 | best-of-4 + repair | **1.00** | **0.90** | **0.86** | 65 |
+| Qwen3.5-4B | 4.6 | staged, n=1 | 0.10 | **1.00** | **1.00** | 29 |
+| Qwen3.5-2B | 2.5 | best-of-4 + repair | **1.00** | 0.60 | 0.71 | 52 |
+| Gemma 4 E2B | 2.8 | best-of-4 + repair | 0.60 | 0.50 | 0.29 | 50 |
+| Granite 4.2 3B | 5.3 | best-of-4 + repair | 0.20 | 0.80 | 0.57 | 62 |
+| Gemma 4 12B | 9.4 | best-of-4 + repair | 0.80 | 1.00 | 0.86 | 154 |
+| gpt-oss-20b | 9.8 | best-of-4 + repair | 1.00 | 0.80 | 0.57 | 132 |
 
 - **Best-of-4 plus repair is what makes small models clean.** Every model gains, and
   Qwen3.5 at 2B and 4B reaches 10 of 10 all-clean videos. Correctness is a property of
@@ -526,6 +565,11 @@ These are vendor numbers; E2 is what measures them here.
    - This changes the prompt hash, so it starts a new SFT data version. The `leak`
      column measures the effect.
 6. **Qwen3.6-35B-A3B** (E2): queued last, behind a 22 GiB RAM gate.
+7. **After the study: fix the checker limits in item 9** (the asked variable in
+   sentences and narration, same-variable corrections, exponent units). Pin each case
+   in `research/tests/test_train_checks.py`, re-run `diff_checkers` over every saved
+   video, and report re-scored tables under a new label. Don't overwrite the frozen
+   T2 numbers.
 
 ## 7. How to resume
 

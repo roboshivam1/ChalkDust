@@ -158,12 +158,18 @@ These are vendor numbers; E2 is what measures them here.
 - **Voices (from a 2026-11-21 primary-source pass; the four research notes did not
   cover TTS):**
   - **Kokoro-82M** is Apache-2.0 (model card), and its phonemiser `misaki` is
-    Apache-2.0. But the Kokoro pipeline relies on **espeak-ng, which is
-    GPL-3.0-or-later**, for words outside its lexicon. That is the same class of
-    risk as x264.
-  - Before shipping Kokoro, check how espeak-ng is loaded: an in-process library or a
-    separate executable. Also check whether a non-GPL fallback exists. Unverified
-    here.
+    Apache-2.0.
+  - A default `kokoro` install puts **two GPL-3 components in-process**:
+    `phonemizer-fork` 3.3.2 (GPL-3) and the espeak-ng shared library
+    (GPL-3.0-or-later). The library is loaded by ctypes through `espeakng-loader`,
+    whose own code is MIT.
+  - `kokoro` depends on `misaki[en]`, and that extra pulls both in.
+  - For English, espeak-ng is only the last-resort fallback for words outside
+    misaki's lexicon. For most other languages it is the primary G2P.
+    (Source read of kokoro and misaki 0.9.4, 2026-11-21. Not run.)
+  - **Way out, untested:** install without those two packages so misaki falls back
+    to its own neural G2P (`FallbackNetwork`, a BART model), then check pronunciation
+    of out-of-lexicon words. No documented non-GPL mode exists.
   - Some Kokoro voices carry their own dataset terms. `af_heart` shows none.
   - The Windows SAPI and macOS voices come with no redistribution grant we could find.
     Keep them as development voices, as `docs/VOICE.md` already does.

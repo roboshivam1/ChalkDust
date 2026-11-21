@@ -139,6 +139,23 @@ directions, not effect sizes.
    - The audit covers 10 topics and is mostly one model, so read these as failure
      modes, not a precision figure. Labels, the agreement script and the mutation
      script are in `research/audit/`.
+   - **The training topics needed a second pass** (`6067b2c`, before any SFT data
+     was built). A false-pass sweep wrote right and wrong answers for every training
+     family and ran them through the checks that gate the SFT data. It found wrong
+     answers that passed:
+     - `v = 338.5 m/s` did not parse. The narration decided instead, and its
+       misconception sentence ("…which would give 572 metres per second") equalled
+       the key.
+     - The 2% tolerance passed 58 for 57, 122 for 5! = 120, and simple interest
+       (2480) for compound interest (2519.42).
+     - It also found correct answers that failed: `KE = 60,000 J` read as 0,
+       "192 joules per second" set aside as an energy, and a Unicode minus dropped.
+
+     All of these are fixed and pinned in `research/tests/test_train_checks.py`.
+     No verdict changed on the 148 saved videos, and the audit numbers above
+     stand. Two limits remain:
+     - an x/y swap on simultaneous equations (`x = 1, y = 3` for x = 3);
+     - a mean/median line read by its last statement.
 
 10. **The same schema-order trap hit the title card, and the validator cannot see
     it** (found 2026-11-21 while checking the teacher's first videos).

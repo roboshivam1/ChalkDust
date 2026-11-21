@@ -155,6 +155,22 @@ These are vendor numbers; E2 is what measures them here.
   on H.264 patents (`rendering-2026-11.md`).
 - **3b1b material:** the 3b1b video code is CC BY-NC-SA and cannot go into a paid
   product (`evaluation-2026-11.md`).
+- **Voices (from a 2026-11-21 primary-source pass; the four research notes did not
+  cover TTS):**
+  - **Kokoro-82M** is Apache-2.0 (model card), and its phonemiser `misaki` is
+    Apache-2.0. But the Kokoro pipeline relies on **espeak-ng, which is
+    GPL-3.0-or-later**, for words outside its lexicon. That is the same class of
+    risk as x264.
+  - Before shipping Kokoro, check how espeak-ng is loaded: an in-process library or a
+    separate executable. Also check whether a non-GPL fallback exists. Unverified
+    here.
+  - Some Kokoro voices carry their own dataset terms. `af_heart` shows none.
+  - The Windows SAPI and macOS voices come with no redistribution grant we could find.
+    Keep them as development voices, as `docs/VOICE.md` already does.
+- **Fonts:** Archivo, Inter and JetBrains Mono are SIL OFL 1.1 with no Reserved Font
+  Name, so they may be bundled with paid software. Each needs its copyright line and
+  the licence text in the app's third-party notices, as each bundled model needs its
+  Apache-2.0 text.
 
 ## 5. What failed, was skipped, or is unverified
 

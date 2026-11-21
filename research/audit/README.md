@@ -29,6 +29,11 @@ claim. The outcome is FINDINGS item 9.
      expected to stay correct.
 4. **Checker versions.** `versions.py` scores the audited videos with the checker
    before the audit, after `20eb828` and at `1a0b4f0`. Its header says how to run it.
+5. **Wrong steps.** `stepcheck.py` compares `derivation_consistency` with the
+   graders' `wrong_steps`, and counts SFT-eligible videos (`build_sft.video_ok`) that
+   still show a false line.
+   - Result: 11 of 85 by either grader, 7 by both. The check flags none of them.
+   - It applies only to set keys (14 videos), and it misreads `\implies`.
 
 ## Running
 

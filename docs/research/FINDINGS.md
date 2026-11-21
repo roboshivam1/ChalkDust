@@ -126,6 +126,16 @@ directions, not effect sizes.
        graders looked further back.
      - Two narrations end on a justification ("as there are 6 favorable
        outcomes"), whose cued 6 is read as the answer.
+   - **Wrong steps get past every hard check.**
+     - About 1 in 8 videos with a right final answer still shows a false
+       intermediate line: 11 of the 85 that pass the SFT filter by either grader,
+       7 by both.
+     - The step-consistency check (`derivation_consistency`) applies only to roots
+       topics (14 of 127 videos). It caught none of these, and it misread a correct
+       `\implies` line as wrong.
+     - So SFT data filtered on the final answer can still teach a false line. Its
+       share in the T1 teacher data is measured by blind graders, not filtered by
+       them: hard checks decide what is kept.
    - The audit covers 10 topics and is mostly one model, so read these as failure
      modes, not a precision figure. Labels, the agreement script and the mutation
      script are in `research/audit/`.

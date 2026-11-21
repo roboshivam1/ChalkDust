@@ -128,6 +128,12 @@ one of these, recomputed from the saved spec by `research/analyze.py`:
 | speed | LLM seconds (max over concurrent samples), validator seconds, wall, tok/s from llama.cpp's own timings | `llm.chat`, `run.summarise` |
 | memory | VRAM peak minus pre-load baseline; server RSS; layers on GPU as chosen by `--fit` | `llm.GpuSampler`, `LlamaServer.placement` |
 
+On Windows, llama-server's private bytes sit near its VRAM use even with every
+layer on the GPU: 10.1 GB after loading Gemma 4 12B, against 0.6 GB of host
+buffers in its load log. We infer that Windows charges GPU allocations to system
+commit; this is not tested. Read server memory as growth after load, never as an
+absolute figure.
+
 Topic sets are frozen in `research/topics.py`: 10 DEV topics for comparisons and 6
 HELDOUT topics that no training step sees. Every key is computed by sympy, never typed.
 Training topics (`research/train_topics.py`) come from 43 problem families. None is an
@@ -146,6 +152,18 @@ metrics, timings. Its spec, raw completions, scores and server log are kept unde
 model whose chat template still "thinks" is skipped and reported, not scored as bad.
 Results never overwrite: a fixed bug means a new experiment id, and the old file stays
 as the record of what was wrong.
+
+**Settings that changed mid-study** (each record carries `score_workers` and
+`cache_ram_mib` from E2 on):
+- E1, E1b and E1c ran with 4 scoring workers and llama-server's default 8 GiB prompt
+  cache.
+- From E2 the queue runs 2 scoring workers (`SCORE_WORKERS=2`) and no prompt cache
+  (`--cache-ram 0`). Four workers beside gpt-oss-20b would overcommit a 32 GB laptop.
+- E2's first record (Gemma 4 12B, `dev-quadratic-roots`, 2026-11-21 11:40) ran with a
+  1 GiB cache and 4 workers. It is kept. Its wall time is not like-for-like with the
+  rest of E2, and `pick_teacher` averages it in.
+- Validator wall times are therefore comparable within E2 and later experiments,
+  not with E1.
 
 ## 4. Inference-time methods tested
 

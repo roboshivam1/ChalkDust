@@ -65,11 +65,21 @@ directions, not effect sizes.
      so the real run loads the base in 4 bits.
    - The untuned Granite 3B passed 1 of 9 and 3 of 7 beats on two dev topics. That is
      a smoke result, not a measurement, but it leaves room for SFT to show an effect.
-7. **llama-server's default host prompt cache is up to 8 GiB of system RAM per
-   server** (`--cache-ram 8192`). It is the likely cause of the memory stop: the 4B
-   model's server peaked at 11.1 GB RSS. The harness now caps it at 1 GiB, with 4
-   context checkpoints per slot. ChalkDust's own bundling of llama.cpp should set this
-   too, or it will take a third of a 32 GB laptop's RAM.
+7. **Memory on a 32 GB Windows laptop is the binding limit, and the first diagnosis
+   was incomplete.**
+   - llama-server's default prompt cache is up to 8 GiB of system RAM
+     (`--cache-ram 8192`). A 1 GiB cap did not stop the problem: under Gemma 4 12B one
+     saved slot state is 0.9–1.2 GB, so the cache held one entry and copied about
+     1 GB off the GPU on nearly every request.
+   - On the 2026-11-21 relaunch, the server's private bytes went from 10.1 GB after
+     load to 13.4 GB within two minutes. System commit reached 51.3 of 53.4 GB, and the
+     queue was stopped.
+   - The harness now turns the cache off (`--cache-ram 0`) and runs 2 scoring workers,
+     not 4. Each worker is about 1.7 GB.
+   - The 10.1 GB after load is mostly not host buffers: the load log shows 0.6 GB on
+     the host. We infer Windows charges VRAM to system commit.
+   - ChalkDust's own bundling of llama.cpp should disable the prompt cache and size
+     validator parallelism to the machine.
 8. **An independent review found five metric and data defects. All were fixed before
    any model comparison ran.**
    - The answer checks passed on any number in the line or narration.
@@ -121,7 +131,8 @@ Plan first, then fill each beat:
    - text flags for LaTeX or `^` read aloud.
 
    These checks are an extra rung beside the validator, not a replacement for it.
-5. **Model settings:** thinking off. Cap llama-server's host cache.
+5. **Model settings:** thinking off. Turn llama-server's prompt cache off
+   (`--cache-ram 0`).
 
 The method is laid out in full in `docs/research/METHODOLOGY.md`, and the background
 research in the four `docs/research/*-2026-11.md` notes. In short:
@@ -147,14 +158,25 @@ These are vendor numbers; E2 is what measures them here.
 
 ## 5. What failed, was skipped, or is unverified
 
-- **Stopped:** the GPU queue, the downloads and the keep-awake lock, at about 21:05,
-  for low system memory. Not restarted.
+- **Stopped twice for memory:**
+  - 2026-11-17, about 21:05: Claude Code stopped the GPU queue, the downloads and the
+    keep-awake lock.
+  - 2026-11-21: the queue, relaunched in its own window, was stopped by hand after
+    2 minutes at 51.3 of 53.4 GB commit (item 7).
+  - It was relaunched at 11:50 with the cache off, 2 scoring workers and a memory guard.
 - **Not run:** E2 (model sweep), T1 to T3, E4 and E5, so there are no tuned-against-
   untuned numbers yet.
-- **Where each model's weights went (GPU or CPU) is not recorded:** b12466 does not
-  log `--fit`'s layer split at the default log level.
-- **E1b and E1c ran with llama-server's default 8 GiB host cache.** Later runs use the
-  1 GiB cap. Speed comparisons across that change are not like-for-like.
+- **Where each model's weights went (GPU or CPU) is not recorded per run:** b12466
+  does not log `--fit`'s layer split at the default log level. One-off loads at `-lv 4`
+  on 2026-11-21, with 32k context over 4 slots:
+
+  | model | placement | KV cache | after load |
+  |---|---|---|---|
+  | Gemma 4 12B | 49/49 layers on the GPU: 6.8 GB weights, 0.5 GB embeddings mapped on the host | 2.4 GB on the GPU | private 10.1 GB |
+  | gpt-oss-20b | 25 layers' dense weights on the GPU; most expert weights in host RAM | n/a | commit 29.5 → 39.4 GB, 6.3 GB physical free |
+- **E1, E1b and E1c ran with llama-server's default 8 GiB host cache and 4 scoring
+  workers.** E2 onwards uses no cache and 2 workers, so speed comparisons across that
+  change are not like-for-like (METHODOLOGY.md, "Settings that changed mid-study").
 - **Videos:** one complete local video exists so far: E0, Qwen3-4B, projectile range,
   draft, 170.6 s, at `.lab/videos/E0/`. The watch list (`research/watchlist.py`) is
   queued behind the teacher sweep.
@@ -195,6 +217,11 @@ The queue:
 - keeps the laptop awake while it runs;
 - waits before each job until no other program holds more than 4.5 GB of the GPU
   and at least 8 GiB of RAM is free;
+- stops at a job that exits non-zero, or that its memory guard kills (available RAM
+  under 1.5 GiB or commit headroom under 2 GiB for 60 s). It leaves that job out of
+  `done.txt`, so starting the queue again retries it, and `--resume` keeps the
+  records already saved;
+- logs every start, finish and failure to `.lab/queue/queue.log`;
 - prints `ALL DONE` at the end.
 
 At the stop, WSL Ubuntu held 15.4 GB of RAM, 12.7 GB of it file cache, and a voice

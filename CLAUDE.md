@@ -253,9 +253,19 @@ notes.
 - **One GPU job at a time.** Queue them with `research/gpu_queue.py` (jobs in
   `.lab/queue/jobs.json`, re-read before each job; finished names in `done.txt`). It waits
   before each job until the GPU is free of other programs and 8 GiB of RAM is free.
-- **Host RAM.** llama-server keeps up to 8 GiB of prompt cache in system RAM by default;
-  `research/llm.py` caps it (`--cache-ram 1024 --ctx-checkpoints 4`). A 32 GB laptop with
-  desktop apps open ran out once with the default.
+  - A job that exits non-zero stops the queue and is left out of `done.txt`.
+  - So is a job the memory guard kills: available RAM under 1.5 GiB or commit headroom
+    under 2 GiB for 60 s.
+  - Status lines go to `.lab/queue/queue.log`.
+  - Run it in its own PowerShell window, not as a Claude Code background task, which
+    is stopped when memory runs low.
+- **Host RAM.** `research/llm.py` turns llama-server's prompt cache off
+  (`--cache-ram 0`). Under Gemma 4 a saved slot state is about 1 GB, and the default
+  cache is up to 8 GiB. Scoring workers are about 1.7 GB each; the queue sets
+  `SCORE_WORKERS=2`.
+  - On Windows, llama-server's private bytes sit near its VRAM use even fully offloaded,
+    so judge memory by growth after load and by system commit.
+  - A 32 GB laptop with desktop apps open has run out twice.
 - **Tests:** `.lab/venv-harness/Scripts/python -m pytest research/tests -o addopts="" -q -p no:cacheprovider`.
 
 ## Conventions

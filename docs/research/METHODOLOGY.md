@@ -152,6 +152,19 @@ evaluation family or a near-twin, and the module asserts the separation at impor
   - land before the step that uses it: the teacher pick, then the SFT filter.
 - **Freeze.** The checkers freeze before any held-out output exists, so no change
   can be tuned to the held-out topics.
+- **Auditing held-out answers without unfreezing.** After T2, two blind graders read
+  every held-out video the checker did not pass, plus random checker-passed controls
+  for each (topic, arm). Ids were anonymised, so the graders could not tell which arm
+  a video came from.
+  - The checker stays as it was. The audit reports a second, hand-graded answer rate
+    beside the checker's.
+  - The controls estimate the checker's false-pass rate, and the not-passed videos
+    give its false-fail count. Together they bound the audited rate.
+  - Labels and scripts: `research/audit/t2-heldout/`, `research/audit/scripts/`.
+- **Two intervals for T2.** `report.py` bootstraps over (topic, seed) units, with both
+  methods averaged into one pair per unit. Seeds of one topic are not independent, so
+  FINDINGS also gives a bootstrap that resamples the 6 topics. It is the more
+  conservative interval.
 
 **What is not measured and why.** Teaching quality, as in "is this a good
 explanation", is not scored by a model. A model judge is a weak, gameable signal

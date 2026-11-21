@@ -259,6 +259,19 @@ notes.
   - Status lines go to `.lab/queue/queue.log`.
   - Run it in its own PowerShell window, not as a Claude Code background task, which
     is stopped when memory runs low.
+  - One queue per queue directory: a second `python -m research.gpu_queue` on the same
+    `QUEUE_DIR` logs `REFUSED` and exits 2. Importing the module starts nothing.
+  - A gate job waits for a marker file (for example `.lab/queue/go-sft`) or its
+    timeout. Use one to hold a step until a check outside the queue is done.
+  - `research.run` exits non-zero, with no record for that video, if llama-server
+    dies mid-run. Restart the queue; `--resume` redoes the video.
+- **Checks freeze before held-out output.** Fix the answer checks (`research/content.py`)
+  on DEV, TRAIN and saved runs only, never in response to T2 or T3 held-out output
+  (METHODOLOGY section 3). Pin each fix with a case in `research/tests/test_train_checks.py`.
+- **Field leaks.** `research/leaks.py` flags JSON and label text that leaked into a
+  component's text field (the TitleCard kicker, FINDINGS item 10). `analyze` and
+  `report` show it as the `leak` column. `build_sft` trims leaked kickers and marks
+  those rows `"edited": "kicker_trim"`; no other teacher output is edited.
 - **Host RAM.** `research/llm.py` turns llama-server's prompt cache off
   (`--cache-ram 0`). Under Gemma 4 a saved slot state is about 1 GB, and the default
   cache is up to 8 GiB. Scoring workers are about 1.7 GB each; the queue sets

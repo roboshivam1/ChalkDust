@@ -1,24 +1,25 @@
 # Findings: making small local models good at ChalkDust specs
 
-**Status: INTERIM, 2026-11-21 ~12:30. The run is in progress.** The GPU queue
-restarted on 2026-11-21 (section 5 has the two memory stops before that).
+**Status: 2026-11-21, 23:00. Everything has run except GRPO (T3, running) and the
+optional Qwen3.6-35B-A3B row of E2.**
 
-- **Done:** the research notes, the method, E1b and E1c, the whole training path
-  tested end to end, two independent reviews with fixes, and a blind audit of the
-  answer checks (item 9).
-- **Running:** E2 on the teacher candidates.
-- **Queued, in order:** the teacher pick, T1 (teacher data), SFT, the held-out
-  evaluation, the rest of E2, E4 (split pipeline), E5 (CPU only), and T3 (GRPO)
-  last.
-
-Numbers below change as results land.
+- **Done:**
+  - the research notes and the method;
+  - E1b and E1c, E2 (teachers and small models), E4 (split pipeline), E5 (CPU only);
+  - T1 (70 teacher videos), SFT of Granite 4.2 3B, and T2 (tuned against untuned
+    on HELDOUT, 6 topics × 5 seeds × 2 methods);
+  - two independent reviews with fixes, and blind audits of the answer checks, the
+    teacher data and the T2 answers (items 9 and 11).
+- **The training result in one line:** SFT fixed the form and broke some of the
+  maths (item 11).
 
 Every number below comes from `research/results/*.jsonl` through
-`python -m research.analyze`. That command re-scores every run with the current
-(post-review) checkers. n is small: 10 DEV topics, one seed. Read the numbers as
-directions, not effect sizes.
+`python -m research.analyze` or `python -m research.report`. Both re-score every run
+with the current checkers. The checkers froze before any T2 output existed. n is
+small: 10 DEV topics with one seed for E1 to E5, and 6 HELDOUT topics with 5 seeds for
+T2. Read the E numbers as directions, not effect sizes.
 
-## 1. Outcome so far
+## 1. Outcome
 
 1. **Method beats raw size on validity. Best-of-4 plus one repair round is the
    biggest single lever.** On Qwen3-4B-Instruct-2507:
@@ -167,9 +168,24 @@ directions, not effect sizes.
 
      All of these are fixed and pinned in `research/tests/test_train_checks.py`.
      No verdict changed on the 148 saved videos, and the audit numbers above
-     stand. Two limits remain:
-     - an x/y swap on simultaneous equations (`x = 1, y = 3` for x = 3);
-     - a mean/median line read by its last statement.
+     stand.
+     - A later code review fixed three more before T2 (`a12154b`, `d4f605b`):
+       - a LaTeX `\;` read as a separator;
+       - the x/y swap on simultaneous equations (`x = 1, y = 3` for x = 3; the
+         asked variable now decides);
+       - a statement in the key's unit losing to a later given (`v = 572 m/s,
+         f = 440 Hz`).
+     - Across 182 saved videos, only one verdict changed, the intended fix. One
+       known limit remains: a mean/median line is read by its last statement.
+   - **T1 teacher data, all of it** (wave 2, 2026-11-21 evening). 64 of 70 teacher
+     videos pass the SFT filter, and two blind graders read all 64. They agree with
+     the checks on every answer.
+     - 2 of 64 carry an error-teaching line:
+       - wave 1: a trig-identity construction that labels the vertical leg
+         "Horizontal";
+       - wave 2: a Fibonacci StepTrace whose "sum" column repeats `b` (1, 1 → 1).
+     - Both stay in the SFT set. The filter cannot see them (item 4), and the
+       results are not edited after the fact.
 
 10. **The same schema-order trap hit the title card, and the validator cannot see
     it** (found 2026-11-21 while checking the teacher's first videos).
@@ -200,6 +216,55 @@ directions, not effect sizes.
       - SFT targets get the kicker trimmed (METHODOLOGY section 6).
       - The fix belongs in `generate.beat_schema`: put `kicker` before `subtitle`,
         or follow the prompt's order. It is item 6 in section 6.
+
+11. **SFT fixed the form and broke some of the maths** (T2, section 2c). The student
+    is Granite 4.2 3B after QLoRA SFT on 932 rows from 70 Gemma 4 12B videos. It is
+    compared with the same model untuned on 6 HELDOUT topics, 5 seeds and 2 methods,
+    paired.
+    - **Form, the primary metric, improves a lot.**
+      - First-sample clean beats rise from 0.38 to 0.90 (+0.52, 95% CI +0.42 to
+        +0.62).
+      - Every one of the 30 (topic, seed) pairs favours the tuned model. Resampling
+        topics instead of pairs gives +0.33 to +0.70, and all 6 topics favour it.
+      - Field leaks fall from 0.23 to 0.00.
+    - **Answers get worse, and the audit says the checker understated by how much.**
+      - By the checker, shown answers fall from 0.80 to 0.68 (95% CI −0.28 to
+        +0.05; topic bootstrap −0.33 to +0.05) and spoken answers from 0.78 to 0.60.
+      - Blind graders then read every T2 video the checker did not pass, plus 24
+        controls. For the tuned model they confirm every verdict.
+      - For the untuned model they find 8 right answers among the 12 the checker
+        failed. Its answers come in looser formats, such as an unevaluated product
+        or an answer only in the narration.
+      - Audited, shown answers are 0.87 to 0.93 untuned against 0.68 tuned.
+      - Among checker-passed videos, both graders flag a false working line in 5 of
+        12 tuned and 0 of 12 untuned.
+    - **The mechanism: the student copied the teacher's style, not its accuracy.**
+      Gemma 4 12B writes `working` as long hand arithmetic, and the student does the
+      same (`T = 2π × 0.3266 = 0.69`), with wrong numbers. The untuned model writes
+      one line (`≈ 2.006 s`).
+      - The student's calculator expression (`answer_calc`) is usually right: 0.77
+        of the time, against 0.50 untuned.
+      - The beat prompt gives the plan's final answer with "(calculator check: X)"
+        beside it. The student copies the final answer, even when it disagrees with
+        the calculator (11 of 60 videos, against 5 untuned).
+      - In the teacher data the two always agreed, because only correct videos were
+        kept. So the student never saw a case where the calculator should win.
+      - Counterfactual, computed after the run and not a result: if the calculator
+        value decided whenever there was one, untuned would score 0.88 and tuned
+        0.83.
+    - **What it means:** for this job at 3B, SFT on teacher outputs buys validity and
+      polish. It costs correctness unless the arithmetic is taken out of the model's
+      hands. Section 6 item 1 is the experiment that would test that.
+    - The losses concentrate on one topic: pendulum period, −0.6 shown. Parabola
+      vertex and ideal-gas volume each lose about 0.1 to 0.2. So "−0.2" is a few
+      topics, not a uniform shift.
+
+12. **Without any training, Qwen3.5-4B with best-of-4 and repair is the best small
+    model** (E2, section 2d). On DEV it has every beat clean in 10 of 10 videos,
+    0.90 shown and 0.86 spoken, at 65 s per video and 4.7 GB of VRAM. Tuned Granite
+    3B scores 0.63 shown on HELDOUT with the same method. Those are different topic
+    sets, so it is not a paired comparison, but it is the obvious next student (section
+    6 item 3). It is a tier C/B model.
 
 ## 2. E1: how to ask a small model (Qwen3-4B-Instruct-2507, Q4_K_M)
 
@@ -267,6 +332,77 @@ The table covers 10 DEV topics with seed 0 and the recommended method
   The rule's outcome alone does not justify the choice.
 - Gemma's first record ran under the old memory settings, so its `wall_s` is "MIXED"
   (METHODOLOGY section 3).
+
+## 2c. T2: tuned against untuned on HELDOUT (2026-11-21)
+
+`python -m research.report --exp T2-heldout`. Models: Granite 4.2 3B, untuned
+(`granite-4.2-3b-self`) and after SFT (`granite-4.2-3b-sft-v1`). Topics: 6 HELDOUT
+topics × 5 seeds. Methods: `staged:calc=1,work=1` (one sample, no repair) and
+`staged:n=4,repair=1,calc=1,work=1`. The teacher's ceiling uses seeds 0 and 1.
+
+| model | method | n | valid | clean | allclean | ans | spk | leak | wall_s |
+|---|---|---|---|---|---|---|---|---|---|
+| untuned | n=1 | 30 | 0.54 | 0.37 | 0.03 | 0.73 | 0.72 | 0.30 | 24 |
+| untuned | best-of-4 + repair | 30 | 0.82 | 0.72 | 0.33 | 0.87 | 0.84 | 0.17 | 69 |
+| **SFT** | n=1 | 30 | **0.93** | **0.91** | 0.40 | 0.73 | 0.64 | **0.00** | 34 |
+| **SFT** | best-of-4 + repair | 30 | **0.96** | **0.96** | **0.70** | 0.63 | 0.56 | **0.00** | 49 |
+| Gemma 4 12B (teacher) | n=1 | 12 | 0.90 | 0.86 | 0.33 | 1.00 | 0.90 | 0.83 | 61 |
+| Gemma 4 12B (teacher) | best-of-4 + repair | 12 | 0.98 | 0.96 | 0.67 | 1.00 | 1.00 | 0.75 | 110 |
+
+Paired, SFT minus untuned. Both methods are averaged into one pair per (topic, seed):
+30 units, bootstrap 95% CI, exact sign test. Topic CI resamples the 6 topics.
+
+| metric | SFT | untuned | diff | 95% CI | sign p | topic CI |
+|---|---|---|---|---|---|---|
+| first-sample clean, per beat (primary) | 0.897 | 0.377 | +0.521 | [+0.421, +0.615] | <0.0001 | [+0.327, +0.695] |
+| first-sample all-clean, per video | 0.317 | 0.033 | +0.283 | [+0.150, +0.417] | 0.0007 | [+0.083, +0.483] |
+| allclean (final video) | 0.550 | 0.183 | +0.367 | [+0.167, +0.567] | 0.0066 | [−0.067, +0.733] |
+| ans (checker) | 0.683 | 0.800 | −0.117 | [−0.283, +0.050] | 0.24 | [−0.333, +0.050] |
+| spk (checker) | 0.600 | 0.780 | −0.180 | [−0.340, −0.020] | 0.12 | [−0.400, 0.000] |
+| field leak | 0.000 | 0.233 | −0.233 | [−0.333, −0.133] | 0.0002 | [−0.317, −0.150] |
+
+- **Audited shown answers** (`research/audit/t2-heldout/`): 0.87 to 0.93 untuned
+  against 0.68 tuned (item 11).
+- **The teacher's own leak is 0.75 to 0.83**, and the student's is 0.00. The SFT
+  trim (item 10) removed it from the student's targets, and the student never learned
+  it.
+- **Speed:** the tuned model writes longer working. At n=1 that makes it slower
+  (34 s against 24 s); under best-of-4 it is faster (49 s against 69 s), because it
+  needs less repair.
+- **SFT run:** QLoRA r16, 2 epochs over 932 rows (64 plans and 868 beats), 49 minutes,
+  5.2 GiB peak VRAM. Train loss went from 0.77 to 0.13; eval loss on the 4 held-out
+  training families is 0.48.
+
+## 2d. E2 small models, E4 split pipeline, E5 CPU only (DEV, seed 0)
+
+E2, 10 DEV topics:
+
+| model | VRAM GB | method | allclean | ans | spk | wall_s |
+|---|---|---|---|---|---|---|
+| Qwen3.5-4B | 4.7 | best-of-4 + repair | **1.00** | **0.90** | **0.86** | 65 |
+| Qwen3.5-4B | 4.7 | staged, n=1 | 0.10 | **1.00** | **1.00** | 29 |
+| Qwen3.5-2B | 2.6 | best-of-4 + repair | **1.00** | 0.60 | 0.71 | 52 |
+| Gemma 4 E2B | 2.9 | best-of-4 + repair | 0.60 | 0.50 | 0.29 | 50 |
+| Granite 4.2 3B | 5.4 | best-of-4 + repair | 0.20 | 0.80 | 0.57 | 62 |
+| Gemma 4 12B | 9.7 | best-of-4 + repair | 0.80 | 1.00 | 0.86 | 154 |
+| gpt-oss-20b | 10.1 | best-of-4 + repair | 1.00 | 0.80 | 0.57 | 132 |
+
+- **Best-of-4 plus repair is what makes small models clean.** Every model gains, and
+  Qwen3.5 at 2B and 4B reaches 10 of 10 all-clean videos. Correctness is a property of
+  the model: Qwen3.5-2B is clean and 0.60 right.
+- **E4, split pipeline** (Gemma 4 12B's saved plans, filled by a small model). The
+  borrowed plan mostly lifts what the small model says, not what it shows:
+  - Granite 3B: spoken 1.00 against 0.43 at n=1, and 0.86 against 0.57 under
+    best-of-4. Shown answers and allclean are unchanged.
+  - Qwen3.5-2B: shown 0.70 against 0.60 at n=1. Under best-of-4, allclean is 0.90
+    against 1.00.
+  - Qwen3.5-4B: no gain.
+  - On 10 topics none of this is clear of noise. The split also costs a 12B model's
+    planning time, so it is not worth it on one machine.
+- **E5, CPU only** (`--ngl 0`, 4 threads, 3 topics): Qwen3.5-2B takes 65 to 95 s per
+  video at about 22 tok/s, and Granite 3B takes 166 to 287 s at 10 to 13 tok/s. A
+  laptop without a GPU can draft a video in a few minutes. Quality at n=3 is too noisy
+  to rank.
 
 ## 3. Recommended method (provisional: E2 picks the model per machine)
 
@@ -338,8 +474,12 @@ These are vendor numbers; E2 is what measures them here.
   - 2026-11-21: the queue, relaunched in its own window, was stopped by hand after
     2 minutes at 51.3 of 53.4 GB commit (item 7).
   - It was relaunched at 11:50 with the cache off, 2 scoring workers and a memory guard.
-- **Not run:** E2 (model sweep), T1 to T3, E4 and E5, so there are no tuned-against-
-  untuned numbers yet.
+- **Not run:** the Qwen3.6-35B-A3B row of E2 (queued last). The T2 held-out set is
+  6 topics. Its intervals are honest about that, but a second held-out set would make
+  item 11's effect sizes firmer.
+- **Checker errors are not symmetric across models.** On T2 they fell on the
+  untuned model's looser answer formats (item 11). A checker-only comparison
+  understated the tuned model's loss, which is why the T2 answers were hand-audited.
 - **Where each model's weights went (GPU or CPU) is not recorded per run:** b12466
   does not log `--fit`'s layer split at the default log level. One-off loads at `-lv 4`
   on 2026-11-21, with 32k context over 4 slots:
@@ -361,28 +501,31 @@ These are vendor numbers; E2 is what measures them here.
 
 ## 6. Ranked next experiments
 
-1. **Resume the queue** (section 7), in order:
-   - E2 teachers (Gemma 4 12B and gpt-oss-20b on the best method);
-   - automatic teacher pick (usable videos per GPU-hour);
-   - 3 h of teacher data on the training pool (114 topics, 38 families, none near an
-     evaluation family);
-   - filter, then QLoRA SFT of Granite 4.2 3B;
-   - held-out comparison, tuned against untuned, over 6 topics × 5 seeds, paired.
-     The primary metric is the first-sample clean rate.
-   - GRPO from the SFT model with the validator reward, 120 steps
-     (`T3-grpo --steps 120`).
-2. **E2 small models** (Qwen3.5-2B and 4B, Granite 4.2 3B, Gemma 4 E2B) for the
-   student laptops, and E5 on the CPU only.
-3. **E4, the split pipeline:** a big model's plans filled by a small model.
-4. **Qwen3.6-35B-A3B**, behind a RAM gate (it holds about 17 GB of experts in system
-   RAM).
-5. **Qwen3.5-4B as a second student.** Unsloth lists bf16 LoRA at 10 GB. It has
-   vision and linear-attention layers, so expect a slower path on Windows.
-6. **After the study: fix the TitleCard field order** (item 10).
+1. **Take the arithmetic out of the model's hands** (item 11). When the plan's
+   `answer_calc` evaluates, the harness writes that value as the final answer. The
+   beat prompts then carry the calculator's number, not the model's.
+   - Also add SFT rows where the plan's hand arithmetic disagrees with the calculator
+     and the target follows the calculator.
+   - This changes generation and the prompt hash, so it means a new SFT version.
+   - Confirm on DEV and on a new held-out set. HELDOUT has now been audited by hand,
+     and the counterfactual in item 11 was computed on it.
+2. **Reward correctness in RL, not just validity.** After SFT the validator reward is
+   saturated: in most GRPO groups all 4 samples score 1 (section 2c, T3). A reward of
+   validator × answer check on keyed TRAIN topics, applied to plan prompts as well as
+   beat prompts, gives the signal where the student is actually weak.
+3. **Qwen3.5-4B as the student** (item 12). Untuned, it is the best small model on
+   DEV. Unsloth lists bf16 LoRA at 10 GB. It has vision and linear-attention layers,
+   so expect a slower path on Windows.
+4. **Filter teacher data on working, not only on the answer.** 2 of 64 teacher videos
+   teach an error the filter cannot see (item 9). `research/audit/stepcheck.py` checks
+   whether each derivation line follows from the one before. It could gate SFT rows
+   if it agrees with the graders.
+5. **Fix the TitleCard field order** (item 10).
    - Generate `kicker` before `subtitle` in `generate.beat_schema`.
    - Audit every component's optional fields for the same trap.
    - This changes the prompt hash, so it starts a new SFT data version. The `leak`
      column measures the effect.
+6. **Qwen3.6-35B-A3B** (E2): queued last, behind a 22 GiB RAM gate.
 
 ## 7. How to resume
 

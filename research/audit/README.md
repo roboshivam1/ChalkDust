@@ -69,3 +69,19 @@ exists only on the lab machine.
 Run `python research/audit/t1_summary.py research/audit/t1-wave1` for the summary.
 The result is FINDINGS item 9. The wrong-step count measures the SFT data and does
 not filter it.
+
+## T2 held-out answers and T1 wave 2 (2026-11-21 evening)
+
+- `t2-heldout/`: all 40 granite T2 videos the frozen checker did not pass, plus 24
+  checker-passed controls (2 per topic and arm). There are 8 slices with anonymised
+  ids. Two blind Sonnet graders read each slice, and one adjudicator per slice settled
+  their shown/spoken disagreements. `consensus.jsonl` un-blinds the results: arm,
+  method, seed, the checker's verdict and the graders' verdict.
+  - Tuned: the checker matches the graders on every shown verdict.
+  - Untuned: 8 of 12 checker failures are right answers in looser formats.
+  - Audited shown-correct: untuned 0.87 to 0.93, tuned 0.68.
+- `t1-wave2/`: the 35 SFT-eligible T1 videos not graded in wave 1. The graders agree
+  with the checks on every answer. One video, the Fibonacci StepTrace, has a confirmed
+  error-teaching line.
+- Scripts: `scripts/make_slices_t2.py` builds the slices and the private id map, and
+  `scripts/t2_summary.py` writes the labels and the summary.

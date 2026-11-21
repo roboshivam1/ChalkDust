@@ -237,19 +237,34 @@ The table covers 10 DEV topics with seed 0 and the recommended method
 | model | licence | valid | clean | allclean | ans | spk | struct | wall_s | tok/s | VRAM MB |
 |---|---|---|---|---|---|---|---|---|---|---|
 | Gemma 4 12B (Q4) | Apache-2.0 | 0.99 | 0.97 | 0.80 | **1.00** | **0.86** | 1.00 | 154 | 29 | 9751 |
-| gpt-oss-20b (MXFP4, experts in host RAM) | Apache-2.0 | 1.00 | 1.00 | **1.00** | 0.70 | 0.57 | 0.94 | 132 | 27 | 10130 |
+| gpt-oss-20b (MXFP4, experts in host RAM) | Apache-2.0 | 1.00 | 1.00 | **1.00** | 0.80 | 0.57 | 0.94 | 132 | 27 | 10130 |
 
 - **The cleanest model is not the most correct.** gpt-oss-20b produced every beat
-  clean but answered 3 of 10 wrong. Gemma 4 12B answered all 10 right on screen.
+  clean but showed 2 of 10 answers wrong. Gemma 4 12B showed all 10 right.
   Validity and correctness are separate axes, which is why the answer checks sit
   beside the validator (item 4).
 - **Teacher pick (`research/pick_teacher.py`):** most usable videos per hour, where
   usable means the right answer shown and spoken, among models with at least half
   usable.
-  - Gemma: 9 of 10 usable, 21.1 per hour.
-  - gpt-oss: 6 of 10 usable, 16.3 per hour.
-  - Gemma 4 12B is the T1 teacher. At 154 s per video, the 3-hour budget covers 70
-    training topics.
+  - At pick time: Gemma 9 of 10 usable, 21.1 per hour; gpt-oss 6 of 10, 16.3 per
+    hour.
+  - Gemma 4 12B became the T1 teacher. At 154 s per video, the 3-hour budget covers
+    70 training topics.
+- **Correction: the pick is a near-tie, not a clear win.** A later code review found
+  two checker false fails on gpt-oss videos:
+  - a `\;` LaTeX space was read as a separator (fixed; the table above is
+    re-scored);
+  - "one is two, the other is three" heard "one" as a number (a known limit, not
+    fixed).
+
+  Re-scored, gpt-oss is 7 of 10 usable (19.1 per hour). Counting the second case as
+  well, it would be 8 of 10 (21.8 per hour) against Gemma's 21.1. On 10 topics that
+  is noise. Gemma stays the teacher for three reasons:
+  - T1 was already half done;
+  - its shown answers are 10 of 10 against 8 of 10;
+  - it does not need about 12 GB of experts in host RAM.
+
+  The rule's outcome alone does not justify the choice.
 - Gemma's first record ran under the old memory settings, so its `wall_s` is "MIXED"
   (METHODOLOGY section 3).
 

@@ -50,6 +50,11 @@ def test_thousands_comma_value_is_not_a_smaller_key():
     assert check_answer(Key("number", 200.0, "W"), [r"v = 2\,\mathrm{m/s},\ P = 1,200\,\mathrm{W}"])["status"] == "wrong"
 
 
+def test_latex_thick_space_is_not_a_separator():
+    line = r"I = 1.2\,\mathrm{A},\; V_{4}=4.8\,\mathrm{V},\; V_{6}=7.2\,\mathrm{V}"   # gpt-oss, E2
+    assert check_answer(Key("number", 1.2, "A"), [line])["status"] == "correct"
+
+
 @pytest.mark.parametrize("key,shown,status", [
     (Key("number", 57.0), "n = 58", "wrong"),                   # a count is exact
     (Key("number", 120.0), "122", "wrong"),

@@ -316,7 +316,8 @@ def _top_level_parts(text: str) -> list[str]:
     """Split an answer line into its separate statements: top-level commas (not
     the '{,}' of '1{,}275' or the thin space '\\,'), semicolons, '\\quad', '\\\\'
     and '\\text{ and }'."""
-    t = re.sub(r"\\q?quad\b|\\\\|;|\\text\s*\{\s*(?:and|,)\s*\}", "\x00", str(text))
+    # not the LaTeX space '\;' (review: '20\;\mathrm{m/s}' split there and a right answer failed)
+    t = re.sub(r"\\q?quad\b|\\\\|(?<!\\);|\\text\s*\{\s*(?:and|,)\s*\}", "\x00", str(text))
     parts, depth, cur = [], 0, ""
     for i, ch in enumerate(t):
         depth += ch == "{"

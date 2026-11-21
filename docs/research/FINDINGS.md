@@ -168,6 +168,30 @@ wrong one. `spk` is out of the 7 topics whose key is not in the question.
 Speed: 69 to 121 tok/s per request. E1c's server used 7.4 GB of VRAM for the model
 with a 32k context over 4 slots, and peaked at 11.1 GB of host RAM before the cap.
 
+## 2b. E2 so far: the teacher candidates (2026-11-21)
+
+The table covers 10 DEV topics with seed 0 and the recommended method
+(`staged:n=4,repair=1,calc=1,work=1`), from `python -m research.report --exp E2-models`.
+
+| model | licence | valid | clean | allclean | ans | spk | struct | wall_s | tok/s | VRAM MB |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Gemma 4 12B (Q4) | Apache-2.0 | 0.99 | 0.97 | 0.80 | **1.00** | **0.86** | 1.00 | 154 | 29 | 9751 |
+| gpt-oss-20b (MXFP4, experts in host RAM) | Apache-2.0 | 1.00 | 1.00 | **1.00** | 0.70 | 0.57 | 0.94 | 132 | 27 | 10130 |
+
+- **The cleanest model is not the most correct.** gpt-oss-20b produced every beat
+  clean but answered 3 of 10 wrong. Gemma 4 12B answered all 10 right on screen.
+  Validity and correctness are separate axes, which is why the answer checks sit
+  beside the validator (item 4).
+- **Teacher pick (`research/pick_teacher.py`):** most usable videos per hour, where
+  usable means the right answer shown and spoken, among models with at least half
+  usable.
+  - Gemma: 9 of 10 usable, 21.1 per hour.
+  - gpt-oss: 6 of 10 usable, 16.3 per hour.
+  - Gemma 4 12B is the T1 teacher. At 154 s per video, the 3-hour budget covers 70
+    training topics.
+- Gemma's first record ran under the old memory settings, so its `wall_s` is "MIXED"
+  (METHODOLOGY section 3).
+
 ## 3. Recommended method (provisional: E2 picks the model per machine)
 
 Plan first, then fill each beat:

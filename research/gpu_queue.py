@@ -3,17 +3,30 @@
 Jobs live in .lab/queue/jobs.json (a list of {"name", "cmd": [...]}) and the
 file is re-read before every job, so jobs can be added, removed or reordered
 while the queue runs. A finished job's name is appended to done.txt; the
-queue exits when every job is done. Console of each job: .lab/queue/<name>.log.
+queue exits when every job is done. Console of each job: .lab/queue/<name>.log;
+the queue's own status lines also go to .lab/queue/queue.log.
+
+A job that exits non-zero stops the queue and stays out of done.txt, so the
+next start retries it. Later jobs depend on earlier ones (teacher -> SFT set ->
+train -> export -> held-out eval), and before this change a single failure
+let every later job run on missing inputs and be marked done.
 """
 import json, os, subprocess, sys, time
 from pathlib import Path
 import psutil
 
 REPO = Path(__file__).resolve().parents[1]
-Q = REPO / ".lab/queue"
-Q.mkdir(exist_ok=True)
-JOBS, DONE = Q / "jobs.json", Q / "done.txt"
+Q = Path(os.environ.get("QUEUE_DIR") or REPO / ".lab/queue")   # override for tests
+Q.mkdir(parents=True, exist_ok=True)
+JOBS, DONE, LOG = Q / "jobs.json", Q / "done.txt", Q / "queue.log"
 WAIT_FOR = sys.argv[1] if len(sys.argv) > 1 else ""
+
+
+def say(msg: str) -> None:
+    line = f"{time.strftime('%Y-%m-%d %H:%M:%S')} {msg}"
+    print(line, flush=True)
+    with open(LOG, "a", encoding="utf-8") as f:
+        f.write(line + "\n")
 
 
 def running(tag: str) -> bool:
@@ -56,7 +69,7 @@ def wait_for_room() -> None:
         if not busy:
             return
         if time.time() - last > 300:
-            print(f"{time.strftime('%H:%M:%S')} waiting: " + "; ".join(busy), flush=True)
+            say("waiting: " + "; ".join(busy))
             last = time.time()
         time.sleep(30)
 
@@ -72,11 +85,11 @@ while True:
     jobs = json.loads(JOBS.read_text(encoding="utf-8"))
     todo = [j for j in jobs if j["name"] not in done]
     if not todo:
-        print(f"{time.strftime('%H:%M:%S')} ALL DONE - every queued job has finished.", flush=True)
+        say("ALL DONE - every queued job has finished.")
         break
     wait_for_room()
     j = todo[0]
-    print(f"{time.strftime('%H:%M:%S')} starting {j['name']} ({len(todo)} jobs left)", flush=True)
+    say(f"starting {j['name']} ({len(todo)} jobs left)")
     t = time.time()
     with open(Q / f"{j['name']}.log", "a", encoding="utf-8") as f:
         f.write(f"=== start {time.strftime('%H:%M:%S')} {j['cmd']}\n")
@@ -88,6 +101,10 @@ while True:
                             env={**os.environ, "PYTHONUNBUFFERED": "1", "PYTHONIOENCODING": "utf-8",
                                  **j.get("env", {})}).returncode
         f.write(f"=== end rc={rc} {time.time() - t:.0f}s\n")
+    if rc != 0:
+        say(f"FAILED {j['name']}: rc={rc} after {time.time() - t:.0f}s. Queue stopped; "
+            f"see {Q / (j['name'] + '.log')}. Start the queue again to retry this job.")
+        sys.exit(1)   # not rc: Windows crash codes (0xC0000005) overflow sys.exit
     with open(DONE, "a", encoding="utf-8") as f:
         f.write(j["name"] + "\n")
-    print(f"{time.strftime('%H:%M:%S')} {j['name']}: rc={rc} {time.time() - t:.0f}s", flush=True)
+    say(f"{j['name']}: rc={rc} {time.time() - t:.0f}s")

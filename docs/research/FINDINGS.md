@@ -530,9 +530,29 @@ These are vendor numbers; E2 is what measures them here.
 - **E1, E1b and E1c ran with llama-server's default 8 GiB host cache and 4 scoring
   workers.** E2 onwards uses no cache and 2 workers, so speed comparisons across that
   change are not like-for-like (METHODOLOGY.md, "Settings that changed mid-study").
-- **Videos:** one complete local video exists so far: E0, Qwen3-4B, projectile range,
-  draft, 170.6 s, at `.lab/videos/E0/`. The watch list (`research/watchlist.py`) is
-  queued behind the teacher sweep.
+- **Videos** (drafts in `.lab/videos/`, each with a contact sheet; I read every sheet):
+  - **E0:** Qwen3-4B, projectile range.
+  - **Teacher:** three Gemma 4 12B DEV videos.
+  - **T2:** tuned pendulum (best-of-4, correct); tuned pendulum at n=1, the
+    cautionary one (`-CAUTIONARY`); and ideal gas, seed 0, tuned and untuned side by
+    side.
+  - **E2:** Qwen3.5-4B, two dice.
+
+  What the hard checks miss, seen in the frames:
+  - **The T2 pair shows item 11 in one glance.** The checks score both ideal-gas
+    videos clean and correct. The untuned one draws raw list syntax as maths
+    (`[step: 0, text: 'PV = nRT'], …`) and a meaningless `V(x) = 300x` plot. The
+    tuned one is a real lesson: givens, a right-method against common-mistake
+    comparison, a derivation and an answer box.
+  - **Doubled units in the AnswerBox,** in both arms: "49.26L L", "T ≈ 2.00s s".
+    The model writes the unit into the value as well. A quality flag could catch it.
+  - **Physically wrong diagrams pass.** A pendulum bob is drawn with a horizontal
+    normal force, and in the cautionary video N points down. Qwen3.5-4B plots
+    points labelled (1, 6) and (2, 5) at (1, 1) and (2, 2) on y = x.
+  - **The cautionary video shows its false line on screen,** `T = 2π√0.3266`, then
+    "T ≈ 0.69m m".
+  - So "every beat clean" (item 12) means valid and flag-free, not true. The
+    visuals need a person, or a check per component.
 - **Skills:** the brief asked for the Karpathy guidelines and software-design-
   philosophy skills. Neither is installed here, so neither was used.
 - **Disclosure:** Claude wrote the topic set, the training-topic templates and all

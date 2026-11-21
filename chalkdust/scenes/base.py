@@ -14,7 +14,8 @@ checked, so `construct` runs a final settle unconditionally.
 from __future__ import annotations
 
 import math
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 from typing import Protocol
 
 from manim import Mobject, Scene, config
@@ -52,11 +53,20 @@ class ChalkdustScene(Scene):
         theme: Theme | str = "default",
         duration: float = 5.0,
         strict: bool = True,
+        cues: Mapping[str, float] | None = None,
         **kwargs,
     ) -> None:
         # Call this FIRST. Scene.__init__ initialises internal state and will
         # clobber any attribute we set beforehand.
         super().__init__(**kwargs)
+        # Moment name -> seconds into the beat, resolved from the narration and
+        # the voice's word timings (core/cues.py). Only an animation component
+        # reads them, through timeline(); empty means "no anchors", which every
+        # timeline handles by weight. The render key holds them (D-004).
+        self.cue_times: dict[str, float] = dict(cues or {})
+        # Every Timeline built on this scene, so construct() can check each one
+        # played all its moments.
+        self._chalk_timelines: list[Timeline] = []
 
         raw_theme = get_theme(theme) if isinstance(theme, str) else theme
         self.theme = resolve_fonts(raw_theme)
@@ -79,6 +89,8 @@ class ChalkdustScene(Scene):
 
     def construct(self) -> None:
         self.component.build(self)
+        for timeline in self._chalk_timelines:
+            timeline.finish()
         # Unconditional final check: no component can opt out of validation.
         self.settle("end of beat")
 
@@ -126,6 +138,22 @@ class ChalkdustScene(Scene):
             )
         fps = self.fps
         return [n / fps for n in split_frames(self.beat_frames, weights)]
+
+    def timeline(self, *moments: "Moment") -> "Timeline":
+        """The beat split into named moments, each starting on its cue.
+
+            tl = scene.timeline(Moment("pose", 2, motion=1.5),
+                                Moment("slide", 4), Moment("name", 2))
+            tl.play("pose", Create(curve))
+            tl.play("slide", tracker.animate.set_value(0.01))
+            tl.play("name", Write(formula))
+
+        The word-timed sibling of budget() (D-002, SCENE_SPEC.md §11 rule 4):
+        a moment starts at its cue time (self.cue_times) when it has one, and
+        otherwise between its anchored neighbours by weight. Every run time is
+        whole frames and the moments together last exactly beat_frames.
+        """
+        return Timeline(self, moments)
 
     # --- frame quantisation ---------------------------------------------------
     # Stock Manim turns a run time into frames two different ways: a play()
@@ -191,6 +219,167 @@ class ChalkdustScene(Scene):
         """Mark mobjects that must never overlap each other."""
         for m in mobs:
             m._chalk_exclusive = True  # type: ignore[attr-defined]
+
+
+# Shortest window a moment may get, in seconds. Under about 0.3 s an animation
+# reads as a glitch, not a motion; the floor is a little above that.
+MIN_MOMENT_SECONDS = 0.35
+
+
+@dataclass(frozen=True)
+class Moment:
+    """One named moment of an animation beat (Timeline).
+
+    weight -- its share of an un-cued stretch of the beat, relative to the
+              other un-cued moments around it.
+    motion -- how long its animation naturally takes, in seconds; the rest of
+              its window is a hold. None means the motion fills the window: a
+              point that slides for as long as the voice talks about it.
+    """
+
+    name: str
+    weight: float = 1.0
+    motion: float | None = None
+
+
+@dataclass(frozen=True)
+class Window:
+    """A moment's place in the beat, in whole frames."""
+
+    start: int  # first frame of the window
+    play: int   # frames its animation runs
+    hold: int   # frames held still after it
+
+
+def moment_windows(moments: Sequence[Moment], cue_frames: Mapping[str, int],
+                   total: int, fps: float) -> tuple[int, list[Window]]:
+    """(lead, windows): frames held before the first moment, then each moment's
+    window, together exactly `total` frames.
+
+    Anchors (cue_frames) are kept in moment order and at least
+    MIN_MOMENT_SECONDS apart; an anchor that cannot be kept is dropped and its
+    moment placed by weight, never refused -- every textual reason to refuse a
+    cue was already checked at rung 2, and what is left here is the voice's
+    real timing, which only moves anchors by fractions of a second.
+    """
+    n = len(moments)
+    if n == 0:
+        raise ValueError("a timeline needs at least one moment")
+    floor = max(1, math.ceil(MIN_MOMENT_SECONDS * fps))
+    if total < n * floor:
+        floor = max(1, total // n)
+    # bounds[k] is the first frame of moment k; bounds[n] is the end.
+    bounds: list[int | None] = [None] * (n + 1)
+    bounds[n] = total
+    prev = -floor  # so moment 0 may start at frame 0
+    for k, m in enumerate(moments):
+        f = cue_frames.get(m.name)
+        if f is None:
+            continue
+        f = max(int(f), prev + floor, 0)
+        latest = total - (n - k) * floor
+        if f > latest:
+            continue  # cannot keep it and still fit what follows: by weight
+        bounds[k] = f
+        prev = f
+    if bounds[0] is None:
+        bounds[0] = 0
+    # Fill each run of unanchored moments between two known bounds by weight.
+    k = 0
+    while k < n:
+        j = k + 1
+        while bounds[j] is None:
+            j += 1
+        span = bounds[j] - bounds[k]  # type: ignore[operator]
+        if j - k > 1:
+            weights = [max(m.weight, 1e-6) for m in moments[k:j]]
+            parts = split_frames(span, weights)
+            at = bounds[k]
+            for i, p in enumerate(parts[:-1]):
+                at += p  # type: ignore[operator]
+                bounds[k + 1 + i] = at
+        k = j
+    lead = bounds[0]  # type: ignore[assignment]
+    windows = []
+    for k, m in enumerate(moments):
+        width = bounds[k + 1] - bounds[k]  # type: ignore[operator]
+        width = max(width, 1)
+        play = width if m.motion is None else min(width, whole_frames(m.motion, fps))
+        windows.append(Window(start=bounds[k], play=play, hold=width - play))  # type: ignore[arg-type]
+    return lead, windows  # type: ignore[return-value]
+
+
+class Timeline:
+    """Plays an animation beat moment by moment, in whole frames.
+
+    Built by ChalkdustScene.timeline(). Moments must be played in order, each
+    exactly once; finish() (called by the scene at the end of build) checks
+    that every moment was played, so a component cannot silently leave part of
+    the beat's time unspent.
+    """
+
+    def __init__(self, scene: ChalkdustScene, moments: Sequence[Moment]) -> None:
+        names = [m.name for m in moments]
+        if len(set(names)) != len(names):
+            raise ValueError(f"duplicate moment names: {names}")
+        self.scene = scene
+        self.moments = tuple(moments)
+        fps = scene.fps
+        cue_frames = {name: round(t * fps) for name, t in scene.cue_times.items()
+                      if name in names}
+        self.lead, self.windows = moment_windows(moments, cue_frames,
+                                                 scene.beat_frames, fps)
+        self._next = 0
+        scene._chalk_timelines.append(self)
+
+    def seconds(self, name: str) -> float:
+        """The whole window of a moment, in seconds (play + hold)."""
+        w = self.windows[self._index(name)]
+        return (w.play + w.hold) / self.scene.fps
+
+    def play(self, name: str, *animations, **kwargs) -> None:
+        """Play `animations` over the moment's motion frames, hold for the rest
+        of its window, then settle (layout is checked at every moment's end,
+        which is also the next moment's start: both ends of every sweep)."""
+        self.sequence(name, [(list(animations), 1.0)], **kwargs)
+
+    def sequence(self, name: str, parts: Sequence[tuple[Sequence, float]],
+                 **kwargs) -> None:
+        """Play several steps inside one moment: its motion frames are split
+        between `parts` by weight (an empty step is a wait), then the hold."""
+        k = self._index(name)
+        if k != self._next:
+            expected = self.moments[self._next].name if self._next < len(self.moments) else None
+            raise ValueError(f"moment {name!r} played out of order; next is {expected!r}")
+        scene, fps = self.scene, self.scene.fps
+        if k == 0 and self.lead:
+            scene.wait(self.lead / fps)
+        w = self.windows[k]
+        weights = [max(float(wt), 1e-6) for _, wt in parts]
+        frames = split_frames(w.play, weights) if w.play >= len(parts) else [w.play] + [0] * (len(parts) - 1)
+        for (anims, _), n in zip(parts, frames):
+            if n <= 0:
+                continue
+            anims = [a for a in anims if a is not None]
+            if anims:
+                scene.play(*anims, run_time=n / fps, **kwargs)
+            else:
+                scene.wait(n / fps)
+        if w.hold:
+            scene.wait(w.hold / fps)
+        scene.settle(f"moment {name!r}")
+        self._next += 1
+
+    def finish(self) -> None:
+        if self._next != len(self.moments):
+            left = [m.name for m in self.moments[self._next:]]
+            raise ValueError(f"timeline ended with moments never played: {left}")
+
+    def _index(self, name: str) -> int:
+        for i, m in enumerate(self.moments):
+            if m.name == name:
+                return i
+        raise KeyError(f"no moment {name!r}; moments are {[m.name for m in self.moments]}")
 
 
 def frames_covering(seconds: float, fps: float) -> int:

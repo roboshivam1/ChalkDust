@@ -43,7 +43,10 @@ class TTSBackend(Protocol):
     raw_format: str
     default_voice: str
 
-    def synthesize(self, text: str, voice: VoiceConfig, out_path: Path) -> None: ...
+    def synthesize(self, text: str, voice: VoiceConfig, out_path: Path) -> object:
+        """Returns the spoken words' timings (list[WordTiming]) if the backend
+        reports them, else None (tts.TIMED_BACKENDS says which do)."""
+        ...
 
 
 def require(binary: str) -> str:
@@ -104,7 +107,8 @@ def probe_duration(path: Path) -> float:
     return seconds
 
 
-def normalize_audio(src: Path, dst: Path, trim_silence: bool = True) -> None:
+def normalize_audio(src: Path, dst: Path, trim_silence: bool = True,
+                    trim_to: tuple[float, float] | None = None) -> None:
     """Convert to the canonical format, optionally trimming edge silence.
 
     Trimming matters for sync: most TTS backends pad a little silence at each
@@ -114,12 +118,19 @@ def normalize_audio(src: Path, dst: Path, trim_silence: bool = True) -> None:
     The double `areverse` is the standard trick -- ffmpeg's silenceremove only
     trims from the start, so we reverse, trim again, and reverse back.
 
+    `trim_to` = (start, end) cuts to exactly that span instead of detecting
+    silence: a backend that times its own words is trimmed by those times, so
+    the timings re-based by `start` stay exact (tts.synthesize_timed).
+
     Note we do NOT loudness-normalise here. Per-beat loudnorm would flatten the
     narration's dynamics; that belongs at assembly, on the finished mix.
     """
     require("ffmpeg")
     filters = []
-    if trim_silence:
+    if trim_to is not None:
+        start, end = trim_to
+        filters += [f"atrim=start={start:.4f}:end={end:.4f}", "asetpts=N/SR/TB"]
+    elif trim_silence:
         detect = "silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.05"
         filters += [detect, "areverse", detect, "areverse"]
 

@@ -58,6 +58,12 @@ class Finding:
                          on has no STAGE region left free for it
       capacity        -- more text than the claimed regions can hold legibly
       invalid_latex   -- a LaTeX string does not compile standalone
+      cue             -- an animation's cue phrase is not in the narration,
+                         names no moment of its phase, or is out of order
+                         (core/cues.py)
+      continuity      -- an animation beat continues the previous beat's
+                         phase with a different setup, so the picture would
+                         jump at the cut (pipeline.check_semantics)
       toolchain       -- as above: compiling it timed out, every attempt
     """
 

@@ -30,7 +30,7 @@ from manim import tempconfig
 from pydantic import ValidationError
 
 from chalkdust.continuity import ArtifactRecipe, resolve_carry_in
-from chalkdust.core.cache import Cache, tts_key
+from chalkdust.core.cache import Cache
 from chalkdust.core.models import (
     Beat,
     BeatSpec,
@@ -61,10 +61,10 @@ from chalkdust.scenes.components.raw_scene import (
 )
 from chalkdust.scenes.theme import LatexToolchainError, Theme, get_theme, resolve_fonts
 from chalkdust.speech.base import TTSError
-from chalkdust.speech.tts import resolve_voice, synthesize_beat
+from chalkdust.speech.tts import resolve_voice, speech_key, synthesize_beat
 from chalkdust.validate.geometric import Report
 from chalkdust.validate.repair import RepairPlan, RepairResult, repair_beat
-from chalkdust.validate.semantic import validate_semantic
+from chalkdust.validate.semantic import check_continuity, validate_semantic
 
 DEFAULT_CACHE_DIR = Path(".cache")
 # Manim scratch, assembly intermediates. Git-ignored; never cwd/media.
@@ -445,8 +445,11 @@ def check_semantics(spec: VideoSpec,
     for beat, check in zip(spec.beats, checked, strict=True):
         # A degraded fallback drops its carry_in, so it carries nothing.
         carried = recipes.get(check.spec.id, ()) if check.spec.carry_in else ()
-        reports.append(validate_semantic(check.spec, registered, recipes=carried,
-                                         theme=spec.theme))
+        report = validate_semantic(check.spec, registered, recipes=carried,
+                                   theme=spec.theme)
+        prev = checked[len(reports) - 1].spec if reports else None
+        report.findings += check_continuity(prev, check.spec)
+        reports.append(report)
         if beat.registers is not None:
             registered.add(beat.registers)
     refuse_unfit([r for r in reports if not r.ok], SemanticRefused)
@@ -782,7 +785,7 @@ def render(
     speech_cached = {}
     for beat in video.beats:
         speech_cached[beat.id] = cache.slot(
-            "tts", tts_key(beat.spec.narration, voice), ".wav").exists
+            "tts", speech_key(beat.spec.narration, voice), ".wav").exists
         try:
             synthesize_beat(beat, voice, cache)
         except Exception as exc:

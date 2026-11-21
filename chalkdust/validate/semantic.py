@@ -26,6 +26,7 @@ from chalkdust.continuity import (
 )
 from chalkdust.core.models import BeatSpec, Region
 from chalkdust.scenes.components import Component, make_component
+from chalkdust.scenes.components.animation import Animation
 from chalkdust.scenes.components.raw_scene import RawScene
 from chalkdust.scenes.regions import MIN_FONT_SIZE, LayoutError, region_rect
 from chalkdust.scenes.theme import (
@@ -304,6 +305,48 @@ def check_latex(component: Component,
     return findings
 
 
+# --- animation cues and continuity -----------------------------------------
+
+
+def check_cues(component: Component, narration: str) -> list[Finding]:
+    """An animation's cue phrases must be words its narration says, in moment
+    order (core/cues.cue_problems). Decidable from the text alone, so it is
+    caught here, before any speech is synthesised, as kind "cue"."""
+    if not isinstance(component, Animation):
+        return []
+    from chalkdust.core.cues import cue_problems
+
+    return [Finding("cue", p.message) for p in
+            cue_problems(narration, component.moment_names(), component.cue_phrases())]
+
+
+def check_continuity(prev: BeatSpec | None, spec: BeatSpec) -> list[Finding]:
+    """A beat that plays the phase right after the previous beat's phase of the
+    same animation continues its picture; its setup must be the same, or the
+    picture jumps at the cut (animation.py). Kind "continuity".
+
+    Only that one case is checked. Starting an animation at a later phase, or
+    after a different beat, is a deliberate cut to a new picture and allowed.
+    """
+    if prev is None or prev.component != spec.component:
+        return []
+    try:
+        a, b = make_component(prev.component, prev.params), make_component(spec.component, spec.params)
+    except Exception:
+        return []  # the param error is reported by validate_semantic itself
+    if not isinstance(b, Animation) or b.phase_index() != a.phase_index() + 1:
+        return []
+    if a.setup() == b.setup():
+        return []
+    diff = sorted(k for k in set(a.setup()) | set(b.setup())
+                  if a.setup().get(k) != b.setup().get(k))
+    return [Finding("continuity",
+                    f"{spec.id} continues {prev.id}'s {spec.component} (phase "
+                    f"{a.params.phase!r} -> {b.params.phase!r}) but changes its setup "
+                    f"({', '.join(diff)}); repeat the previous beat's values exactly so "
+                    "the picture carries on, or start again from the first phase")]
+
+
 # --- entry point ------------------------------------------------------------
 
 
@@ -351,4 +394,5 @@ def validate_semantic(
     )
     report.findings += check_capacity(component)
     report.findings += check_latex(component, media_dir)
+    report.findings += check_cues(component, spec.narration)
     return report

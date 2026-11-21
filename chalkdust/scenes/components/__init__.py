@@ -34,6 +34,7 @@ from chalkdust.scenes.components import title_card  # noqa: F401,E402
 from chalkdust.scenes.components import unit_breakdown  # noqa: F401,E402
 from chalkdust.scenes.components import vector_field  # noqa: F401,E402
 from chalkdust.scenes.components import zoom_highlight  # noqa: F401,E402
+from chalkdust.scenes.components import secant_tangent  # noqa: F401,E402
 
 __all__ = [
     "Component",

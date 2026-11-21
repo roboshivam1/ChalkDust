@@ -55,6 +55,7 @@ def beat_render_key(
     repair: dict[str, Any],
     *,
     carried: str | None = None,
+    cues: dict[str, int] | None = None,
 ) -> str:
     """A rendered beat depends on the visual spec, how long it must run, the
     build context, the theme it is drawn in, the render tier, and the
@@ -117,6 +118,14 @@ def beat_render_key(
                 "to the producing beat would serve a stale render"
             )
         key = content_hash(key, "carry_in", carried)
+
+    # --- cue term (animation components, scenes/components/animation.py) ------
+    # An animation's moments start on words of the narration, timed by the
+    # voice (core/cues.py). Narration stays out of the key; what it changes in
+    # the picture is exactly these frame numbers, so they are the term. Beats
+    # whose component reads no cues keep their key unchanged.
+    if cues:
+        key = content_hash(key, "cues", sorted(cues.items()))
     return key
 
 

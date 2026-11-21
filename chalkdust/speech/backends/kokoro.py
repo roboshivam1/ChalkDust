@@ -22,7 +22,7 @@ from __future__ import annotations
 import wave
 from pathlib import Path
 
-from chalkdust.core.models import VoiceConfig
+from chalkdust.core.models import VoiceConfig, WordTiming
 from chalkdust.speech.base import TTSError
 
 REPO_ID = "hexgrad/Kokoro-82M"
@@ -67,15 +67,35 @@ class Kokoro:
             self._pipelines[lang_code] = KPipeline(lang_code=lang_code, repo_id=REPO_ID)
         return self._pipelines[lang_code]
 
-    def synthesize(self, text: str, voice: VoiceConfig, out_path: Path) -> None:
+    def synthesize(self, text: str, voice: VoiceConfig,
+                   out_path: Path) -> list[WordTiming]:
+        """Write the narration to `out_path` and return when each word is
+        spoken, in seconds from the start of that file.
+
+        Kokoro times every token it speaks (KPipeline result.tokens,
+        start_ts/end_ts, relative to that chunk's audio); punctuation tokens
+        carry no time and are skipped. The speech stage trims the file by these
+        times and re-bases them (tts.synthesize_timed), so the word timings the
+        animation is cued from and the audio the viewer hears come from one cut.
+        """
         pipeline = self._pipeline(lang_code(voice.voice_id))
 
         import numpy as np  # a kokoro dependency; deferred with it
 
         # The pipeline yields one result per chunk of text it decided to split
-        # off; a beat's narration is one take, so stitch them back together.
-        chunks = [r.audio.numpy() for r in pipeline(text, voice=voice.voice_id,
-                                                    speed=voice.rate)]
+        # off; a beat's narration is one take, so stitch them back together,
+        # offsetting each chunk's token times by the audio before it.
+        chunks, words, offset = [], [], 0.0
+        for r in pipeline(text, voice=voice.voice_id, speed=voice.rate):
+            audio = r.audio.numpy()
+            for t in (r.tokens or []):
+                if t.start_ts is None or t.end_ts is None or not any(
+                        c.isalnum() for c in t.text):
+                    continue
+                words.append(WordTiming(word=t.text, start=offset + float(t.start_ts),
+                                        end=offset + float(t.end_ts)))
+            offset += len(audio) / KOKORO_RATE
+            chunks.append(audio)
         if not chunks:
             raise TTSError(f"kokoro produced no audio for {text[:40]!r}")
         pcm = (np.clip(np.concatenate(chunks), -1.0, 1.0) * 32767).astype("<i2")
@@ -85,3 +105,4 @@ class Kokoro:
             f.setsampwidth(2)
             f.setframerate(KOKORO_RATE)
             f.writeframes(pcm.tobytes())
+        return words

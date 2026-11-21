@@ -41,6 +41,8 @@ from chalkdust.continuity import (
 )
 from chalkdust.core.cache import Cache, beat_render_key
 from chalkdust.core.models import Beat, BuildContext, Quality, Video
+from chalkdust.scenes.components.animation import cue_times_for
+from chalkdust.scenes.components.base import make_component
 from chalkdust.scenes.components.raw_scene import RawScene, render_raw_beat
 from chalkdust.scenes.theme import Theme, get_theme, resolve_fonts
 from chalkdust.validate.repair import RepairedScene, RepairPlan, repair_beat
@@ -109,6 +111,24 @@ def plan_repair(beat: Beat, theme: Theme, ctx: BuildContext, work_dir: Path,
         return repair_beat(beat.spec, theme, duration, recipes=recipes).plan
 
 
+def beat_cues(beat: Beat) -> dict[str, float]:
+    """Moment -> seconds for an animation beat, from its narration and the
+    voice's word timings (estimated from the text when the voice gave none);
+    {} for every other component. The scene is built with these and the key
+    holds them as frames, so the two cannot disagree."""
+    if beat.spec.component == RawScene.name:
+        return {}
+    component = make_component(beat.spec.component, beat.spec.params)
+    return cue_times_for(component, beat.spec.narration, list(beat.word_timings),
+                         _require_duration(beat))
+
+
+def cue_frames(cues: dict[str, float], ctx: BuildContext) -> dict[str, int]:
+    """Cue times as whole frames at the tier's rate: what the timeline uses."""
+    fps = TIERS[ctx.quality].frame_rate
+    return {name: round(t * fps) for name, t in cues.items()}
+
+
 def render_key(beat: Beat, theme: Theme, ctx: BuildContext,
                plan: RepairPlan, recipes: Sequence[ArtifactRecipe] = ()) -> str:
     """The beat's cache key. `theme` must already be font-resolved -- the key
@@ -122,6 +142,7 @@ def render_key(beat: Beat, theme: Theme, ctx: BuildContext,
         beat.spec, _require_duration(beat), ctx, asdict(theme),
         asdict(TIERS[ctx.quality]), plan.key_data(),
         carried=carry_in_fingerprint(recipes) if recipes else None,
+        cues=cue_frames(beat_cues(beat), ctx) or None,
     )
 
 
@@ -163,6 +184,7 @@ def _render(beat: Beat, theme: Theme, ctx: BuildContext, cache: Cache,
                 plan=plan,
                 theme=theme,
                 duration=beat.duration,  # type: ignore[arg-type]
+                cues=beat_cues(beat),
             )
             scene.render()
             produced = Path(scene.renderer.file_writer.movie_file_path)

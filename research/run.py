@@ -230,6 +230,13 @@ def main(argv: list[str] | None = None) -> int:
                                                    temperature=a.temperature, constrained=not kw.get("free"))
                         else:
                             raise SystemExit(f"unknown method {mname}")
+                        if srv.proc is not None and srv.proc.poll() is not None:
+                            # A dead server turns every remaining video into an instant failure
+                            # record, and --resume would then skip them for good (code review,
+                            # 2026-11-21). Write nothing for this video and stop: the queue
+                            # stops too, and a restart with --resume redoes it.
+                            raise SystemExit(f"[{mkey}] llama-server exited (code {srv.proc.returncode}) "
+                                             f"during {topic.id} s{seed}; no record written. Rerun with --resume.")
                         srv.rss_mib()
                         spec = assemble_spec(slug(f"{topic.id}-{mkey}-s{seed}"), gen["beats"])
                         (tdir / "spec.json").write_text(json.dumps(spec, indent=2, ensure_ascii=False), encoding="utf-8")

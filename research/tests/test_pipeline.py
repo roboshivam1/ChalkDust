@@ -64,3 +64,18 @@ def test_video_ok_requires_correct_answer(tmp_path, monkeypatch):
     assert video_ok({"answer": {"status": "correct"}, "answer_spoken": {"status": "n/a"}})
     assert not video_ok({"answer": {"status": "wrong"}, "answer_spoken": {"status": "correct"}})
     assert video_ok({"answer": {"status": "n/a"}, "answer_spoken": {"status": "n/a"}})
+
+
+def test_paired_all_row_counts_one_pair_per_topic_seed():
+    """Methods on the same (topic, seed) are not independent pairs (code review, 2026-11-21)."""
+    from research.report import paired_block
+
+    def rec(model, method, topic, ok):
+        return {"model": model, "method": method, "topic": topic, "seed": 0, "beats_clean": 1 if ok else 0,
+                "n_beats": 1, "all_beats_clean": ok, "answer": {"status": "correct"},
+                "answer_spoken": {"status": "n/a"}, "field_leak": False}
+    recs = [rec(m, meth, t, m == "tuned") for m in ("tuned", "base")
+            for meth in ("oneshot", "oneshot:free=1") for t in ("t1", "t2", "t3")]
+    out = paired_block(recs, "tuned", "base", "x")
+    rows = [l for l in out.splitlines() if l.startswith("| all | first-sample clean")]
+    assert rows and rows[0].split("|")[3].strip() == "3"     # 3 (topic, seed) units, not 6 pairs

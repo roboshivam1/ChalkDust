@@ -166,6 +166,16 @@ def paired_block(recs, a, b, label):
         for name, m in METRICS:
             ps = [(side[a][k][m], side[b][k][m]) for k in ks]
             ps = [p for p in ps if p[0] is not None and p[1] is not None]
+            if scope is None:
+                # Methods on the same (topic, seed) share plan seeds and often first
+                # samples, so they are not independent pairs: average them into one
+                # pair per (topic, seed) before the CI and sign test (code review).
+                unit = defaultdict(list)
+                for k in ks:
+                    x, y = side[a][k][m], side[b][k][m]
+                    if x is not None and y is not None:
+                        unit[k[:2]].append((x, y))
+                ps = [(sum(x for x, _ in v) / len(v), sum(y for _, y in v) / len(v)) for v in unit.values()]
             if not ps:
                 rows.append({"method": scope or "all", "metric": name, "n": 0})
                 continue
@@ -191,7 +201,7 @@ def paired_section(exp, tuned, base, grpo):
     out.append("_First-sample clean = share of beats whose round-0 first sample is valid and flag-free, read from "
                "each trace.json (`beatN.r0` scores[0], re-flagged with current `quality_flags`; oneshot: the single "
                "sample). allclean/ans/spk are the final video, equal to the first sample only when n=1, repair=0. "
-               "Bootstrap: 10,000 resamples, RNG seed 20261121; sign test exact two-sided, ties dropped._")
+               "Bootstrap: 10,000 resamples, RNG seed 20261121; sign test exact two-sided, ties dropped. The 'all' rows average the methods into one pair per (topic, seed)._")
     out.append(paired_block(recs, tuned, base, "Tuned vs untuned"))
     out.append(paired_block(recs, grpo, tuned, "GRPO vs SFT"))
     known = {tuned, base, grpo}

@@ -121,8 +121,8 @@ one of these, recomputed from the saved spec by `research/analyze.py`:
 | beat clean | valid and no quality flag (LaTeX or `^`/superscripts read aloud; LaTeX drawn literally in a prose field, judged per component by its own `latex_strings()`; stray `$`); re-flagged at analysis time so every run is judged by the same flags | `score.quality_flags`, `analyze.rescore` |
 | video clean | every beat clean | `analyze` |
 | CLI valid | `chalkdust validate` exit 0 on the assembled spec | `score.validate_spec_cli` |
-| answer shown | the value the AnswerBox (else the last working line) STATES -- its final side, so `6/36 = 1/5` states 1/5 -- equals the sympy-computed key within 2%; a formula with no value is skipped, never scored; `unparsed` counts as not correct | `content.check_answer` |
-| answer spoken | the last two narrations' final stated value (the last one after 'is/be/about/so...', numbers copied from the request ignored unless asserted) equals the key, however written (digits, fractions, LaTeX, number words); `n/a` for expression answers and when the key is in the request | `content.check_spoken` |
+| answer shown | the value the AnswerBox (else the last working line) STATES -- its final side, so `6/36 = 1/5` states 1/5 -- equals the sympy-computed key within 2%; a formula with no value is skipped, never scored; `unparsed` counts as not correct. A shown set must equal the key's roots. When the key names a unit and the line holds several statements, a statement in another unit is set aside (`I = 1.2 A, V_6 = 7.2 V` states 1.2 for a current) | `content.check_answer` |
+| answer spoken | the last two narrations' final stated value (the last one after 'is/be/about/so...', numbers copied from the request ignored unless asserted) equals the key, however written (digits, fractions, LaTeX, number words, scientific notation); `n/a` for expression answers and when the key is in the request. With a unit-bearing key, a value in another unit is set aside and a value in the key's unit counts as asserted. A set must be the closing statement exactly | `content.check_spoken` |
 | derivation | for solve-for-x topics, each working line holds at a true root | `content.derivation_consistency` |
 | structure | 8 checks: 5-9 beats, 20-66 words a beat, at least 3 components, none over half, opens with hook or problem, states the answer, names the misconception, no filler greeting | `content.structure_checks` |
 | speed | LLM seconds (max over concurrent samples), validator seconds, wall, tok/s from llama.cpp's own timings | `llm.chat`, `run.summarise` |
@@ -138,6 +138,19 @@ Topic sets are frozen in `research/topics.py`: 10 DEV topics for comparisons and
 HELDOUT topics that no training step sees. Every key is computed by sympy, never typed.
 Training topics (`research/train_topics.py`) come from 43 problem families. None is an
 evaluation family or a near-twin, and the module asserts the separation at import.
+
+**How the answer checks were validated (2026-11-21, `research/audit/`).**
+- **Blind labels.** Two graders per video labelled 127 saved videos from the spec and
+  the key alone, without seeing the checkers. The checkers were then compared with
+  their consensus, and every false pass and false fail was read.
+- **Mutation test.** Wrong answers were planted into real specs, and the test counts
+  how many still pass.
+- **The fix rule.** Any checker fix must:
+  - leave every unmutated verdict that matches the graders unchanged;
+  - keep the mutation false-pass counts at zero;
+  - land before the step that uses it: the teacher pick, then the SFT filter.
+- **Freeze.** The checkers freeze before any held-out output exists, so no change
+  can be tuned to the held-out topics.
 
 **What is not measured and why.** Teaching quality, as in "is this a good
 explanation", is not scored by a model. A model judge is a weak, gameable signal
@@ -164,6 +177,11 @@ as the record of what was wrong.
   rest of E2, and `pick_teacher` averages it in.
 - Validator wall times are therefore comparable within E2 and later experiments,
   not with E1.
+- The answer checkers changed twice on 2026-11-21: `20eb828` (mutation test) and
+  `1a0b4f0` (blind audit).
+  - `analyze` re-scores every run with the current checkers, so all reported numbers
+    use `1a0b4f0`.
+  - The teacher pick also ran on `1a0b4f0`: a queue gate held it until that commit.
 
 ## 4. Inference-time methods tested
 

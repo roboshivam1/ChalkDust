@@ -248,10 +248,30 @@ All are run by `python -m research.run --exp ... --models ... --methods ...`.
 - **Fair comparison:** the tuned adapter is merged into the bf16 base. Tuned and
   untuned are both converted with the same llama.cpp converter (b12466) and quantised
   the same way, so the converter and imatrix are not confounded with the tuning.
-- **RL (if within reach):** GRPO on the fill job only. Reward = 1 if the beat is
-  clean (else 0.5 for valid-with-flags, 0.05 per rung passed for invalid) x a content floor (narration
-  at least 20 words, the structure check's minimum, and params not trivially short), so the model cannot win by saying
-  little. Validator runs in the harness venv as a local service.
+- **RL (if within reach):** GRPO on the fill job only, on the SFT model.
+  - **Reward** = 1 if the beat is clean, else 0.5 for valid-with-flags, or 0.05 per
+    rung passed for invalid. It is multiplied by 0.5 below a content floor, so the
+    model cannot win by saying little:
+    - narration of at least 20 words, the structure check's per-beat minimum;
+    - shown text of at least 12 characters, the floor best-of-N selection already
+      uses, with TitleCard exempt.
+  - The validator runs in the harness venv as a local service.
+  - **Prompts** come from the validation families first (families SFT never trained
+    on), then from training rows. On rows SFT had just fitted, every sample in a
+    group scored the same, so there was nothing to learn.
+  - **Settings:** LoRA weights are kept in fp32 under the 4-bit base; 120 steps of 4
+    samples; learning rate 2e-5.
+  - A run whose groups mostly have equal rewards (mean `frac_reward_zero_std` above
+    0.8) exits non-zero and is not evaluated, because a null result there means no
+    signal, not no effect.
+  - These settings were fixed before T3 ran, after a training-chain review
+    (2026-11-21).
+- **Guards:**
+  - `build_sft` stops the queue below 100 training rows.
+  - The SFT eval batch is 1, and the adapter is saved before the final eval.
+  - A queue gate before each held-out evaluation checks that `PROMPT_HASH` still
+    equals the SFT set's, so the tuned model is never evaluated on prompts it was
+    not trained on.
 
 ## 7. Experiments
 

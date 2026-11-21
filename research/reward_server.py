@@ -43,7 +43,13 @@ def reward_of(sc, beat: dict) -> tuple[float, dict]:
         r = 0.05 * sc.level
     else:
         r = 1.0 if sc.clean else 0.5
-    if words < 20 or sc.text_chars < 20:   # 20 = the structure check's minimum narration
+    # Narration: 20 words, the structure check's per-beat minimum (every beat,
+    # TitleCard included). Shown text: the same floor best-of-N selection uses
+    # (score.selection_key: 12 characters, TitleCard exempt). Before 2026-11-21 it
+    # was 20 characters for every component, which halved the reward of about 1 in
+    # 5 clean teacher beats (a short AnswerBox, a TitleCard) and so taught padding.
+    text_short = sc.text_chars < 12 and sc.component != "TitleCard"
+    if words < 20 or text_short:
         r *= 0.5
         d["floor"] = True
     return r, d

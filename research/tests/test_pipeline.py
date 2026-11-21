@@ -23,8 +23,8 @@ def test_plan_schema_required_matches_properties():
     assert set(s["required"]) == set(s["properties"])
 
 
-def _sc(level, flags=(), chars=200):
-    return BeatScore("b01", "TitleCard", level, flags=list(flags), text_chars=chars)
+def _sc(level, flags=(), chars=200, component="TitleCard"):
+    return BeatScore("b01", component, level, flags=list(flags), text_chars=chars)
 
 
 def test_reward_levels_and_floor():
@@ -35,7 +35,10 @@ def test_reward_levels_and_floor():
     assert reward_of(_sc(2), long)[0] == 0.1
     assert reward_of(_sc(0), long)[0] == 0.0
     assert reward_of(_sc(3), short)[0] == 0.5            # content floor halves it
-    assert reward_of(_sc(3, chars=5), long)[0] == 0.5     # params with almost no text
+    assert reward_of(_sc(3, chars=5, component="AnswerBox"), long)[0] == 0.5   # params with almost no text
+    # (training review, 2026-11-21) the text floor is selection_key's: 12 chars, TitleCard exempt
+    assert reward_of(_sc(3, chars=15, component="AnswerBox"), long)[0] == 1.0
+    assert reward_of(_sc(3, chars=5), long)[0] == 1.0     # a TitleCard is allowed little text
 
 
 def test_is_plan_mirrors_make_plan_filter():

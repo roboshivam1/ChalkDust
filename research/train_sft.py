@@ -89,6 +89,9 @@ def main() -> None:
                           use_rslora=True, task_type="CAUSAL_LM")
     cfg = SFTConfig(output_dir=str(out / "ckpt"), num_train_epochs=a.epochs, max_steps=a.max_steps,
                     per_device_train_batch_size=a.bsz, gradient_accumulation_steps=a.accum,
+                    # eval batch 1: the default 8 x ~1.9k tokens x a 100k vocabulary of logits
+                    # can exhaust 12 GB, and the epoch eval never ran in smoke (training review)
+                    per_device_eval_batch_size=1, prediction_loss_only=True,
                     learning_rate=a.lr, lr_scheduler_type="cosine",
                     warmup_steps=0.03,   # a float < 1 is a ratio in transformers 5 (warmup_ratio is gone)
                     logging_steps=5, eval_strategy="epoch" if a.max_steps < 0 else "no",
@@ -102,8 +105,8 @@ def main() -> None:
     t0 = time.time()
     res = trainer.train()
     train_s = time.time() - t0
+    trainer.model.save_pretrained(str(out / "adapter"))   # before the final eval, so it cannot lose the run
     ev = trainer.evaluate() if len(ds["val"]) and a.max_steps < 0 else {}
-    trainer.model.save_pretrained(str(out / "adapter"))
     metrics = {"base": a.base, "data": a.data, "train_rows": len(ds["train"]), "val_rows": len(ds["val"]),
                "template_kwargs": tkw, "rank": a.rank, "alpha": a.alpha, "lr": a.lr, "epochs": a.epochs, "qlora": a.qlora,
                "max_len": a.max_len, **length_report, "train_seconds": train_s, "train_loss": res.training_loss,

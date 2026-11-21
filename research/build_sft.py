@@ -176,7 +176,14 @@ if __name__ == "__main__":
     ap.add_argument("--no-require-spoken", action="store_true")
     ap.add_argument("--prompt-hash", default=None, help="default: the current research.generate.PROMPT_HASH")
     ap.add_argument("--allow-non-train", action="store_true", help="dry runs on DEV traces only")
+    ap.add_argument("--min-train-rows", type=int, default=100,
+                    help="exit non-zero (stopping the queue) below this many train rows; T1's ~70 topics "
+                         "should give several hundred, so fewer means a filter or data fault (training review)")
     a = ap.parse_args()
-    print(json.dumps(build(a.exp, Path(a.out), val_families=a.val_families, per_beat=a.per_beat,
-                           require_spoken=not a.no_require_spoken, prompt_hash=a.prompt_hash,
-                           allow_non_train=a.allow_non_train), indent=2))
+    s = build(a.exp, Path(a.out), val_families=a.val_families, per_beat=a.per_beat,
+              require_spoken=not a.no_require_spoken, prompt_hash=a.prompt_hash,
+              allow_non_train=a.allow_non_train)
+    print(json.dumps(s, indent=2))
+    if s["train"] < a.min_train_rows:
+        raise SystemExit(f"only {s['train']} train rows (< --min-train-rows {a.min_train_rows}); "
+                         f"files kept in {a.out} for inspection")

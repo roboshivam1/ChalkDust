@@ -62,6 +62,26 @@ def _entry_frame(component, tmp_path) -> np.ndarray:
         return scene.entry
 
 
+def _first_written_frame(component, tmp_path) -> np.ndarray:
+    """The first frame the phase writes to the movie (its first play() at
+    t = 0), a stronger check than the entry state. Neither check sees a frame
+    written later, during the hold before a cued first moment: LimitAtHole's
+    readouts blanked there in the encoded reference video (run 3), which only
+    the encoded-video seam check caught (.lab/run3/tools/verify_video.py)."""
+    with tempconfig({**CAMERA, "media_dir": str(long_path(tmp_path))}):
+        scene = ChalkdustScene(component, duration=9.0)
+        box: dict[str, np.ndarray] = {}
+
+        def grab(frame, num_frames=1):
+            box["frame"] = np.array(frame)
+            raise EndSceneEarlyException()
+
+        scene.renderer.add_frame = grab
+        scene.render()
+        assert "frame" in box
+        return box["frame"]
+
+
 def _chains(cls) -> list[tuple[dict, dict]]:
     ex = cls.examples()
     out = []
@@ -248,3 +268,20 @@ def test_a_readouts_digits_sit_on_its_labels_baseline(tex, start, end):
     value[0] = end
     r[1].update()
     assert abs(off()) < 1.0   # a round letter overshoots the line by ~0.6 px
+
+
+
+@pytest.mark.parametrize("name,pair", [(n, i) for n in ANIMATIONS
+                                       for i in range(len(_REGISTRY[n].PHASES) - 1)])
+def test_phase_first_written_frame_is_previous_phase_last_frame(name, pair, tmp_path):
+    cls = _REGISTRY[name]
+    a, b = _chains(cls)[pair]
+    last = _final_frame(cls(a), tmp_path / "a")
+    first = _first_written_frame(cls(b), tmp_path / "b")
+    diff = np.abs(last.astype(int) - first.astype(int)).max(axis=2)
+    # 24, the encoded-video seam check's threshold: the first written frame is
+    # at t = 0 of a play(), where a fade may already add a faint pixel (9 in
+    # SecantToTangent's name); something missing or moved differs by ~200.
+    assert (diff > 24).sum() == 0, (
+        f"{name}: the first frame {b['phase']!r} writes differs from the last frame "
+        f"{a['phase']!r} wrote ({int((diff > 8).sum())} pixels differ, max {diff.max()})")

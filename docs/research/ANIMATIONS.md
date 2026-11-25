@@ -103,3 +103,10 @@ the pilot's: one `_state(k)` function builds the end state of phase k from the
 setup. `enter` adds `_state(k-1)`, and each phase ends by swapping its animated
 pieces for `_state(k)`. `examples()` must start with one example per phase, in
 order, with one setup, so the continuity test covers every join.
+
+Before it ships: stress cases that try to make it draw something false, one
+reviewer who did not write it (the bar in this document; a failure goes back to
+the author once, and a second failure means a different approach or leaving it
+out), the snapshot recorded at merge, and a card in `research/animate.py` with
+its phases, so the local-model harness can use it (`research/tests/test_animate.py`
+fails without one).

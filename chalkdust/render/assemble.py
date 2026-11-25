@@ -21,7 +21,9 @@ beat, +49 ms at the fourth).
 
 from __future__ import annotations
 
+import os
 import subprocess
+from concurrent.futures import ThreadPoolExecutor
 from fractions import Fraction
 from pathlib import Path
 
@@ -40,6 +42,12 @@ TARGET_PEAK = -1.5
 # locally and breaks on upload.
 SAMPLE_RATE = 48000
 VCODEC = ["-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "medium", "-crf", "18"]
+# Muxed beats are an intermediate the concat step re-encodes once with VCODEC:
+# lossless and fast, so the picture takes one lossy pass in assembly, not two.
+# With the muxes run in parallel, a fully cached 40 s video assembles in 9.7 s
+# instead of 12.0 (run 3, docs/research/RUN3.md).
+INTERMEDIATE_VCODEC = ["-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "ultrafast",
+                       "-qp", "0"]
 ACODEC = ["-c:a", "aac", "-b:a", "192k", "-ar", str(SAMPLE_RATE), "-ac", "2"]
 # A muxed beat's audio: uncompressed, so it is exactly as many samples long as
 # the beat's video and joins the next beat sample-exactly (module docstring).
@@ -89,7 +97,7 @@ def mux_beat(video_path: Path, audio_path: Path, out_path: Path) -> None:
         "-vf", "tpad=stop_mode=clone:stop=-1",
         "-frames:v", str(frames),
         "-af", f"aresample={SAMPLE_RATE},apad,atrim=end_sample={samples}",
-        *VCODEC, *PCM,
+        *INTERMEDIATE_VCODEC, *PCM,
         "-map", "0:v:0", "-map", "1:a:0",
         str(out_path),
     ])
@@ -157,12 +165,13 @@ def assemble(video: Video, out_path: Path, work_dir: Path,
             "stages first"
         )
 
-    muxed = []
-    for beat in video.beats:
-        part = work_dir / f"muxed_{beat.id}.mov"
-        mux_beat(beat.render_path, beat.audio_path, part)  # type: ignore[arg-type]
-        muxed.append(part)
-        if verbose:
+    # Beats mux independently (each its own ffmpeg), so they run side by side.
+    muxed = [work_dir / f"muxed_{beat.id}.mov" for beat in video.beats]
+    with ThreadPoolExecutor(max_workers=max(1, min(len(muxed), os.cpu_count() or 1))) as ex:
+        list(ex.map(lambda bp: mux_beat(bp[0].render_path, bp[0].audio_path, bp[1]),  # type: ignore[arg-type]
+                    zip(video.beats, muxed)))
+    if verbose:
+        for beat, part in zip(video.beats, muxed):
             print(f"  muxed {beat.id}  {probe_duration(part):5.2f}s")
 
     joined = work_dir / "joined.mov"

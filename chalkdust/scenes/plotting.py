@@ -32,6 +32,7 @@ from manim import (
     DOWN,
     LEFT,
     RIGHT,
+    UP,
     Circle,
     DashedLine,
     DecimalNumber,
@@ -401,12 +402,42 @@ def readout(theme: Theme, prefix_tex: str, value: float, color: str,
     head = math(prefix_tex, theme, size=size, color=color, what="readout")
     num = number(theme, value, color, decimals=decimals, size=size)
     num.next_to(head, RIGHT, buff=0.15)
-    return VGroup(head, num)
+    r = VGroup(head, num)
+    # Where a digit after the label would sit, as a share of the label's
+    # height (so it survives column_lines scaling the line).
+    ref = math(prefix_tex + r"\,1", theme, size=size, color=color, what="readout")
+    glyphs = ref.family_members_with_points()
+    r._chalk_base = (glyphs[-1].get_bottom()[1] - glyphs[0].get_bottom()[1]) / head.height  # type: ignore[attr-defined]
+    return seat(r)
+
+
+def seat(r: VGroup) -> VGroup:
+    """Put the number's first digit on the label's baseline.
+
+    next_to centres the number on the label's box, which drops the digits
+    below the line when the label has descenders ("slope =" sat 5 px low at
+    1080p, run 3 review) and lifts them when it is all x-height ("n ="); and
+    DecimalNumber.set_value keeps the box centre, which moves the digits when
+    a thousands comma (it hangs below the line) comes or goes. A digit sits on
+    the baseline, a box bottom may be a comma's tail: so the first digit is
+    what is placed -- not a minus sign, which floats above the line (a
+    readout that starts negative was laid out too low). Called again after
+    every set_value (live)."""
+    head, num = r[0], r[1]
+    base = head.family_members_with_points()[0].get_bottom()[1] + r._chalk_base * head.height  # type: ignore[attr-defined]
+    digit = num[1] if num.number < 0 and len(num) > 1 else num[0]
+    num.shift((base - digit.get_bottom()[1]) * UP)
+    return r
 
 
 def live(r: VGroup, value: Callable[[], float]) -> VGroup:
-    """Make a readout's number follow `value()` every frame (left edge fixed)."""
-    r[1].add_updater(lambda m: m.set_value(value()))
+    """Make a readout's number follow `value()` every frame (left edge fixed,
+    first digit on the baseline)."""
+    def follow(m) -> None:
+        m.set_value(value())
+        seat(r)
+
+    r[1].add_updater(follow)
     return r
 
 

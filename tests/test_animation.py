@@ -221,3 +221,30 @@ def test_a_point_close_to_the_domain_edge_gets_its_true_slope():
     # Round 1 rendered NaN here (the stencil crossed 0); the slope is real.
     plan = slope_plan(Fn("sqrt(x)"), 0.0015, 0.5, 1)
     assert plan.slope == pytest.approx(0.5 / math.sqrt(0.0015), rel=1e-7)
+
+
+@pytest.mark.parametrize("tex, start, end", [("n =", 4, 64), (r"\text{slope} =", 0.625, 1234.5),
+                                             ("x =", -0.5, 0.998)])
+def test_a_readouts_digits_sit_on_its_labels_baseline(tex, start, end):
+    # Run 3 review: "slope =" digits sat 5 px low at 1080p (centred on the
+    # label's box), and a minus sign or a thousands comma moved them. These
+    # labels start with a letter on the baseline, so that letter is the truth.
+    from manim import config
+
+    from chalkdust.scenes.plotting import live, readout
+    from chalkdust.scenes.theme import get_theme
+    theme = get_theme("default")
+    r = readout(theme, tex, start, "#ffffff")
+    value = [start]
+    live(r, lambda: value[0])
+    px = 1080 / config.frame_height
+
+    def off() -> float:
+        num = r[1]
+        digit = num[1] if num.number < 0 else num[0]
+        return (digit.get_bottom()[1] - r[0].family_members_with_points()[0].get_bottom()[1]) * px
+
+    assert abs(off()) < 1.0   # a round letter overshoots the line by ~0.6 px
+    value[0] = end
+    r[1].update()
+    assert abs(off()) < 1.0   # a round letter overshoots the line by ~0.6 px

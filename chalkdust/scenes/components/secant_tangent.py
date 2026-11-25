@@ -134,6 +134,7 @@ class SlopePlan:
     slope: float     # f'(a), as the picture shows it
     h_end: float     # the gap the slide stops at
     decimals: int    # digits after the point on every readout of a slope
+    shown: float     # f'(a) rounded as the readouts show it (see slope_plan)
 
 
 def slope_plan(f: Fn, a: float, h: float, span: float) -> SlopePlan:
@@ -162,28 +163,54 @@ def slope_plan(f: Fn, a: float, h: float, span: float) -> SlopePlan:
         raise ValueError(f"{f.expr!r} is not differentiable at a = {a:g} (slope {left:.4g} from "
                          f"the left, {right:.4g} from the right); pick a point where the curve "
                          "is smooth")
-    slope, half = f.d(a, span), f.d(a, span / 4)
-    if not (_math.isfinite(slope) and _math.isfinite(half)):
-        raise ValueError(f"{f.expr!r} is undefined within {2e-3 * span:.3g} of a = {a:g}; "
-                         "move a further inside where f is defined")
-    if abs(slope - half) > 1e-6 * max(1.0, abs(slope)):
-        raise ValueError(f"{f.expr!r} changes too fast near a = {a:g} for an x-range "
-                         f"{span:g} wide to show its slope; narrow x_range")
+    slope = _derivative(f, a, span)
     fa = f.at(a)
 
     def secant(g: float) -> float:
         return (f.at(a + g) - fa) / g
 
     biggest = max(abs(slope), abs(secant(h)))
-    decimals = 2 if biggest < 100 else 1 if biggest < 1000 else 0
-    want = _shown(slope, decimals)
+    decimals = _decimals(biggest)
+    # The digits come from the side the slide approaches f'(a) from, so an
+    # exact tie (f'(a) = 0.125) reads the same at the slide's end and in the
+    # f'(a) readout, which shows `shown` rather than re-rounding `slope`.
+    side = _math.copysign(1.0, secant(h / 64) - slope) if secant(h / 64) != slope else 0.0
+    want = _shown(slope + side * 1e-9 * max(1.0, abs(slope)), decimals)
     end, smallest = h / 16, 1e-9 * span
     while abs(end) >= smallest:
         if _shown(secant(end), decimals) == want and _shown(secant(end / 2), decimals) == want:
-            return SlopePlan(slope=slope, h_end=end, decimals=decimals)
+            return SlopePlan(slope=slope, h_end=end, decimals=decimals, shown=float(want))
         end /= 2
     raise ValueError(f"the secant slopes of {f.expr!r} at a = {a:g} do not settle on "
                      f"{want} at any visible gap; pick a gentler curve or a different a")
+
+
+def _derivative(f: Fn, a: float, span: float) -> float:
+    """f'(a) to ~1e-7 relative: five-point differences with steps from 1e-3 of
+    the x-range down by fours until two in a row agree. A fixed step refused
+    true pictures near a singularity (log(x) at 0.05 on [0.01, 5]); a stencil
+    that crosses the edge of f's domain gives up only if every step does."""
+    scale, prev = span, None
+    while scale >= 1e-6 * span:
+        d = f.d(a, scale)
+        if _math.isfinite(d):
+            if prev is not None and abs(d - prev) <= 1e-7 * max(1.0, abs(d)):
+                return d
+            prev = d
+        scale /= 4
+    if prev is None:
+        raise ValueError(f"{f.expr!r} is undefined right next to a = {a:g}; move a further "
+                         "inside where f is defined")
+    raise ValueError(f"{f.expr!r} changes too fast near a = {a:g} for its slope to be "
+                     "computed reliably; narrow x_range or move a")
+
+
+def _decimals(biggest: float) -> int:
+    """Readout decimals: two for everyday slopes; at least three significant
+    figures for small ones (0.00123, never 0.00); fewer for big ones."""
+    if biggest < 0.1:
+        return min(6, max(2, 2 - int(_math.floor(_math.log10(max(biggest, 1e-12))))))
+    return 2 if biggest < 100 else 1 if biggest < 1000 else 0
 
 
 def _pieces(f: Fn, lo: float, hi: float) -> list:
@@ -207,6 +234,7 @@ class _Picture:
         x0, x1 = p.x_range
         plan = slope_plan(f, p.a, p.h, x1 - x0)
         self.slope, self.h_end, self.decimals = plan.slope, plan.h_end, plan.decimals
+        self.shown = plan.shown
         # h to two significant places of the x-range: a 0.01-wide range shows
         # h = 0.0050, never 0.00.
         self.h_decimals = max(2, 2 - int(np.floor(np.log10(x1 - x0))))
@@ -275,7 +303,7 @@ class _Picture:
                      "slope")
 
     def deriv_line(self):
-        return label(readout(self.theme, f"f'({_num(self.a)}) =", self.slope, self.c_rate,
+        return label(readout(self.theme, f"f'({_num(self.a)}) =", self.shown, self.c_rate,
                              decimals=self.decimals),
                      "f'(a)")
 
@@ -295,8 +323,9 @@ class _Picture:
 
 
 def _num(v: float) -> str:
-    """A setup value as written: integers without decimals."""
-    return str(int(v)) if float(v).is_integer() else f"{v:g}"
+    """A setup value as written: integers without decimals, and every digit
+    the spec gave (":g" printed a = 14.123456 as 14.1235)."""
+    return str(int(v)) if float(v).is_integer() else f"{v:.12g}"
 
 
 @register

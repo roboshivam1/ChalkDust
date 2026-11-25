@@ -160,7 +160,7 @@ def test_the_derivative_shown_is_the_derivative(expr, a, span, true):
 
 
 @pytest.mark.parametrize("expr,a,h,span,why", [
-    ("sqrt(x)", 0.0015, 0.5, 1, "undefined"),      # stencil crossed 0: a NaN slope rendered
+    ("sqrt(x)", 1e-10, 0.5, 1, "undefined"),       # f stops being defined right next to a
     ("100*x + 0.5*abs(x-1)", 1, 2, 6, "not differentiable"),  # a 1% corner passed
     ("abs(x)", 0, 1, 6, "not differentiable"),
 ])
@@ -196,3 +196,28 @@ def test_the_window_holds_every_height_q_passes():
                             a=1, h=3)
     pic = _Picture(p, get_theme("default"))
     assert pic.plot.y1 >= 100      # Q crosses the peak f(2) = 100 on its way in
+
+
+def test_an_exact_rounding_tie_reads_the_same_at_the_slide_end_and_after():
+    for expr, a, h, span in [("x^2/4", 0.25, -1, 4), ("sqrt(x)", 16, -9, 25)]:
+        plan = slope_plan(Fn(expr), a, h, span)
+        f = Fn(expr)
+        last = (f.at(a + plan.h_end) - f.at(a)) / plan.h_end
+        assert _shown(last, plan.decimals) == _shown(plan.shown, plan.decimals)
+        assert abs(plan.shown - plan.slope) <= 0.5 * 10 ** -plan.decimals + 1e-12
+
+
+def test_small_slopes_keep_three_significant_figures():
+    plan = slope_plan(Fn("x^2/1000"), 0.5, 0.4, 2)
+    assert _shown(plan.shown, plan.decimals) == "0.00100"
+
+
+def test_a_slope_near_a_singularity_is_computed_not_refused():
+    plan = slope_plan(Fn("log(x)"), 0.05, 1, 4.99)
+    assert plan.slope == pytest.approx(20.0, rel=1e-7)
+
+
+def test_a_point_close_to_the_domain_edge_gets_its_true_slope():
+    # Round 1 rendered NaN here (the stencil crossed 0); the slope is real.
+    plan = slope_plan(Fn("sqrt(x)"), 0.0015, 0.5, 1)
+    assert plan.slope == pytest.approx(0.5 / math.sqrt(0.0015), rel=1e-7)

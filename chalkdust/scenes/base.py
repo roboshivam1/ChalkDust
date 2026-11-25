@@ -295,8 +295,14 @@ def moment_windows(moments: Sequence[Moment], cue_frames: Mapping[str, int],
             j += 1
         span = bounds[j] - bounds[k]  # type: ignore[operator]
         if j - k > 1:
+            # A floor each first (the anchors left room for it), the rest by
+            # weight: by weight alone a light moment between two anchors got
+            # 4 frames against a floor of 11 (run 3 review).
             weights = [max(m.weight, 1e-6) for m in moments[k:j]]
-            parts = split_frames(span, weights)
+            rest = span - (j - k) * floor
+            parts = ([floor + q for q in split_frames(rest, weights)] if rest >= j - k
+                     else [span // (j - k) + (1 if i < span % (j - k) else 0)
+                           for i in range(j - k)])
             at = bounds[k]
             for i, p in enumerate(parts[:-1]):
                 at += p  # type: ignore[operator]

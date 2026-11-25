@@ -291,8 +291,8 @@
     "heading": "The derivative",
     "items": [
      "The slope of a curve at one point",
-     "The limit of secant slopes as the gap goes to 0",
-     "A new function: where f rises, falls, levels off"
+     "The limit of secant slopes",
+     "A new function: where f rises and falls"
     ]
    }
   }

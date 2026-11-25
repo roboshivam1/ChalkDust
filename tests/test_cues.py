@@ -60,6 +60,13 @@ def test_cues_too_close_are_refused():
     assert "word(s) after" in p.message
 
 
+def test_a_cue_said_twice_is_refused():
+    # "the line" is said twice; "draw the line" once.
+    (p,) = cue_problems(N, MOMENTS, {"second": "the line"})
+    assert "more than once" in p.message
+    assert cue_problems(N, MOMENTS, {"second": "draw the line"}) == []
+
+
 def test_without_cues_sentences_anchor_moments():
     a = anchor_tokens(N, MOMENTS, {})
     keys = [t.key for t in tokenize(N)]
@@ -104,6 +111,8 @@ def test_windows_always_sum_to_the_beat(fps):
             lead, wins = moment_windows(moments, cues, total, fps)
             assert lead + sum(w.play + w.hold for w in wins) == total
             assert all(w.play >= 1 and w.hold >= 0 for w in wins)
+            floor = -(-MIN_MOMENT_SECONDS * fps // 1)
+            assert all(w.play + w.hold >= floor for w in wins), (cues, wins)
             starts = [w.start for w in wins]
             assert starts == sorted(starts) and starts[0] == lead
 

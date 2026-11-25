@@ -44,15 +44,6 @@ from manim import (
 )
 from pydantic import AfterValidator
 
-from chalkdust.scenes.components.graph_plot import (
-    _auto_window,
-    _check,
-    _parse,
-    _runs,
-    axis_ticks,
-    evaluate,
-    legend_tex,
-)
 from chalkdust.scenes.regions import (
     MIN_FONT_SIZE,
     LayoutError,
@@ -62,6 +53,16 @@ from chalkdust.scenes.regions import (
     tag_font_size,
 )
 from chalkdust.scenes.theme import Theme, caption_text, math
+
+def _gp():
+    # graph_plot lives in the components package, whose __init__ imports every
+    # animation, which imports this module: importing it at the top made
+    # `import chalkdust.scenes.plotting` (before the package) a circular
+    # ImportError. Imported on first use instead.
+    from chalkdust.scenes.components import graph_plot
+
+    return graph_plot
+
 
 # --- colour roles ---------------------------------------------------------------
 #
@@ -90,7 +91,7 @@ def role(theme: Theme, name: str) -> str:
 def check_expr(expr: str) -> str:
     """Pydantic validator: a parseable expression in x from the allowlist."""
     expr = expr.strip()
-    _check(_parse(expr), expr)
+    _gp()._check(_gp()._parse(expr), expr)
     return expr
 
 
@@ -105,7 +106,7 @@ class Fn:
 
     def np(self, xs: np.ndarray) -> np.ndarray:
         with np.errstate(all="ignore"):
-            return evaluate(self.expr, np.asarray(xs, dtype=float))
+            return _gp().evaluate(self.expr, np.asarray(xs, dtype=float))
 
     def at(self, x: float) -> float:
         return float(self.np(np.array([x]))[0])
@@ -113,11 +114,16 @@ class Fn:
     def defined(self, x: float) -> bool:
         return _math.isfinite(self.at(x))
 
-    def d(self, x: float) -> float:
-        """f'(x) by a five-point central difference: error O(h^4), about 1e-9
-        relative at h = 1e-3 * scale for the smooth functions the language
-        allows. Not finite where f is not differentiable or not defined."""
-        h = 1e-3 * max(1.0, abs(x))
+    def d(self, x: float, scale: float) -> float:
+        """f'(x) by a five-point central difference, error O(h^4 f^(5)).
+
+        The step is 1e-3 of `scale`, the width of the x-range the picture
+        shows: features a picture can show are at least that scale's size, so
+        the error is ~1e-12 of the slope. (A step tied to |x| instead read
+        sin(x) at x = 1000 as 0.55; cos(1000) = 0.562 -- run 3 review.) The
+        stencil reaches 2e-3 * scale either side of x: not finite if f is
+        undefined there, so the caller can refuse."""
+        h = 1e-3 * scale
         ys = self.np(np.array([x - 2 * h, x - h, x + h, x + 2 * h]))
         return float((ys[0] - 8 * ys[1] + 8 * ys[2] - ys[3]) / (12 * h))
 
@@ -130,7 +136,7 @@ class Fn:
 
     def tex(self, name: str | None = "f") -> str:
         """LaTeX printed from the parsed expression, e.g. 'f(x) = x^{2}'."""
-        return legend_tex(self.expr, name)
+        return _gp().legend_tex(self.expr, name)
 
     def continuous_on(self, a: float, b: float, n: int = 801) -> bool:
         """True if f is finite on a dense grid over [a, b] with no jump. Used
@@ -140,7 +146,7 @@ class Fn:
         if not np.isfinite(ys).all():
             return False
         span = float(ys.max() - ys.min()) or 1.0
-        return len(_runs(self.expr, xs, ys, float(ys.min()) - 1, float(ys.max()) + 1)) == 1 \
+        return len(_gp()._runs(self.expr, xs, ys, float(ys.min()) - 1, float(ys.max()) + 1)) == 1 \
             or span == 0
 
 
@@ -164,7 +170,7 @@ def y_window(fns: list[Fn], x0: float, x1: float, extra: list[float] = (),
             raise ValueError(f"{f.expr!r} is undefined everywhere on [{x0}, {x1}]")
         vals.append(ys)
     allv = np.concatenate(vals + [np.asarray(extra, dtype=float)]) if extra else np.concatenate(vals)
-    y0, y1 = _auto_window(allv)
+    y0, y1 = _gp()._auto_window(allv)
     if extra:
         lo, hi = min(extra), max(extra)
         pad = 0.08 * max(y1 - y0, 1e-9)
@@ -210,8 +216,8 @@ class Plot:
                             what="axis tick label")
             return caption_text(s, theme, color=muted)
 
-        _, xt = axis_ticks(self.x0, self.x1, x_ticks)
-        _, yt = axis_ticks(self.y0, self.y1, y_ticks)
+        _, xt = _gp().axis_ticks(self.x0, self.x1, x_ticks)
+        _, yt = _gp().axis_ticks(self.y0, self.y1, y_ticks)
         xlabels = [(v, tick_mob(s, tex)) for _, v, s, tex in xt]
         ylabels = [(v, tick_mob(s, tex)) for _, v, s, tex in yt]
         max_yw = max((m.width for _, m in ylabels), default=0.0)
@@ -274,7 +280,7 @@ class Plot:
         a = self.x0 if a is None else max(a, self.x0)
         b = self.x1 if b is None else min(b, self.x1)
         xs = np.linspace(a, b, n)
-        runs = _runs(f.expr, xs, f.np(xs), self.y0, self.y1)
+        runs = _gp()._runs(f.expr, xs, f.np(xs), self.y0, self.y1)
         out = VGroup()
         for r in runs:
             m = VMobject(color=color, stroke_width=stroke)

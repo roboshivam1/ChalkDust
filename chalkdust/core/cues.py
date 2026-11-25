@@ -102,8 +102,10 @@ def cue_problems(narration: str, moments: Sequence[str],
 
     Cues must name moments of the phase, appear in the narration, and come in
     moment order with at least MIN_WORDS_BETWEEN_CUES words between them. A
-    phrase is searched for after the previous cue, so a word that occurs twice
-    ("the line ... the line") anchors to the occurrence that keeps the order.
+    phrase is searched for after the previous cue, and must occur only once
+    there: {"value": "the derivative"} silently anchored on the first of two
+    "the derivative"s, 6 s early (run 3 review). Quote enough words to pick
+    one place.
     """
     problems = []
     unknown = [m for m in cues if m not in moments]
@@ -129,6 +131,11 @@ def cue_problems(narration: str, moments: Sequence[str],
                                               f"the cue {last_name!r}; moments happen in "
                                               f"the order {list(moments)}"))
             continue
+        again = find_phrase(tokens, phrase, at + 1)
+        if again is not None:
+            problems.append(CueProblem(m, f"cue {m!r}: {phrase!r} is said more than once "
+                                          "where this cue could fall; quote enough words "
+                                          "to pick one place"))
         if last is not None and at - last < MIN_WORDS_BETWEEN_CUES:
             problems.append(CueProblem(m, f"cue {m!r}: {phrase!r} starts "
                                           f"{at - last} word(s) after cue {last_name!r}; "

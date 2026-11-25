@@ -25,6 +25,7 @@ so close to P that the secant cannot be seen.
 from __future__ import annotations
 
 import math as _math
+from dataclasses import dataclass
 from typing import Annotated, Any, Literal
 
 import numpy as np
@@ -38,6 +39,7 @@ from manim import (
     Indicate,
     Line,
     ReplacementTransform,
+    ShowPassingFlash,
     ValueTracker,
     VGroup,
     Write,
@@ -49,15 +51,22 @@ from pydantic import Field, model_validator
 from chalkdust.scenes.base import ChalkdustScene, Moment, Timeline
 from chalkdust.scenes.components.animation import Animation, AnimationParams
 from chalkdust.scenes.components.base import label, register
-from chalkdust.scenes.plotting import Expr, Fn, Plot, column_lines, live, readout, role, y_window
+from chalkdust.scenes.plotting import (
+    CURVE_STROKE,
+    Expr,
+    Fn,
+    Plot,
+    column_lines,
+    live,
+    readout,
+    role,
+    y_window,
+)
 from chalkdust.scenes.regions import LayoutError
 from chalkdust.scenes.theme import Theme, math
 
 FiniteFloat = Annotated[float, Field(allow_inf_nan=False)]
 
-# Where the slide stops: small enough that the secant's slope shows f'(a) to
-# the readout's two decimals, large enough to stay a visible line.
-SLOPE_TOLERANCE = 0.002
 # Q must start at least this share of the x-range away from P, or the secant
 # is too short to read.
 MIN_H_SHARE = 0.08
@@ -99,21 +108,82 @@ class SecantTangentParams(AnimationParams):
         # function that is not one piece there.
         if len(_pieces(f, lo, hi)) != 1:
             raise ValueError(f"{self.function!r} breaks between a = {self.a:g} and a + h = {q:g}")
-        # Differentiable at a: the one-sided slopes must agree. Second-order
-        # one-sided stencils, so a smooth curve's two slopes differ by
-        # O(eps^2 f''') -- a first-order pair differs by eps*|f''|, which
-        # refused x^5 - 40x^3 + 3 at -5 -- while a kink keeps its full jump.
-        eps = 1e-4 * max(1.0, x1 - x0)
-        fa = f.at(self.a)
-        right = (-3 * fa + 4 * f.at(self.a + eps) - f.at(self.a + 2 * eps)) / (2 * eps)
-        left = (3 * fa - 4 * f.at(self.a - eps) + f.at(self.a - 2 * eps)) / (2 * eps)
-        if not (_math.isfinite(right) and _math.isfinite(left)):
-            raise ValueError(f"{self.function!r} has no slope at a = {self.a:g}")
-        if abs(right - left) > 1e-2 * max(1.0, abs(right), abs(left)):
-            raise ValueError(f"{self.function!r} is not differentiable at a = {self.a:g} "
-                             f"(slope {left:.3g} from the left, {right:.3g} from the right); "
-                             "pick a point where the curve is smooth")
+        # Everything the picture will show about the slope, computed once by
+        # the same code the picture uses; anything it cannot show truly is
+        # refused here, as a param error that names the fix.
+        slope_plan(f, self.a, self.h, x1 - x0)
         return self
+
+
+def _one_sided_gap(f: Fn, a: float, eps: float) -> tuple[float, float, float]:
+    """(left, right, |right - left|) slopes at a, second-order one-sided."""
+    fa = f.at(a)
+    right = (-3 * fa + 4 * f.at(a + eps) - f.at(a + 2 * eps)) / (2 * eps)
+    left = (3 * fa - 4 * f.at(a - eps) + f.at(a - 2 * eps)) / (2 * eps)
+    return left, right, abs(right - left)
+
+
+def _shown(v: float, decimals: int) -> str:
+    """The digits a readout shows for v (DecimalNumber's own rounding)."""
+    s = f"{v:.{decimals}f}"
+    return "0." + "0" * decimals if decimals and float(s) == 0 else s
+
+
+@dataclass(frozen=True)
+class SlopePlan:
+    slope: float     # f'(a), as the picture shows it
+    h_end: float     # the gap the slide stops at
+    decimals: int    # digits after the point on every readout of a slope
+
+
+def slope_plan(f: Fn, a: float, h: float, span: float) -> SlopePlan:
+    """f'(a), the slide's end gap and the readout precision, or ValueError.
+
+    Truth conditions, each refused with its fix (run 3 review findings):
+    - f is differentiable at a: the one-sided slopes' gap must shrink as the
+      step shrinks (it does as eps^2 on a smooth curve; a corner keeps its
+      jump however small the step, so a 1% threshold missed 100x + 0.5|x-1|);
+    - f'(a) is computable at this zoom: the stencil stays where f is defined,
+      and halving the step does not change the answer;
+    - the slide's readout lands on the digits f'(a) will show: the secant
+      slope is in f'(a)'s rounding bucket at the end gap and at half of it,
+      so the readout never settles on -0.41 and then reads -0.42;
+    - the slide always moves: the end gap is at most h / 16, even when the
+      first secant already has the tangent's slope (any straight line).
+    """
+    eps = 1e-4 * span
+    left, right, gap = _one_sided_gap(f, a, eps)
+    if not (_math.isfinite(left) and _math.isfinite(right)):
+        raise ValueError(f"{f.expr!r} has no slope at a = {a:g}: it is undefined right next to "
+                         "a; move a further inside where f is defined")
+    _, _, gap4 = _one_sided_gap(f, a, eps / 4)
+    scale_v = max(1.0, abs(left), abs(right))
+    if gap4 > 1e-7 * scale_v and gap4 > 0.5 * gap:
+        raise ValueError(f"{f.expr!r} is not differentiable at a = {a:g} (slope {left:.4g} from "
+                         f"the left, {right:.4g} from the right); pick a point where the curve "
+                         "is smooth")
+    slope, half = f.d(a, span), f.d(a, span / 4)
+    if not (_math.isfinite(slope) and _math.isfinite(half)):
+        raise ValueError(f"{f.expr!r} is undefined within {2e-3 * span:.3g} of a = {a:g}; "
+                         "move a further inside where f is defined")
+    if abs(slope - half) > 1e-6 * max(1.0, abs(slope)):
+        raise ValueError(f"{f.expr!r} changes too fast near a = {a:g} for an x-range "
+                         f"{span:g} wide to show its slope; narrow x_range")
+    fa = f.at(a)
+
+    def secant(g: float) -> float:
+        return (f.at(a + g) - fa) / g
+
+    biggest = max(abs(slope), abs(secant(h)))
+    decimals = 2 if biggest < 100 else 1 if biggest < 1000 else 0
+    want = _shown(slope, decimals)
+    end, smallest = h / 16, 1e-9 * span
+    while abs(end) >= smallest:
+        if _shown(secant(end), decimals) == want and _shown(secant(end / 2), decimals) == want:
+            return SlopePlan(slope=slope, h_end=end, decimals=decimals)
+        end /= 2
+    raise ValueError(f"the secant slopes of {f.expr!r} at a = {a:g} do not settle on "
+                     f"{want} at any visible gap; pick a gentler curve or a different a")
 
 
 def _pieces(f: Fn, lo: float, hi: float) -> list:
@@ -134,10 +204,17 @@ class _Picture:
         self.f = f = Fn(p.function)
         self.a, self.h0 = p.a, p.h
         self.fa = f.at(p.a)
-        self.slope = f.d(p.a)
-        self.h_end = _end_gap(f, p.a, p.h, self.slope)
         x0, x1 = p.x_range
-        extra = [self.fa, f.at(p.a + p.h)]
+        plan = slope_plan(f, p.a, p.h, x1 - x0)
+        self.slope, self.h_end, self.decimals = plan.slope, plan.h_end, plan.decimals
+        # h to two significant places of the x-range: a 0.01-wide range shows
+        # h = 0.0050, never 0.00.
+        self.h_decimals = max(2, 2 - int(np.floor(np.log10(x1 - x0))))
+        # Every height Q visits on its slide, not only where it starts: Q and
+        # its rise leg left the frame mid-slide over a peak (run 3 review).
+        lo, hi = sorted((p.a, p.a + p.h))
+        sweep = f.np(np.linspace(lo, hi, 401))
+        extra = [self.fa, float(sweep.min()), float(sweep.max())]
         y0, y1 = y_window([f], x0, x1, extra=extra)
         self.plot = Plot(theme, SecantToTangent.plot_box(), x0, x1, y0, y1)
         self.col = SecantToTangent.column_box()
@@ -190,14 +267,16 @@ class _Picture:
         return (self.f.at(self.a + h) - self.fa) / h
 
     def h_line(self, h: float):
-        return label(readout(self.theme, "h =", h, self.c_text), "h")
+        return label(readout(self.theme, "h =", h, self.c_text, decimals=self.h_decimals), "h")
 
     def slope_line(self, h: float):
-        return label(readout(self.theme, SLOPE_TEX, self.secant_slope(h), self.c_rate),
+        return label(readout(self.theme, SLOPE_TEX, self.secant_slope(h), self.c_rate,
+                             decimals=self.decimals),
                      "slope")
 
     def deriv_line(self):
-        return label(readout(self.theme, f"f'({_num(self.a)}) =", self.slope, self.c_rate),
+        return label(readout(self.theme, f"f'({_num(self.a)}) =", self.slope, self.c_rate,
+                             decimals=self.decimals),
                      "f'(a)")
 
     def limit_line(self):
@@ -218,19 +297,6 @@ class _Picture:
 def _num(v: float) -> str:
     """A setup value as written: integers without decimals."""
     return str(int(v)) if float(v).is_integer() else f"{v:g}"
-
-
-def _end_gap(f: Fn, a: float, h: float, slope: float) -> float:
-    """The h the slide stops at: halve h until the secant's slope is within
-    SLOPE_TOLERANCE of f'(a), so the readout lands on the derivative."""
-    fa = f.at(a)
-    end = h
-    for _ in range(40):
-        m = (f.at(a + end) - fa) / end
-        if abs(m - slope) < SLOPE_TOLERANCE:
-            break
-        end /= 2
-    return end
 
 
 @register
@@ -353,8 +419,11 @@ class SecantToTangent(Animation):
         _, a_line, deriv = on["col"]
         _, limit, deriv3 = end["col"]
         tl.play("limit", ReplacementTransform(a_line, limit), deriv.animate.move_to(deriv3))
+        # A flash runs along the tangent: it marks the line without scaling
+        # it (Indicate grew it 1.2x, across a tick label and the readout).
         tl.play("value", Indicate(deriv, color=pic.c_rate),
-                Indicate(on["tan"], color=pic.c_rate))
+                ShowPassingFlash(on["tan"].copy().set_stroke(width=CURVE_STROKE * 2.4),
+                                 time_width=0.6))
         self._settle_into(scene, end, *scene.mobjects)
 
     # fixtures -------------------------------------------------------------------------

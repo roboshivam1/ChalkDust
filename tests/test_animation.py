@@ -138,3 +138,61 @@ def test_a_smooth_steep_curve_is_not_called_a_kink():
     params(phase="pose", function="x^5 - 40*x^3 + 3", x_range=[-6, 6], a=-5, h=4)
     with pytest.raises(ValueError, match="not differentiable"):
         params(phase="pose", function="abs(x)", x_range=[-3, 3], a=0, h=1)
+
+
+# --- SecantToTangent's numbers (run 3 review findings, each pinned) ---------------
+
+import math  # noqa: E402
+
+from chalkdust.scenes.components.secant_tangent import _shown, slope_plan  # noqa: E402
+from chalkdust.scenes.plotting import Fn  # noqa: E402
+
+
+@pytest.mark.parametrize("expr,a,span,true", [
+    ("sin(x)", 1000, 10, math.cos(1000)),            # step tied to |x| read 0.55
+    ("sin(1000*x)", 0.005, 0.01, 1000 * math.cos(5)),  # read 275.27
+    ("exp(x)", 15, 16, math.exp(15)),
+])
+def test_the_derivative_shown_is_the_derivative(expr, a, span, true):
+    plan = slope_plan(Fn(expr), a, 0.3 * span, span)
+    assert plan.slope == pytest.approx(true, rel=1e-7)
+    assert _shown(plan.slope, plan.decimals) == _shown(true, plan.decimals)
+
+
+@pytest.mark.parametrize("expr,a,h,span,why", [
+    ("sqrt(x)", 0.0015, 0.5, 1, "undefined"),      # stencil crossed 0: a NaN slope rendered
+    ("100*x + 0.5*abs(x-1)", 1, 2, 6, "not differentiable"),  # a 1% corner passed
+    ("abs(x)", 0, 1, 6, "not differentiable"),
+])
+def test_a_slope_that_cannot_be_shown_truly_is_refused(expr, a, h, span, why):
+    with pytest.raises(ValueError, match=why):
+        slope_plan(Fn(expr), a, h, span)
+
+
+def test_the_slide_ends_on_the_digits_of_the_derivative():
+    # Over a grid of smooth setups the secant's last readout and f'(a)'s
+    # readout show the same digits (13% of random setups did not).
+    fns = ["sin(x)", "x^3/3 - x", "exp(x/3)", "x^2/4 + 1", "cos(2*x) + x/5", "log(x + 5)"]
+    for expr in fns:
+        for a in (-2, -0.7, 0.3, 1.1, 2):
+            for h in (-1.5, 0.9, 2):
+                plan = slope_plan(Fn(expr), a, h, 8)
+                f = Fn(expr)
+                last = (f.at(a + plan.h_end) - f.at(a)) / plan.h_end
+                assert _shown(last, plan.decimals) == _shown(plan.slope, plan.decimals), (expr, a, h)
+                assert abs(plan.h_end) <= abs(h) / 16, "the slide must move"
+
+
+def test_the_slide_moves_even_when_the_first_secant_is_already_tangent():
+    plan = slope_plan(Fn("x^3"), -1, 3, 6)    # secant -1..2 has slope 3 = f'(-1)
+    assert abs(plan.h_end) <= 3 / 16
+
+
+def test_the_window_holds_every_height_q_passes():
+    from chalkdust.scenes.components.secant_tangent import SecantTangentParams, _Picture
+    from chalkdust.scenes.theme import get_theme
+
+    p = SecantTangentParams(phase="shrink", function="1/(0.01+(x-2)^2)", x_range=[0, 10],
+                            a=1, h=3)
+    pic = _Picture(p, get_theme("default"))
+    assert pic.plot.y1 >= 100      # Q crosses the peak f(2) = 100 on its way in

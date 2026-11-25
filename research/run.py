@@ -172,7 +172,7 @@ def main(argv: list[str] | None = None) -> int:
     topics = topic_set(a.topics)
     out_path = RESULTS / f"{a.exp}.jsonl"
     commit = git_commit()
-    from research.generate import PROMPT_HASH
+    from research.generate import PROMPT_HASH, PROMPT_HASH_ANIM
     done = set()
     if a.resume and out_path.exists():
         for line in out_path.read_text(encoding="utf-8").splitlines():
@@ -224,7 +224,7 @@ def main(argv: list[str] | None = None) -> int:
                                                   repair=int(kw.get("repair", 0)),
                                                   constrained=not kw.get("free"), calc=bool(kw.get("calc")),
                                                   plans=int(kw.get("plans", 1)), plan_override=override,
-                                                  work=bool(kw.get("work")))
+                                                  work=bool(kw.get("work")), anim=bool(kw.get("anim")))
                         elif mname == "oneshot":
                             gen = generate_oneshot(srv.url, topic, tdir / "work", seed=seed,
                                                    temperature=a.temperature, constrained=not kw.get("free"))
@@ -247,7 +247,7 @@ def main(argv: list[str] | None = None) -> int:
                         cli = validate_spec_cli(tdir / "spec.json", tdir / "cli-work") if (all_valid and not a.no_cli) else None
                         rec = {
                             "exp": a.exp, "run_id": run_id, "ts": dt.datetime.now().isoformat(timespec="seconds"),
-                            "commit": commit, "prompt_hash": PROMPT_HASH, "host": platform.node(),
+                            "commit": commit, "prompt_hash": PROMPT_HASH_ANIM if kw.get("anim") else PROMPT_HASH, "host": platform.node(),
                             "model": mkey, "quant": entry.file,
                             "method": mstr, "topic": topic.id, "subject": topic.subject, "seed": seed,
                             "temperature": a.temperature, "ngl": a.ngl, "threads": a.threads, "parallel": a.parallel,

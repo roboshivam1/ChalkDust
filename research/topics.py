@@ -149,12 +149,41 @@ HELDOUT: tuple[Topic, ...] = (
 FAMILIES: frozenset[str] = frozenset(t.family for t in DEV + HELDOUT)
 BY_ID: dict[str, Topic] = {t.id: t for t in DEV + HELDOUT}
 
+# Run 3 (2026-11-26): the three Calculus 1 lessons that the hand-written
+# reference videos (examples/calculus/ref_*.json) also teach, for the
+# side-by-side with the untuned model under `anim=1`. Not evaluation topics
+# and not in FAMILIES: definite-integral-area and limit-removable are near
+# twins of the TRAIN families definite-integral-polynomial and
+# limit-sinx-over-x, so never score a tuned model on these.
+RUN3: tuple[Topic, ...] = (
+    Topic("r3-derivative", "maths", "Calculus 1 (first-year university)",
+          "Explain what the derivative of f(x) = x^2/4 + 1 at x = 1 means, as the slope of the "
+          "tangent line, and find its value.",
+          "derivative-at-point",
+          Key("number", 0.5)),
+    Topic("r3-limit", "maths", "Calculus 1 (first-year university)",
+          "Explain what the limit of (x^2 - 1)/(x - 1) as x approaches 1 means, even though the "
+          "function is undefined at x = 1, and find the limit.",
+          "limit-removable",
+          Key("number", 2.0)),
+    Topic("r3-integral", "maths", "Calculus 1 (first-year university)",
+          "Explain the definite integral of f(x) = x^2/4 + 1 from x = 0 to x = 3 as the area under "
+          "the curve, using rectangle sums, and find its value.",
+          "definite-integral-area",
+          Key("number", 5.25)),
+)
+_RUN3_BY_ID: dict[str, Topic] = {t.id: t for t in RUN3}
+
 
 def topic_set(name: str) -> tuple[Topic, ...]:
     if name == "dev":
         return DEV
     if name == "heldout":
         return HELDOUT
+    if name == "run3":
+        return RUN3
+    if name in _RUN3_BY_ID:
+        return (_RUN3_BY_ID[name],)
     if name == "train" or name.startswith("train:"):
         from research.train_topics import TRAIN   # inputs for the teacher only
         if name == "train":

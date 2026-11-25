@@ -134,7 +134,7 @@ class Animation(Component):
         hook = getattr(scene, "chalk_on_entry", None)
         if hook is not None:
             hook()
-        timeline = scene.timeline(*self.moments())
+        timeline = scene.cue_timeline(*self.moments())
         self.perform(scene, timeline)
 
     @abstractmethod

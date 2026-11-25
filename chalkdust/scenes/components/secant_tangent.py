@@ -99,11 +99,14 @@ class SecantTangentParams(AnimationParams):
         # function that is not one piece there.
         if len(_pieces(f, lo, hi)) != 1:
             raise ValueError(f"{self.function!r} breaks between a = {self.a:g} and a + h = {q:g}")
-        # Differentiable at a: one-sided difference quotients must agree.
+        # Differentiable at a: the one-sided slopes must agree. Second-order
+        # one-sided stencils, so a smooth curve's two slopes differ by
+        # O(eps^2 f''') -- a first-order pair differs by eps*|f''|, which
+        # refused x^5 - 40x^3 + 3 at -5 -- while a kink keeps its full jump.
         eps = 1e-4 * max(1.0, x1 - x0)
         fa = f.at(self.a)
-        right = (f.at(self.a + eps) - fa) / eps
-        left = (fa - f.at(self.a - eps)) / eps
+        right = (-3 * fa + 4 * f.at(self.a + eps) - f.at(self.a + 2 * eps)) / (2 * eps)
+        left = (3 * fa - 4 * f.at(self.a - eps) + f.at(self.a - 2 * eps)) / (2 * eps)
         if not (_math.isfinite(right) and _math.isfinite(left)):
             raise ValueError(f"{self.function!r} has no slope at a = {self.a:g}")
         if abs(right - left) > 1e-2 * max(1.0, abs(right), abs(left)):

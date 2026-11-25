@@ -44,3 +44,5 @@ __all__ = [
     "register",
     "registered_names",
 ]
+from chalkdust.scenes.components import riemann_sum  # noqa: F401,E402
+from chalkdust.scenes.components import limit_hole  # noqa: F401,E402

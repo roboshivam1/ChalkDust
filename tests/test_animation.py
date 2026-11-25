@@ -27,9 +27,9 @@ from chalkdust.validate.semantic import check_continuity, validate_semantic
 
 ANIMATIONS = sorted(n for n, c in _REGISTRY.items() if issubclass(c, Animation))
 # Small and quick: continuity is a property of the mobjects, not the resolution.
+# Frames are really drawn (no skip_animations): the last one drawn is the test.
 CAMERA = {"pixel_width": 640, "pixel_height": 360, "frame_rate": 15,
-          "skip_animations": True, "write_to_movie": False, "disable_caching": True,
-          "verbosity": "WARNING"}
+          "write_to_movie": False, "disable_caching": True, "verbosity": "WARNING"}
 
 
 class _EntryScene(ChalkdustScene):
@@ -47,11 +47,10 @@ def _final_frame(component, tmp_path) -> np.ndarray:
     with tempconfig({**CAMERA, "media_dir": str(long_path(tmp_path))}):
         scene = ChalkdustScene(component, duration=9.0)
         scene.render()
-        # The renderer keeps the last animation's static background, and
-        # update_frame draws onto it: without this the final frame is the
-        # picture drawn twice (antialiased edges thicken) and never matches.
-        scene.renderer.static_image = None
-        scene.renderer.update_frame(scene)
+        # The camera still holds the last frame written to the movie. Do not
+        # redraw the scene: what is on screen after the last frame (an end
+        # state swapped in, a changed draw order) is never seen by anyone, and
+        # comparing it hid a seam the encoded pilot showed (dots under lines).
         return np.array(scene.renderer.get_frame())
 
 
@@ -130,3 +129,12 @@ def test_cue_names_are_the_phase_moments(name):
     for params in _REGISTRY[name].examples():
         c = make_component(name, params)
         assert c.moment_names() == [m.name for m in c.PHASES[params["phase"]]]
+
+
+def test_a_smooth_steep_curve_is_not_called_a_kink():
+    # One-sided first-order slopes of x^5 - 40x^3 + 3 at -5 differ by about
+    # eps*|f''| (2 in 125); the check must not read that as a corner.
+    params = _REGISTRY["SecantToTangent"].Params
+    params(phase="pose", function="x^5 - 40*x^3 + 3", x_range=[-6, 6], a=-5, h=4)
+    with pytest.raises(ValueError, match="not differentiable"):
+        params(phase="pose", function="abs(x)", x_range=[-3, 3], a=0, h=1)

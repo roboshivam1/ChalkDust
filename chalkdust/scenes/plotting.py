@@ -144,6 +144,10 @@ class Fn:
             or span == 0
 
 
+# Draw order: points (dots, holes) above lines and areas, which stay at 0.
+POINT_Z = 2
+
+
 def y_window(fns: list[Fn], x0: float, x1: float, extra: list[float] = (),
              include_zero: bool = True, n: int = 600) -> tuple[float, float]:
     """A y-window that shows the shape of every function on [x0, x1] and every
@@ -292,12 +296,18 @@ class Plot:
                        stroke_width=0)
 
     def dot(self, x: float, y: float, color: str, radius: float = 0.07) -> Dot:
-        return Dot(self.p(x, y), radius=radius, color=color)
+        """A point on the picture. Points draw above every line (POINT_Z),
+        whatever order things were added in, so a phase's last frame and the
+        next phase's first frame stack the same way."""
+        d = Dot(self.p(x, y), radius=radius, color=color)
+        d.set_z_index(POINT_Z)
+        return d
 
     def hole(self, x: float, y: float, color: str, radius: float = 0.08) -> Circle:
         """An open circle: f is not defined (or not equal to the limit) here."""
         c = Circle(radius=radius, color=color, stroke_width=3)
         c.set_fill(self.theme.palette.bg, opacity=1.0)
+        c.set_z_index(POINT_Z)
         return c.move_to(self.p(x, y))
 
     def vguide(self, x: float, y: float, color: str | None = None) -> DashedLine:

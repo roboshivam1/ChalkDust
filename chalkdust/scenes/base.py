@@ -61,7 +61,7 @@ class ChalkdustScene(Scene):
         super().__init__(**kwargs)
         # Moment name -> seconds into the beat, resolved from the narration and
         # the voice's word timings (core/cues.py). Only an animation component
-        # reads them, through timeline(); empty means "no anchors", which every
+        # reads them, through cue_timeline(); empty means "no anchors", which every
         # timeline handles by weight. The render key holds them (D-004).
         self.cue_times: dict[str, float] = dict(cues or {})
         # Every Timeline built on this scene, so construct() can check each one
@@ -139,10 +139,10 @@ class ChalkdustScene(Scene):
         fps = self.fps
         return [n / fps for n in split_frames(self.beat_frames, weights)]
 
-    def timeline(self, *moments: "Moment") -> "Timeline":
+    def cue_timeline(self, *moments: "Moment") -> "Timeline":
         """The beat split into named moments, each starting on its cue.
 
-            tl = scene.timeline(Moment("pose", 2, motion=1.5),
+            tl = scene.cue_timeline(Moment("pose", 2, motion=1.5),
                                 Moment("slide", 4), Moment("name", 2))
             tl.play("pose", Create(curve))
             tl.play("slide", tracker.animate.set_value(0.01))
@@ -315,7 +315,7 @@ def moment_windows(moments: Sequence[Moment], cue_frames: Mapping[str, int],
 class Timeline:
     """Plays an animation beat moment by moment, in whole frames.
 
-    Built by ChalkdustScene.timeline(). Moments must be played in order, each
+    Built by ChalkdustScene.cue_timeline(). Moments must be played in order, each
     exactly once; finish() (called by the scene at the end of build) checks
     that every moment was played, so a component cannot silently leave part of
     the beat's time unspent.

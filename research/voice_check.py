@@ -91,6 +91,14 @@ def measure(path: Path) -> dict:
             "clipped": int((np.abs(pcm) >= 0.999).sum())}
 
 
+def pcm16k(path) -> "np.ndarray":
+    """16 kHz mono float32 via ffmpeg: faster-whisper's own decoder (PyAV) is
+    a version this venv's av does not match."""
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(path), "-ac", "1", "-ar", "16000",
+                          "-f", "f32le", "-"], capture_output=True, check=True).stdout
+    return np.frombuffer(raw, np.float32)
+
+
 _ASR = None
 
 
@@ -99,7 +107,7 @@ def transcribe(path: Path) -> str:
     if _ASR is None:
         from faster_whisper import WhisperModel
         _ASR = WhisperModel("small.en", device="cpu", compute_type="int8")
-    segs, _ = _ASR.transcribe(str(path), language="en", beam_size=5)
+    segs, _ = _ASR.transcribe(pcm16k(path), language="en", beam_size=5)
     return " ".join(s.text.strip() for s in segs)
 
 

@@ -50,7 +50,7 @@ before animation (D-002).
    narration, is out of order, or names no moment is refused at rung 2 as the
    new kind `cue`, from the text alone and before any speech is synthesised.
 
-4. **Whole-frame timeline.** `scene.timeline(*moments)` is the word-timed
+4. **Whole-frame timeline.** `scene.cue_timeline(*moments)` is the word-timed
    sibling of `budget()`. Each moment gets a window in whole frames. Its motion
    runs for its natural length (or fills the window) and the rest is a hold.
    Together the windows are exactly `beat_frames`. Anchors closer than

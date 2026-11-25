@@ -1,0 +1,97 @@
+{
+  "video_id": "calc1-ref-integral",
+  "channel": "calc1",
+  "voice": {"backend": "kokoro", "voice_id": "af_heart", "rate": 1.0},
+  "beats": [
+    {
+      "id": "b01",
+      "narration": "How much area sits under a curve? For a rectangle or a triangle, geometry has a formula. For a region with a curved top edge, it has nothing. In this video we build the answer out of rectangles, and the number they close in on gets a name: the definite integral.",
+      "component": "TitleCard",
+      "params": {"kicker": "Calculus 1", "title": "The Definite Integral", "subtitle": "Area as a limit of sums"}
+    },
+    {
+      "id": "b02",
+      "narration": "Here is the curve y equals x squared over four, plus one. Shade the region underneath it, from x equals zero to x equals three. How big is that area? Its top edge is curved, so no formula from geometry fits it.",
+      "component": "RiemannSum",
+      "params": {"phase": "pose", "function": "x^2/4 + 1", "x_range": [-1, 4], "a": 0, "b": 3, "rule": "left", "n0": 4,
+                 "cues": {"interval": "Shade the region", "question": "How big"}}
+    },
+    {
+      "id": "b03",
+      "narration": "So start with shapes we can measure. Four rectangles, each three quarters wide, each as tall as the curve at its left edge. Their areas add up to about four point four eight. The slivers in red are the area they miss, because the curve keeps rising above each rectangle.",
+      "component": "RiemannSum",
+      "params": {"phase": "boxes", "function": "x^2/4 + 1", "x_range": [-1, 4], "a": 0, "b": 3, "rule": "left", "n0": 4,
+                 "cues": {"rects": "Four rectangles", "sum": "Their areas add up", "gap": "The slivers in red"}}
+    },
+    {
+      "id": "b04",
+      "narration": "Now cut every rectangle in half. Eight thinner rectangles hug the curve more closely, and the sum grows to about four point eight five. Keep halving: sixteen, thirty two, sixty four rectangles. The red slivers shrink, and the sum creeps up to about five point two.",
+      "component": "RiemannSum",
+      "params": {"phase": "refine", "function": "x^2/4 + 1", "x_range": [-1, 4], "a": 0, "b": 3, "rule": "left", "n0": 4,
+                 "cues": {"split": "cut every rectangle", "more": "Keep halving", "settle": "The red slivers shrink"}}
+    },
+    {
+      "id": "b05",
+      "narration": "Written as a sum, that is f at each sample point, times the width, all added up. Let the rectangles get thinner without end, and the sums close in on one exact number. That number is the definite integral of f from zero to three, and here it is five and a quarter.",
+      "component": "RiemannSum",
+      "params": {"phase": "name", "function": "x^2/4 + 1", "x_range": [-1, 4], "a": 0, "b": 3, "rule": "left", "n0": 4,
+                 "cues": {"sigma": "Written as a sum", "integral": "That number is"}}
+    },
+    {
+      "id": "b06",
+      "narration": "You will soon meet a shortcut for this. Find a function whose derivative is f: here, x cubed over twelve, plus x. Its change from zero to three is the area. At three it gives twenty seven twelfths plus three, and at zero it gives nothing. That is twenty one quarters, five and a quarter.",
+      "component": "EquationDerivation",
+      "params": {"steps": ["\\int_0^3 \\left(\\frac{x^2}{4} + 1\\right) dx",
+                           "= \\left[\\frac{x^3}{12} + x\\right]_0^3",
+                           "= \\frac{27}{12} + 3 - 0",
+                           "= \\frac{21}{4} = 5.25"],
+                 "annotations": [{"step": 1, "text": "its derivative is f"},
+                                 {"step": 2, "text": "top minus bottom"},
+                                 {"step": 3, "text": "same as the limit"}]}
+    },
+    {
+      "id": "b07",
+      "narration": "A second curve: eight over x plus one, which falls as x grows. Take the area beneath it from one half to four and a half. Again, no formula from geometry will do.",
+      "component": "RiemannSum",
+      "params": {"phase": "pose", "function": "8/(x + 1)", "x_range": [0, 5], "a": 0.5, "b": 4.5, "rule": "right", "n0": 3,
+                 "cues": {"interval": "Take the area", "question": "Again, no formula"}}
+    },
+    {
+      "id": "b08",
+      "narration": "This time use three rectangles, each as tall as the curve at its right edge. Because the curve is falling, every rectangle fits under it, and their total, about eight point two six, comes in too small. The red slivers show what is missing.",
+      "component": "RiemannSum",
+      "params": {"phase": "boxes", "function": "8/(x + 1)", "x_range": [0, 5], "a": 0.5, "b": 4.5, "rule": "right", "n0": 3,
+                 "cues": {"rects": "use three rectangles", "sum": "and their total", "gap": "The red slivers"}}
+    },
+    {
+      "id": "b09",
+      "narration": "Halve the rectangles: six of them now, and the sum jumps to about nine point two two. Keep halving, twelve, twenty four, forty eight, and the sum climbs to about ten point two three. The gap keeps closing.",
+      "component": "RiemannSum",
+      "params": {"phase": "refine", "function": "8/(x + 1)", "x_range": [0, 5], "a": 0.5, "b": 4.5, "rule": "right", "n0": 3,
+                 "cues": {"split": "Halve the rectangles", "more": "Keep halving", "settle": "The gap keeps closing"}}
+    },
+    {
+      "id": "b10",
+      "narration": "In the limit, the sums reach the definite integral of eight over x plus one, from one half to four and a half. Computed exactly, it is eight times the natural log of eleven thirds, about ten point three nine.",
+      "component": "RiemannSum",
+      "params": {"phase": "name", "function": "8/(x + 1)", "x_range": [0, 5], "a": 0.5, "b": 4.5, "rule": "right", "n0": 3,
+                 "cues": {"sigma": "In the limit", "integral": "Computed exactly"}}
+    },
+    {
+      "id": "b11",
+      "narration": "Which way a sum misses depends on the rule and on the curve. On a rising curve, left edges give rectangles under the curve, so the sum is too small. Right edges poke above it, so the sum is too big. Either way, as the rectangles thin out, both close in on the same integral.",
+      "component": "SplitCompare",
+      "params": {"left": {"title": "Left edges", "body": "On a rising curve: too small"},
+                 "right": {"title": "Right edges", "body": "On a rising curve: too big"},
+                 "verdict": "Both close in on the same integral"}
+    },
+    {
+      "id": "b12",
+      "narration": "So, the definite integral is the area under a curve between two points. We get it as the limit of sums of thinner and thinner rectangles. And it does not matter which point of each rectangle sets its height: every rule closes in on the same number.",
+      "component": "BulletReveal",
+      "params": {"heading": "The definite integral", "items": ["Area under f from a to b",
+                                                              "The limit of rectangle sums",
+                                                              "Every rule gives the same limit"]}
+    }
+  ]
+}

@@ -87,3 +87,13 @@ def test_the_animation_method_leaves_the_other_methods_prompts_alone():
     assert PROMPT_HASH == "e7709251718c" and PROMPT_HASH_ANIM != PROMPT_HASH
     enum = _plan_schema(True, False)["properties"]["beats"]["items"]["properties"]["component"]["enum"]
     assert not set(enum) & set(animate.CARDS)
+
+
+def test_the_rules_give_the_model_no_example_number_it_could_copy():
+    # R3-anim (2026-11-26): the rule's example "five point two five" (the
+    # integral lesson's answer) turned up as the derivative lesson's slope.
+    import re
+    from research.generate import BEAT_ANIM_RULES, PLAN_ANIM_RULES
+    from research.content import spoken_numbers
+    quoted = re.findall(r'"([^"]*)"', BEAT_ANIM_RULES + PLAN_ANIM_RULES)
+    assert all(spoken_numbers(q) == [] for q in quoted), quoted

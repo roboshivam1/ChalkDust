@@ -116,7 +116,7 @@ BEAT_ANIM_RULES = """
 Run-3 rules (they override the word count above):
 - 45 to 62 words of narration.
 - If FACTS are given, they are the numbers on screen in this beat: say those numbers (in words), never different ones.
-- Say the lesson's final answer exactly as given, reading its digits (e.g. "five point two five").
+- When you say the lesson's final answer, say exactly the value given as the final answer, reading its digits aloud. Never say a value for it that you worked out yourself.
 - cues (animations only): for each moment, copy 2 to 5 consecutive words from YOUR narration where that moment should start. Leave a moment out if unsure."""
 
 

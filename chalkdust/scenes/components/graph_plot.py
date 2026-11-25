@@ -547,8 +547,10 @@ def _check_range(v: tuple[float, float] | None, what: str) -> tuple[float, float
 class GraphFunction(ComponentParams):
     expr: str = Field(min_length=1, max_length=MAX_EXPR_LEN)
     # Optional single-letter name: the legend reads "f(x) = ..." instead of
-    # "y = ...", so narration can say "f" and the viewer can find it.
-    name: str | None = Field(default=None, pattern=r"^[A-Za-z]$")
+    # "y = ...", so narration can say "f" and the viewer can find it. Up to two
+    # primes ("f'", "f''"), so a derivative plotted beside its function is
+    # called what the narration calls it (run 3).
+    name: str | None = Field(default=None, pattern=r"^[A-Za-z]'{0,2}$")
 
     @field_validator("expr")
     @classmethod

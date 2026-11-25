@@ -491,3 +491,12 @@ class TestRejections:
 
     def test_minimal_input_is_accepted(self):
         GraphPlot({"functions": [{"expr": "x"}], "x_range": [0, 1]})
+
+
+def test_a_derivative_may_be_named_with_primes():
+    from chalkdust.scenes.components.graph_plot import GraphFunction
+    assert GraphFunction(expr="x/2", name="f'").name == "f'"
+    assert GraphFunction(expr="1/2", name="f''").name == "f''"
+    for bad in ("f'''", "fg", "'f"):
+        with pytest.raises(ValueError):
+            GraphFunction(expr="x", name=bad)

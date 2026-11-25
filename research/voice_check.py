@@ -45,10 +45,13 @@ _NUM = {"0": "zero", "1": "one", "2": "two", "3": "three", "4": "four", "5": "fi
 
 
 def words(text: str) -> list[str]:
-    out = []
-    for w in re.findall(r"[a-z0-9]+", text.lower().replace("-", " ")):
-        out.append(_NUM.get(w, w))
-    return out
+    """Spoken-form tokens: a recogniser writing "3x", "1.5" or "x-squared"
+    for "three x", "one and a half", "x squared" has heard it right."""
+    t = text.lower().replace("-", " ")
+    t = re.sub(r"(\d+)\.5\b", r"\1 and a half", t)
+    t = re.sub(r"(\d)([a-z])", r"\1 \2", t)
+    t = re.sub(r"\b1/2\b", "a half", t)
+    return [_NUM.get(w, w) for w in re.findall(r"[a-z0-9]+", t)]
 
 
 def wer(ref: str, hyp: str) -> float:

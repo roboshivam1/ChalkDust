@@ -31,6 +31,7 @@ import numpy as np
 from manim import (
     DOWN,
     LEFT,
+    RIGHT,
     Circle,
     DashedLine,
     DecimalNumber,
@@ -52,7 +53,14 @@ from chalkdust.scenes.components.graph_plot import (
     evaluate,
     legend_tex,
 )
-from chalkdust.scenes.regions import LayoutError, Rect, tag_font_size
+from chalkdust.scenes.regions import (
+    MIN_FONT_SIZE,
+    LayoutError,
+    Rect,
+    scale_with_tags,
+    smallest_font_size,
+    tag_font_size,
+)
 from chalkdust.scenes.theme import Theme, caption_text, math
 
 # --- colour roles ---------------------------------------------------------------
@@ -346,7 +354,9 @@ def number(theme: Theme, value: float, color: str, decimals: int = 2,
     Use .set_value() (or an updater) to keep it equal to what the picture
     shows; never write a number into the spec."""
     size = size or theme.type.body
-    d = DecimalNumber(value, num_decimal_places=decimals, color=color, font_size=size,
+    # x1.2 as theme.math does for MathTex, so digits match the maths they sit
+    # beside; the tag records the theme size, as theme.math's does.
+    d = DecimalNumber(value, num_decimal_places=decimals, color=color, font_size=size * 1.2,
                       include_sign=False)
     tag_font_size(d, size)
     return d
@@ -361,9 +371,49 @@ def fmt(value: float, decimals: int = 2) -> str:
     return s
 
 
+def readout(theme: Theme, prefix_tex: str, value: float, color: str,
+            decimals: int = 2) -> VGroup:
+    """`prefix = value`: LaTeX prefix, then a DecimalNumber computed by code.
+
+    For a value that changes on screen, keep the VGroup and give its number
+    an updater (`live(readout, fn)`): DecimalNumber reuses its digit glyphs,
+    where a fresh MathTex per frame would run LaTeX on every frame. The live
+    and the static readout of one value are built by this same function, so
+    a phase that starts from a static one matches the live one pixel for pixel.
+    """
+    size = theme.type.body
+    head = math(prefix_tex, theme, size=size, color=color, what="readout")
+    num = number(theme, value, color, decimals=decimals, size=size)
+    num.next_to(head, RIGHT, buff=0.15)
+    return VGroup(head, num)
+
+
+def live(r: VGroup, value: Callable[[], float]) -> VGroup:
+    """Make a readout's number follow `value()` every frame (left edge fixed)."""
+    r[1].add_updater(lambda m: m.set_value(value()))
+    return r
+
+
 def column_lines(theme: Theme, lines: list[Mobject], box: Rect, gap: float = 0.35) -> VGroup:
-    """Stack lines top-down at the top-left of `box` (the maths column)."""
+    """Stack lines top-down at the top-left of `box` (the maths column).
+
+    A line wider than the box is scaled down on its own, to the legibility
+    floor at most (LayoutError "overflow" below it). Scaling each line by
+    itself keeps a line identical in every phase it appears in, whatever its
+    neighbours are -- the continuity of a picture across beats needs that.
+    """
+    for line in lines:
+        if line.width > box.width:
+            scale_with_tags(line, box.width / line.width)
+            small = smallest_font_size(line)
+            if small is not None and small < MIN_FONT_SIZE:
+                raise LayoutError(
+                    f"column line too wide: would render at font size {small:.1f} "
+                    f"(floor {MIN_FONT_SIZE:.0f}); shorten it", kind="overflow")
     g = VGroup(*lines).arrange(DOWN, aligned_edge=LEFT, buff=gap)
+    if g.height > box.height:
+        raise LayoutError(f"maths column is {g.height:.2f} tall, room for {box.height:.2f}; "
+                          "show fewer lines at once", kind="overflow")
     g.move_to(np.array([box.left + g.width / 2, box.top - g.height / 2, 0.0]))
     return g
 

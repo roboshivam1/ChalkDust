@@ -57,10 +57,14 @@ class Quality(str, Enum):
 
     DRAFT = "draft"  # 854x480 @ 15fps
     FINAL = "final"  # 1920x1080 @ 60fps
+    # 1920x1080 @ 30fps: the watchable tier for a student's own laptop. Added
+    # beside D-006's two tiers (run 3, docs/research/ANIMATIONS.md), which
+    # stand unchanged; rendering-2026-11.md recommends 1080p30 for laptops.
+    STANDARD = "standard"
 
     @property
     def manim_flag(self) -> str:
-        return {"draft": "-ql", "final": "-qh"}[self.value]
+        return {"draft": "-ql", "final": "-qh", "standard": "-qh"}[self.value]
 
 
 class CarryInError(ValueError):

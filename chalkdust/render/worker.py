@@ -67,6 +67,7 @@ class RenderTier:
 TIERS: dict[Quality, RenderTier] = {
     Quality.DRAFT: RenderTier(pixel_width=854, pixel_height=480, frame_rate=15),
     Quality.FINAL: RenderTier(pixel_width=1920, pixel_height=1080, frame_rate=60),
+    Quality.STANDARD: RenderTier(pixel_width=1920, pixel_height=1080, frame_rate=30),
 }
 
 

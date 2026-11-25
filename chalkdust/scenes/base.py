@@ -271,17 +271,20 @@ def moment_windows(moments: Sequence[Moment], cue_frames: Mapping[str, int],
     # bounds[k] is the first frame of moment k; bounds[n] is the end.
     bounds: list[int | None] = [None] * (n + 1)
     bounds[n] = total
-    prev = -floor  # so moment 0 may start at frame 0
+    last_k, last_f = 0, 0  # moment 0 starts at frame 0 at the earliest
     for k, m in enumerate(moments):
         f = cue_frames.get(m.name)
         if f is None:
             continue
-        f = max(int(f), prev + floor, 0)
+        # Room for every moment since the last anchor, a floor each, before
+        # this one; and room for this one and every moment after it.
+        earliest = last_f + (k - last_k) * floor
+        f = max(int(f), earliest)
         latest = total - (n - k) * floor
         if f > latest:
             continue  # cannot keep it and still fit what follows: by weight
         bounds[k] = f
-        prev = f
+        last_k, last_f = k, f
     if bounds[0] is None:
         bounds[0] = 0
     # Fill each run of unanchored moments between two known bounds by weight.

@@ -49,7 +49,7 @@ from pydantic import Field, model_validator
 from chalkdust.scenes.base import ChalkdustScene, Moment, Timeline
 from chalkdust.scenes.components.animation import Animation, AnimationParams
 from chalkdust.scenes.components.base import label, register
-from chalkdust.scenes.plotting import Expr, Fn, Plot, column_lines, fmt, number, role, y_window
+from chalkdust.scenes.plotting import Expr, Fn, Plot, column_lines, live, readout, role, y_window
 from chalkdust.scenes.regions import LayoutError
 from chalkdust.scenes.theme import Theme, math
 
@@ -62,6 +62,8 @@ SLOPE_TOLERANCE = 0.002
 # is too short to read.
 MIN_H_SHARE = 0.08
 MAX_SPAN = 1e4
+SLOPE_TEX = r"\text{slope} ="
+LIMIT_TEX = r"f'(a) = \lim_{h \to 0} \frac{f(a+h) - f(a)}{h}"
 
 
 class SecantTangentParams(AnimationParams):
@@ -174,27 +176,30 @@ class _Picture:
     # the maths column ---------------------------------------------------------------
 
     def legend(self):
-        return label(math(self.f.tex("f"), self.theme, color=self.c_fn, what="legend"), "legend")
+        return label(math(self.f.tex("f"), self.theme, size=self.theme.type.body,
+                          color=self.c_fn, what="legend"), "legend")
 
     def a_line(self):
-        return label(math(f"a = {_num(self.a)}", self.theme, color=self.c_text, what="a"), "a")
+        return label(math(f"a = {_num(self.a)}", self.theme, size=self.theme.type.body,
+                          color=self.c_text, what="a"), "a")
+
+    def secant_slope(self, h: float) -> float:
+        return (self.f.at(self.a + h) - self.fa) / h
 
     def h_line(self, h: float):
-        return label(math(f"h = {fmt(h)}", self.theme, color=self.c_text, what="h"), "h")
+        return label(readout(self.theme, "h =", h, self.c_text), "h")
 
     def slope_line(self, h: float):
-        q = self.a + h
-        m = (self.f.at(q) - self.fa) / h
-        return label(math(r"\text{slope} = " + fmt(m), self.theme, color=self.c_rate,
-                          what="slope"), "slope")
+        return label(readout(self.theme, SLOPE_TEX, self.secant_slope(h), self.c_rate),
+                     "slope")
 
     def deriv_line(self):
-        return label(math(f"f'({_num(self.a)}) = {fmt(self.slope)}", self.theme,
-                          color=self.c_rate, what="f'(a)"), "f'(a)")
+        return label(readout(self.theme, f"f'({_num(self.a)}) =", self.slope, self.c_rate),
+                     "f'(a)")
 
     def limit_line(self):
-        return label(math(r"f'(a) = \lim_{h \to 0} \frac{f(a+h) - f(a)}{h}", self.theme,
-                          color=self.c_text, what="limit"), "limit")
+        return label(math(LIMIT_TEX, self.theme,
+                          size=self.theme.type.body, color=self.c_text, what="limit"), "limit")
 
     def column(self, *lines):
         """The maths column, top-left aligned; positions depend only on which
@@ -202,7 +207,8 @@ class _Picture:
         return column_lines(self.theme, list(lines), self.col)
 
     def question(self):
-        q = math(r"\text{slope} = \,?", self.theme, color=self.c_rate, what="question")
+        q = math(SLOPE_TEX + r" \,?", self.theme, size=self.theme.type.body,
+                 color=self.c_rate, what="question")
         return label(q, "question")
 
 
@@ -316,28 +322,27 @@ class SecantToTangent(Animation):
         def h_now() -> float:
             return h0 * (h1 / h0) ** t.get_value()
 
-        def like(new, old):
-            return new.align_to(old, LEFT).set_y(old.get_y())
-
-        live = {
+        live_parts = {
             "gQ": always_redraw(lambda: pic.guide(a + h_now())),
             "sec": always_redraw(lambda: pic.secant(h_now())),
             "legs": always_redraw(lambda: pic.legs(h_now())),
             "Q": always_redraw(lambda: pic.point(a + h_now(), "Q")),
-            "h": always_redraw(lambda: like(pic.h_line(h_now()), h_line)),
-            "slope": always_redraw(lambda: like(pic.slope_line(h_now()), slope_line)),
         }
-        scene.remove(on["gQ"], on["sec"], on["legs"], on["Q"], h_line, slope_line)
-        scene.add(*live.values())
-        scene.bring_to_front(on["P"], live["Q"])
+        # The column's readouts are the very objects the entry put up; only
+        # their numbers follow h now (plotting.live), so frame 0 is unchanged.
+        live(h_line, h_now)
+        live(slope_line, lambda: pic.secant_slope(h_now()))
+        scene.remove(on["gQ"], on["sec"], on["legs"], on["Q"])
+        scene.add(*live_parts.values())
+        scene.bring_to_front(on["P"], live_parts["Q"])
         tl.play("slide", t.animate.set_value(1.0), rate_func=linear)
-        for m in live.values():
+        for m in [*live_parts.values(), h_line[1], slope_line[1]]:
             m.clear_updaters()
         end = self._state(pic, 2)
         deriv = end["col"][2]
-        tl.play("tangent", ReplacementTransform(live["sec"], end["tan"]),
-                FadeOut(live["legs"]), FadeOut(live["Q"]), FadeOut(live["gQ"]),
-                FadeOut(live["h"]), ReplacementTransform(live["slope"], deriv))
+        tl.play("tangent", ReplacementTransform(live_parts["sec"], end["tan"]),
+                FadeOut(live_parts["legs"]), FadeOut(live_parts["Q"]), FadeOut(live_parts["gQ"]),
+                FadeOut(h_line), ReplacementTransform(slope_line, deriv))
         self._settle_into(scene, end, *scene.mobjects)
 
     def _name(self, scene, tl, pic: _Picture) -> None:

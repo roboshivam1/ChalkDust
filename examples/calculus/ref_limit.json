@@ -51,10 +51,10 @@
     },
     {
       "id": "b07",
-      "narration": "Slide in from both sides. The curve is symmetric, so the two readouts match each other all the way in. And as the points close in on zero, both readouts settle on one.",
+      "narration": "Put a point on each side of the hole again, and slide them both in. The curve is symmetric, so the two readouts match each other all the way in. And as the points close in on zero, both readouts settle on one.",
       "component": "LimitAtHole",
       "params": {"phase": "approach", "function": "sin(x)/x", "x_range": [-10, 10], "a": 0,
-                 "cues": {"slide": "Slide in", "agree": "And as the points"}}
+                 "cues": {"points": "Put a point", "slide": "slide them both in", "agree": "And as the points"}}
     },
     {
       "id": "b08",
@@ -78,10 +78,10 @@
     },
     {
       "id": "b11",
-      "narration": "Slide in from both sides. From the left the readout falls toward one quarter, and from the right it rises toward one quarter. Once again, the two sides meet.",
+      "narration": "Put a point on each side of the hole, and slide them in. From the left the readout falls toward one quarter, and from the right it rises toward one quarter. Once again, the two sides meet.",
       "component": "LimitAtHole",
       "params": {"phase": "approach", "function": "(sqrt(x) - 2)/(x - 4)", "x_range": [0, 9], "a": 4,
-                 "cues": {"slide": "Slide in", "agree": "Once again"}}
+                 "cues": {"points": "Put a point", "slide": "slide them in", "agree": "Once again"}}
     },
     {
       "id": "b12",

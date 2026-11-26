@@ -486,6 +486,12 @@ def _survey(function: str, x_range: tuple[float, float], a: float, b: float, n0:
         raise ValueError(f"the numbers would read 0 even at {d} decimals (integral "
                          f"{true:.3g}, first sum {sums[0]:.3g}); scale f up by a power of "
                          f"ten, e.g. '10^{p}*({function})'")
+    # Run 3 review, round 2: red slivers drawn under a gap readout of 0.000000.
+    if d == MAX_DECIMALS and gaps[0] > 0 and round(gaps[0], d) == 0:
+        p = max(1, _math.ceil(-_math.log10(widest)))
+        raise ValueError(f"the gap would read 0 at {d} decimals while its red slivers are drawn "
+                         f"(first gap {gaps[0]:.3g}); scale f up, e.g. '10^{p}*({function})', or, "
+                         "if the slivers are tiny next to the area, widen [a, b]")
     return _Numbers(levels, sums, gaps, true, lo, hi, window, widest, d)
 
 

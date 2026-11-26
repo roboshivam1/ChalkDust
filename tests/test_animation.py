@@ -304,3 +304,18 @@ def test_a_small_limit_on_a_tall_window_is_refused_not_printed_as_zero():
     from chalkdust.scenes.components.limit_hole import _analyse
     with pytest.raises(ValueError, match="rescale f"):
         _analyse("(1000*x^2 + 0.003*x)/x", -100, 100, 0)
+
+
+@pytest.mark.parametrize("function, a, b", [("0.000003*(x^2 + 1)", 0, 1), ("x^2 + 1", 0, 1e-6)])
+def test_a_riemann_gap_that_would_read_zero_beside_drawn_slivers_is_refused(function, a, b):
+    # RiemannSum review, round 2: visible red slivers under "gap = 0.000000".
+    from chalkdust.scenes.components.riemann_sum import _survey
+    x_range = (a - 0.1 * (b - a), b + 0.1 * (b - a))
+    with pytest.raises(ValueError, match="read 0"):
+        _survey(function, x_range, a, b, 4, "left")
+
+
+def test_the_scaled_up_fix_the_riemann_gap_refusal_names_draws():
+    from chalkdust.scenes.components.riemann_sum import _survey
+    nums = _survey("10^6*(0.000003*(x^2 + 1))", (-0.1, 1.1), 0, 1, 4, "left")
+    assert round(nums.gaps[0], nums.decimals) > 0

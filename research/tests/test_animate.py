@@ -97,3 +97,11 @@ def test_the_rules_give_the_model_no_example_number_it_could_copy():
     from research.content import spoken_numbers
     quoted = re.findall(r'"([^"]*)"', BEAT_ANIM_RULES + PLAN_ANIM_RULES)
     assert all(spoken_numbers(q) == [] for q in quoted), quoted
+
+
+def test_riemann_facts_give_the_red_area_the_screen_shows():
+    # writer-riemann, round 2: under the mid rule the red slivers lie on both
+    # sides of the curve, so the gap on screen (their area) is not |integral - sum|.
+    fx, _ = animate.facts("RiemannSum", {"function": "sin(2*x) + 1.5", "x_range": [0, 5.5], "a": 0.3,
+                                         "b": 5, "rule": "mid", "n0": 4})
+    assert "total area 1.70" in fx["boxes"][0]

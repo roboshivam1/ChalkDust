@@ -238,27 +238,27 @@ def facts(component: str, setup: dict) -> tuple[dict[str, list[str]], float]:
                      f"f({_g(a)}) is still undefined."],
         }, lim.L
     if component == "RiemannSum":
-        from chalkdust.scenes.components.riemann_sum import DOUBLINGS, _decimals, _values_on, riemann_sum
-        from chalkdust.scenes.plotting import Fn
-        f, a, b, rule, n0 = Fn(params.function), params.a, params.b, params.rule, params.n0
-        levels = [n0 * 2 ** k for k in range(DOUBLINGS + 1)]
-        sums = [riemann_sum(f, a, b, n, rule) for n in levels]
-        true = f.integral(a, b)
-        _, ys = _values_on(f, a, b, n0, rule)
-        d = _decimals(max(float(ys.max()) * (b - a), abs(true), *map(abs, sums)))
+        # The component's own numbers (screen_numbers): the gap is the red area
+        # drawn, which is |integral - sum| only when every sliver is on one side.
+        from chalkdust.scenes.components.riemann_sum import screen_numbers
+        a, b, rule, n0 = params.a, params.b, params.rule, params.n0
+        nums = screen_numbers(params)
+        d, levels, sums, gaps = nums.decimals, nums.levels, nums.sums, nums.gaps
         where = {"left": "left edge", "right": "right edge", "mid": "midpoint"}[rule]
         return {
             "pose": [f"The area under the curve from x = {_g(a)} to x = {_g(b)} is shaded; the screen "
                      "asks 'area = ?'. No number is shown yet."],
             "boxes": [f"{n0} rectangles, each {_g(round((b - a) / n0, 6))} wide and as tall as f at its "
-                      f"{where}. The {rule} sum reads {_f(sums[0], d)}; the gap to the true area reads "
-                      f"{_f(abs(true - sums[0]), d)}."],
-            "refine": [f"Each rectangle splits in two, {DOUBLINGS} times: n = "
+                      f"{where}. The {rule} sum reads {_f(sums[0], d)}. The red slivers between the "
+                      f"rectangles and the curve have total area {_f(gaps[0], d)} (the gap readout)."],
+            "refine": [f"Each rectangle splits in two, {len(levels) - 1} times: n = "
                        f"{', '.join(map(str, levels))}. The sum reads "
-                       f"{', '.join(_f(s, d) for s in sums)}; the gap ends at {_f(abs(true - sums[-1]), d)}."],
-            "name": [f"The screen shows the sigma sum = {_f(sums[-1], d)} (n = {levels[-1]}) and the "
-                     f"definite integral from {_g(a)} to {_g(b)} of f = {_f(true, d)}."],
-        }, true
+                       f"{', '.join(_f(v, d) for v in sums)}; the red gap reads "
+                       f"{', '.join(_f(v, d) for v in gaps)}."],
+            "name": [f"The screen shows the sum over {levels[-1]} rectangles = {_f(sums[-1], d)}, then: "
+                     f"the limit of the sums as n goes to infinity = the definite integral from {_g(a)} "
+                     f"to {_g(b)} of f = {_f(nums.true, d)}."],
+        }, nums.true
     raise KeyError(f"no facts for {component}")
 
 

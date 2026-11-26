@@ -135,8 +135,11 @@ params are a `phase`, optional `cues`, and a *setup* (everything else) that ever
 repeats unchanged.
 
 - **Phases continue.** Phase k+1's first frame equals phase k's last. Both are rebuilt
-  from the setup (D-005 holds: no state crosses beats). The `continuity` check
-  (`tests/test_animation.py`) compares the last frame actually written.
+  from the setup (D-005 holds: no state crosses beats). The `continuity` checks
+  (`tests/test_animation.py`) compare the last frame actually written with the next
+  phase's entry state and its first written frame. Neither sees the hold before a cued
+  first moment, where LimitAtHole once blanked its readouts. So a new animation also
+  passes `research/verify_video.py` on an encoded 1080p render with cued first moments.
 - **Moments land on words.** A phase is a sequence of `Moment`s. `scene.cue_timeline(*moments)`
   times them from real Kokoro word timings. The anchor is the cue phrase, else sentence k,
   else the moment's weight, and every window gets at least its floor. A cue phrase not in the
@@ -149,9 +152,9 @@ repeats unchanged.
 - **Writing one.** Follow `docs/research/ANIMATIONS.md`: one file per component, examples
   and stress cases, a fresh reviewer, and the snapshot recorded at merge. Then add its card
   to `research/animate.py`, or `research/tests/test_animate.py` fails.
-- **Quality.** `--quality standard` is 1920x1080 at 30 fps, the delivery tier. 60 fps
-  measured at 1.9x the render time (run 3, `docs/research/RUN3.md`), so 30 fps is the
-  default.
+- **Quality.** `--quality standard` is 1920x1080 at 30 fps, the delivery tier. On the
+  run 3 pilot, 60 fps cost 1.45x the whole render and about 1.9x the render stage
+  (`docs/research/RUN3.md`), so 30 fps is the default.
 - **Voice.** Kokoro `af_heart` is the default delivery voice. `python -m research.voice_check`
   measures a clip: duration, internal gaps, clipping, and the word error rate of a local
   faster-whisper pass. Run it with `.lab/venv-k312`.
@@ -312,7 +315,10 @@ notes.
   animation cards. With `anim=1` an animation is one plan item that code expands to one beat
   per phase. The setup is filled once and carried; later phases get the on-screen numbers
   as FACTS. With `calc=1` the calculator, which also takes `derivative(f, a)`,
-  `limit(f, a)` and `integral(f, a, b)`, decides the answer shown and spoken. `anim=1`
+  `limit(f, a)` and `integral(f, a, b)`, decides the answer shown and spoken. A plan's
+  calculation that is only a number decides nothing. If the lesson has exactly one
+  animation that computes a derivative, limit or integral, the calculator computes it from
+  that animation's setup instead (`generate._decide_from_animation`, R3-anim-c). `anim=1`
   records carry `PROMPT_HASH_ANIM`; `PROMPT_HASH` is unchanged for every other method.
 - **Tests:** `.lab/venv-harness/Scripts/python -m pytest research/tests -o addopts="" -q -p no:cacheprovider`.
 

@@ -105,3 +105,49 @@ def test_riemann_facts_give_the_red_area_the_screen_shows():
     fx, _ = animate.facts("RiemannSum", {"function": "sin(2*x) + 1.5", "x_range": [0, 5.5], "a": 0.3,
                                          "b": 5, "rule": "mid", "n0": 4})
     assert "total area 1.70" in fx["boxes"][0]
+
+
+@pytest.mark.parametrize("comp, setup, call, want", [
+    ("RiemannSum", {"function": "x^2/4 + 1", "x_range": [-1, 4], "a": 0, "b": 3, "rule": "right", "n0": 4},
+     "integral(x^2/4 + 1, 0, 3)", 5.25),
+    ("SecantToTangent", {"function": "x^2/4 + 1", "x_range": [-1, 4], "a": 1, "h": 2},
+     "derivative(x^2/4 + 1, 1)", 0.5),
+    ("LimitAtHole", {"function": "(x^2 - 1)/(x - 1)", "x_range": [-1, 3], "a": 1},
+     "limit((x^2 - 1)/(x - 1), 1)", 2.0),
+])
+def test_an_animations_headline_is_a_calculator_call(comp, setup, call, want):
+    assert animate.headline_call(comp, setup) == call
+    assert animate.calc_value(call) == pytest.approx(want)
+
+
+def _plan(calc, comps=("RiemannSum",)):
+    beats = [{"purpose": "intuition", "idea": "see it", "component": c} for c in comps]
+    plan = animate.expand_plan({"beats": beats + [{"purpose": "answer", "idea": "say it",
+                                                    "component": "AnswerBox"}]})
+    value = animate.calc_value(calc)
+    plan.update(answer_calc=calc, answer_calc_value=value, final_answer_model="3.75 square units",
+                final_answer=animate.answer_text(value)[1])
+    return plan
+
+
+def test_a_bare_number_does_not_decide_the_answer_the_animation_computes_it():
+    # R3-anim-b r3-integral: answer_calc "3.75" (wrong) became the decided answer,
+    # while the RiemannSum on screen showed 5.25.
+    from research.generate import _decide_from_animation
+    plan = _plan("3.75")
+    _decide_from_animation(plan, "RiemannSum", {"function": "x^2/4 + 1", "x_range": [-1, 4], "a": 0,
+                                                "b": 3, "rule": "right", "n0": 4})
+    assert plan["answer_calc"] == "integral(x^2/4 + 1, 0, 3)" and plan["answer_calc_value"] == pytest.approx(5.25)
+    assert plan["final_answer"] == "5.25" and plan["final_answer_model"] == "3.75 square units"
+    assert plan["answer_calc_model"] == "3.75" and plan["answer_source"] == "animation"
+
+
+def test_a_calculus_call_still_decides_and_two_headline_animations_decide_nothing():
+    from research.generate import _decide_from_animation
+    setup = {"function": "x^2/4 + 1", "x_range": [-1, 4], "a": 0, "b": 3, "rule": "right", "n0": 4}
+    plan = _plan("integral(x^2/4 + 1, 0, 2)")
+    _decide_from_animation(plan, "RiemannSum", setup)
+    assert plan["answer_calc"] == "integral(x^2/4 + 1, 0, 2)" and "answer_source" not in plan
+    plan = _plan("3.75", ("RiemannSum", "SecantToTangent"))
+    _decide_from_animation(plan, "RiemannSum", setup)
+    assert plan["answer_calc"] == "3.75" and "answer_source" not in plan

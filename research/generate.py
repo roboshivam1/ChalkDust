@@ -434,6 +434,9 @@ def generate_staged(url: str, topic: Topic, work_dir: Path, *, seed: int = 0,
                                      anim=anim, anim_ctx=ctx, extra=extra)
             if ctx and ctx["setup"] is None:
                 setups[plan["beats"][i]["anim_id"]] = animate.setup_of(beat["params"])
+                if anim and calc:
+                    _decide_from_animation(plan, plan["beats"][i]["component"],
+                                           setups[plan["beats"][i]["anim_id"]], trace)
             beat["purpose"] = plan["beats"][i].get("purpose")
             beats.append(beat)
             scores.append(sc)
@@ -441,6 +444,31 @@ def generate_staged(url: str, topic: Topic, work_dir: Path, *, seed: int = 0,
             prev = beat.get("narration")
     return {"plan": plan, "beats": beats, "scores": [s.to_dict() for s in scores],
             "per_beat": per_beat, "trace": trace, "wall_s": time.perf_counter() - t0}
+
+
+def _decide_from_animation(plan: dict, comp: str, setup: dict, trace: Trace | None = None) -> None:
+    """anim + calc. A calculation that is not a derivative/limit/integral call
+    decides nothing: R3-anim-b's three plans all wrote their own number there
+    ("1/2", "2", "3.75"; the last one wrong), so the calculator only echoed
+    the model. When the lesson has exactly one animation that computes such a
+    quantity, the calculator computes it from that animation's setup (the
+    value its last phase shows on screen), and that is the answer said and
+    shown from here on."""
+    if animate.calc_kind(str(plan.get("answer_calc", ""))) is not None:
+        return
+    heads = {b.get("anim_id") for b in plan["beats"]
+             if b.get("anim_phase") and b["component"] in animate.HEADLINE_CALC}
+    call = animate.headline_call(comp, setup) if len(heads) == 1 else None
+    v = animate.calc_value(call) if call else None
+    if v is None:
+        return
+    plan.setdefault("final_answer_model", plan.get("final_answer", ""))
+    plan["answer_calc_model"] = plan.get("answer_calc")
+    plan["answer_calc"], plan["answer_calc_value"] = call, v
+    plan["final_answer"] = animate.answer_text(v)[1]
+    plan["answer_source"] = "animation"
+    if trace is not None:
+        trace.add("decide", [], [], {"call": call, "value": v, "model_calc": plan["answer_calc_model"]})
 
 
 def _anim_context(b: dict, setups: dict[int, dict]) -> tuple[dict | None, str | None]:

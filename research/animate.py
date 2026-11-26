@@ -85,6 +85,16 @@ CARDS: dict[str, tuple[str, str, str, dict[str, str]]] = {
 # Which calculator function an animation's headline number answers.
 HEADLINE_CALC = {"SecantToTangent": "derivative", "LimitAtHole": "limit", "RiemannSum": "integral"}
 
+
+def headline_call(component: str, setup: dict) -> str | None:
+    """The calculator call for an animation's headline quantity at its setup,
+    e.g. 'integral(x^2/4 + 1, 0, 3)'; None if it has no headline."""
+    kind = HEADLINE_CALC.get(component)
+    if kind is None or "function" not in setup:
+        return None
+    ends = [setup["a"], setup["b"]] if kind == "integral" else [setup["a"]]
+    return f"{kind}({setup['function']}, {', '.join(f'{float(v):.12g}' for v in ends)})"
+
 MAX_ANIMATIONS = 2          # per plan
 CUE_MAX = 60                # chalkdust.scenes.components.animation.MAX_CUE_CHARS
 # Narration for every beat under anim=1: long enough for a 3-5 minute video at

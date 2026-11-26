@@ -142,6 +142,9 @@ def summarise(topic, gen: dict, cli: dict | None) -> dict:
         "gen_tokens": g_tok,
         "gen_tok_s_mean": (sum(tok_s) / len(tok_s)) if tok_s else 0,
         "answer_calc_value": (gen["plan"] or {}).get("answer_calc_value") if gen["plan"] else None,
+        "answer_calc": (gen["plan"] or {}).get("answer_calc") if gen["plan"] else None,
+        "answer_calc_model": (gen["plan"] or {}).get("answer_calc_model") if gen["plan"] else None,
+        "answer_source": (gen["plan"] or {}).get("answer_source") if gen["plan"] else None,
         "plan_vote": (gen["plan"] or {}).get("vote") if gen["plan"] else None,
     }
 

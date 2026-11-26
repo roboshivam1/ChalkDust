@@ -120,8 +120,21 @@ def card_text(component: str) -> str:
     return f"{component}\n  shows: {what}\n  use for: {when}\n  setup: {how}"
 
 
+# Animations that did not reach the bar. Their cards stay (every registered
+# animation still has one), but the model is not offered them.
+HELD_BACK = {
+    "LimitAtHole": "run 3 review, round 3: can print a wrong last digit for a slowly converging "
+                   "limit (sqrt|x| convergence): 'lim = 1.71' for ln 5.5 = 1.7047; RUN3.md section 3",
+}
+
+
+def offered() -> list[str]:
+    """The animations the model may plan with."""
+    return [c for c in CARDS if c not in HELD_BACK]
+
+
 def catalog_text() -> str:
-    return "\n".join(card_text(c) for c in CARDS)
+    return "\n".join(card_text(c) for c in offered())
 
 
 # --- plan -------------------------------------------------------------------------

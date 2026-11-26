@@ -5,9 +5,12 @@ Branch `research/run3-animations`. Brief: `.lab/run3/BRIEF.md` (not in git).
 ## Outcome
 
 **Done:**
-- **Three Calc 1 animations** reach the bar and passed independent review:
-  - `SecantToTangent` and `RiemannSum` passed round 2;
-  - `LimitAtHole` failed round 2 on its readout precision, which I re-approached; LIMIT-VERDICT.
+- **Two Calc 1 animations reach the bar:** `SecantToTangent` and `RiemannSum`. Each passed independent review
+  on round 2.
+- **A third, `LimitAtHole`, is left out and written up (§3).** It can print a wrong last digit for a slowly
+  converging limit. It failed round 2, then failed again after I changed its precision rule. Its code and tests
+  stay. The limit lessons' own limits (2, 1, 1/4) are exact and verified. The model is no longer offered it
+  (`research/animate.py` `HELD_BACK`).
 - **Three 3-4 minute Calc 1 videos at 1080p30 with Kokoro `af_heart`, made twice** (my spec and the local 4B
   model). All six are checked on the encoded video, and all six show and say the right answer.
 - **A contract for animation components** that a fan-out can follow. The checks caught real defects: two
@@ -72,17 +75,30 @@ New this run:
 
 ## 3. The animations
 
-Three animations, each written from scratch (no 3b1b code) and reviewed by a fresh reviewer who tried to
+Three animations were written from scratch (no 3b1b code), and each was reviewed by a fresh reviewer who tried to
 break it:
 
 | component | phases (moments) | review | what round 1 caught |
 |---|---|---|---|
 | `SecantToTangent` | pose (curve, point, question) · secant (second, line, rise_run) · shrink (slide, tangent) · name (limit, value) | round 1 FAIL, round 2 **PASS** | wrong slopes (sin(1000x) at 0.005 read 275.27, want 283.66); a slide that stopped before the readout showed f'(a); a curve that left the frame over a peak; a corner slope drawn as a derivative |
 | `RiemannSum` | pose (curve, interval, question) · boxes (rects, sum, gap) · refine (split, more, settle) · name (sigma, integral) | round 1 FAIL, round 2 **PASS** (4 minors) | a false integral was drawn for poles and narrow spikes; the "gap" number was not the red area drawn; Σ = 5.20 beside ∫ = 5.25 read as a contradiction |
-| `LimitAtHole` | pose (curve, hole, question) · approach (points, slide, agree) · name (limit, value) | round 1 FAIL, round 2 REVIEW-LH | `sin(pi/x)` showed a false "lim = 0"; some refusal messages were untrue |
+| `LimitAtHole` | pose (curve, hole, question) · approach (points, slide, agree) · name (limit, value) | round 1 FAIL, round 2 FAIL, round 3 (my re-approach) FAIL: **left out** | `sin(pi/x)` showed a false "lim = 0"; some refusal messages were untrue |
 
 The integrator found one more problem in the encoded 1080p video: at each approach → name join of LimitAtHole,
 both f-readouts blanked for more than a second. Its writer fixed it in round 2.
+
+**Why LimitAtHole is left out.**
+- **Round 2 (writer's fix):** fixed every round-1 finding, including oscillations now refused. It failed on a
+  finding round 1 missed: the readout decimals came from the window height alone. A tall window printed
+  "lim ≈ 0" for 1/3 and "lim ≈ 1" for ln 2.
+- **Round 3:** under the brief's rule, I changed the precision approach in 17f6622: always show 3 significant
+  figures of a limit that is clearly not 0. That fixed those cases but showed digits finer than the computed
+  limit's own error. Under √|x| convergence, `(5.5^sqrt(abs(x)) - 1)/sqrt(abs(x))` reads "≈ 1.71" for
+  ln 5.5 = 1.7047. That happened in 33 of 299 setups in the reviewer's sweep (`.lab/run3/agents/review_lh/`).
+- **What would fix it:** print only as many digits as the computed L's error bound supports (the reviewer
+  suggests 0.5·10^-dy > the agreement bound), and refuse what cannot be shown. Then run one fresh review.
+- **Two other open items:** some refusal messages for a tiny L on a steep slope name a fix that fails; and the
+  approach → name join moves the readout rows 1-2 px after very deep slides.
 
 Each component refuses setups whose picture would be false, and each refusal names a fix that works. Examples:
 - **RiemannSum:** f negative or undefined on [a, b]; a pole or narrow spike; rectangles thinner than 2 px; values

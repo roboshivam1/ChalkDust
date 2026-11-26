@@ -318,7 +318,9 @@ notes.
   `limit(f, a)` and `integral(f, a, b)`, decides the answer shown and spoken. A plan's
   calculation that is only a number decides nothing. If the lesson has exactly one
   animation that computes a derivative, limit or integral, the calculator computes it from
-  that animation's setup instead (`generate._decide_from_animation`, R3-anim-c). `anim=1`
+  that animation's setup instead (`generate._decide_from_animation`, R3-anim-c). An
+  animation in `animate.HELD_BACK` keeps its card but is not offered to the model:
+  LimitAtHole, which can print a wrong last digit (run 3, `docs/research/RUN3.md` §3). `anim=1`
   records carry `PROMPT_HASH_ANIM`; `PROMPT_HASH` is unchanged for every other method.
 - **Tests:** `.lab/venv-harness/Scripts/python -m pytest research/tests -o addopts="" -q -p no:cacheprovider`.
 

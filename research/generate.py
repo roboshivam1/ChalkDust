@@ -205,7 +205,7 @@ def _plan_schema(calc: bool, work: bool, anim: bool = False) -> dict:
     answer to be reasoned rather than guessed (E1b: staged plans guessed)."""
     base = plan_schema(8, 11) if anim else plan_schema()
     if anim:
-        base["properties"]["beats"]["items"]["properties"]["component"]["enum"] += list(animate.CARDS)
+        base["properties"]["beats"]["items"]["properties"]["component"]["enum"] += animate.offered()
     props, req = {}, list(base["required"])
     for k, v in base["properties"].items():
         if k == "final_answer":
@@ -227,7 +227,7 @@ def make_plan(url: str, topic: Topic, trace: Trace, *, seed: int, temperature: f
         + ((PLAN_CALC_ADDENDUM + (PLAN_CALC_ANIM_ADDENDUM if anim else "")) if calc else "") \
         + (PLAN_WORK_ADDENDUM if work else "")
     schema = _plan_schema(calc, work, anim)
-    allowed = ALLOWED + tuple(animate.CARDS) if anim else ALLOWED
+    allowed = ALLOWED + tuple(animate.offered()) if anim else ALLOWED
     msgs = [{"role": "system", "content": system}, {"role": "user", "content": _topic_msg(topic)}]
     comps = chat_many(url, msgs, k, seed0=seed, schema=schema if constrained else None,
                       temperature=temperature, max_tokens=max_tokens)
@@ -542,5 +542,5 @@ PROMPT_HASH = _hashlib.sha256("\x1e".join([PLAN_SYSTEM, PLAN_CALC_ADDENDUM, PLAN
 # anim=1 runs carry their own hash; the one above is unchanged for every other method.
 PROMPT_HASH_ANIM = _hashlib.sha256("\x1e".join([
     PLAN_SYSTEM_ANIM, PLAN_ANIM_RULES, PLAN_CALC_ADDENDUM, PLAN_CALC_ANIM_ADDENDUM, PLAN_WORK_ADDENDUM,
-    BEAT_SYSTEM, BEAT_ANIM_RULES, ANSWER_DECIDED, json.dumps(animate.CARDS, sort_keys=True),
+    BEAT_SYSTEM, BEAT_ANIM_RULES, ANSWER_DECIDED, json.dumps({c: animate.CARDS[c] for c in animate.offered()}, sort_keys=True),
     json.dumps(animate.NARRATION_ANIM, sort_keys=True)]).encode("utf-8")).hexdigest()[:12]

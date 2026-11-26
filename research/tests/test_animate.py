@@ -151,3 +151,14 @@ def test_a_calculus_call_still_decides_and_two_headline_animations_decide_nothin
     plan = _plan("3.75", ("RiemannSum", "SecantToTangent"))
     _decide_from_animation(plan, "RiemannSum", setup)
     assert plan["answer_calc"] == "3.75" and "answer_source" not in plan
+
+
+def test_a_held_back_animation_is_not_offered_to_the_model():
+    # Run 3: LimitAtHole failed its final review (a wrong last digit for slowly
+    # converging limits); its card stays, but the model may not plan with it.
+    from research.generate import PLAN_SYSTEM_ANIM
+    assert "LimitAtHole" in animate.HELD_BACK and "LimitAtHole" in animate.CARDS
+    enum = _plan_schema(True, False, True)["properties"]["beats"]["items"]["properties"]["component"]["enum"]
+    assert "LimitAtHole" not in enum and "LimitAtHole" not in animate.catalog_text()
+    assert "LimitAtHole" not in PLAN_SYSTEM_ANIM
+    assert {"SecantToTangent", "RiemannSum"} <= set(enum)

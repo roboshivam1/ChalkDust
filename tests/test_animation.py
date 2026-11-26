@@ -285,3 +285,22 @@ def test_phase_first_written_frame_is_previous_phase_last_frame(name, pair, tmp_
     assert (diff > 24).sum() == 0, (
         f"{name}: the first frame {b['phase']!r} writes differs from the last frame "
         f"{a['phase']!r} wrote ({int((diff > 8).sum())} pixels differ, max {diff.max()})")
+
+
+@pytest.mark.parametrize("expr, x_range, a, shown", [
+    ("(exp(x) - 1)/(3*x)", (-10, 10), 0, r"\approx 0.333"),
+    ("(2^x - 1)/x", (-10, 10), 0, r"\approx 0.693"),
+    ("(2^x - 1)/x", (-5, 5), 0, r"\approx 0.693"),
+    ("(x^2 - 1)/(x - 1)", (-1, 3), 1, "= 2"),
+])
+def test_a_limits_digits_come_from_the_limit_not_the_window(expr, x_range, a, shown):
+    # LimitAtHole review, round 2: decimals from the window height alone
+    # printed "lim = 0" for 1/3 and "lim = 1" for ln 2 on a tall window.
+    from chalkdust.scenes.components.limit_hole import _analyse, _value_tex
+    assert _value_tex(_analyse(expr, *x_range, a)) == shown
+
+
+def test_a_small_limit_on_a_tall_window_is_refused_not_printed_as_zero():
+    from chalkdust.scenes.components.limit_hole import _analyse
+    with pytest.raises(ValueError, match="rescale f"):
+        _analyse("(1000*x^2 + 0.003*x)/x", -100, 100, 0)

@@ -139,14 +139,15 @@ UNIT = np.finfo(float).eps / 2
 TOL = 1e-4
 # A limit is printed as an exact decimal ("= 0.25") when it is this close to
 # one with no more digits than the readouts, relative to the larger of |L| and
-# the picture's scale (never to 1: a tiny f would round to "= 0"); else
+# the readouts' last digit (never to 1 or to the window: "= 0" for 0.003); else
 # "\approx". Not tighter: a limit computed through a cancellation is good to
 # about 2e-8 ((1 - cos x)/x^2 gives 0.50000000924), and far below what the
 # readouts resolve (a few significant digits of the window).
 EXACT_REL = 1e-7
 # The two one-sided limits agree when this close, relative to the same.
 AGREE_REL = 1e-9
-# Readout decimals for f: READOUT_DIGITS minus the window height's magnitude.
+# Readout decimals for f: READOUT_DIGITS minus the window height's magnitude,
+# and at least READOUT_DIGITS + 1 significant figures of a limit clearly not 0.
 READOUT_DIGITS = 2
 MAX_DECIMALS = 8
 DOT_RADIUS = 0.065
@@ -550,6 +551,11 @@ def _analyse(expr: str, x0: float, x1: float, a: float) -> _Limit:
     y0, y1 = y_window([f], x0, x1, extra=[L], include_zero=False)
     scale = _picture_scale(y1 - y0, max(own, abs(L)))
     dy = int(max(0, READOUT_DIGITS - _math.floor(_math.log10(scale))))
+    # ...and never fewer than READOUT_DIGITS + 1 significant figures of L itself
+    # when L is clearly not 0 (run 3 review, round 2: on a tall window the scale
+    # alone printed "lim = 0" for 1/3 and "lim = 1" for ln 2).
+    if abs(L) > 10 * agree:
+        dy = max(dy, READOUT_DIGITS - _math.floor(_math.log10(abs(L))))
     if dy > MAX_DECIMALS:
         raise ValueError(
             f"f's values on x_range are only about {scale:.2g} in size: too small to read at "
@@ -611,8 +617,10 @@ def _analyse(expr: str, x0: float, x1: float, a: float) -> _Limit:
     if why is not None:
         raise ValueError(why)
     dx = _decimals_for(h_end)
+    # "=" is judged against L, or against the last digit shown when L is ~0;
+    # never against the window (that printed "= 0" for L = 0.003).
     exact_d = next((d for d in range(dy + 1)
-                    if abs(L - round(L, d)) <= EXACT_REL * max(abs(L), scale)), None)
+                    if abs(L - round(L, d)) <= EXACT_REL * max(abs(L), 10.0 ** -dy)), None)
     return _Limit(L=L, exact_d=exact_d, h0=h0, h_end=h_end, y0=y0, y1=y1, dx=dx, dy=dy)
 
 

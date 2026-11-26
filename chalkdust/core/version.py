@@ -17,7 +17,7 @@ CHALKDUST_VERSION = "0.1.0"
 #        ProblemStatement, SolutionStep, SplitCompare, StepTrace,
 #        UnitBreakdown, VectorField and ZoomHighlight; existing components'
 #        rendering is unchanged.
-COMPONENT_LIBRARY_VERSION = "0.5.1"
+COMPONENT_LIBRARY_VERSION = "0.5.2"
 
 # Bump when a theme's palette, typography, or motion language changes.
 THEME_VERSION = "0.1.0"

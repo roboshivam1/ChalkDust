@@ -1,0 +1,81 @@
+{
+  "video_id": "math-completing-the-square",
+  "channel": "math_foundations",
+  "theme": "default",
+  "beats": [
+    {
+      "id": "b01",
+      "narration": "Some quadratics factor neatly. Most do not. Completing the square solves every one of them by hand, and it is exactly where the quadratic formula comes from.",
+      "component": "TitleCard",
+      "params": {
+        "kicker": "Algebra",
+        "title": "Completing the Square",
+        "subtitle": "One method for every quadratic"
+      }
+    },
+    {
+      "id": "b02",
+      "narration": "The method is four moves. Move the constant to the right. Add the square of half the x coefficient to both sides. The left side becomes a perfect square. Then take square roots and solve for x.",
+      "component": "BulletReveal",
+      "params": {
+        "heading": "Four moves",
+        "items": [
+          "Move the constant to the right",
+          "Add (half the x coefficient) squared to both sides",
+          "Factor the left side as a perfect square",
+          "Take square roots, then solve for x"
+        ]
+      }
+    },
+    {
+      "id": "b03",
+      "narration": "Take x squared plus six x plus five equals zero. First move the five across. Half of six is three, and three squared is nine, so add nine to both sides. The left side is now x plus three, all squared, and it equals four.",
+      "component": "EquationDerivation",
+      "params": {
+        "steps": [
+          "{{ x^2 + 6x }} + 5 = 0",
+          "{{ x^2 + 6x }} = -5",
+          "{{ x^2 + 6x }} + 9 = 4",
+          "(x + 3)^2 = 4"
+        ],
+        "annotations": [
+          {"step": 1, "text": "subtract 5"},
+          {"step": 2, "text": "add 3² = 9 to both sides"},
+          {"step": 3, "text": "factor the left side"}
+        ]
+      },
+      "transition": "cross_fade"
+    },
+    {
+      "id": "b04",
+      "narration": "Now take the square root of both sides, and keep the plus or minus. So x plus three is plus or minus two, which means x is minus three plus or minus two. That gives two answers: minus one and minus five.",
+      "component": "EquationDerivation",
+      "params": {
+        "steps": [
+          "(x + 3)^2 = 4",
+          "x + 3 = \\pm 2",
+          "x = -3 \\pm 2",
+          "x = -1 \\quad \\text{or} \\quad x = -5"
+        ],
+        "annotations": [
+          {"step": 1, "text": "square root, both signs"},
+          {"step": 3, "text": "take each sign in turn"}
+        ]
+      }
+    },
+    {
+      "id": "b05",
+      "narration": "Put either answer back into the original equation and it balances. Nothing here depended on these particular numbers, so the same four moves solve any quadratic. Do them with letters instead, and out comes the quadratic formula.",
+      "component": "BulletReveal",
+      "params": {
+        "heading": "Why it matters",
+        "items": [
+          "Both answers check in the original equation",
+          "The same four moves solve any quadratic",
+          "Done with letters, they give the quadratic formula"
+        ]
+      },
+      "transition": "fade_black"
+    }
+  ]
+}

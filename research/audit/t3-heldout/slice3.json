@@ -1,0 +1,42 @@
+[
+ {
+  "id": "T3-003",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-232253-t3\\granite-4.2-3b-sft-v1-grpo\\staged-n-4-repair-1-calc-1-work-1\\ho-arithmetic-sum_s4\\spec.json",
+  "topic": "ho-arithmetic-sum"
+ },
+ {
+  "id": "T3-009",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-232253-t3\\granite-4.2-3b-sft-v1-grpo\\staged-calc-1-work-1\\ho-parabola-vertex_s0\\spec.json",
+  "topic": "ho-parabola-vertex"
+ },
+ {
+  "id": "T3-015",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-232253-t3\\granite-4.2-3b-sft-v1-grpo\\staged-n-4-repair-1-calc-1-work-1\\ho-free-fall-time_s2\\spec.json",
+  "topic": "ho-free-fall-time"
+ },
+ {
+  "id": "T3-021",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-232253-t3\\granite-4.2-3b-sft-v1-grpo\\staged-n-4-repair-1-calc-1-work-1\\ho-free-fall-time_s3\\spec.json",
+  "topic": "ho-free-fall-time"
+ },
+ {
+  "id": "T3-027",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-232253-t3\\granite-4.2-3b-sft-v1-grpo\\staged-n-4-repair-1-calc-1-work-1\\ho-parabola-vertex_s4\\spec.json",
+  "topic": "ho-parabola-vertex"
+ },
+ {
+  "id": "T3-033",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-232253-t3\\granite-4.2-3b-sft-v1-grpo\\staged-calc-1-work-1\\ho-free-fall-time_s3\\spec.json",
+  "topic": "ho-free-fall-time"
+ },
+ {
+  "id": "T3-039",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-232253-t3\\granite-4.2-3b-sft-v1-grpo\\staged-calc-1-work-1\\ho-free-fall-time_s4\\spec.json",
+  "topic": "ho-free-fall-time"
+ },
+ {
+  "id": "T3-045",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-232253-t3\\granite-4.2-3b-sft-v1-grpo\\staged-calc-1-work-1\\ho-arithmetic-sum_s4\\spec.json",
+  "topic": "ho-arithmetic-sum"
+ }
+]

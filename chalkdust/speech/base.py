@@ -7,6 +7,7 @@ stay small and interchangeable.
 
 from __future__ import annotations
 
+import math
 import shutil
 import subprocess
 from pathlib import Path
@@ -27,15 +28,25 @@ class TTSError(RuntimeError):
 
 
 class TTSBackend(Protocol):
-    """Synthesise `text` to `out_path` as a WAV file.
+    """Synthesise `text` to `out_path`, in the backend's own raw format.
 
-    Backends may write any format ffmpeg can read; normalisation happens
-    afterwards in tts.py.
+    Each engine has a native output (`say` writes AIFF, SAPI and Kokoro WAV),
+    so the backend declares it as `raw_format` -- the file extension the stage
+    gives `out_path`, which is how ffmpeg recognises the file when
+    normalize_audio converts it to the canonical format afterwards in tts.py.
+
+    `default_voice` is used when a spec names no voice_id: voice ids are
+    meaningful only to the backend that owns them (docs/VOICE.md).
     """
 
     name: str
+    raw_format: str
+    default_voice: str
 
-    def synthesize(self, text: str, voice: VoiceConfig, out_path: Path) -> None: ...
+    def synthesize(self, text: str, voice: VoiceConfig, out_path: Path) -> object:
+        """Returns the spoken words' timings (list[WordTiming]) if the backend
+        reports them, else None (tts.TIMED_BACKENDS says which do)."""
+        ...
 
 
 def require(binary: str) -> str:
@@ -45,13 +56,20 @@ def require(binary: str) -> str:
     return path
 
 
-def run(cmd: list[str]) -> None:
+def run(cmd: list[str], input: str | None = None) -> None:
     """Run a command, raising with captured stderr on failure.
 
     ffmpeg writes everything to stderr, so a bare CalledProcessError tells you
-    nothing useful. This surfaces the actual message.
+    nothing useful. This surfaces the actual message. `input`, if given, is
+    written to the command's stdin.
+
+    A command that cannot even start (on Windows, e.g. a command line over the
+    32767-character limit, WinError 206) raises TTSError too, not a raw OSError.
     """
-    proc = subprocess.run(cmd, capture_output=True, text=True)
+    try:
+        proc = subprocess.run(cmd, input=input, capture_output=True, text=True)
+    except OSError as e:
+        raise TTSError(f"{cmd[0]} could not be started: {e}") from e
     if proc.returncode != 0:
         tail = proc.stderr.strip().splitlines()[-6:]
         raise TTSError(f"{cmd[0]} failed:\n" + "\n".join(tail))
@@ -62,6 +80,11 @@ def probe_duration(path: Path) -> float:
 
     This number drives every animation run time in the beat (D-002), so it must
     come from the file itself -- never from a words-per-minute estimate.
+
+    A file with no audio in it is a speech failure, said in words: ffprobe
+    reports its duration as "N/A" (a voice given nothing it can pronounce,
+    e.g. SAPI on the narration ".", writes a header-only WAV), and a
+    zero-length clip would give the beat no frames to animate in.
     """
     require("ffprobe")
     proc = subprocess.run(
@@ -69,12 +92,23 @@ def probe_duration(path: Path) -> float:
          "-of", "default=noprint_wrappers=1:nokey=1", str(path)],
         capture_output=True, text=True,
     )
-    if proc.returncode != 0 or not proc.stdout.strip():
+    reported = proc.stdout.strip()
+    if proc.returncode != 0 or not reported:
         raise TTSError(f"could not probe duration of {path}")
-    return float(proc.stdout.strip())
+    try:
+        seconds = float(reported)
+    except ValueError:
+        seconds = math.nan
+    if not math.isfinite(seconds) or seconds <= 0:
+        raise TTSError(
+            f"the synthesised audio {path} has no measurable duration (ffprobe "
+            f"reports {reported!r}): the voice produced no sound. Check that "
+            "the narration has words the voice can speak.")
+    return seconds
 
 
-def normalize_audio(src: Path, dst: Path, trim_silence: bool = True) -> None:
+def normalize_audio(src: Path, dst: Path, trim_silence: bool = True,
+                    trim_to: tuple[float, float] | None = None) -> None:
     """Convert to the canonical format, optionally trimming edge silence.
 
     Trimming matters for sync: most TTS backends pad a little silence at each
@@ -84,12 +118,19 @@ def normalize_audio(src: Path, dst: Path, trim_silence: bool = True) -> None:
     The double `areverse` is the standard trick -- ffmpeg's silenceremove only
     trims from the start, so we reverse, trim again, and reverse back.
 
+    `trim_to` = (start, end) cuts to exactly that span instead of detecting
+    silence: a backend that times its own words is trimmed by those times, so
+    the timings re-based by `start` stay exact (tts.synthesize_timed).
+
     Note we do NOT loudness-normalise here. Per-beat loudnorm would flatten the
     narration's dynamics; that belongs at assembly, on the finished mix.
     """
     require("ffmpeg")
     filters = []
-    if trim_silence:
+    if trim_to is not None:
+        start, end = trim_to
+        filters += [f"atrim=start={start:.4f}:end={end:.4f}", "asetpts=N/SR/TB"]
+    elif trim_silence:
         detect = "silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.05"
         filters += [detect, "areverse", detect, "areverse"]
 

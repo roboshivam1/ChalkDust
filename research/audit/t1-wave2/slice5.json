@@ -1,0 +1,37 @@
+[
+ {
+  "id": "T1|gemma-4-12b|tr-bfs-vs-dfs-explain-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-bfs-vs-dfs-explain-0_s0\\spec.json",
+  "topic": "tr-bfs-vs-dfs-explain-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-limit-sinx-over-x-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-limit-sinx-over-x-1_s0\\spec.json",
+  "topic": "tr-limit-sinx-over-x-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-combinations-ncr-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-combinations-ncr-1_s0\\spec.json",
+  "topic": "tr-combinations-ncr-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-trig-identity-explain-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-trig-identity-explain-1_s0\\spec.json",
+  "topic": "tr-trig-identity-explain-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-centripetal-force-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-centripetal-force-1_s0\\spec.json",
+  "topic": "tr-centripetal-force-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-power-work-time-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-power-work-time-1_s0\\spec.json",
+  "topic": "tr-power-work-time-1"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-covalent-vs-ionic-explain-1|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-covalent-vs-ionic-explain-1_s0\\spec.json",
+  "topic": "tr-covalent-vs-ionic-explain-1"
+ }
+]

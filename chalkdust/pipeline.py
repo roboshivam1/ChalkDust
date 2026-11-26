@@ -1,0 +1,853 @@
+"""Phase 0 pipeline: one hand-written spec file in, one finished MP4 out.
+
+Stage order is the architecture, not a convenience (ARCHITECTURE.md §1-2):
+
+  load      -- JSON -> VideoSpec, plus every beat's component params
+  validate  -- schema, semantic, then geometric (SCENE_SPEC.md §8 rungs 1-3),
+               BEFORE any speech or render. Fail early: a spec that cannot
+               lay out must not cost a TTS call.
+  speech    -- every beat, measured, before any render (D-002)
+  render    -- per beat, run time from the measured audio, cached by key (D-004)
+  assemble  -- mux, concat, loudness-normalise
+
+Failures are typed by the STAGE they happen in, not by exception class.
+assemble.py raises TTSError for ffmpeg failures because it shares
+speech.base.run, so catching by type would report an assembly failure as a
+speech failure. The CLI maps each type to its own exit code.
+"""
+
+from __future__ import annotations
+
+import re
+import shutil
+from collections.abc import Callable, Iterator, Sequence
+from contextlib import contextmanager
+from dataclasses import dataclass, field
+from functools import partial
+from pathlib import Path
+
+from manim import tempconfig
+from pydantic import ValidationError
+
+from chalkdust.continuity import ArtifactRecipe, resolve_carry_in
+from chalkdust.core.cache import Cache
+from chalkdust.core.models import (
+    Beat,
+    BeatSpec,
+    BuildContext,
+    CarryInError,
+    Quality,
+    Video,
+    VideoSpec,
+)
+from chalkdust.render.assemble import assemble
+from chalkdust.render.pool import (
+    DRAFT_MIN_POOLED,
+    BeatFailed,
+    WorkerDied,
+    can_ship,
+    default_jobs,
+    render_pool,
+)
+from chalkdust.render.worker import long_path, plan_repair, render_beat, render_key
+from chalkdust.scenes.components import get_component
+from chalkdust.scenes.components.raw_scene import (
+    USAGE_LOG_NAME,
+    RawScene,
+    RawSceneError,
+    RawSceneParams,
+    check_code,
+    degrade_spec,
+)
+from chalkdust.scenes.theme import LatexToolchainError, Theme, get_theme, resolve_fonts
+from chalkdust.speech.base import TTSError
+from chalkdust.speech.tts import resolve_voice, speech_key, synthesize_beat
+from chalkdust.validate.geometric import Report
+from chalkdust.validate.repair import RepairPlan, RepairResult, repair_beat
+from chalkdust.validate.semantic import check_continuity, validate_semantic
+
+DEFAULT_CACHE_DIR = Path(".cache")
+# Manim scratch, assembly intermediates. Git-ignored; never cwd/media.
+DEFAULT_WORK_DIR = Path("work")
+
+
+# --- failures ---------------------------------------------------------------
+
+
+class PipelineError(Exception):
+    """A known failure, already phrased for the operator."""
+
+
+class SpecInvalid(PipelineError):
+    """Rung 1: the file is not a valid spec. Nothing ran."""
+
+
+class RungRefused(PipelineError):
+    """A validation rung refused one or more beats.
+
+    Carries the typed findings, not just their text: `reports` holds one
+    Report per refused beat, each finding with the `kind` the repair loop
+    dispatches on (SCENE_SPEC.md §9). The message is the same reports,
+    printed one finding per line under a header naming the rung.
+    """
+
+    rung = ""
+
+    def __init__(self, reports: list[Report]) -> None:
+        self.reports = reports
+        beats = ", ".join(r.beat_id for r in reports)
+        header = f"rung {self.rung} refused {len(reports)} beat(s): {beats}"
+        super().__init__("\n".join([header, *(str(r) for r in reports)]))
+
+
+class SemanticRefused(RungRefused):
+    """Rung 2: content no layout can carry -- narration too short for the
+    animation or too long for one beat, more text than the regions hold, LaTeX
+    that does not compile. Nothing was synthesised."""
+
+    rung = "2 (semantic)"
+
+
+class CarryInRefused(SemanticRefused):
+    """A beat's carry-in references are broken: it acts on an artifact it does
+    not carry in, or points at a part that artifact does not have
+    (SCENE_SPEC.md §6), or carries one in that its component neither acts on
+    nor leaves a STAGE region free for (kind "region_conflict", register
+    D-G4c-1). Found as rung-2 findings, but the same family
+    of spec error as an unregistered name, which rung 1 refuses: no layout
+    repair or rewording of the beat's content can fix a reference, so the CLI
+    reports it as spec invalid (register D-G4b-1). A SemanticRefused, so
+    callers that already catch rung-2 refusals keep catching it."""
+
+    rung = "2 (semantic: carry-in)"
+
+    def __init__(self, reports: list[Report], rung: str | None = None) -> None:
+        if rung is not None:
+            self.rung = rung
+        super().__init__(reports)
+
+
+class LayoutRefused(RungRefused):
+    """Rung 3: a component refused its content, and bounded mechanical repair
+    (SCENE_SPEC.md §9 step 1) could not fix it. Nothing was synthesised. The
+    findings are the UNREPAIRED ones: a failed repair changes nothing."""
+
+    rung = "3 (geometric, after mechanical repair)"
+
+
+class ToolchainFailed(PipelineError):
+    """The TeX toolchain did not finish a compile in time, on every attempt
+    (theme.LatexToolchainError): the machine is loaded or TeX is hung. Not a
+    verdict on the spec -- the same spec may pass on a quieter run -- so it
+    is neither a refusal nor cached (register G4b-N6)."""
+
+
+class SpeechFailed(PipelineError):
+    pass
+
+
+class RenderFailed(PipelineError):
+    pass
+
+
+class AssemblyFailed(PipelineError):
+    pass
+
+
+class DirectoryUnusable(PipelineError):
+    """--work-dir or --cache-dir cannot be used as a directory (it is a file,
+    or cannot be created), or the work dir's full path holds a '~' LaTeX
+    cannot compile under. Checked before validation spends anything."""
+
+
+# --- results ----------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class BeatOutcome:
+    """What the cache did for one beat. Printed per beat so an incremental
+    re-run visibly rebuilds only what changed (ROADMAP.md Phase 0 exit)."""
+
+    beat_id: str
+    speech_cached: bool
+    render_cached: bool
+    duration: float
+    # A RawScene beat that fell back to BulletReveal (D-010, SCENE_SPEC.md §7).
+    degraded: bool = False
+
+
+@dataclass
+class RunResult:
+    output: Path
+    beats: list[BeatOutcome] = field(default_factory=list)
+
+    @property
+    def rebuilt(self) -> list[str]:
+        return [b.beat_id for b in self.beats if not b.render_cached]
+
+    @property
+    def degraded(self) -> list[str]:
+        return [b.beat_id for b in self.beats if b.degraded]
+
+
+# --- stages -----------------------------------------------------------------
+
+
+def _format_validation(exc: ValidationError, indent: str = "  ") -> str:
+    return "\n".join(
+        f"{indent}{'.'.join(str(p) for p in err['loc']) or '<root>'}: {err['msg']}"
+        for err in exc.errors()
+    )
+
+
+def _decode_spec(path: Path, data: bytes) -> str:
+    """A spec is UTF-8 text. A UTF-8 byte-order mark (Notepad, some editors)
+    is accepted and dropped. Anything else -- notably UTF-16, which is what
+    Windows PowerShell 5.1's Out-File and `>` write by default -- is a spec
+    error with a fix the operator can act on, not a decode traceback."""
+    if data.startswith((b"\xff\xfe", b"\xfe\xff")):
+        raise SpecInvalid(
+            f"{path} is UTF-16 text; specs must be UTF-8. PowerShell's Out-File "
+            "and '>' write UTF-16 by default: re-save it with "
+            "`Set-Content -Encoding utf8` or `Out-File -Encoding utf8`.")
+    try:
+        return data.decode("utf-8-sig")
+    except UnicodeDecodeError as exc:
+        raise SpecInvalid(
+            f"{path} is not UTF-8 text (byte 0x{data[exc.start]:02x} at offset "
+            f"{exc.start}); re-save it as UTF-8.") from exc
+
+
+def ensure_dir(path: Path, option: str) -> Path:
+    """Create `path` as a directory, or say plainly why it cannot be one."""
+    path = Path(path)
+    try:
+        path.mkdir(parents=True, exist_ok=True)
+    except OSError as exc:
+        # The nearest part of the path that exists is what is in the way.
+        blocker = next((p for p in (path, *path.parents) if p.exists()), None)
+        if blocker == path and not path.is_dir():
+            reason = "it exists and is a file, not a directory"
+        elif blocker is not None and not blocker.is_dir():
+            reason = f"{blocker} is a file, not a directory"
+        else:
+            reason = f"cannot create it ({exc.strerror or exc})"
+        raise DirectoryUnusable(f"{option} {path}: {reason}") from exc
+    return path
+
+
+def refuse_tilde_work_dir(work_dir: Path) -> Path:
+    """The work dir as Manim will get it (worker.long_path), or a
+    DirectoryUnusable if TeX cannot work under it.
+
+    TeX gives '~' a meaning of its own, and Manim hands it paths under the
+    work dir: with a '~' anywhere in that path every compile fails ("latex
+    failed but did not produce a log file"), which rung 2 reports as one
+    LaTeX finding per expression -- the spec blamed for a command-line
+    problem (register N-10). An 8.3 short name's '~' is fine: long_path
+    expands it (N-3). Only a '~' still in the expanded path is refused, and
+    before anything is created or spent.
+    """
+    resolved = long_path(work_dir)
+    if "~" in str(resolved):
+        raise DirectoryUnusable(
+            f"--work-dir {work_dir}: its full path {resolved} contains '~', "
+            "and LaTeX cannot compile under a path with '~' in it. Use a "
+            "work dir whose full path has no '~'.")
+    return resolved
+
+
+# video_id names files and directories (out/<id>-<quality>.mp4, the assembly
+# scratch dir the pipeline later deletes), so it must be a plain slug: no
+# separator, no '..', no drive colon, nothing Windows forbids in a file name.
+# The SCENE_SPEC example is `cs-hashmap-collisions`.
+VIDEO_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,99}")
+
+# C0 control characters and DEL, except tab, newline and carriage return.
+# Pango refuses a NUL in Text with a misleading colour error -- and Manim's
+# text cache then turns that refusal into a silent blank on the next run.
+# None of them is ever meant to be drawn or spoken.
+CONTROL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
+
+
+def _control_characters(value: object, where: str) -> list[str]:
+    """Where in `value` (a JSON-like tree) a control character sits."""
+    if isinstance(value, str):
+        hit = CONTROL.search(value)
+        return [f"  {where}: control character U+{ord(hit.group()):04X} at "
+                f"offset {hit.start()}; text must be printable"] if hit else []
+    if isinstance(value, dict):
+        return [p for k, v in value.items() for p in _control_characters(v, f"{where}.{k}")]
+    if isinstance(value, (list, tuple)):
+        return [p for i, v in enumerate(value)
+                for p in _control_characters(v, f"{where}[{i}]")]
+    return []
+
+
+def load_spec(path: Path) -> VideoSpec:
+    """Rung 1 (schema), including each beat's component params.
+
+    VideoSpec alone accepts any `component` string and any `params` dict; the
+    component's own Params model is what knows they are wrong. Checking both
+    here keeps "spec invalid" distinct from "layout refused" -- the geometric
+    probe would otherwise fold a bad param into a build_error finding.
+    """
+    try:
+        data = Path(path).read_bytes()
+    except OSError as exc:
+        raise SpecInvalid(f"cannot read spec {path}: {exc.strerror}") from exc
+    text = _decode_spec(path, data)
+
+    try:
+        spec = VideoSpec.model_validate_json(text)
+    except ValidationError as exc:
+        raise SpecInvalid(f"{path} is not a valid spec:\n"
+                          f"{_format_validation(exc)}") from exc
+
+    if not spec.beats:
+        # Nothing to say and nothing to render: refuse here, not at assembly.
+        raise SpecInvalid(f"{path} is not a valid spec:\n"
+                          "  beats: a video needs at least one beat")
+
+    problems = []
+    if not VIDEO_ID.fullmatch(spec.video_id):
+        problems.append(
+            f"  video_id: {spec.video_id!r} is not a slug; use letters, digits, "
+            "'-' and '_' (at most 100), starting with a letter or digit -- it "
+            "names the output file")
+    try:
+        get_theme(spec.theme)
+    except KeyError as exc:
+        problems.append(f"  theme: {exc.args[0]}")
+    for beat in spec.beats:
+        problems += _control_characters(beat.narration, f"{beat.id}.narration")
+        problems += _control_characters(beat.params, f"{beat.id}.params")
+        try:
+            get_component(beat.component).Params.model_validate(beat.params)
+        except KeyError as exc:
+            problems.append(f"  {beat.id}.component: {exc.args[0]}")
+        except ValidationError as exc:
+            problems.append(f"  {beat.id} ({beat.component}) params:\n"
+                            f"{_format_validation(exc, indent='    ')}")
+    if problems:
+        raise SpecInvalid(f"{path} is not a valid spec:\n" + "\n".join(problems))
+    return spec
+
+
+def carry_in_recipes(spec: VideoSpec) -> dict[str, tuple[ArtifactRecipe, ...]]:
+    """Each beat's carried artifacts (SCENE_SPEC.md §6), as the probe and the
+    render both need them. A carry-in the producing component cannot rebuild
+    is a spec error (CarryInError), not a layout one."""
+    try:
+        return resolve_carry_in(spec)
+    except CarryInError as exc:
+        raise SpecInvalid(f"carry_in: {exc}") from exc
+
+
+@dataclass(frozen=True)
+class CheckedBeat:
+    """What rungs 2 and 3 check for one beat: the spec the worker will build.
+
+    For a library component that is the beat as written. A RawScene beat is
+    routed as the worker routes it (worker.render_beat -> render_raw_beat):
+    it never builds in a host scene -- RawScene.build() raises -- so the
+    geometric probe cannot run on it; its layout is asserted after every
+    play() inside its own out-of-process render (SCENE_SPEC.md §7). When it
+    is statically certain to degrade, what renders is the BulletReveal
+    fallback, and that is what gets checked.
+    """
+
+    spec: BeatSpec
+    geometric: bool
+    note: str | None = None
+
+
+def raw_scene_refusal(beat: BeatSpec) -> RawSceneError | None:
+    """Why render_raw_beat will certainly degrade this RawScene beat, decided
+    without running it; None when only the render can tell. The same checks
+    in the same order as render_raw_beat: a carry-in, then the static
+    allowlist (check_code). Params already passed rung 1."""
+    if beat.carry_in:
+        return RawSceneError(
+            f"carries in {beat.carry_in}; RawScene renders out of process and "
+            "cannot draw carried artifacts", kind="carry_in")
+    try:
+        check_code(RawSceneParams.model_validate(beat.params).code)
+    except RawSceneError as exc:
+        return exc
+    return None
+
+
+def checked_beats(spec: VideoSpec) -> list[CheckedBeat]:
+    """Every beat, as rungs 2 and 3 should see it (CheckedBeat)."""
+    checked = []
+    for beat in spec.beats:
+        if beat.component != RawScene.name:
+            checked.append(CheckedBeat(beat, geometric=True))
+            continue
+        problem = raw_scene_refusal(beat)
+        if problem is None:
+            checked.append(CheckedBeat(beat, geometric=False, note=(
+                "RawScene: layout is asserted in its own render, not probed here")))
+        else:
+            # A degraded beat is always better than a failed video (D-010):
+            # say so now, and check the fallback that will actually render.
+            checked.append(CheckedBeat(degrade_spec(beat), geometric=True, note=(
+                f"RawScene will degrade to BulletReveal ({problem.kind}: "
+                f"{problem}); checking the fallback")))
+    return checked
+
+
+# Finding kinds that put a beat's carry_in at fault (refuse_unfit).
+CARRY_IN_KINDS = frozenset({"carry_in", "region_conflict"})
+
+
+def refuse_unfit(failed: list[Report], refusal: type[RungRefused],
+                 carry_in_rung: str | None = None) -> None:
+    """Raise for a rung's failed reports, typed by what failed.
+
+    A "toolchain" finding (TeX timed out, every attempt) is the machine's
+    fault, so it outranks everything else: ToolchainFailed, its own exit
+    code, the spec not blamed (register G4b-N6). Then a "carry_in" finding
+    is a broken reference, a spec error whichever rung found it:
+    CarryInRefused, its header naming `carry_in_rung` when given (register
+    D-G4b-1). So is a "region_conflict": the pipeline layers nothing over a
+    beat's component, so its only source is a carried artifact the
+    component does not act on and leaves no STAGE region free for
+    (continuity.carry_region_problems, register D-G4c-1) -- fixed by the
+    beat's carry_in, never by its content. Only then the rung's own
+    refusal."""
+    if not failed:
+        return
+    slow = [f"{r.beat_id}: {f.message}" for r in failed for f in r.findings
+            if f.kind == "toolchain"]
+    if slow:
+        raise ToolchainFailed("\n".join(slow))
+    if any(f.kind in CARRY_IN_KINDS for r in failed for f in r.findings):
+        raise CarryInRefused(failed, rung=carry_in_rung)
+    raise refusal(failed)
+
+
+def check_semantics(spec: VideoSpec,
+                    checked: list[CheckedBeat] | None = None) -> list[Report]:
+    """Rung 2 (semantic). Cheap, and before the geometric probe because what
+    it catches is not a layout problem: no mechanical repair fixes it
+    (ARCHITECTURE.md §9).
+
+    Runs before speech, so durations are estimated from the narration
+    (semantic.estimate_seconds); each beat sees the artifacts registered by
+    the beats before it, and the recipes of those it carries in, so a part
+    index into one is checked against the artifact the render will build."""
+    checked = checked if checked is not None else checked_beats(spec)
+    recipes = carry_in_recipes(spec)
+    registered: set[str] = set()
+    reports = []
+    for beat, check in zip(spec.beats, checked, strict=True):
+        # A degraded fallback drops its carry_in, so it carries nothing.
+        carried = recipes.get(check.spec.id, ()) if check.spec.carry_in else ()
+        report = validate_semantic(check.spec, registered, recipes=carried,
+                                   theme=spec.theme)
+        prev = checked[len(reports) - 1].spec if reports else None
+        report.findings += check_continuity(prev, check.spec)
+        reports.append(report)
+        if beat.registers is not None:
+            registered.add(beat.registers)
+    refuse_unfit([r for r in reports if not r.ok], SemanticRefused)
+    return reports
+
+
+# Run time the geometric probe builds with before speech has run. Geometry
+# does not depend on run time; the render recomputes the plan at the measured
+# duration (worker.plan_repair), and that plan is the one in the key.
+PROBE_SECONDS = 8.0
+
+
+def describe_plan(plan: RepairPlan) -> str:
+    """A repair plan in words, for the operator: what the render will change."""
+    parts = []
+    if plan.wrap_scale != 1.0:
+        parts.append(f"text wrap width x{plan.wrap_scale:g}")
+    for index, fix in sorted(plan.fixes.items()):
+        moves = []
+        if fix.scale != 1.0:
+            moves.append(f"scaled x{fix.scale:.3f}")
+        if fix.dx or fix.dy:
+            moves.append(f"nudged ({fix.dx:+.2f}, {fix.dy:+.2f})")
+        parts.append(f"mobject #{index} {' and '.join(moves) or 'unchanged'}")
+    return "; ".join(parts)
+
+
+def check_layout(spec: VideoSpec,
+                 checked: list[CheckedBeat] | None = None) -> list[RepairResult]:
+    """Rung 3 (geometric), with bounded mechanical repair (SCENE_SPEC.md §9
+    step 1) -- the same repair_beat the render worker applies, so a beat the
+    render would fix is not refused here, and a beat refused here is one the
+    render could not draw either.
+
+    Runs before speech, at PROBE_SECONDS. Beats are probed with their carried
+    artifacts on screen, as rendered; a RawScene beat is probed only as its
+    fallback (CheckedBeat). Only beats still failing after repair are refused,
+    with their unrepaired findings."""
+    checked = checked if checked is not None else checked_beats(spec)
+    probed = [c.spec for c in checked if c.geometric]
+    # A degraded fallback drops its carry_in, so it is probed carrying nothing.
+    recipes = carry_in_recipes(spec)
+    results = [
+        repair_beat(s, spec.theme, PROBE_SECONDS,
+                    recipes=recipes.get(s.id, ()) if s.carry_in else ())
+        for s in probed
+    ]
+    refuse_unfit([r.report for r in results if not r.ok], LayoutRefused,
+                 "3 (geometric: carry-in)")
+    return results
+
+
+@contextmanager
+def manim_scratch(work_dir: Path, verbose: bool = False) -> Iterator[None]:
+    """Point every file Manim writes at `work_dir` and quiet its logging.
+
+    Scoped with tempconfig rather than set globally; worker.render_beat opens
+    its own tempconfig inside this one, which copies -- and so inherits --
+    the logging settings. The worker sets media_dir and video_dir itself, from
+    the work dir it is handed (`{work_dir}/manim`, the same media_dir as here,
+    so Manim's text and LaTeX caches are shared with validation). Covers
+    validation too: building Text writes Pango SVGs to `{media_dir}/texts`.
+    The dir is a long path (worker.long_path): LaTeX fails under an 8.3 one.
+    """
+    with tempconfig({
+        "media_dir": str(long_path(work_dir) / "manim"),
+        "verbosity": "INFO" if verbose else "WARNING",
+        "progress_bar": "display" if verbose else "none",
+    }):
+        yield
+
+
+def validate(spec_path: Path, work_dir: Path = DEFAULT_WORK_DIR,
+             verbose: bool = False) -> VideoSpec:
+    """Rungs 1, 2 and 3, with no speech and no render."""
+    refuse_tilde_work_dir(work_dir)  # a command-line problem, before the spec
+    spec = load_spec(spec_path)
+    carry_in_recipes(spec)  # an unrebuildable carry-in is a spec error
+    # Manim writes here from the first semantic check on.
+    ensure_dir(work_dir, "--work-dir")
+    ensure_dir(Path(work_dir) / "manim", "--work-dir")
+    # Checked under the name the operator gave; used as a long path from here
+    # on, since Manim hands it to LaTeX (register N-3).
+    work_dir = long_path(work_dir)
+    checked = checked_beats(spec)
+    for check in checked:
+        if check.note:
+            print(f"  {check.spec.id}  {check.note}")
+    # The semantic rung compiles LaTeX, which writes under Manim's media dir.
+    with manim_scratch(work_dir, verbose):
+        check_semantics(spec, checked)
+        for result in check_layout(spec, checked):
+            if result.repaired:
+                # Not a refusal, but the frame will differ from what the
+                # component drew: say what the render will change.
+                first = result.history[0]
+                print(f"  {result.beat_id}  repaired mechanically "
+                      f"({', '.join(sorted(first.kinds()))}): "
+                      f"{describe_plan(result.plan)}")
+    return spec
+
+
+def render_in_process(beat: Beat, theme: str, ctx: BuildContext, cache: Cache,
+                      manim_dir: Path, recipes: Sequence[ArtifactRecipe]) -> None:
+    """One beat through the worker, in this process, its failure typed by
+    stage: TeX timing out is ToolchainFailed, anything else RenderFailed."""
+    try:
+        render_beat(beat, theme, ctx, cache, manim_dir, recipes)
+    except LatexToolchainError as exc:
+        raise ToolchainFailed(f"{beat.id} ({beat.spec.component}): {exc}") from exc
+    except Exception as exc:
+        raise RenderFailed(f"{beat.id} ({beat.spec.component}): {exc}") from exc
+
+
+def cached_clip(beat: Beat, theme: Theme, ctx: BuildContext, cache: Cache,
+                manim_dir: Path, recipes: Sequence[ArtifactRecipe]
+                ) -> tuple[str | None, Path | None]:
+    """(render key, cached clip or None) for one beat, computed as the worker
+    computes them (worker._render, raw_scene.render_raw_beat), so the pool is
+    handed only real misses. `theme` is font-resolved.
+
+    The key is None when only the render can tell what it will be: a RawScene
+    beat that carries something in degrades inside the render, to a fallback
+    with a key of its own. Even a RawScene's own key is not the slot it may
+    fill: one that degrades commits its fallback under the fallback's key. So
+    render_stage_pooled never pools a RawScene miss; it renders it in this
+    process, which still finds that fallback in the cache if it is there."""
+    if beat.spec.component == RawScene.name:
+        if beat.spec.carry_in:
+            return None, None
+        # A RawScene is never mechanically repaired: its plan is the empty one.
+        key = render_key(beat, theme, ctx, RepairPlan())
+    else:
+        plan = plan_repair(beat, theme, ctx, manim_dir, recipes)
+        key = render_key(beat, theme, ctx, plan, recipes)
+    slot = cache.slot("beats", key, ".mp4")
+    return key, slot.path if slot.exists else None
+
+
+def render_stage_pooled(video: Video, ctx: BuildContext, cache: Cache, work_dir: Path,
+                        recipes: dict[str, tuple[ArtifactRecipe, ...]],
+                        jobs: int | None, verbose: bool,
+                        report: Callable[[Beat, bool], None]) -> None:
+    """The render stage across a process pool (ARCHITECTURE.md §4, D-005).
+
+    Cache semantics are the sequential render's (D-004). Every beat's key is
+    computed here first, and a hit never enters the pool: a library beat's
+    cached clip is recorded as the worker would record it, a RawScene hit goes
+    through the worker here (all it does is log the use).
+
+    The pool is handed only beats whose cache slot is known before they
+    render, one beat per slot: library beats that miss, deduplicated by key
+    (later beats with a key already pending take its clip and report
+    "cached", as they would sequentially). So no two processes ever write one
+    cache slot or one Manim video dir (both are named by the key). A RawScene
+    beat's slot is NOT known up front: a RawScene that degrades renders and
+    commits its BulletReveal fallback under a key that exists only inside the
+    render (and one that carries something in has no key here at all), and
+    two of them -- or one and a library beat -- can land on the same fallback
+    key. So every RawScene miss renders in this process, in beat order, after
+    the pool returns, through the sequential path: it finds anything the
+    pool or an earlier RawScene committed, exactly as it would sequentially.
+    (A RawScene renders out of process already, so little is lost.)
+
+    Each pooled miss is rendered by worker.render_beat in a worker process,
+    which commits its clip to the cache and removes its partials exactly as
+    it does in this one. Beats are reported in beat order, each once it and
+    every beat before it are done. A failure is typed as it is sequentially
+    (ToolchainFailed or RenderFailed, same message), for the earliest failing
+    pooled beat. A worker process that dies is RenderFailed naming every beat
+    that was in flight, not any one of them: which one it was rendering is
+    unknown. With a single worker's worth of pooled misses, or a render
+    function that cannot reach another process (pool.can_ship), every miss
+    renders here, in beat order: the same worker, no pool to start.
+    """
+    manim_dir = work_dir / "manim"
+    beats_dir = cache.root / "beats"
+    before = set(beats_dir.glob("*.mp4"))
+    theme = resolve_fonts(get_theme(video.spec.theme))
+    beats = video.beats
+
+    # Which beats miss. Library misses are deduplicated by key: the first beat
+    # with a key renders it (`pooled`), later beats with the same key take its
+    # clip (`twin_of`). RawScene misses (`here`) have no slot known up front.
+    first_with: dict[str, int] = {}
+    twin_of: dict[int, int] = {}
+    pooled: list[int] = []
+    here: list[int] = []
+    hits: list[int] = []
+    for index, beat in enumerate(beats):
+        try:
+            key, clip = cached_clip(beat, theme, ctx, cache, manim_dir, recipes[beat.id])
+        except LatexToolchainError as exc:
+            raise ToolchainFailed(f"{beat.id} ({beat.spec.component}): {exc}") from exc
+        except Exception as exc:
+            raise RenderFailed(f"{beat.id} ({beat.spec.component}): {exc}") from exc
+        if clip is not None:
+            hits.append(index)
+            if beat.spec.component != RawScene.name:
+                beat.render_path = clip  # all worker._render does on a hit
+        elif beat.spec.component == RawScene.name or key is None:
+            here.append(index)
+        elif key in first_with:
+            twin_of[index] = first_with[key]
+        else:
+            first_with[key] = index
+            pooled.append(index)
+
+    done: set[int] = set()
+    # Cache verdicts of beats rendered in this process, each measured against
+    # the cache just before its own render, as the sequential path does: a
+    # RawScene whose fallback an earlier beat committed in this run is a hit.
+    cached_here: dict[int, bool] = {}
+    next_to_report = 0
+
+    def finish(index: int) -> None:
+        """`index` is done: report every beat whose turn has now come."""
+        nonlocal next_to_report
+        done.add(index)
+        while next_to_report < len(beats):
+            i = next_to_report
+            beat = beats[i]
+            if i in twin_of:
+                if twin_of[i] not in done:
+                    return
+                beat.render_path = beats[twin_of[i]].render_path
+                beat.degraded = beats[twin_of[i]].degraded
+                report(beat, True)
+            elif i in done:
+                report(beat, cached_here.get(i, beat.render_path in before))
+            else:
+                return
+            next_to_report += 1
+
+    def render_here(index: int) -> None:
+        beat = beats[index]
+        just_before = set(beats_dir.glob("*.mp4"))
+        render_in_process(beat, video.spec.theme, ctx, cache, manim_dir,
+                          recipes[beat.id])
+        cached_here[index] = beat.render_path in just_before
+        finish(index)
+
+    for index in hits:
+        if beats[index].spec.component == RawScene.name:
+            render_here(index)
+        else:
+            finish(index)
+
+    workers = (default_jobs(len(pooled), draft=ctx.quality is Quality.DRAFT)
+               if jobs is None else min(jobs, len(pooled)))
+    # The pool runs the pipeline's own render_beat -- the same seam the
+    # sequential render goes through -- bound to what every beat shares.
+    render_fn = partial(render_beat, theme=video.spec.theme, ctx=ctx, cache=cache,
+                        work_dir=manim_dir)
+    if workers <= 1 or not can_ship(render_fn):
+        for index in sorted(pooled + here):
+            render_here(index)
+        return
+
+    print(f"  rendering {len(pooled)} beat(s) across {workers} processes")
+    work = [(i, beats[i], recipes[beats[i].id]) for i in pooled]
+    try:
+        render_pool(work, render_fn, partial(manim_scratch, work_dir, verbose),
+                    manim_dir, workers, finish)
+    except BeatFailed as exc:
+        beat = beats[exc.index]
+        error = ToolchainFailed if exc.kind == "toolchain" else RenderFailed
+        cause = RuntimeError(f"in worker process:\n{exc.trace}") if exc.trace else None
+        raise error(f"{beat.id} ({beat.spec.component}): {exc.message}") from cause
+    except WorkerDied as exc:
+        # No beat reported this, so none is named as the failure: the dead
+        # process was rendering one of the beats in flight (pool.WorkerDied).
+        def names(indices: tuple[int, ...]) -> str:
+            return ", ".join(f"{beats[i].id} ({beats[i].spec.component})" for i in indices)
+        if len(exc.in_flight) == 1:
+            where = f"while rendering {names(exc.in_flight)}, the only beat in flight"
+        elif exc.in_flight:
+            where = (f"while rendering one of {names(exc.in_flight)} "
+                     "(which one crashed is unknown; the others were stopped with it)")
+        else:
+            where = f"before reporting any of {names(exc.unfinished)}"
+        raise RenderFailed(f"a worker process died {where}: {exc.message}") from exc
+
+    # RawScene misses, in beat order, now that every pooled slot is committed:
+    # one that degrades onto a slot the pool or an earlier RawScene filled
+    # finds it there, as it would sequentially (see the docstring).
+    for index in here:
+        render_here(index)
+
+
+def render(
+    spec_path: Path,
+    quality: Quality = Quality.DRAFT,
+    out: Path | None = None,
+    cache_dir: Path = DEFAULT_CACHE_DIR,
+    work_dir: Path = DEFAULT_WORK_DIR,
+    verbose: bool = False,
+    jobs: int | None = 1,
+) -> RunResult:
+    """Spec file -> finished MP4. Every stage is cached per beat (D-004), so a
+    re-run after editing one narration line rebuilds only that beat.
+
+    `jobs` is how many processes render beats (ARCHITECTURE.md §4): 1 is the
+    sequential render, in this process; N > 1 renders the beats that miss the
+    cache across up to N worker processes (render_stage_pooled); None picks N
+    from the CPUs, the number of beats to render and the quality -- a draft
+    render of fewer than pool.DRAFT_MIN_POOLED beats stays sequential
+    (pool.default_jobs). Clips,
+    cache and assembled video are the same whichever is used."""
+    if jobs is not None and jobs < 1:
+        raise ValueError(f"jobs must be at least 1, or None to choose; got {jobs}")
+    work_dir = Path(work_dir)
+    # Before validation spends anything: a cache dir that cannot be one would
+    # otherwise surface only after the probe, as a traceback.
+    refuse_tilde_work_dir(work_dir)  # validate checks again; this is before mkdir
+    ensure_dir(cache_dir, "--cache-dir")
+    spec = validate(spec_path, work_dir, verbose)
+    work_dir = long_path(work_dir)  # ensure_dir'd by validate; see there
+    out = Path(out) if out else Path("out") / f"{spec.video_id}-{quality.value}.mp4"
+
+    cache = Cache(cache_dir)
+    ctx = BuildContext(quality=quality)
+    video = Video.from_spec(spec)
+    recipes = carry_in_recipes(spec)
+    # The resolved voice (platform default backend, backend default voice) is
+    # what tts.synthesize hashes, so the cached/synth report must use it too.
+    try:
+        voice = resolve_voice(spec.voice)
+    except TTSError as exc:
+        raise SpeechFailed(str(exc)) from exc
+
+    # Speech for every beat before any render: render keys need durations.
+    speech_cached = {}
+    for beat in video.beats:
+        speech_cached[beat.id] = cache.slot(
+            "tts", speech_key(beat.spec.narration, voice), ".wav").exists
+        try:
+            synthesize_beat(beat, voice, cache)
+        except Exception as exc:
+            raise SpeechFailed(f"{beat.id}: {exc}") from exc
+
+    result = RunResult(output=out)
+    # The worker owns Manim scratch under this dir: one video dir per beat,
+    # removed once the clip is committed to the cache.
+    manim_dir = work_dir / "manim"
+    beats_dir = cache.root / "beats"
+
+    def report(beat: Beat, cached: bool) -> None:
+        outcome = BeatOutcome(beat.id, speech_cached[beat.id], cached,
+                              beat.duration,  # type: ignore[arg-type]
+                              degraded=beat.degraded)
+        result.beats.append(outcome)
+        shown = beat.spec.component
+        if beat.degraded:
+            # The reason is in the RawScene usage log, one line per call.
+            shown += (" -> DEGRADED to BulletReveal (reason in "
+                      f"{manim_dir / USAGE_LOG_NAME})")
+        print(f"  {beat.id}  speech {'cached' if outcome.speech_cached else 'synth '}"
+              f"  render {'cached ' if cached else 'rebuilt'}"
+              f"  {outcome.duration:6.2f}s  {shown}")
+
+    # A draft render of fewer beats than a pool pays off for (whatever is
+    # cached) goes straight to the sequential path: render_stage_pooled's
+    # up-front cache check builds each beat's repair plan once more, and
+    # measured, that alone made binary_search's 4 draft beats ~0.8 s slower
+    # even with no pool started (pool.DRAFT_MIN_POOLED).
+    sequential = jobs == 1 or (jobs is None and ctx.quality is Quality.DRAFT
+                                and len(video.beats) < DRAFT_MIN_POOLED)
+    with manim_scratch(work_dir, verbose):
+        if sequential:
+            for beat in video.beats:
+                # The render key (font-resolved theme, tier, repair plan,
+                # carried artifacts) is the worker's to build; a beat was
+                # cached iff the clip the worker recorded on it was in the
+                # cache before the call.
+                before = set(beats_dir.glob("*.mp4"))
+                render_in_process(beat, spec.theme, ctx, cache, manim_dir,
+                                  recipes[beat.id])
+                report(beat, beat.render_path in before)
+        else:
+            render_stage_pooled(video, ctx, cache, work_dir, recipes, jobs,
+                                verbose, report)
+
+    summary = (f"  beats: {len(result.beats) - len(result.rebuilt)} cached, "
+               f"{len(result.rebuilt)} rebuilt")
+    if result.degraded:
+        summary += f", {len(result.degraded)} degraded ({', '.join(result.degraded)})"
+    print(summary)
+
+    assembly_dir = work_dir / "assemble" / f"{spec.video_id}-{quality.value}"
+    # load_spec only lets a slug through; this is the backstop for the
+    # rmtree below, which must never reach outside the work dir.
+    if not long_path(assembly_dir).is_relative_to(work_dir / "assemble"):
+        raise AssemblyFailed(f"assembly dir {assembly_dir} is outside "
+                             f"{work_dir / 'assemble'}; refusing to use it")
+    try:
+        assemble(video, out, assembly_dir, verbose=verbose)
+    except Exception as exc:
+        raise AssemblyFailed(str(exc)) from exc
+    shutil.rmtree(assembly_dir, ignore_errors=True)
+    return result

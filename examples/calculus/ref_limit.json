@@ -1,0 +1,110 @@
+{
+  "video_id": "calc1-ref-limit",
+  "channel": "calc1",
+  "voice": {"backend": "kokoro", "voice_id": "af_heart", "rate": 1.0},
+  "beats": [
+    {
+      "id": "b01",
+      "narration": "Sometimes a function has no value at a point, but its graph still clearly heads somewhere. The number it heads toward is called a limit. Limits are the foundation of calculus: derivatives and integrals are both built on them. Let's see what one really is.",
+      "component": "TitleCard",
+      "params": {"kicker": "Calculus 1", "title": "Limits", "subtitle": "Where a function is heading"}
+    },
+    {
+      "id": "b02",
+      "narration": "Here is the graph of x squared minus one, over x minus one. It looks like a straight line, but there is a hole at x equals one. Put one in and you get zero over zero, which is not a number. So what happens to f near one?",
+      "component": "LimitAtHole",
+      "params": {"phase": "pose", "function": "(x^2 - 1)/(x - 1)", "x_range": [-1, 3], "a": 1,
+                 "cues": {"hole": "but there is a hole", "question": "So what happens"}}
+    },
+    {
+      "id": "b03",
+      "narration": "Put a point on each side of the hole, and slide both of them in toward one. Watch the two readouts. From the left, the height climbs toward two. From the right, it comes down toward two. The two sides agree.",
+      "component": "LimitAtHole",
+      "params": {"phase": "approach", "function": "(x^2 - 1)/(x - 1)", "x_range": [-1, 3], "a": 1,
+                 "cues": {"points": "Put a point", "slide": "slide both of them", "agree": "The two sides agree"}}
+    },
+    {
+      "id": "b04",
+      "narration": "That shared number is the limit. We write: the limit, as x approaches one, of f of x, equals two. Notice that f of one still does not exist. The limit only cares where the values are heading as x gets close, never about the point itself.",
+      "component": "LimitAtHole",
+      "params": {"phase": "name", "function": "(x^2 - 1)/(x - 1)", "x_range": [-1, 3], "a": 1,
+                 "cues": {"limit": "We write", "value": "Notice that"}}
+    },
+    {
+      "id": "b05",
+      "narration": "Algebra agrees. Factor the top into x minus one, times x plus one. For any x other than one, the x minus one cancels, leaving just x plus one. As x approaches one, that approaches two. The hole is the only place the two formulas differ.",
+      "component": "EquationDerivation",
+      "params": {"steps": ["\\frac{x^2 - 1}{x - 1}",
+                           "= \\frac{(x - 1)(x + 1)}{x - 1}",
+                           "= x + 1 \\quad (x \\neq 1)",
+                           "\\to 1 + 1 = 2"],
+                 "annotations": [{"step": 1, "text": "factor the top"},
+                                 {"step": 2, "text": "cancel, for x not 1"},
+                                 {"step": 3, "text": "let x approach 1"}]}
+    },
+    {
+      "id": "b06",
+      "narration": "Now a harder one: sine of x, over x. At zero this is zero over zero again, so there is a hole. But this time no algebra cancels it. What does the picture say?",
+      "component": "LimitAtHole",
+      "params": {"phase": "pose", "function": "sin(x)/x", "x_range": [-10, 10], "a": 0,
+                 "cues": {"hole": "so there is a hole", "question": "What does the picture"}}
+    },
+    {
+      "id": "b07",
+      "narration": "Put a point on each side of the hole again, and slide them both in. The curve is symmetric, so the two readouts match each other all the way in. And as the points close in on zero, both readouts settle on one.",
+      "component": "LimitAtHole",
+      "params": {"phase": "approach", "function": "sin(x)/x", "x_range": [-10, 10], "a": 0,
+                 "cues": {"points": "Put a point", "slide": "slide them both in", "agree": "And as the points"}}
+    },
+    {
+      "id": "b08",
+      "narration": "So the limit, as x approaches zero, of sine x over x is one. This limit matters more than it looks: it is the reason the derivative of sine is cosine.",
+      "component": "LimitAtHole",
+      "params": {"phase": "name", "function": "sin(x)/x", "x_range": [-10, 10], "a": 0,
+                 "cues": {"limit": "So the limit", "value": "This limit matters"}}
+    },
+    {
+      "id": "b09",
+      "narration": "Limits can also fail to exist. Here is g, the absolute value of x, over x. To the left of zero it is stuck at minus one, and to the right it is stuck at plus one. The two sides head for different numbers, so g has no limit at zero.",
+      "component": "GraphPlot",
+      "params": {"functions": [{"expr": "abs(x)/x", "name": "g"}], "x_range": [-3, 3]}
+    },
+    {
+      "id": "b10",
+      "narration": "One more, with a square root: root x minus two, over x minus four. At four, the top and the bottom are both zero, so once more there is a hole. Where is the curve heading?",
+      "component": "LimitAtHole",
+      "params": {"phase": "pose", "function": "(sqrt(x) - 2)/(x - 4)", "x_range": [0, 9], "a": 4,
+                 "cues": {"hole": "so once more there is a hole", "question": "Where is the curve"}}
+    },
+    {
+      "id": "b11",
+      "narration": "Put a point on each side of the hole, and slide them in. From the left the readout falls toward one quarter, and from the right it rises toward one quarter. Once again, the two sides meet.",
+      "component": "LimitAtHole",
+      "params": {"phase": "approach", "function": "(sqrt(x) - 2)/(x - 4)", "x_range": [0, 9], "a": 4,
+                 "cues": {"points": "Put a point", "slide": "slide them in", "agree": "Once again"}}
+    },
+    {
+      "id": "b12",
+      "narration": "So the limit is one quarter. You can confirm it: multiply the top and the bottom by root x plus two, and the expression becomes one over root x plus two, which is one quarter at four.",
+      "component": "LimitAtHole",
+      "params": {"phase": "name", "function": "(sqrt(x) - 2)/(x - 4)", "x_range": [0, 9], "a": 4,
+                 "cues": {"limit": "So the limit", "value": "You can confirm"}}
+    },
+    {
+      "id": "b13",
+      "narration": "Back to our first function, to keep two ideas apart. The value of f at a point is what you get by plugging the point in, and at one, that does not exist. The limit is where the values head as x gets close, and there, that is two. A limit never needs the point itself.",
+      "component": "SplitCompare",
+      "params": {"left": {"title": "Value at 1", "math": "f(1) \\text{ undefined}"},
+                 "right": {"title": "Limit at 1", "math": "\\lim_{x \\to 1} f(x) = 2"},
+                 "verdict": "A limit never needs the point itself"}
+    },
+    {
+      "id": "b14",
+      "narration": "So, a limit is the number a function heads toward as x gets close to a point. For the limit to exist, the approach from the left and the approach from the right must agree. And the value at the point itself, or the lack of one, does not matter at all.",
+      "component": "BulletReveal",
+      "params": {"heading": "Limits", "items": ["Where f heads as x gets close",
+                                               "Both sides must agree",
+                                               "The point itself does not matter"]}
+    }
+  ]
+}

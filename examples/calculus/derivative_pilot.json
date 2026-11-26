@@ -1,0 +1,35 @@
+{
+  "video_id": "calc1-derivative-pilot",
+  "channel": "calc1",
+  "voice": {"backend": "kokoro", "voice_id": "af_heart", "rate": 1.0},
+  "beats": [
+    {
+      "id": "b01",
+      "narration": "Here is a curve, and one point on it, where x equals one. How steep is the curve right at that point? A slope needs two points, and we only have one.",
+      "component": "SecantToTangent",
+      "params": {"phase": "pose", "function": "x^2/4 + 1", "x_range": [-1, 4], "a": 1, "h": 2,
+                 "cues": {"point": "one point on it", "question": "How steep"}}
+    },
+    {
+      "id": "b02",
+      "narration": "So take a second point, two units to the right. Draw the line through both points. It rises two while it runs two, so its slope is exactly one.",
+      "component": "SecantToTangent",
+      "params": {"phase": "secant", "function": "x^2/4 + 1", "x_range": [-1, 4], "a": 1, "h": 2,
+                 "cues": {"second": "take a second point", "line": "Draw the line", "rise_run": "It rises"}}
+    },
+    {
+      "id": "b03",
+      "narration": "Now slide the second point toward the first. Watch the slope as the gap shrinks: it falls, and settles on one half. The line has become the tangent, the line that just touches the curve at our point.",
+      "component": "SecantToTangent",
+      "params": {"phase": "shrink", "function": "x^2/4 + 1", "x_range": [-1, 4], "a": 1, "h": 2,
+                 "cues": {"slide": "slide the second point", "tangent": "The line has become"}}
+    },
+    {
+      "id": "b04",
+      "narration": "That limit is the derivative. Take the slope over a gap h, then let h shrink to zero. At x equals one, the derivative of this curve is one half.",
+      "component": "SecantToTangent",
+      "params": {"phase": "name", "function": "x^2/4 + 1", "x_range": [-1, 4], "a": 1, "h": 2,
+                 "cues": {"limit": "That limit", "value": "At x equals one"}}
+    }
+  ]
+}

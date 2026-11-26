@@ -12,6 +12,7 @@ The load-bearing idea is the split between spec and state:
 
 from __future__ import annotations
 
+import unicodedata
 from enum import Enum
 from pathlib import Path
 from typing import Any
@@ -56,10 +57,28 @@ class Quality(str, Enum):
 
     DRAFT = "draft"  # 854x480 @ 15fps
     FINAL = "final"  # 1920x1080 @ 60fps
+    # 1920x1080 @ 30fps: the watchable tier for a student's own laptop. Added
+    # beside D-006's two tiers (run 3, docs/research/ANIMATIONS.md), which
+    # stand unchanged; rendering-2026-11.md recommends 1080p30 for laptops.
+    STANDARD = "standard"
 
     @property
     def manim_flag(self) -> str:
-        return {"draft": "-ql", "final": "-qh"}[self.value]
+        return {"draft": "-ql", "final": "-qh", "standard": "-qh"}[self.value]
+
+
+class CarryInError(ValueError):
+    """A carry-in that cannot be resolved (SCENE_SPEC.md §6).
+
+    Typed so callers can tell a continuity failure from any other spec error:
+    an unknown name is a script bug to send back to the spec stage, not
+    something the layout repair loop can fix.
+    """
+
+    def __init__(self, message: str, beat_id: str | None, name: str) -> None:
+        super().__init__(message)
+        self.beat_id = beat_id
+        self.name = name
 
 
 class VoiceConfig(BaseModel, frozen=True):
@@ -81,6 +100,45 @@ class WordTiming(BaseModel):
     end: float
 
 
+# Code points refused anywhere in spec text (rung 1, SCENE_SPEC.md §8), by
+# Unicode category: Co private use (U+E000, U+F06D -- a glyph only some
+# symbol font assigns; every theme font draws a missing-glyph box), Cn
+# unassigned (and noncharacters such as U+FFFE), Cs a lone surrogate (cannot
+# even be encoded to UTF-8 for Pango or the voice). None of them means the
+# same thing on any two machines. Format characters (Cf) are NOT refused:
+# ZWNJ, ZWJ and bidi marks are legitimate inside real words.
+_UNDRAWABLE_CATEGORIES = {"Co": "private-use", "Cn": "unassigned", "Cs": "surrogate"}
+
+
+def _text_problems(value: object, where: str) -> list[str]:
+    """Rung-1 code-point problems in `value` (a JSON-like tree), with where.
+
+    Extends pipeline.load_spec's control-character check (9387422) from
+    "nothing invisible to the parser" to "nothing no font can draw".
+
+    Text with no visible character is refused here for narration only, by
+    _narration_sane's letter-or-digit rule. In params an invisible-only
+    string is the component's to judge -- GeometryConstruct reads a blank or
+    zero-width note as "no note" by contract -- and whatever a component does
+    draw meets the theme's glyph guard at build (theme.check_renderable,
+    kind "unrenderable_text").
+    """
+    if isinstance(value, str):
+        for i, c in enumerate(value):
+            cat = unicodedata.category(c)
+            if cat in _UNDRAWABLE_CATEGORIES:
+                return [f"{where}: {_UNDRAWABLE_CATEGORIES[cat]} code point "
+                        f"U+{ord(c):04X} at offset {i}; no font draws it the "
+                        f"same everywhere -- write the character it stands for"]
+        return []
+    if isinstance(value, dict):
+        return [p for k, v in value.items() for p in _text_problems(v, f"{where}.{k}")]
+    if isinstance(value, (list, tuple)):
+        return [p for i, v in enumerate(value)
+                for p in _text_problems(v, f"{where}[{i}]")]
+    return []
+
+
 class BeatSpec(BaseModel, frozen=True):
     """One beat, declaratively. This is what the LLM emits (Phase 2) and what
     you hand-write for now.
@@ -93,6 +151,11 @@ class BeatSpec(BaseModel, frozen=True):
     narration: str
     component: str
     params: dict[str, Any] = Field(default_factory=dict)
+    # Continuity (SCENE_SPEC.md §6). `registers` names the artifact this beat's
+    # visual becomes for later beats; `carry_in` requests artifacts registered
+    # by EARLIER beats. Both are names, never mobjects -- the compiler rebuilds
+    # a carried artifact from the producing beat's component + params.
+    registers: str | None = None
     carry_in: list[str] = Field(default_factory=list)
     transition: Transition = Transition.CUT
 
@@ -102,11 +165,41 @@ class BeatSpec(BaseModel, frozen=True):
         v = v.strip()
         if not v:
             raise ValueError("narration cannot be empty")
+        if not any(c.isalnum() for c in v):
+            # Every beat's timing is its measured audio (D-002). Punctuation
+            # alone gives a voice nothing to say: SAPI writes a header-only
+            # file for ".", which no duration can be measured from. Letters
+            # and digits in any script count; a lone symbol a voice might
+            # name ("=", "%") is not a narration either.
+            raise ValueError(
+                f"narration has nothing to speak: {v!r} contains no letter or "
+                "digit. A beat is timed by its spoken narration; write the "
+                "sentence the viewer should hear.")
         if len(v.split()) > MAX_NARRATION_WORDS:
             raise ValueError(
                 f"narration is {len(v.split())} words (max {MAX_NARRATION_WORDS}). "
                 "Split this into multiple beats."
             )
+        problems = _text_problems(v, "narration")
+        if problems:
+            raise ValueError("; ".join(problems))
+        return v
+
+    @field_validator("params")
+    @classmethod
+    def _param_text_sane(cls, v: dict[str, Any]) -> dict[str, Any]:
+        """Rung 1 for every string in the params, nested ones included.
+
+        Only what no font and no component could honour: private-use,
+        unassigned or surrogate code points. Whether a font can draw a real
+        character -- and whether text with no visible character is an absent
+        value or an error -- is decided later: by the component's schema,
+        then by the theme at build (theme.check_renderable), with the
+        resolved font.
+        """
+        problems = _text_problems(v, "params")
+        if problems:
+            raise ValueError("; ".join(problems))
         return v
 
 
@@ -125,6 +218,34 @@ class VideoSpec(BaseModel, frozen=True):
         dupes = {i for i in ids if ids.count(i) > 1}
         if dupes:
             raise ValueError(f"duplicate beat ids: {sorted(dupes)}")
+        return self
+
+    @model_validator(mode="after")
+    def _carry_ins_resolve(self) -> VideoSpec:
+        """Every carry-in must name an artifact registered by an earlier beat.
+
+        Semantic rung (SCENE_SPEC.md §8) but structural enough to live here: a
+        dangling name can never render, so it should never construct. Pydantic
+        wraps the CarryInError in a ValidationError; the original is on
+        `exc.errors()[0]["ctx"]["error"]`.
+        """
+        registered: dict[str, str] = {}  # artifact name -> producing beat id
+        for beat in self.beats:
+            for name in beat.carry_in:
+                if name not in registered:
+                    raise CarryInError(
+                        f"{beat.id} carries in {name!r}, which no earlier beat "
+                        f"registers; registered so far: {sorted(registered)}",
+                        beat_id=beat.id, name=name,
+                    )
+            if beat.registers is not None:
+                if beat.registers in registered:
+                    raise CarryInError(
+                        f"{beat.id} registers {beat.registers!r}, already "
+                        f"registered by {registered[beat.registers]}",
+                        beat_id=beat.id, name=beat.registers,
+                    )
+                registered[beat.registers] = beat.id
         return self
 
 

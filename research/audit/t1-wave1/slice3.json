@@ -1,0 +1,27 @@
+[
+ {
+  "id": "T1|gemma-4-12b|tr-derivative-chain-rule-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-derivative-chain-rule-0_s0\\spec.json",
+  "topic": "tr-derivative-chain-rule-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-probability-without-replacement-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-probability-without-replacement-0_s0\\spec.json",
+  "topic": "tr-probability-without-replacement-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-kinetic-energy-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-kinetic-energy-0_s0\\spec.json",
+  "topic": "tr-kinetic-energy-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-specific-heat-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-specific-heat-0_s0\\spec.json",
+  "topic": "tr-specific-heat-0"
+ },
+ {
+  "id": "T1|gemma-4-12b|tr-half-life-0|s0",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-124548-t1\\gemma-4-12b\\staged-n-4-repair-1-calc-1-work-1\\tr-half-life-0_s0\\spec.json",
+  "topic": "tr-half-life-0"
+ }
+]

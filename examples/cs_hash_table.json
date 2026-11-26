@@ -1,0 +1,138 @@
+{
+  "video_id": "cs-hash-table-lookup",
+  "channel": "cs_fundamentals",
+  "theme": "default",
+  "beats": [
+    {
+      "id": "b01",
+      "narration": "Ask a Python dictionary holding a million keys whether it contains the word cat, and on average it answers about as fast as a dictionary holding ten. It does not search through the keys. It calculates where cat has to be, and looks only there.",
+      "component": "TitleCard",
+      "params": {
+        "kicker": "CS Fundamentals",
+        "title": "Finding a Key in One Step",
+        "subtitle": "How a hash table skips the search"
+      }
+    },
+    {
+      "id": "b02",
+      "narration": "Here is the trick, with a deliberately simple hash function. In the computer's character codes, the letters of cat are ninety-nine, ninety-seven and one hundred sixteen. Add them up: three hundred twelve. Divide by the number of buckets, ten, and keep the remainder. That remainder, two, is the bucket where cat lives.",
+      "component": "BoxFlow",
+      "params": {
+        "nodes": [
+          {"id": "key", "label": "key \"cat\""},
+          {"id": "sum", "label": "add the character codes"},
+          {"id": "h", "label": "312"},
+          {"id": "mod", "label": "remainder after dividing by 10"},
+          {"id": "bucket", "label": "bucket 2"}
+        ],
+        "edges": [
+          {"source": "key", "target": "sum"},
+          {"source": "sum", "target": "h"},
+          {"source": "h", "target": "mod"},
+          {"source": "mod", "target": "bucket"}
+        ],
+        "animate_flow": true
+      }
+    },
+    {
+      "id": "b03",
+      "narration": "Do the same for every key, and the keys spread out across a row of ten buckets. Cat goes to bucket two. Dog adds up to three hundred fourteen, so bucket four. Owl makes three hundred thirty-eight, bucket eight. Ant makes three hundred twenty-three, bucket three.",
+      "component": "DataStructureViz",
+      "params": {
+        "kind": "array",
+        "initial": ["-", "-", "-", "-", "-", "-", "-", "-", "-", "-"],
+        "operations": [
+          {"op": "set", "at": 2, "value": "cat"},
+          {"op": "set", "at": 4, "value": "dog"},
+          {"op": "set", "at": 8, "value": "owl"},
+          {"op": "set", "at": 3, "value": "ant"}
+        ]
+      },
+      "registers": "bucket_array"
+    },
+    {
+      "id": "b04",
+      "narration": "Finding a key later is the same arithmetic. Looking for cat? The codes add up to three hundred twelve, the remainder is two, so open bucket two, and there it is. The other nine buckets are never touched, and that would stay true with a million of them.",
+      "component": "ZoomHighlight",
+      "params": {
+        "target_id": "bucket_array",
+        "parts": [3, 13],
+        "callout": "Find cat: 312, remainder 2, open bucket 2"
+      },
+      "carry_in": ["bucket_array"]
+    },
+    {
+      "id": "b05",
+      "narration": "Now insert the word act. It has the same three letters as cat in a different order, so its codes add up to the same three hundred twelve. It wants bucket two, and cat is already there. Two different keys, one bucket. That is called a collision.",
+      "component": "Callout",
+      "params": {
+        "target_id": "bucket_array",
+        "part": 13,
+        "side": "below",
+        "text": "act adds up to 312 as well"
+      },
+      "carry_in": ["bucket_array"]
+    },
+    {
+      "id": "b06",
+      "narration": "Real hash functions mix the letters far more thoroughly than a plain sum, but with more keys than buckets, some keys must share. The classic fix is chaining. Each bucket holds a short list, so bucket two now holds cat, then act. Nothing is overwritten.",
+      "component": "BoxFlow",
+      "params": {
+        "nodes": [
+          {"id": "bucket", "label": "bucket 2"},
+          {"id": "cat", "label": "cat"},
+          {"id": "act", "label": "act"}
+        ],
+        "edges": [
+          {"source": "bucket", "target": "cat"},
+          {"source": "cat", "target": "act"}
+        ],
+        "animate_flow": true
+      }
+    },
+    {
+      "id": "b07",
+      "narration": "Here is a lookup for act, step by step. The codes add up to three hundred twelve. The remainder picks bucket two. Compare with the first key in the chain, cat. No match. Move on to the next key, act. That is a match. Two comparisons, and the rest of the table never came into it.",
+      "component": "StepTrace",
+      "params": {
+        "variables": ["key", "h", "h % 10", "k", "match"],
+        "frames": [
+          ["\"act\"", null, null, null, null],
+          ["\"act\"", 312, null, null, null],
+          ["\"act\"", 312, 2, null, null],
+          ["\"act\"", 312, 2, "\"cat\"", "no"],
+          ["\"act\"", 312, 2, "\"act\"", "yes"]
+        ]
+      }
+    },
+    {
+      "id": "b08",
+      "narration": "And here is that whole procedure as code. Line two adds up the character codes. Line three keeps the remainder and picks the bucket. Lines four to six walk the chain, comparing keys until one matches. If none does, the key is not in the table.",
+      "component": "CodeWalk",
+      "params": {
+        "language": "python",
+        "source": "def lookup(table, key):\n    h = sum(ord(c) for c in key)\n    bucket = table[h % 10]\n    for k, value in bucket:\n        if k == key:\n            return value\n    raise KeyError(key)",
+        "highlights": [
+          {"start": 2},
+          {"start": 3},
+          {"start": 4, "end": 6},
+          {"start": 7}
+        ]
+      }
+    },
+    {
+      "id": "b09",
+      "narration": "So why does a lookup stay fast? Hashing is one calculation, and it sends you to exactly one bucket. Only the chain can grow, so a real table keeps chains short by adding buckets as it fills. On average, finding any key then takes one calculation and a comparison or two, whether the table holds ten keys or ten million.",
+      "component": "BulletReveal",
+      "params": {
+        "heading": "Why a lookup stays fast",
+        "items": [
+          "One calculation picks the bucket",
+          "Only that one bucket is opened",
+          "Growing the table keeps chains short",
+          "A comparison or two, at any size"
+        ]
+      }
+    }
+  ]
+}

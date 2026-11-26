@@ -1,0 +1,131 @@
+{
+  "video_id": "science-falling-without-landing",
+  "channel": "science_explainers",
+  "theme": "default",
+  "beats": [
+    {
+      "id": "b01",
+      "narration": "The International Space Station is falling right now. It has been falling since nineteen ninety eight, and it has never once hit the ground. So how can something fall for decades and never land?",
+      "component": "TitleCard",
+      "params": {
+        "kicker": "Orbits",
+        "title": "Falling Without Landing",
+        "subtitle": "Why an orbit never hits the ground"
+      }
+    },
+    {
+      "id": "b02",
+      "narration": "Start with gravity itself. Each arrow shows the pull of a planet sitting at the centre of this grid. Every arrow points straight at the planet, and the arrows get longer and brighter as you close in, because the pull weakens with the square of distance. Double your distance, and the pull drops to a quarter.",
+      "component": "VectorField",
+      "params": {
+        "field_fn": {"x": "-x/(x**2+y**2)**1.5", "y": "-y/(x**2+y**2)**1.5"},
+        "sample_density": 12,
+        "x_range": [-6, 6],
+        "y_range": [-3, 3]
+      },
+      "registers": "gravity_field"
+    },
+    {
+      "id": "b03",
+      "narration": "So is there no gravity up where the station flies? There is plenty. Four hundred kilometres up, you are only six percent farther from Earth's centre, so gravity is still almost ninety percent as strong as on the ground. Astronauts float because they are falling, together with everything around them.",
+      "component": "Callout",
+      "params": {
+        "target_id": "gravity_field",
+        "text": "At the station's height, gravity is still almost 90% as strong as on the ground",
+        "side": "right"
+      },
+      "carry_in": ["gravity_field"],
+      "transition": "cross_fade"
+    },
+    {
+      "id": "b04",
+      "narration": "Now ignore the air, and compare a thrown ball with something moving sideways at seven point nine kilometres per second. In one second, both fall the same five metres. But over the seven point nine kilometres the fast one covers, the Earth's surface curves down by five metres too. It falls, and the ground falls away beneath it, by the same amount.",
+      "component": "SplitCompare",
+      "params": {
+        "left": {
+          "title": "Thrown ball",
+          "body": "Falls 5 m in a second, moves 20 m. The ground stays flat, so it lands."
+        },
+        "right": {
+          "title": "At 7.9 km/s",
+          "body": "Falls 5 m in a second, moves 7.9 km. The ground curves down 5 m, so it never gets closer."
+        },
+        "verdict": "Same fall. The ground curves away.",
+        "emphasis": "verdict"
+      }
+    },
+    {
+      "id": "b05",
+      "narration": "How fast is fast enough? Bending a path into a circle of radius r at speed v takes a pull of m v squared over r. Gravity gives a pull of G M m over r squared, where M is Earth's mass. Set them equal. The satellite's own mass cancels, so multiply both sides by r, and take the square root.",
+      "component": "EquationDerivation",
+      "params": {
+        "steps": [
+          "\\frac{G M m}{r^2} = \\frac{m v^2}{r}",
+          "\\frac{G M}{r} = v^2",
+          "v = \\sqrt{\\frac{G M}{r}}"
+        ],
+        "annotations": [
+          {"step": 0, "text": "gravity supplies the pull"},
+          {"step": 1, "text": "cancel m, multiply by r"},
+          {"step": 2, "text": "take the square root"}
+        ]
+      },
+      "transition": "cross_fade"
+    },
+    {
+      "id": "b06",
+      "narration": "Is that really a speed? Check the units. G is measured in newton metres squared per kilogram squared, which unpacks into metres cubed, per kilogram, per second squared. Multiply by a mass in kilograms, divide by a distance in metres, and you are left with metres squared per second squared. Its square root is metres per second.",
+      "component": "UnitBreakdown",
+      "params": {
+        "quantity": {"unit": "\\mathrm{N\\,m^{2}\\,kg^{-2}}", "label": "units of G"},
+        "decomposition": [
+          {"unit": "\\mathrm{m}^{3}", "label": "metres cubed"},
+          {"unit": "\\mathrm{kg}^{-1}", "label": "per kilogram"},
+          {"unit": "\\mathrm{s}^{-2}", "label": "per second squared"}
+        ]
+      }
+    },
+    {
+      "id": "b07",
+      "narration": "Put in Earth's numbers and you get this curve. Across is distance from Earth's centre, in thousands of kilometres. Up is the speed you need, in kilometres per second. The space station, four hundred kilometres up, needs seven point seven. A geostationary satellite, thirty six thousand kilometres up, needs only three point one.",
+      "component": "GraphPlot",
+      "params": {
+        "functions": [{"expr": "20/sqrt(x)", "name": "v"}],
+        "x_range": [6, 45],
+        "y_range": [0, 9],
+        "markers": [
+          {"x": 6.8, "label": "space station: 7.7 km/s"},
+          {"x": 42.2, "label": "geostationary orbit: 3.1 km/s"}
+        ]
+      },
+      "registers": "speed_curve",
+      "transition": "cross_fade"
+    },
+    {
+      "id": "b08",
+      "narration": "Notice which way the curve runs. Closer in, gravity pulls harder, so you must move faster to keep missing. The station circles the whole Earth in about ninety two minutes. The geostationary satellite takes a full day, matching Earth's spin, so it seems to hang still over one spot.",
+      "component": "ZoomHighlight",
+      "params": {
+        "target_id": "speed_curve",
+        "parts": [3, 4],
+        "callout": "Closer in, faster: the station laps Earth in 92 minutes"
+      },
+      "carry_in": ["speed_curve"]
+    },
+    {
+      "id": "b09",
+      "narration": "So the station never lands because it keeps missing. Gravity pulls it down every second. Its sideways speed carries it past the curve of the Earth. And at the square root of G M over r, the two match exactly. An orbit is just falling, done fast enough.",
+      "component": "BulletReveal",
+      "params": {
+        "heading": "Why it never lands",
+        "items": [
+          "Gravity pulls it down every second",
+          "Sideways speed carries it past the curve",
+          "The fall exactly matches Earth's curve",
+          "An orbit is falling, done fast enough"
+        ]
+      },
+      "transition": "fade_black"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "video_id": "cs-binary-search-intro",
+  "channel": "cs_fundamentals",
+  "theme": "default",
+  "beats": [
+    {
+      "id": "b01",
+      "narration": "You are looking for one name in a phone book with a million entries. Reading every page would work. There is a much faster way, and it only needs one idea.",
+      "component": "TitleCard",
+      "params": {
+        "kicker": "CS Fundamentals",
+        "title": "Binary Search",
+        "subtitle": "Halving the problem, every step"
+      }
+    },
+    {
+      "id": "b02",
+      "narration": "Open the book in the middle. If the name you want comes earlier in the alphabet, the whole back half is useless. Throw it away and repeat on what is left.",
+      "component": "BulletReveal",
+      "params": {
+        "heading": "The one idea",
+        "items": [
+          "Look at the middle entry",
+          "Compare it with the target",
+          "Discard the half that cannot hold it",
+          "Repeat on the half that remains"
+        ]
+      }
+    },
+    {
+      "id": "b03",
+      "narration": "Each comparison cuts the search space in half. A million entries becomes half a million, then a quarter million. After about twenty steps there is only one entry left.",
+      "component": "BulletReveal",
+      "params": {
+        "heading": "Why it is fast",
+        "items": [
+          "1,000,000 entries",
+          "500,000 after one step",
+          "250,000 after two",
+          "About 20 steps in total"
+        ],
+        "reveal": "sequential"
+      },
+      "transition": "cross_fade"
+    },
+    {
+      "id": "b04",
+      "narration": "The catch is that the data must already be sorted. Without order, the middle tells you nothing about where the target is.",
+      "component": "TitleCard",
+      "params": {
+        "title": "Sorted data is the price",
+        "subtitle": "Order is what lets you throw half away"
+      },
+      "transition": "fade_black"
+    }
+  ]
+}

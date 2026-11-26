@@ -1,0 +1,398 @@
+"""Semantic validation (validation rung 2, SCENE_SPEC.md §8).
+
+Cheap checks that need only the spec and the component's params -- no scene is
+built, nothing is laid out. They run before the geometric probe because they
+are cheaper, and because what they catch is not a layout problem: narration
+too short for the animation, a carry-in nobody registered, more text than any
+legible arrangement could hold. Mechanical repair cannot fix any of these, so
+per ARCHITECTURE.md §9 they fail the beat with a specific message instead of
+entering the repair loop.
+
+Findings reuse the Report/Finding types from geometric.py so the repair loop
+dispatches on one vocabulary across rungs.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Collection, Iterable, Mapping, Sequence
+from itertools import combinations
+from pathlib import Path
+from typing import Any
+
+from chalkdust.continuity import (
+    ArtifactRecipe,
+    carry_region_problems,
+    part_range_problems,
+)
+from chalkdust.core.models import BeatSpec, Region
+from chalkdust.scenes.components import Component, make_component
+from chalkdust.scenes.components.animation import Animation
+from chalkdust.scenes.components.raw_scene import RawScene
+from chalkdust.scenes.regions import MIN_FONT_SIZE, LayoutError, region_rect
+from chalkdust.scenes.theme import (
+    DEFAULT,
+    LatexToolchainError,
+    check_latex_source,
+    get_theme,
+    math,
+    resolve_fonts,
+)
+from chalkdust.validate.geometric import Finding, Report, probe_media
+
+# --- duration ---------------------------------------------------------------
+
+# Narration pace used to estimate a beat's length before speech has run.
+# Explainer narration sits around 140-160 wpm; we take the brisk end so the
+# estimate errs short, which keeps the min_seconds() check honest -- a slow
+# estimate would invent time the real audio will not have. Once the speech
+# stage has run, pass the measured duration instead (D-002).
+WORDS_PER_MINUTE = 160.0
+
+# One idea per beat; past this the visual sits static too long
+# (SCENE_SPEC.md §2, PRD.md §7). models.MAX_NARRATION_WORDS is only a sanity
+# bound and defers the real limit to here.
+MAX_BEAT_SECONDS = 25.0
+
+
+def estimate_seconds(narration: str, wpm: float = WORDS_PER_MINUTE) -> float:
+    """Spoken length of `narration` at `wpm`, before any audio exists."""
+    return len(narration.split()) * 60.0 / wpm
+
+
+def check_duration(component: Component, seconds: float,
+                   measured: bool = False) -> list[Finding]:
+    """Narration length against the component's animation budget."""
+    source = "measured" if measured else f"estimated at {WORDS_PER_MINUTE:.0f} wpm"
+    findings = []
+    need = component.min_seconds()
+    if seconds < need:
+        findings.append(Finding(
+            "duration",
+            f"narration runs {seconds:.1f}s ({source}) but {component.name} "
+            f"needs at least {need:.1f}s to animate these params without "
+            f"rushing. Lengthen the narration or give the component fewer steps.",
+        ))
+    if seconds > MAX_BEAT_SECONDS:
+        findings.append(Finding(
+            "duration",
+            f"narration runs {seconds:.1f}s ({source}); one beat carries one "
+            f"idea in at most {MAX_BEAT_SECONDS:.0f}s. Split this beat.",
+        ))
+    return findings
+
+
+# --- continuity -------------------------------------------------------------
+
+
+def check_carry_in(carry_in: Iterable[str],
+                   registered: Collection[str]) -> list[Finding]:
+    """Every carry-in must name an artifact an earlier beat registered.
+
+    The artifact registry itself lives with the compiler (SCENE_SPEC.md §6);
+    this check takes only the set of names available at this beat, so it does
+    not care how they were registered.
+    """
+    return [
+        Finding(
+            "carry_in",
+            f"carry_in {name!r} is not a registered artifact; available: "
+            f"{sorted(registered) or 'none'}",
+        )
+        for name in carry_in
+        if name not in registered
+    ]
+
+
+def check_carried_targets(component: Component,
+                          carry_in: Collection[str]) -> list[Finding]:
+    """Every artifact the component acts on must be carried into its beat.
+
+    A Callout whose `target_id` names something the beat does not carry in
+    would raise CarryInError from inside build(); caught here it is refused
+    by name, as a spec error, before anything is built.
+    """
+    return [
+        Finding(
+            "carry_in",
+            f"{component.name} acts on {name!r}, which this beat does not "
+            f"carry in; carry_in: {sorted(carry_in) or 'none'}. Add it to the "
+            f"beat's carry_in or point at an artifact the beat carries.",
+        )
+        for name in component.carried_targets()
+        if name not in carry_in
+    ]
+
+
+def check_carried_parts(component: Component,
+                        recipes: Sequence[ArtifactRecipe],
+                        theme: str = "default",
+                        media_dir: Path | str | None = None) -> list[Finding]:
+    """Every part a consumer points at must exist in its carried target.
+
+    The part count belongs to the producer's artifact, so it is rebuilt from
+    the recipe the render would carry in and counted
+    (continuity.part_range_problems). Without this an out-of-range `part`
+    or `parts` index surfaced only inside build(), as a CarryInError the
+    geometric and repair rungs reported as build_error (register D-G4b-1):
+    a spec bug blamed on the component. Building the artifact writes Text
+    SVGs, so it runs under probe_media like the LaTeX check, and with the
+    fonts resolved as every scene resolves them (ChalkdustScene).
+    """
+    if not recipes:
+        return []
+    with probe_media(media_dir):
+        resolved = resolve_fonts(get_theme(theme))
+        return [Finding("carry_in", message)
+                for message in part_range_problems(component, recipes, resolved)]
+
+
+# --- regions ----------------------------------------------------------------
+
+
+def check_region_conflicts(
+    claims: Mapping[str, Iterable[Region]],
+) -> list[Finding]:
+    """No two simultaneously active claimants may claim intersecting regions.
+
+    Compared by geometry, not by name: STAGE and STAGE_LEFT are different
+    regions that occupy the same space (SCENE_SPEC.md §4).
+    """
+    findings = []
+    for (a, a_regions), (b, b_regions) in combinations(claims.items(), 2):
+        clashes = sorted(
+            f"{ra.value}/{rb.value}"
+            for ra in set(a_regions)
+            for rb in set(b_regions)
+            if region_rect(ra).intersects(region_rect(rb))
+        )
+        if clashes:
+            findings.append(Finding(
+                "region_conflict",
+                f"{a} and {b} are active together but claim the same space: "
+                f"{', '.join(clashes)}",
+            ))
+    return findings
+
+
+def check_carry_placement(component: Component,
+                          carry_in: Sequence[str]) -> list[Finding]:
+    """Every carried artifact the component does not act on needs a STAGE
+    region the component leaves free (register D-G4c-1).
+
+    Such an artifact is drawn dimmed beside the component, in the half of
+    STAGE it does not claim (continuity.carry_region). A component claiming
+    STAGE, or both halves, leaves no half: the artifact could only sit under
+    it, overlapping its text or hidden behind its panels -- two claimants of
+    one region (SCENE_SPEC.md §4), a broken frame (§11 rule 1). Refused
+    here, as a region_conflict, before any speech or render. Consumers
+    (Callout, ZoomHighlight) lay their carried artifacts out themselves and
+    are not checked.
+    """
+    return [Finding("region_conflict", message)
+            for message in carry_region_problems(component, carry_in)]
+
+
+# --- text volume ------------------------------------------------------------
+
+# An upper bound on how many glyphs fit legibly in an area. Measured on this
+# box with Manim 0.21 Text at font_size 22 (MIN_FONT_SIZE): line pitch is
+# 0.298 units for every font tried (Manim's own line spacing), and the
+# narrowest face tried (Times New Roman) averages 0.160 units per non-space
+# glyph -- 0.54 of the pitch. We use 0.4 so the bound stays an upper bound for
+# condensed faces too. The check is meant to catch only content that no
+# arrangement could hold; anything subtler is the geometric probe's job.
+LINE_PITCH_PER_FONT_SIZE = 0.298 / 22.0
+GLYPH_WIDTH_PER_PITCH = 0.4
+
+
+def text_volume(params: Any) -> int:
+    """Non-whitespace characters across every string in the params.
+
+    Counts all string values, including enum-like ones ("sequential") -- they
+    are a rounding error against the generous capacity bound.
+    """
+    if isinstance(params, str):
+        return sum(not c.isspace() for c in params)
+    if isinstance(params, Mapping):
+        return sum(text_volume(v) for v in params.values())
+    if isinstance(params, (list, tuple)):
+        return sum(text_volume(v) for v in params)
+    return 0
+
+
+def region_capacity(regions: Iterable[Region]) -> int:
+    """Most glyphs the union of `regions` could hold at the legibility floor."""
+    rects = [region_rect(r) for r in set(regions)]
+    # Regions are either nested (STAGE holds both halves) or disjoint, so the
+    # union is the sum of the rects no other claimed rect contains.
+    outer = [r for r in rects if not any(o != r and o.contains(r) for o in rects)]
+    area = sum(r.area for r in outer)
+    pitch = MIN_FONT_SIZE * LINE_PITCH_PER_FONT_SIZE
+    return int(area / (pitch * pitch * GLYPH_WIDTH_PER_PITCH))
+
+
+def check_capacity(component: Component) -> list[Finding]:
+    """Text volume against what the component's regions can hold legibly.
+
+    Not applied to RawScene: its params are a rationale and Manim source,
+    neither of which is drawn, so counting them measures code length, not
+    text on screen -- a typical generated scene (~3k glyphs) would exceed the
+    ~2.7k bound for the whole safe area. Its legibility is asserted after
+    every play() inside its own render (SCENE_SPEC.md §7).
+    """
+    if isinstance(component, RawScene):
+        return []
+    volume = text_volume(component.params.model_dump(mode="json"))
+    capacity = region_capacity(component.regions())
+    if volume <= capacity:
+        return []
+    return [Finding(
+        "capacity",
+        f"{component.name} params carry {volume} characters of text but its "
+        f"regions hold at most ~{capacity} at the minimum legible size. "
+        f"No layout can fit this; split the beat.",
+    )]
+
+
+# --- LaTeX ------------------------------------------------------------------
+
+
+def check_latex(component: Component,
+                media_dir: Path | str | None = None) -> list[Finding]:
+    """Compile each of the component's LaTeX strings standalone.
+
+    First as written, through theme.check_latex_source: MathTex repairs
+    unbalanced braces and an unpaired \\left before compiling, so only a
+    compile of the raw source sees them (an empty-denominator \\frac{1}{
+    would otherwise pass here and render). Then through theme.math, the
+    constructor build() uses, so the expression is
+    compiled exactly as the render will compile it, a success lands in
+    Manim's Tex cache for the real build, and a failure is the same refusal
+    the geometric rung would raise: kind "invalid_latex"
+    (theme.refuse_invalid_latex). One vocabulary across rungs, so the repair
+    loop dispatches on one kind whichever rung caught the bad LaTeX.
+
+    Compiling writes .tex/.svg files under Manim's media_dir. They go where
+    the geometric probe's go (geometric.probe_media): `media_dir` when given,
+    else a caller's own redirect (the pipeline's work dir), else
+    work/manim -- never ./media in the cwd.
+
+    A failure that is not the expression's fault is not invalid_latex:
+    regenerating the spec cannot fix it. LaTeX still running after its
+    timeout, twice, is kind "toolchain" (theme.LatexToolchainError): a slow
+    or hung TeX, which the pipeline reports as a toolchain failure with its
+    own exit code (register G4b-N6). Any other toolchain failure is a
+    build_error.
+    """
+    findings = []
+    with probe_media(media_dir):
+        for i, source in enumerate(component.latex_strings()):
+            what = f"{component.name} latex_strings()[{i}]"
+            try:
+                check_latex_source(source, what=what)
+                math(source, DEFAULT, what=what)
+            except LayoutError as exc:
+                findings.append(Finding(exc.kind, str(exc)))
+            except LatexToolchainError as exc:
+                findings.append(Finding("toolchain", str(exc)))
+            except Exception as exc:
+                first_line = (str(exc).strip().splitlines() or [""])[0]
+                findings.append(Finding(
+                    "build_error",
+                    f"{component.name} latex_strings()[{i}] {source!r} could "
+                    f"not be compiled ({type(exc).__name__}: {first_line})",
+                ))
+    return findings
+
+
+# --- animation cues and continuity -----------------------------------------
+
+
+def check_cues(component: Component, narration: str) -> list[Finding]:
+    """An animation's cue phrases must be words its narration says, in moment
+    order (core/cues.cue_problems). Decidable from the text alone, so it is
+    caught here, before any speech is synthesised, as kind "cue"."""
+    if not isinstance(component, Animation):
+        return []
+    from chalkdust.core.cues import cue_problems
+
+    return [Finding("cue", p.message) for p in
+            cue_problems(narration, component.moment_names(), component.cue_phrases())]
+
+
+def check_continuity(prev: BeatSpec | None, spec: BeatSpec) -> list[Finding]:
+    """A beat that plays the phase right after the previous beat's phase of the
+    same animation continues its picture; its setup must be the same, or the
+    picture jumps at the cut (animation.py). Kind "continuity".
+
+    Only that one case is checked. Starting an animation at a later phase, or
+    after a different beat, is a deliberate cut to a new picture and allowed.
+    """
+    if prev is None or prev.component != spec.component:
+        return []
+    try:
+        a, b = make_component(prev.component, prev.params), make_component(spec.component, spec.params)
+    except Exception:
+        return []  # the param error is reported by validate_semantic itself
+    if not isinstance(b, Animation) or b.phase_index() != a.phase_index() + 1:
+        return []
+    if a.setup() == b.setup():
+        return []
+    diff = sorted(k for k in set(a.setup()) | set(b.setup())
+                  if a.setup().get(k) != b.setup().get(k))
+    return [Finding("continuity",
+                    f"{spec.id} continues {prev.id}'s {spec.component} (phase "
+                    f"{a.params.phase!r} -> {b.params.phase!r}) but changes its setup "
+                    f"({', '.join(diff)}); repeat the previous beat's values exactly so "
+                    "the picture carries on, or start again from the first phase")]
+
+
+# --- entry point ------------------------------------------------------------
+
+
+def validate_semantic(
+    spec: BeatSpec,
+    registered_artifacts: Collection[str] = (),
+    duration: float | None = None,
+    concurrent: Mapping[str, Iterable[Region]] | None = None,
+    media_dir: Path | str | None = None,
+    recipes: Sequence[ArtifactRecipe] = (),
+    theme: str = "default",
+) -> Report:
+    """Run every rung-2 check on one beat. Never raises.
+
+    registered_artifacts -- names registered by earlier beats (SCENE_SPEC.md §6).
+    duration             -- measured audio length; estimated from the
+                            narration when the speech stage has not run.
+    concurrent           -- regions claimed by anything else on screen during
+                            this beat, by name. Today one component owns a
+                            beat, so this is empty unless the compiler layers
+                            something over it.
+    media_dir            -- where compiling LaTeX writes its scratch (see
+                            check_latex); never the cwd.
+    recipes              -- the beat's carried artifacts
+                            (continuity.resolve_carry_in), so a part index
+                            into one is checked against the artifact the
+                            render will build; `theme` builds them.
+    """
+    report = Report(beat_id=spec.id)
+    try:
+        component = make_component(spec.component, spec.params)
+    except Exception as exc:
+        report.findings.append(Finding("build_error", f"{type(exc).__name__}: {exc}"))
+        return report
+
+    measured = duration is not None
+    seconds = duration if measured else estimate_seconds(spec.narration)
+    report.findings += check_duration(component, seconds, measured=measured)
+    report.findings += check_carry_in(spec.carry_in, registered_artifacts)
+    report.findings += check_carried_targets(component, spec.carry_in)
+    report.findings += check_carried_parts(component, recipes, theme, media_dir)
+    report.findings += check_carry_placement(component, spec.carry_in)
+    report.findings += check_region_conflicts(
+        {spec.component: component.regions(), **(concurrent or {})}
+    )
+    report.findings += check_capacity(component)
+    report.findings += check_latex(component, media_dir)
+    report.findings += check_cues(component, spec.narration)
+    return report

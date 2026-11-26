@@ -1,0 +1,234 @@
+{
+ "tr-linear-equation-solve-0": {
+  "set": "train",
+  "request": "Solve 4x + 1 = 35 and explain each step as keeping a balance level.",
+  "key_kind": "number",
+  "key_value": "8.5",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-simultaneous-linear-2x2-0": {
+  "set": "train",
+  "request": "Solve the simultaneous equations x + y = 4 and x - y = 0. What is x?",
+  "key_kind": "number",
+  "key_value": "2.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-derivative-chain-rule-0": {
+  "set": "train",
+  "request": "Differentiate sin(3x^2) using the chain rule, and explain the 'outside then inside' idea.",
+  "key_kind": "expr",
+  "key_value": "6*x*cos(3*x**2)",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-definite-integral-polynomial-0": {
+  "set": "train",
+  "request": "Evaluate the definite integral of 4x^2 from x = 0 to x = 3, and explain it as an area.",
+  "key_kind": "number",
+  "key_value": "36.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-limit-sinx-over-x-0": {
+  "set": "train",
+  "request": "Find the limit of sin(2x)/x as x approaches 0.",
+  "key_kind": "number",
+  "key_value": "2.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-logarithm-solve-0": {
+  "set": "train",
+  "request": "Solve log base 2 of x = 4. What does a logarithm ask?",
+  "key_kind": "number",
+  "key_value": "16.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-pythagoras-hypotenuse-0": {
+  "set": "train",
+  "request": "A right triangle has legs 6 cm and 8 cm. Find the hypotenuse and explain why Pythagoras' theorem holds.",
+  "key_kind": "number",
+  "key_value": "10.0",
+  "units": "cm",
+  "rel_tol": 0.02
+ },
+ "tr-triangle-area-sine-0": {
+  "set": "train",
+  "request": "Find the area of a triangle with sides 9 cm and 4 cm and the angle 150 degrees between them.",
+  "key_kind": "number",
+  "key_value": "8.999999999999998",
+  "units": "cm^2",
+  "rel_tol": 0.02
+ },
+ "tr-probability-without-replacement-0": {
+  "set": "train",
+  "request": "A bag has 5 red and 5 blue balls. Two are drawn without replacement. What is the probability both are red?",
+  "key_kind": "number",
+  "key_value": "0.2222222222222222",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-combinations-ncr-0": {
+  "set": "train",
+  "request": "In how many ways can a team of 2 be chosen from 6 students? Explain why order does not matter.",
+  "key_kind": "number",
+  "key_value": "15.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-distance-two-points-0": {
+  "set": "train",
+  "request": "Find the distance between the points (1, 1) and (5, 8).",
+  "key_kind": "number",
+  "key_value": "8.06225774829855",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-slope-two-points-0": {
+  "set": "train",
+  "request": "Find the slope of the line through (1, 1) and (5, 8), and explain slope as rise over run.",
+  "key_kind": "number",
+  "key_value": "1.75",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-trig-identity-explain-0": {
+  "set": "train",
+  "request": "Explain why sin^2 x + cos^2 x = 1 using the unit circle.",
+  "key_kind": "none",
+  "key_value": "",
+  "units": null,
+  "rel_tol": null
+ },
+ "tr-electric-power-0": {
+  "set": "train",
+  "request": "A 3 ohm heater is connected to a 24 V supply. What power does it use?",
+  "key_kind": "number",
+  "key_value": "192.0",
+  "units": "W",
+  "rel_tol": 0.02
+ },
+ "tr-kinetic-energy-0": {
+  "set": "train",
+  "request": "Find the kinetic energy of a 1200 kg car moving at 10 m/s. Why does doubling speed quadruple it?",
+  "key_kind": "number",
+  "key_value": "60000.0",
+  "units": "J",
+  "rel_tol": 0.02
+ },
+ "tr-momentum-inelastic-collision-0": {
+  "set": "train",
+  "request": "A 2 kg trolley moving at 2 m/s sticks to a stationary 5 kg trolley. What is their common speed?",
+  "key_kind": "number",
+  "key_value": "0.5714285714285714",
+  "units": "m/s",
+  "rel_tol": 0.02
+ },
+ "tr-hookes-law-0": {
+  "set": "train",
+  "request": "A spring of stiffness 100 N/m is pulled with 10 N. How far does it stretch?",
+  "key_kind": "number",
+  "key_value": "0.1",
+  "units": "m",
+  "rel_tol": 0.02
+ },
+ "tr-centripetal-force-0": {
+  "set": "train",
+  "request": "A 2 kg ball on a string moves in a circle of radius 2 m at 2 m/s. What tension provides the centripetal force?",
+  "key_kind": "number",
+  "key_value": "4.0",
+  "units": "N",
+  "rel_tol": 0.02
+ },
+ "tr-wave-speed-0": {
+  "set": "train",
+  "request": "A sound wave has frequency 440 Hz and wavelength 1.3 m. What is its speed?",
+  "key_kind": "number",
+  "key_value": "572.0",
+  "units": "m/s",
+  "rel_tol": 0.02
+ },
+ "tr-snells-law-0": {
+  "set": "train",
+  "request": "Light enters glass of refractive index 1.33 from air at 45 degrees to the normal. Find the angle of refraction.",
+  "key_kind": "number",
+  "key_value": "32.1176312779912",
+  "units": "degrees",
+  "rel_tol": 0.02
+ },
+ "tr-specific-heat-0": {
+  "set": "train",
+  "request": "How much heat raises 1 kg of water by 12 degrees C? (c = 4200 J/kg K)",
+  "key_kind": "number",
+  "key_value": "50400",
+  "units": "J",
+  "rel_tol": 0.02
+ },
+ "tr-coulombs-law-0": {
+  "set": "train",
+  "request": "Two charges of 1 microcoulomb and 5 microcoulomb are 0.1 m apart. Find the force between them (k = 9 x 10^9).",
+  "key_kind": "number",
+  "key_value": "4.499999999999999",
+  "units": "N",
+  "rel_tol": 0.02
+ },
+ "tr-power-work-time-0": {
+  "set": "train",
+  "request": "A 60 kg student climbs 3 m of stairs in 20 s. What power do they develop? (g = 10)",
+  "key_kind": "number",
+  "key_value": "90.0",
+  "units": "W",
+  "rel_tol": 0.02
+ },
+ "tr-newtons-third-law-explain-0": {
+  "set": "train",
+  "request": "Explain Newton's third law with a person pushing a wall, and why the forces do not cancel.",
+  "key_kind": "none",
+  "key_value": "",
+  "units": null,
+  "rel_tol": null
+ },
+ "tr-dilution-m1v1-0": {
+  "set": "train",
+  "request": "50 mL of 2 M acid is diluted to 250 mL. What is the new concentration?",
+  "key_kind": "number",
+  "key_value": "0.4",
+  "units": "M",
+  "rel_tol": 0.02
+ },
+ "tr-ph-strong-acid-0": {
+  "set": "train",
+  "request": "What is the pH of a 10^-4 M solution of hydrochloric acid? Why is the scale logarithmic?",
+  "key_kind": "number",
+  "key_value": "4.0",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-half-life-0": {
+  "set": "train",
+  "request": "A sample has a half-life of 10 days. What fraction remains after 40 days?",
+  "key_kind": "number",
+  "key_value": "0.0625",
+  "units": null,
+  "rel_tol": 0.02
+ },
+ "tr-covalent-vs-ionic-explain-0": {
+  "set": "train",
+  "request": "Explain the difference between ionic and covalent bonding with sodium chloride and water.",
+  "key_kind": "none",
+  "key_value": "",
+  "units": null,
+  "rel_tol": null
+ },
+ "tr-binary-to-decimal-0": {
+  "set": "train",
+  "request": "Convert the binary number 111001 to decimal, explaining place values.",
+  "key_kind": "number",
+  "key_value": "57.0",
+  "units": null,
+  "rel_tol": 0.02
+ }
+}

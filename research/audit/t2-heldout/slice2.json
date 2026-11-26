@@ -1,0 +1,42 @@
+[
+ {
+  "id": "T2-002",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-sft-v1\\staged-calc-1-work-1\\ho-arithmetic-sum_s3\\spec.json",
+  "topic": "ho-arithmetic-sum"
+ },
+ {
+  "id": "T2-010",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-self\\staged-calc-1-work-1\\ho-parabola-vertex_s3\\spec.json",
+  "topic": "ho-parabola-vertex"
+ },
+ {
+  "id": "T2-018",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-sft-v1\\staged-calc-1-work-1\\ho-free-fall-time_s1\\spec.json",
+  "topic": "ho-free-fall-time"
+ },
+ {
+  "id": "T2-026",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-self\\staged-n-4-repair-1-calc-1-work-1\\ho-arithmetic-sum_s2\\spec.json",
+  "topic": "ho-arithmetic-sum"
+ },
+ {
+  "id": "T2-034",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-sft-v1\\staged-calc-1-work-1\\ho-parabola-vertex_s3\\spec.json",
+  "topic": "ho-parabola-vertex"
+ },
+ {
+  "id": "T2-042",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-self\\staged-n-4-repair-1-calc-1-work-1\\ho-pendulum-period_s4\\spec.json",
+  "topic": "ho-pendulum-period"
+ },
+ {
+  "id": "T2-050",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-sft-v1\\staged-calc-1-work-1\\ho-pendulum-period_s1\\spec.json",
+  "topic": "ho-pendulum-period"
+ },
+ {
+  "id": "T2-058",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-sft-v1\\staged-n-4-repair-1-calc-1-work-1\\ho-stack-trace_s2\\spec.json",
+  "topic": "ho-stack-trace"
+ }
+]

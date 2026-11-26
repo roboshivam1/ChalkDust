@@ -1,0 +1,300 @@
+{
+ "video_id": "calc1-ref-derivative",
+ "channel": "calc1",
+ "voice": {
+  "backend": "kokoro",
+  "voice_id": "af_heart",
+  "rate": 1.0
+ },
+ "beats": [
+  {
+   "id": "b01",
+   "narration": "A straight line has one slope, the same everywhere along it. A curve is different. It gets steeper in some places and flatter in others, so asking for the slope of a curve only makes sense at a particular point. In this video we work out what that slope at a single point really means. It has a name: the derivative.",
+   "component": "TitleCard",
+   "params": {
+    "kicker": "Calculus 1",
+    "title": "The Derivative",
+    "subtitle": "The slope of a curve at one point"
+   }
+  },
+  {
+   "id": "b02",
+   "narration": "Here is the curve y equals x squared over four, plus one. Mark the point on it where x equals one. How steep is the curve right there? That is harder than it sounds, because every slope we know how to compute needs two points, and we only have one.",
+   "component": "SecantToTangent",
+   "params": {
+    "phase": "pose",
+    "function": "x^2/4 + 1",
+    "x_range": [
+     -1,
+     4
+    ],
+    "a": 1,
+    "h": 2,
+    "cues": {
+     "point": "Mark the point",
+     "question": "How steep"
+    }
+   }
+  },
+  {
+   "id": "b03",
+   "narration": "So let's cheat a little, and use two. Take a second point on the curve, two units to the right, where x equals three. Draw the line through both points. It rises two while it runs two, so this line has a slope of exactly one.",
+   "component": "SecantToTangent",
+   "params": {
+    "phase": "secant",
+    "function": "x^2/4 + 1",
+    "x_range": [
+     -1,
+     4
+    ],
+    "a": 1,
+    "h": 2,
+    "cues": {
+     "second": "Take a second point",
+     "line": "Draw the line",
+     "rise_run": "It rises two"
+    }
+   }
+  },
+  {
+   "id": "b04",
+   "narration": "But that line is not the curve at our point. It cuts across a whole stretch of it. So slide the second point toward the first, and watch the slope as the gap between them shrinks. It falls, and then it stops falling, and settles on one half. The line has become the tangent line, the one line that just touches the curve at our point.",
+   "component": "SecantToTangent",
+   "params": {
+    "phase": "shrink",
+    "function": "x^2/4 + 1",
+    "x_range": [
+     -1,
+     4
+    ],
+    "a": 1,
+    "h": 2,
+    "cues": {
+     "slide": "slide the second point",
+     "tangent": "The line has become"
+    }
+   }
+  },
+  {
+   "id": "b05",
+   "narration": "That settling value is the derivative. Written in symbols, it says: take the slope over a gap h, then let h shrink toward zero. At x equals one, the derivative of this curve is one half.",
+   "component": "SecantToTangent",
+   "params": {
+    "phase": "name",
+    "function": "x^2/4 + 1",
+    "x_range": [
+     -1,
+     4
+    ],
+    "a": 1,
+    "h": 2,
+    "cues": {
+     "limit": "Written in symbols",
+     "value": "At x equals one"
+    }
+   }
+  },
+  {
+   "id": "b06",
+   "narration": "We can check that one half with algebra. Write the slope over a gap h and expand the square. The ones cancel, and every term left on top has an h, so the h underneath divides away. That leaves two plus h, over four. Let h go to zero: two over four, one half, just as the picture showed.",
+   "component": "EquationDerivation",
+   "params": {
+    "steps": [
+     "\\frac{f(1+h) - f(1)}{h}",
+     "= \\frac{2h + h^2}{4h}",
+     "= \\frac{2 + h}{4}",
+     "\\to \\frac{2}{4} = \\frac{1}{2}"
+    ],
+    "annotations": [
+     {
+      "step": 1,
+      "text": "expand; the ones cancel"
+     },
+     {
+      "step": 2,
+      "text": "divide by h"
+     },
+     {
+      "step": 3,
+      "text": "let h go to 0"
+     }
+    ]
+   }
+  },
+  {
+   "id": "b07",
+   "narration": "Nothing there needed the point to be one. At any point a, the same steps give two a plus h, over four, which settles on a over two. So the derivative is a whole new function: f prime of x equals x over two. Give it any point, and it gives back the slope there.",
+   "component": "EquationDerivation",
+   "params": {
+    "steps": [
+     "\\frac{f(a+h) - f(a)}{h} = \\frac{2ah + h^2}{4h}",
+     "= \\frac{2a + h}{4}",
+     "\\to \\frac{a}{2}",
+     "f'(x) = \\frac{x}{2}"
+    ],
+    "annotations": [
+     {
+      "step": 1,
+      "text": "divide by h"
+     },
+     {
+      "step": 2,
+      "text": "let h go to 0"
+     },
+     {
+      "step": 3,
+      "text": "true at every point"
+     }
+    ]
+   }
+  },
+  {
+   "id": "b08",
+   "narration": "Here are the curve and its derivative together. Where the curve is flat, at the bottom of the bowl where x is zero, the derivative is zero. To the left the curve falls, and the derivative is negative. To the right the curve climbs more and more steeply, and the derivative climbs with it. The height of the second graph is the slope of the first.",
+   "component": "GraphPlot",
+   "params": {
+    "functions": [
+     {
+      "expr": "x^2/4 + 1",
+      "name": "f"
+     },
+     {
+      "expr": "x/2",
+      "name": "f'"
+     }
+    ],
+    "x_range": [
+     -3,
+     3
+    ],
+    "markers": [
+     {
+      "x": 0,
+      "label": "flat"
+     }
+    ]
+   }
+  },
+  {
+   "id": "b09",
+   "narration": "Let's try a curve that bends both ways: x cubed over three, minus x. Take the point where x equals zero, right in the middle. Which way does the curve tilt there, and how steeply?",
+   "component": "SecantToTangent",
+   "params": {
+    "phase": "pose",
+    "function": "x^3/3 - x",
+    "x_range": [
+     -2.5,
+     2.5
+    ],
+    "a": 0,
+    "h": 1.5,
+    "cues": {
+     "point": "Take the point",
+     "question": "Which way"
+    }
+   }
+  },
+  {
+   "id": "b10",
+   "narration": "Same move as before. Pick a second point, one and a half units to the right, and draw the line through both. This time the line goes downhill. It drops three eighths over a run of one and a half, which is a slope of minus one quarter.",
+   "component": "SecantToTangent",
+   "params": {
+    "phase": "secant",
+    "function": "x^3/3 - x",
+    "x_range": [
+     -2.5,
+     2.5
+    ],
+    "a": 0,
+    "h": 1.5,
+    "cues": {
+     "second": "Pick a second point",
+     "line": "draw the line",
+     "rise_run": "This time the line"
+    }
+   }
+  },
+  {
+   "id": "b11",
+   "narration": "Now let the gap shrink. Watch the number: it does not stay at minus one quarter. The closer the second point gets, the steeper the line tilts down, and the slope settles on minus one. The secant has turned into the tangent line at zero.",
+   "component": "SecantToTangent",
+   "params": {
+    "phase": "shrink",
+    "function": "x^3/3 - x",
+    "x_range": [
+     -2.5,
+     2.5
+    ],
+    "a": 0,
+    "h": 1.5,
+    "cues": {
+     "slide": "let the gap shrink",
+     "tangent": "The secant has turned"
+    }
+   }
+  },
+  {
+   "id": "b12",
+   "narration": "As before, the derivative is the limit of the slope as the gap goes to zero. Here, at zero, that limit is minus one. The algebra agrees: the derivative of this curve works out to x squared minus one, and at zero that is minus one.",
+   "component": "SecantToTangent",
+   "params": {
+    "phase": "name",
+    "function": "x^3/3 - x",
+    "x_range": [
+     -2.5,
+     2.5
+    ],
+    "a": 0,
+    "h": 1.5,
+    "cues": {
+     "limit": "As before",
+     "value": "Here, at zero"
+    }
+   }
+  },
+  {
+   "id": "b13",
+   "narration": "Plot that derivative next to the curve. It is zero at minus one and at one, exactly where the curve levels off, at the top of its hump and the bottom of its dip. Between those two points the derivative is negative, and the curve is falling. Outside them it is positive, and the curve is rising.",
+   "component": "GraphPlot",
+   "params": {
+    "functions": [
+     {
+      "expr": "x^3/3 - x",
+      "name": "f"
+     },
+     {
+      "expr": "x^2 - 1",
+      "name": "f'"
+     }
+    ],
+    "x_range": [
+     -2.5,
+     2.5
+    ],
+    "markers": [
+     {
+      "x": -1,
+      "label": "flat"
+     },
+     {
+      "x": 1,
+      "label": "flat"
+     }
+    ]
+   }
+  },
+  {
+   "id": "b14",
+   "narration": "Three things to keep. The derivative is the slope of a curve at one point. It is the limit of secant slopes, as the second point slides in and the gap goes to zero. And worked out at every point, it is a new function that tells you where the curve rises, falls, and levels off.",
+   "component": "BulletReveal",
+   "params": {
+    "heading": "The derivative",
+    "items": [
+     "The slope of a curve at one point",
+     "The limit of secant slopes",
+     "A new function: where f rises and falls"
+    ]
+   }
+  }
+ ]
+}

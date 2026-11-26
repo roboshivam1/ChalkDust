@@ -1,0 +1,42 @@
+[
+ {
+  "id": "T2-004",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-self\\staged-calc-1-work-1\\ho-ideal-gas-volume_s2\\spec.json",
+  "topic": "ho-ideal-gas-volume"
+ },
+ {
+  "id": "T2-012",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-sft-v1\\staged-calc-1-work-1\\ho-pendulum-period_s4\\spec.json",
+  "topic": "ho-pendulum-period"
+ },
+ {
+  "id": "T2-020",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-self\\staged-calc-1-work-1\\ho-parabola-vertex_s4\\spec.json",
+  "topic": "ho-parabola-vertex"
+ },
+ {
+  "id": "T2-028",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-self\\staged-calc-1-work-1\\ho-stack-trace_s2\\spec.json",
+  "topic": "ho-stack-trace"
+ },
+ {
+  "id": "T2-036",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-self\\staged-n-4-repair-1-calc-1-work-1\\ho-stack-trace_s1\\spec.json",
+  "topic": "ho-stack-trace"
+ },
+ {
+  "id": "T2-044",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-sft-v1\\staged-calc-1-work-1\\ho-free-fall-time_s0\\spec.json",
+  "topic": "ho-free-fall-time"
+ },
+ {
+  "id": "T2-052",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-self\\staged-calc-1-work-1\\ho-arithmetic-sum_s0\\spec.json",
+  "topic": "ho-arithmetic-sum"
+ },
+ {
+  "id": "T2-060",
+  "spec": "C:\\dev\\chalkdust\\ChalkDust\\.lab\\runs\\20261121-163526-t2\\granite-4.2-3b-sft-v1\\staged-n-4-repair-1-calc-1-work-1\\ho-arithmetic-sum_s4\\spec.json",
+  "topic": "ho-arithmetic-sum"
+ }
+]

@@ -46,22 +46,87 @@ def tts_key(narration: str, voice: VoiceConfig) -> str:
     return content_hash("tts", narration.strip(), voice.model_dump(mode="json"))
 
 
-def beat_render_key(spec: BeatSpec, duration: float, ctx: BuildContext) -> str:
-    """A rendered beat depends on the visual spec, how long it must run, and
-    the build context.
+def beat_render_key(
+    spec: BeatSpec,
+    duration: float,
+    ctx: BuildContext,
+    theme: dict[str, Any],
+    tier: dict[str, Any],
+    repair: dict[str, Any],
+    *,
+    carried: str | None = None,
+    cues: dict[str, int] | None = None,
+) -> str:
+    """A rendered beat depends on the visual spec, how long it must run, the
+    build context, the theme it is drawn in, the render tier, and the
+    mechanical repair plan the render applies.
+
+    This is the ONLY place a render key is built. A new determining input
+    (e.g. carried-in artifacts' construction params) is one more term here.
+
+    `theme` is the theme's full content AFTER font resolution, not its name.
+    Two failure modes this closes (D-004):
+      - same beat under two themes would otherwise share one cached file;
+      - a theme font missing on this machine makes Pango substitute, so the
+        pixels change while the name stays the same. The resolved font is
+        what actually renders, so that is what goes in the key.
+
+    `tier` is the tier's concrete settings (resolution, frame rate), not just
+    the "draft"/"final" label in `ctx`: retuning a tier must not serve clips
+    rendered at the old settings (D-006).
+
+    `repair` is the repair plan itself (SCENE_SPEC.md §9 step 1), not a
+    version of the repair code. The worker computes it from the spec, theme
+    and duration on every render, so any change to the repair logic that moves
+    what is drawn changes the plan, and with it the key, with no version to
+    remember to bump. A repair change that leaves every plan the same draws the
+    same pixels and rightly keeps the cache. (The component library, theme and
+    Manim versions arrive in `ctx`.)
+
+    All three arrive as plain data so this module stays below the
+    scenes/render boundary (ARCHITECTURE.md §5); the render worker does the
+    resolving.
 
     Deliberately excluded:
       - narration text: only affects the render via `duration`, already here
       - transition: applied at ffmpeg assembly, not baked into the clip
     """
-    return content_hash(
+    key = content_hash(
         "beat",
         spec.component,
         spec.params,
         sorted(spec.carry_in),
         round(duration, 3),  # avoid float noise producing spurious misses
         ctx.model_dump(mode="json"),
+        theme,
+        tier,
+        repair,
     )
+
+    # --- carry-in term (SCENE_SPEC.md §6) -----------------------------------
+    # A carried artifact is rebuilt from ANOTHER beat's component + params, so
+    # this spec alone does not determine the frame: editing the producing beat
+    # must re-render every beat that carries its artifact. `carried` is
+    # continuity.carry_in_fingerprint(...) of this beat's resolved recipes.
+    # Beats without carry-ins keep their key unchanged. Keyword-only, so a
+    # key term added positionally later can never land in it by accident.
+    if spec.carry_in:
+        if carried is None:
+            raise ValueError(
+                f"{spec.id} carries in {spec.carry_in}; its render key needs "
+                "carried=continuity.carry_in_fingerprint(recipes), or a change "
+                "to the producing beat would serve a stale render"
+            )
+        key = content_hash(key, "carry_in", carried)
+
+    # --- cue term (animation components, scenes/components/animation.py) ------
+    # An animation's moments start on words of the narration, timed by the
+    # voice (core/cues.py). Narration stays out of the key; what it changes in
+    # the picture is exactly these frame numbers, so they are the term. Beats
+    # whose component reads no cues keep their key unchanged.
+    if cues:
+        key = content_hash(key, "cues", sorted(cues.items()))
+    return key
 
 
 # --- store ------------------------------------------------------------------

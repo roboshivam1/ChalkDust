@@ -15,19 +15,59 @@ before compute is spent.
 
 from __future__ import annotations
 
+from collections.abc import Iterator, Mapping, Sequence
+from contextlib import contextmanager
 from dataclasses import dataclass, field
+from pathlib import Path
 
+from manim import config, tempconfig
 from manim.animation.animation import prepare_animation
 
-from chalkdust.core.models import BeatSpec
+from chalkdust.continuity import ArtifactRecipe, beat_component
+from chalkdust.core.models import BeatSpec, CarryInError
 from chalkdust.scenes.base import ChalkdustScene
-from chalkdust.scenes.regions import LayoutError
-from chalkdust.scenes.components import make_component
+from chalkdust.scenes.regions import LayoutError, bbox
+from chalkdust.scenes.theme import LatexToolchainError
 
 
 @dataclass(frozen=True)
 class Finding:
-    kind: str      # out_of_bounds | overlap | illegible | overflow | build_error
+    """One failure the repair loop can dispatch on (SCENE_SPEC.md §9).
+
+    kinds, geometric (rung 3, this module):
+      out_of_bounds | overlap | illegible | overflow | invalid_latex |
+      build_error
+      overlap         -- includes the component drawing over a carried
+                         artifact it does not act on (LayoutProbe.settle)
+      region_conflict -- as at rung 2, for a caller that skipped it: no
+                         STAGE region left free for such an artifact
+                         (continuity.CarryIn)
+      carry_in        -- build() hit a bad reference into a carried artifact
+                         (a CarryInError): a spec error, as at rung 2
+      toolchain       -- LaTeX still running after its timeout, every
+                         attempt (theme.LatexToolchainError): the machine,
+                         not the spec
+    kinds, semantic (rung 2, semantic.py):
+      duration        -- narration too short for the component's steps, or
+                         longer than one beat may run
+      carry_in        -- references an artifact no earlier beat registered,
+                         acts on one the beat does not carry in, or points
+                         at a part that artifact does not have
+      region_conflict -- two simultaneously active claimants share space,
+                         or a carried artifact the component does not act
+                         on has no STAGE region left free for it
+      capacity        -- more text than the claimed regions can hold legibly
+      invalid_latex   -- a LaTeX string does not compile standalone
+      cue             -- an animation's cue phrase is not in the narration,
+                         names no moment of its phase, or is out of order
+                         (core/cues.py)
+      continuity      -- an animation beat continues the previous beat's
+                         phase with a different setup, so the picture would
+                         jump at the cut (pipeline.check_semantics)
+      toolchain       -- as above: compiling it timed out, every attempt
+    """
+
+    kind: str
     message: str
 
 
@@ -51,37 +91,136 @@ class Report:
         return "\n".join(lines)
 
 
+# Where the probe's Manim scratch goes when the caller has not said. Building a
+# scene creates Manim's media tree, and building Text or MathTex writes SVGs
+# into it; left at Manim's default that is ./media in whatever directory the
+# probe happens to run from. This mirrors the pipeline's default work dir
+# (work/, git-ignored) and its media_dir under it.
+DEFAULT_PROBE_MEDIA_DIR = Path("work") / "manim"
+
+
+@contextmanager
+def probe_media(media_dir: Path | str | None = None) -> Iterator[None]:
+    """Scope Manim's media_dir for a probe.
+
+    An explicit `media_dir` wins. Otherwise a caller that already redirected
+    Manim (the pipeline's tempconfig, the worker's) is left alone, and only
+    Manim's own default -- ./media in the cwd -- is replaced by
+    DEFAULT_PROBE_MEDIA_DIR.
+    """
+    if media_dir is None:
+        if Path(config.media_dir) != Path("media"):
+            yield
+            return
+        media_dir = DEFAULT_PROBE_MEDIA_DIR
+    with tempconfig({"media_dir": str(media_dir)}):
+        yield
+
+
 class LayoutProbe(ChalkdustScene):
-    """A ChalkdustScene that applies animations instantly and writes nothing."""
+    """A ChalkdustScene that applies animations instantly and writes nothing
+    into the cwd: its Manim scratch goes to `media_dir` (see probe_media)."""
+
+    def __init__(self, *args, media_dir: Path | str | None = None, **kwargs) -> None:
+        # Scene.__init__ builds the file writer, which creates the media tree.
+        with probe_media(media_dir):
+            super().__init__(*args, **kwargs)
+        self.probe_media_dir = media_dir
+
+    def construct(self) -> None:
+        # build() creates Text and MathTex, which write their SVGs under it.
+        with probe_media(self.probe_media_dir):
+            super().construct()
 
     def play(self, *animations, **kwargs) -> None:  # type: ignore[override]
-        for anim in animations:
-            # prepare_animation converts `.animate` builders into Animations.
-            anim = prepare_animation(anim)
-            anim.begin()
-            anim.interpolate(1.0)   # jump to final state
-            anim.finish()
+        # Same order of operations as Scene.play, so the probe adds exactly
+        # what a real render adds, in the same sequence: first the mobject of
+        # every non-introducer animation not yet on screen
+        # (compile_animation_data), then each introducer just before it begins
+        # (begin_animations). Mechanical repair keys its fixes on that order.
+        # prepare_animation converts `.animate` builders into Animations.
+        anims = [prepare_animation(a) for a in animations]
+        self.add_mobjects_from_animations(anims)
+        for anim in anims:
             if anim.is_introducer():
                 self.add(anim.mobject)
+            anim.begin()
+        for anim in anims:
+            anim.interpolate(1.0)   # jump to final state
+            anim.finish()
             anim.clean_up_from_scene(self)   # removes mobjects for FadeOut etc.
 
     def wait(self, *args, **kwargs) -> None:  # type: ignore[override]
         return None
 
+    def settle(self, label: str = "settle point") -> None:
+        super().settle(label)
+        self._check_carried_clear(label)
+
+    def _check_carried_clear(self, label: str) -> None:
+        """Nothing of the component's may be drawn over a carried artifact it
+        does not act on (register D-G4c-1).
+
+        CarryIn fits such an artifact into the STAGE region the component
+        leaves free and tags it `_chalk_carry_clear`. The component does not
+        know it is there, so it cannot mark it exclusive() the way it marks
+        its own parts: every other top-level mobject is checked against it,
+        as overlap, at every settle point. A hit means the component drew
+        outside the regions it claims. Inkless placeholders (zero area) are
+        skipped; they draw nothing to overlap.
+        """
+        clear = [m for m in self.mobjects if getattr(m, "_chalk_carry_clear", False)]
+        if not clear:
+            return
+        drawn = [m for m in self.mobjects
+                 if not getattr(m, "_chalk_carry_clear", False)
+                 and bbox(m).area > 0]
+        for art in clear:
+            box = bbox(art)
+            for mob in drawn:
+                if box.intersects(bbox(mob)):
+                    msg = (f"{label}: {_label(mob)} is drawn over "
+                           f"{_label(art)}, a carried artifact this beat's "
+                           f"component does not act on")
+                    if self.strict:
+                        raise LayoutError(msg, kind="overlap")
+                    self.layout_warnings.append(("overlap", msg))
+
+
+def _label(mob) -> str:
+    return getattr(mob, "_chalk_label", type(mob).__name__)
+
 
 def validate_beat(spec: BeatSpec, theme: str = "default",
-                  duration: float = 8.0) -> Report:
-    """Check one beat's layout. Never raises -- failures come back as findings."""
-    report = Report(beat_id=spec.id)
+                  duration: float = 8.0,
+                  recipes: Sequence[ArtifactRecipe] = (),
+                  media_dir: Path | str | None = None) -> Report:
+    """Check one beat's layout. Never raises -- failures come back as findings.
+
+    `recipes` are the beat's carried artifacts (SCENE_SPEC.md §6,
+    continuity.resolve_carry_in): they are built on screen first, as in the
+    render, so a beat is checked against the frame it will actually draw.
+    `media_dir` is where Manim's scratch goes (see probe_media); never the cwd.
+    """
     try:
-        component = make_component(spec.component, spec.params)
+        component = beat_component(spec, recipes)
     except Exception as exc:
-        report.findings.append(Finding("build_error", f"{type(exc).__name__}: {exc}"))
-        return report
+        return Report(spec.id, [Finding("build_error", f"{type(exc).__name__}: {exc}")])
 
     # strict=False so the scene collects every finding instead of stopping at
     # the first. The repair loop wants the full picture in one pass.
-    probe = LayoutProbe(component, theme=theme, duration=duration, strict=False)
+    probe = LayoutProbe(component, theme=theme, duration=duration, strict=False,
+                        media_dir=media_dir)
+    return run_probe(probe, spec.id)
+
+
+def run_probe(probe: LayoutProbe, beat_id: str) -> Report:
+    """Build `probe` (constructed with strict=False) and collect its findings.
+
+    Split out of validate_beat so repair.py can probe with a scene that
+    applies a repair plan, under exactly the same error handling.
+    """
+    report = Report(beat_id=beat_id)
     try:
         probe.construct()
     except LayoutError as exc:
@@ -90,6 +229,18 @@ def validate_beat(spec: BeatSpec, theme: str = "default",
         # here. Folding it into build_error would lose the information the
         # repair loop dispatches on.
         report.findings.append(Finding(exc.kind, str(exc)))
+        return report
+    except CarryInError as exc:
+        # A bad reference into a carried artifact (a part it does not have,
+        # a target the beat does not carry): the spec's fault, typed as the
+        # semantic rung types it, never a crash (register D-G4b-1). The
+        # semantic rung catches these first; this is the backstop.
+        report.findings.append(Finding("carry_in", str(exc)))
+        return report
+    except LatexToolchainError as exc:
+        # TeX timed out on every attempt: the machine, not the spec
+        # (register G4b-N6).
+        report.findings.append(Finding("toolchain", str(exc)))
         return report
     except Exception as exc:
         # Anything else is a genuine crash: the component hit content it did
@@ -101,5 +252,11 @@ def validate_beat(spec: BeatSpec, theme: str = "default",
     return report
 
 
-def validate_specs(specs: list[BeatSpec], theme: str = "default") -> list[Report]:
-    return [validate_beat(s, theme=theme) for s in specs]
+def validate_specs(specs: list[BeatSpec], theme: str = "default",
+                   recipes: Mapping[str, Sequence[ArtifactRecipe]] | None = None,
+                   media_dir: Path | str | None = None,
+                   ) -> list[Report]:
+    """validate_beat over `specs`; `recipes` is resolve_carry_in(video_spec)."""
+    recipes = recipes or {}
+    return [validate_beat(s, theme=theme, recipes=recipes.get(s.id, ()),
+                          media_dir=media_dir) for s in specs]

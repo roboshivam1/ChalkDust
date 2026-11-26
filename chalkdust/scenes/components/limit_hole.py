@@ -14,18 +14,23 @@ Phases (each one beat; animation.py):
   name      limit -> value
 
 Setup: `function` (an expression in x), `x_range`, `a`. Everything on screen
-is computed from these (_analyse): the one-sided limits, from f at a +- h for
-a geometric sequence of h with Richardson extrapolation; the points' start
-gap; where the slide stops (the first gap at which both readouts show L); the
-readouts' decimals, from the y-scale. Refused as param errors, before anything
-is drawn: a jump (the one-sided limits differ), a side that diverges or does
-not settle, f defined at a (no hole: another component), f undefined on more
-than the one point a near a, a too close to the edge to approach from both
-sides, and f too small to read at the readouts' most decimals.
+is computed from these (_analyse): the one-sided limits, from f at a +- h
+along five geometric sequences of h offset by the golden ratio (so none lines
+up with a period of f), with Richardson extrapolation and only the samples
+whose rounding error is small (_eval_err); the points' start gap; where the
+slide stops (HOLD_DEPTH times closer in than the gap from which both
+readouts show L at every gap); the readouts' decimals, from the y-scale.
+Refused as param errors, before anything is drawn: a jump (the one-sided
+limits differ), a side that diverges, drifts or does not settle, f that
+cancels too finely at a to compute, f defined at a (no hole: another
+component; "defined" means every part of f has a value at a), f undefined on
+more than the one point a near a, a too close to the edge to approach from
+both sides, and f too small to read at the readouts' most decimals.
 """
 
 from __future__ import annotations
 
+import ast
 import math as _math
 from dataclasses import dataclass
 from functools import lru_cache
@@ -57,7 +62,14 @@ from pydantic import Field, model_validator
 from chalkdust.scenes.base import ChalkdustScene, Moment, Timeline
 from chalkdust.scenes.components.animation import Animation, AnimationParams
 from chalkdust.scenes.components.base import label, register
-from chalkdust.scenes.components.graph_plot import _check_range, _runs, axis_ticks
+from chalkdust.scenes.components.graph_plot import (
+    _OFF_SCALE,
+    _check_range,
+    _eval,
+    _parse,
+    _runs,
+    axis_ticks,
+)
 from chalkdust.scenes.plotting import (
     POINT_Z,
     X_TICKS,
@@ -85,17 +97,43 @@ MAX_START = 0.4
 # be seen. A hole within about 11% of the edge is refused for this reason.
 MIN_START = 0.08
 START_MANTISSAS = (1, 1.5, 2, 2.5, 3, 4, 5, 6, 8)
-# The slide shrinks the gap at least this many times, so the points visibly
-# close in even where the readouts show L from the start (a flat window).
+# The slide shrinks the gap at least this many times before the readouts must
+# hold L, so the points visibly close in even where the readouts show L from
+# the start (a flat window) ...
 MIN_SHRINK = 50
-# One-sided limits: f at a +- HS * width * 2^-k for k = 0..K, so h ends near
-# 1e-7 of HS * width (_one_sided says why no deeper).
+# ... and then goes this many times closer still, with both readouts showing L
+# all the way (checked at N_HOLD gaps): the last stretch of the slide is the
+# readouts visibly holding L, not landing on it at one gap.
+HOLD_DEPTH = 10
+N_HOLD = 600
+# One-sided limits: f at a +- HS * width * c * 2^-k for k = 0..K, so h ends
+# near 1e-7 of HS * width (_one_sided says why no deeper), along one sequence
+# per offset c. The offsets are spread over an octave by the golden ratio, so
+# no sample lines up with a period of f: sin(pi/x) is exactly 0 at every
+# x = 2^-k / 10, and a single sequence of those would read it as a limit 0.
+GOLDEN = (5 ** 0.5 - 1) / 2
+OFFSETS = tuple(2.0 ** -((j * GOLDEN) % 1.0) for j in range(1, 6))
 HS = 0.05
 K = 23
+# A side's values running away from its plateau, or a tail with no plateau,
+# that grows at least GROWTH times per halving of the gap heads to infinity
+# (1/x: 2 times). A slower steady drift cannot be told from a limit approached
+# very slowly (|x|^0.01 ~ 1 + 0.01 log|x|), so it is refused as either.
+GROWTH = 1.3
+DRIFT = 1.03
 # Plateau windows of Richardson estimates start this deep (h <= HS*width/64),
-# so a plateau at large h cannot hide a divergence closer in.
+# so a plateau at large h cannot hide a divergence closer in -- unless the
+# samples that deep are already lost to rounding (a narrow x_range around a
+# cancellation), then as deep as they allow, never above PLATEAU_MIN; the
+# deepest computable value must still agree with the plateau (_one_sequence).
 PLATEAU_FROM = 6
+PLATEAU_MIN = 2
 PLATEAU_LEN = 4
+# A sample is used only if its rounding-error bound (_eval_err) is under this
+# share of the convergence tolerance.
+RELIABLE = 0.1
+# Unit roundoff of float64.
+UNIT = np.finfo(float).eps / 2
 # Convergence tolerance, relative to the window's height: 1e-4 of the height
 # is far below a pixel at 1080p.
 TOL = 1e-4
@@ -164,19 +202,136 @@ def _side_name(s: int) -> str:
     return "left" if s < 0 else "right"
 
 
+# |g'(u)| for each function the expression grammar admits (graph_plot._FUNCS),
+# given u and g(u): how an error in u carries through g.
+_SLOPES = {
+    "sin": lambda u, g: np.abs(np.cos(u)),
+    "cos": lambda u, g: np.abs(np.sin(u)),
+    "tan": lambda u, g: 1 + g * g,
+    "asin": lambda u, g: 1 / np.sqrt(np.abs(1 - u * u)),
+    "acos": lambda u, g: 1 / np.sqrt(np.abs(1 - u * u)),
+    "atan": lambda u, g: 1 / (1 + u * u),
+    "sinh": lambda u, g: np.cosh(u),
+    "cosh": lambda u, g: np.abs(np.sinh(u)),
+    "tanh": lambda u, g: 1 - g * g,
+    "exp": lambda u, g: np.abs(g),
+    "log": lambda u, g: 1 / np.abs(u),
+    "ln": lambda u, g: 1 / np.abs(u),
+    "log10": lambda u, g: 1 / (np.abs(u) * np.log(10)),
+    "log2": lambda u, g: 1 / (np.abs(u) * np.log(2)),
+    "sqrt": lambda u, g: 0.5 / np.abs(g),
+    "abs": lambda u, g: np.ones_like(u),
+}
+
+
+def _carry(slope: np.ndarray, e: np.ndarray) -> np.ndarray:
+    """slope * e, with an exact input (e = 0) staying exact even where the
+    slope is infinite. A slope that is nan is 0 * inf -- 0^r's slope in r,
+    0 * log 0 -- and the result does not move: 0."""
+    slope = np.where(np.isnan(slope), 0.0, np.abs(slope))
+    return np.where(e == 0, 0.0, slope * e)
+
+
+def _eval_err(node: ast.expr, x: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """(value, bound on its rounding error) of a parsed expression at the
+    exact points x, to first order: each operation rounds its result (UNIT
+    relative) and carries its inputs' errors by its derivative. A difference
+    of nearly equal numbers keeps their absolute error, so 1 - cos h, which
+    is h^2/2, is good to about 1e-16 / (h^2/2) relative, and exactly 0, all
+    error, below h ~ 1e-8. Says which samples f can be computed at."""
+    if isinstance(node, ast.Constant):
+        # An integer literal (1e8, 1000) is exactly its float; another
+        # decimal (0.1) is rounded to one.
+        v = np.float64(node.value)
+        exact = float(v).is_integer() and abs(v) < 2.0 ** 53
+        return v + 0 * x, (0.0 if exact else UNIT * abs(v)) + 0 * x
+    if isinstance(node, ast.Name):
+        if node.id == "x":
+            return x, np.zeros_like(x)
+        v = np.float64(_eval(node, x))
+        return v + 0 * x, UNIT * abs(v) + 0 * x
+    if isinstance(node, ast.UnaryOp):
+        v, e = _eval_err(node.operand, x)
+        return (-v if isinstance(node.op, ast.USub) else v), e
+    if isinstance(node, ast.BinOp):
+        lv, le = _eval_err(node.left, x)
+        rv, re_ = _eval_err(node.right, x)
+        res = np.asarray(_eval(node, x), dtype=float)
+        if isinstance(node.op, (ast.Add, ast.Sub)):
+            err = le + re_
+        elif isinstance(node.op, ast.Mult):
+            err = _carry(rv, le) + _carry(lv, re_)
+        elif isinstance(node.op, ast.Div):
+            err = _carry(1 / rv, le) + _carry(res / rv, re_)
+        else:  # Pow: d/dl = r l^(r-1) = r res / l, d/dr = res log|l|
+            err = _carry(rv * res / lv, le) + _carry(res * np.log(np.abs(lv)), re_)
+        return res, err + UNIT * np.abs(res)
+    assert isinstance(node, ast.Call)
+    uv, ue = _eval_err(node.args[0], x)
+    g = np.asarray(_eval(node, x), dtype=float)
+    slope = _SLOPES[node.func.id](uv, g)
+    return g, _carry(slope, ue) + UNIT * np.abs(g)
+
+
+def _rounding(expr: str, xs: np.ndarray) -> np.ndarray:
+    """Bound on the rounding error of f at each of xs (inf where unknown)."""
+    with np.errstate(all="ignore"):
+        _, err = _eval_err(_parse(expr), np.asarray(xs, dtype=float))
+    err = np.broadcast_to(err, np.shape(xs)).astype(float)
+    return np.where(np.isfinite(err), err, np.inf)
+
+
 def _one_sided(f: Fn, a: float, s: int, hs: float, tol: float) -> tuple[float, float]:
-    """(limit, accuracy) of f(x) as x -> a from side s (-1 left, +1 right).
+    """(limit, accuracy) of f(x) as x -> a from side s (-1 left, +1 right):
+    one estimate per sequence of gaps (OFFSETS), and they must all agree. An
+    oscillation that one sequence happens to sample at a single phase (its
+    zeros) shows a different value, or none, along the others."""
+    ests = [_one_sequence(f, a, s, hs * c, tol) for c in OFFSETS]
+    vals = np.array([e for e, _ in ests])
+    accuracy = max(max(sp for _, sp in ests), float(np.ptp(vals)))
+    if np.ptp(vals) > max(tol, 10 * max(sp for _, sp in ests)):
+        raise ValueError(
+            f"f(x) does not settle on one value as x -> {a:g} from the {_side_name(s)} (it "
+            f"reads {vals.min():.4g} to {vals.max():.4g} at gaps a few % apart): there is no "
+            "limit to show; pick a point where f approaches a number from both sides")
+    return float(np.mean(vals)), accuracy
+
+
+def _runaway(a: float, side: str, xs: np.ndarray, v: np.ndarray, steps: np.ndarray) -> None:
+    """Refuse a side whose values keep moving one way, gap after halved gap
+    (`steps` are the last differences). Growing GROWTH times per halving is
+    a pole; any slower steady drift is told the way it is, since no finite
+    sample separates log|x| (no limit) from |x|^0.01 (a limit, approached
+    too slowly to show)."""
+    mag = np.abs(steps)
+    if np.all(mag[1:] >= GROWTH * mag[:-1]):
+        way = "+infinity" if steps[-1] > 0 else "-infinity"
+        raise ValueError(
+            f"f(x) heads to {way} as x -> {a:g} from the {side} "
+            f"(f = {v[-1]:.3g} at x = {xs[-1]:.3g}): there is no limit to show; "
+            "pick a point where f approaches a number from both sides")
+    raise ValueError(
+        f"f(x) is still drifting as x -> {a:g} from the {side} (by {abs(steps[-1]):.2g} per "
+        f"halving of the gap, at x = {xs[-1]:.3g}): it has no limit there, or approaches one "
+        "too slowly to show; pick a point where f settles quickly from both sides")
+
+
+def _one_sequence(f: Fn, a: float, s: int, hs: float, tol: float) -> tuple[float, float]:
+    """(limit, accuracy) of f(x) as x -> a from side s along one sequence.
 
     f at a + s*hs*2^-k for k = 0..K. Richardson's R_k = 2 v_{k+1} - v_k
     removes the term linear in h; the limit is the first (shallowest) run of
     PLATEAU_LEN consecutive R's within `tol` of each other, at depth
     PLATEAU_FROM or more -- deep enough that a plateau at large h cannot hide
     a divergence closer in -- that the sequence was already approaching.
-    Shallowest, K capped, and approached, because deeper still the rounding
-    error of the cancellation f makes at a takes over: 1 - cos h is exactly 0
-    below h ~ 1e-8, and (cos x - 1 + x^2/2)/x^4 is exactly 0 below 1.5e-4, a
-    flat run of zeros the sequence never headed for. Raises ValueError for a
-    side that is undefined, diverges or never settles."""
+
+    Only samples computed to within RELIABLE * tol are used (_rounding):
+    closer in, the cancellation f makes at a has eaten the digits -- 1 - cos h
+    is exactly 0 below h ~ 1e-8, and (e^h - 1 - h)/h^2 is rounding error
+    over h^2, which grows like a pole. Shallowest and approached, as a
+    second guard: a run of rounding zeros is never headed for. Raises
+    ValueError for a side that is undefined, cannot be computed, diverges,
+    drifts or never settles."""
     side = _side_name(s)
     hk = hs * 2.0 ** -np.arange(K + 1)
     xs = a + s * hk
@@ -187,6 +342,29 @@ def _one_sided(f: Fn, a: float, s: int, hs: float, tol: float) -> tuple[float, f
         raise ValueError(
             f"f is undefined at x = {x:.6g}, just {side} of a = {a:g}: the hole must be the "
             "only point near a where f is undefined; pick a function defined on both sides of a")
+    err = _rounding(f.expr, xs)
+    ok = err <= RELIABLE * tol
+    n = len(ok) if ok.all() else int(np.argmin(ok))
+
+    def cancels() -> ValueError:
+        return ValueError(
+            f"f cancels too finely near a = {a:g} to compute in floating point: its values "
+            f"within {float(hk[n]):.2g} {side} of a have lost their digits to rounding; write f "
+            "so it does not subtract nearly equal numbers, or pick another function")
+
+    if n < PLATEAU_MIN + PLATEAU_LEN + 1:
+        raise cancels()
+
+    def drifting(steps: np.ndarray) -> None:
+        """Refuse a side that keeps moving: a pole as a pole; a slower drift
+        in samples cut short by rounding (n < K + 1) as the cancellation it
+        may be -- closer in, where the digits are gone, it may yet settle."""
+        mag = np.abs(steps)
+        if n < K + 1 and not np.all(mag[1:] >= GROWTH * mag[:-1]):
+            raise cancels()
+        _runaway(a, side, xs, v, steps)
+
+    xs, v, err = xs[:n], v[:n], err[:n]
     r = 2 * v[1:] - v[:-1]
     spreads = [float(np.ptp(r[j:j + PLATEAU_LEN])) for j in range(len(r) - PLATEAU_LEN + 1)]
 
@@ -197,7 +375,7 @@ def _one_sided(f: Fn, a: float, s: int, hs: float, tol: float) -> tuple[float, f
         start = float(np.max(np.abs(v[:3] - lim)))
         return abs(v[j - 1] - lim) <= max(0.5 * start, tol)
 
-    j = PLATEAU_FROM
+    j = max(PLATEAU_MIN, min(PLATEAU_FROM, len(spreads) - 1))
     while j < len(spreads):
         if spreads[j] > tol:
             j += 1
@@ -220,20 +398,33 @@ def _one_sided(f: Fn, a: float, s: int, hs: float, tol: float) -> tuple[float, f
         dev = v[-8:] - limit
         gap = np.abs(dev)
         if ((np.all(dev > 0) or np.all(dev < 0)) and gap[-1] > tol
-                and np.all(gap[1:] >= 1.03 * gap[:-1]) and gap[-1] >= 1.5 * gap[0]):
-            way = "+infinity" if dev[-1] > 0 else "-infinity"
+                and np.all(gap[1:] >= DRIFT * gap[:-1]) and gap[-1] >= 1.5 * gap[0]):
+            drifting(np.diff(v[-8:]))
+        # Closer in than the plateau, f must stay with it: a value further
+        # from it than where the plateau began is f going somewhere else
+        # (1 + exp(-|x|/1e-4) is flat at 1, then rises to 2).
+        if abs(v[-1] - limit) > max(2 * tol, 2 * abs(v[j] - limit)):
             raise ValueError(
-                f"f(x) heads to {way} as x -> {a:g} from the {side} "
-                f"(f = {v[-1]:.3g} at x = {xs[-1]:.3g}): there is no limit to show; "
-                "pick a point where f approaches a number from both sides")
+                f"f(x) moves away from {limit:.4g} again closer to a = {a:g} from the {side} "
+                f"(f = {v[-1]:.4g} at x = {xs[-1]:.3g}): no limit can be shown; pick a point "
+                "where f settles from both sides")
+        # A limit approached too slowly to show: the last Richardson steps
+        # (the term linear in h is already gone from them), all one way and
+        # well clear of rounding, shrink by rho per halving, so what they
+        # still add up to past the last one is about step * rho/(1 - rho).
+        # If that would show, the plateau is not the limit: sin(x)/x +
+        # 0.007|x|^0.001 creeps to 1 through 1.0069 at every computable gap.
+        steps = np.diff(r[-8:])
+        noise = (2 * err[1:] + err[:-1])[-8:]
+        if (len(steps) >= 4 and (np.all(steps > 0) or np.all(steps < 0))
+                and np.all(np.abs(steps) > 10 * (noise[1:] + noise[:-1]))):
+            rho = float(np.mean(np.abs(steps[1:]) / np.abs(steps[:-1])))
+            if rho >= 1 or abs(steps[-1]) * rho / (1 - rho) > tol:
+                drifting(steps)
         return limit, spreads[j]
     tail = np.diff(v[-12:])
-    if (np.all(tail > 0) or np.all(tail < 0)) and abs(tail[-1]) >= 0.5 * abs(tail[0]):
-        way = "+infinity" if tail[-1] > 0 else "-infinity"
-        raise ValueError(
-            f"f(x) heads to {way} as x -> {a:g} from the {side} "
-            f"(f = {v[-1]:.3g} at x = {xs[-1]:.3g}): there is no limit to show; "
-            "pick a point where f approaches a number from both sides")
+    if len(tail) >= 4 and (np.all(tail > 0) or np.all(tail < 0)):
+        drifting(tail)
     raise ValueError(
         f"f(x) does not settle on one value as x -> {a:g} from the {side} (or cancels too "
         "finely at a to compute in floating point): there is no limit to show; pick a point "
@@ -303,6 +494,21 @@ def _path_problem(f: Fn, a: float, h: float, y0: float, y1: float,
     return None
 
 
+def _undefined_at(expr: str, a: float) -> bool:
+    """f has no value at a as written: some part of it is undefined there.
+    numpy can still return a number for the whole -- (1 + x)^(1/x) at 0 is
+    1^inf = 1, x*atan(1/x) is 0 * pi/2 -- so every subexpression is
+    evaluated at a, and one that is not a finite number makes a a hole."""
+    xa = np.array([a], dtype=float)
+    with np.errstate(all="ignore"):
+        for node in ast.walk(_parse(expr)):
+            if isinstance(node, (ast.BinOp, ast.UnaryOp, ast.Call)):
+                v = np.asarray(_eval(node, xa), dtype=float)
+                if not np.all(np.isfinite(v)) or np.any(np.abs(v) > _OFF_SCALE):
+                    return True
+    return False
+
+
 @lru_cache(maxsize=64)
 def _analyse(expr: str, x0: float, x1: float, a: float) -> _Limit:
     """Everything the picture shows, computed from the setup; raises
@@ -311,10 +517,10 @@ def _analyse(expr: str, x0: float, x1: float, a: float) -> _Limit:
     f = Fn(expr)
     width = x1 - x0
     room = min(a - x0, x1 - a)
-    if START_SHARE_OF_ROOM * room < MIN_START * width:
-        raise ValueError(
-            f"a = {a:g} is too close to the edge of x_range [{x0:g}, {x1:g}] to approach it "
+    edge = (f"a = {a:g} is too close to the edge of x_range [{x0:g}, {x1:g}] to approach it "
             "from both sides; widen x_range on that side")
+    if START_SHARE_OF_ROOM * room < MIN_START * width:
+        raise ValueError(edge)
     ys0, ys1 = y_window([f], x0, x1, include_zero=False)
     samples = f.np(np.linspace(x0, x1, 600))
     samples = samples[np.isfinite(samples)]
@@ -332,7 +538,7 @@ def _analyse(expr: str, x0: float, x1: float, a: float) -> _Limit:
             "approach the same value")
     L = 0.5 * (left + right)
     fa = f.at(a)
-    if _math.isfinite(fa):
+    if _math.isfinite(fa) and not _undefined_at(expr, a):
         if abs(fa - L) <= max(tol, agree):
             raise ValueError(
                 f"f is defined at a = {a:g} (f(a) = {fa:.4g}) and continuous there: there is no "
@@ -364,25 +570,37 @@ def _analyse(expr: str, x0: float, x1: float, a: float) -> _Limit:
             h0 = h
             break
     if h0 is None:
-        raise ValueError(why or "no room to approach a")
+        raise ValueError(why or edge)
 
-    # Where the slide stops: the first 1-2-5 gap (at least MIN_SHRINK times
-    # under h0) at which both readouts show L. The first, not a deeper one:
-    # closer in, rounding in f's cancellation at a can make a readout lie.
+    # Where the slide stops: HOLD_DEPTH times closer in than the first 1-2-5
+    # gap (at least MIN_SHRINK times under h0) from which both readouts show
+    # L at every gap down to the stop -- checked at N_HOLD gaps spread by the
+    # golden ratio, so they line up neither with decimals nor with a period
+    # of f. The first such gap, not a deeper one: closer in, rounding in f's
+    # cancellation at a can make a readout lie.
     target = fmt(L, dy)
     half = 0.5 * 10.0 ** -dy
+    spread = np.concatenate([[0.0, 1.0], (np.arange(1, N_HOLD) * GOLDEN) % 1.0])
 
-    def shows_l(h: float) -> bool:
-        return all(fmt(v, dy) == target and abs(v - L) < half
-                   for v in (f.at(a - h), f.at(a + h)))
+    def holds_l(hi: float, lo: float) -> bool:
+        """Both readouts show L at every gap in [lo, hi], and so does f's
+        true value: the reading stays L across its rounding bound."""
+        hs_ = hi * (lo / hi) ** spread
+        for s in (-1, 1):
+            xs_ = a + s * hs_
+            for v, e in zip(f.np(xs_), _rounding(f.expr, xs_)):
+                if not (abs(v - L) + e < half and fmt(v, dy) == target
+                        and fmt(v - e, dy) == target and fmt(v + e, dy) == target):
+                    return False
+        return True
 
     floor_h = max(1e-12 * abs(a), 2 * 10.0 ** -MAX_DECIMALS)
     h_end = None
     for h in _grid_below(h0 / MIN_SHRINK * (1 + 1e-9)):
-        if h < floor_h:
+        if h / HOLD_DEPTH < floor_h * (1 - 1e-9):
             break
-        if shows_l(h):
-            h_end = h
+        if holds_l(h, h / HOLD_DEPTH):
+            h_end = h / HOLD_DEPTH
             break
     if h_end is None:
         raise ValueError(
@@ -503,7 +721,14 @@ class _Picture:
         return label(self.plot.axes, "axes")
 
     def curve(self):
-        return label(self.plot.curve(self.f, self.c_fn), "curve f")
+        """f on each side of the hole, each piece ending where the points'
+        slide ends (a -+ h_end, where both readouts show L): never sampled at
+        a itself, where numpy can return a value f does not have ((1 + x)^(1/x)
+        gives 1 there; its limit is e), and reaching the hole however steep f
+        is there (x log|x|)."""
+        d = self.h_end
+        return label(VGroup(*self.plot.curve(self.f, self.c_fn, b=self.a - d),
+                            *self.plot.curve(self.f, self.c_fn, a=self.a + d)), "curve f")
 
     def hole(self):
         """The open circle at (a, L), above the points: f has no value there,
@@ -751,12 +976,16 @@ class LimitAtHole(Animation):
         # Both readouts' numbers flow into the one value: each its own copy
         # and target, since a transform animates its target and two would
         # fight over one. The readouts' own numbers hide while their copies
-        # still cover them, then fade back: frame 0 draws each number once,
-        # exactly as the previous phase ended.
+        # still cover them, then fade back: every frame before and at the
+        # start of the move draws each number once, exactly as the previous
+        # phase ended. The copies go on screen now, with the hiding: a cued
+        # first moment holds before it plays (Timeline's lead), and a number
+        # hidden with no copy up yet is a blank readout for all that hold.
         nums = [r[1][1] for r in rows]
         movers = [n.copy() for n in nums]
         for n in nums:
             n.set_opacity(0)
+        scene.add(*movers)
         spare = limit.value_part.copy()
         tl.play("limit", FadeIn(limit.head_part),
                 ReplacementTransform(movers[0], limit.value_part),
